@@ -1,0 +1,13 @@
+{
+    "tahunHijriah": 1447,
+    "tahunMasehi": 2026,
+    "tanggalSatuRamadhan": {
+        "muhammadiyah": "2026-02-18",
+        "nu": "2026-02-19"
+    },
+    "keterangan": {
+        "muhammadiyah": "Berdasarkan Hisab Muhammadiyah",
+        "nu": "Berdasarkan Rukyatul Hilal / Keputusan Pemerintah"
+    },
+    "_note": "Update file ini setiap tahun sebelum Ramadhan. Format tanggal: YYYY-MM-DD"
+}

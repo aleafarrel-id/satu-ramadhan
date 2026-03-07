@@ -1,0 +1,120 @@
+/* =============================================
+   NU / Muhammadiyah Toggle
+   ============================================= */
+
+.org-toggle {
+   position: relative;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: var(--spacing-xs);
+   background: var(--gradient-org-badge);
+   border: none;
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-sm) var(--spacing-md);
+   padding-left: 28px;
+   cursor: pointer;
+   transition: all var(--transition-fast);
+   width: 100%;
+   min-height: 40px;
+}
+
+.org-toggle:active {
+   transform: scale(0.97);
+}
+
+.org-toggle__icon-circle {
+   position: absolute;
+   left: -8px;
+   top: -8px;
+   width: 26px;
+   height: 26px;
+   background: var(--clr-secondary-600);
+   border: 2px solid var(--clr-secondary-200);
+   border-radius: var(--radius-circle);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: var(--clr-secondary-200);
+   font-size: 13px;
+}
+
+.org-toggle__icon {
+   width: var(--icon-md);
+   height: var(--icon-md);
+   object-fit: contain;
+   display: none;
+}
+
+.org-toggle__label {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+   .org-toggle__label {
+      font-size: var(--fs-xs);
+   }
+
+   .org-toggle {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      padding-left: 24px;
+      min-height: 34px;
+   }
+}
+
+/* =============================================
+   Switch Toggle
+   ============================================= */
+
+.switch-toggle {
+   position: relative;
+   display: inline-block;
+   width: 48px;
+   height: 26px;
+   flex-shrink: 0;
+}
+
+.switch-toggle input {
+   opacity: 0;
+   width: 0;
+   height: 0;
+   position: absolute;
+}
+
+.switch-toggle .slider {
+   position: absolute;
+   cursor: pointer;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: var(--clr-bg-card-solid);
+   border: 1px solid var(--clr-border);
+   transition: var(--transition-normal);
+   border-radius: var(--radius-pill);
+}
+
+.switch-toggle .slider:before {
+   position: absolute;
+   content: "";
+   height: 18px;
+   width: 18px;
+   left: 3px;
+   bottom: 3px;
+   background-color: var(--clr-text-muted);
+   transition: var(--transition-normal);
+   border-radius: var(--radius-circle);
+}
+
+.switch-toggle input:checked + .slider {
+   background-color: var(--clr-primary-500);
+   border-color: var(--clr-primary-400);
+}
+
+.switch-toggle input:checked + .slider:before {
+   transform: translateX(22px);
+   background-color: var(--clr-text-primary);
+}

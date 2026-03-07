@@ -1,0 +1,609 @@
+/* =============================================
+   Schedule Page — Single Day Navigator View
+   ============================================= */
+
+/* ── Page Layout ── */
+.schedule-page {
+    padding-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+/* ── Widget Card (featured + buttons) ── */
+.schedule-widget-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.schedule-widget-card .prayer-featured {
+    margin-bottom: 0;
+}
+
+/* ── Content Card (nav + prayer rows) ── */
+.schedule-content-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.schedule-content-card--today {
+    border-color: var(--clr-accent-a40);
+    box-shadow: 0 0 14px var(--clr-accent-a20),
+        0 0 28px var(--clr-accent-a10),
+        inset 0 0 10px var(--clr-accent-a10);
+}
+
+/* ── Action Buttons Row ── */
+.schedule-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* ── Kiblat Button (gold accent) ── */
+.kiblat-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    background: linear-gradient(135deg, var(--clr-accent-a25), var(--clr-accent-a15));
+    border: 1px solid var(--clr-accent-a40);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-left: 28px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-height: 40px;
+    flex-shrink: 0;
+}
+
+.kiblat-btn:active {
+    transform: scale(0.97);
+}
+
+.kiblat-btn__icon-circle {
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 26px;
+    height: 26px;
+    background: var(--clr-primary-600);
+    border: 2px solid var(--clr-accent-400);
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-accent-300);
+    font-size: 13px;
+}
+
+.kiblat-btn__icon-circle i {
+    font-size: var(--fs-md);
+}
+
+.kiblat-btn__label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-400);
+    white-space: nowrap;
+}
+
+/* ── Date Navigator ── */
+.schedule-nav {
+    background: rgba(30, 65, 82, 0.5);
+    border: 1px solid var(--clr-primary-a20);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.schedule-nav__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+}
+
+.schedule-nav__title-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: var(--gradient-org-badge);
+    border-radius: var(--radius-pill);
+    padding: var(--spacing-xs) var(--spacing-md);
+    padding-left: 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: all var(--transition-fast);
+}
+
+.schedule-nav__title-pill:active {
+    transform: scale(0.96);
+    filter: brightness(1.1);
+}
+
+.schedule-nav__badge-icon {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 20px;
+    height: 20px;
+    background: var(--clr-secondary-600);
+    border: 1.5px solid var(--clr-secondary-200);
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-secondary-200);
+    font-size: 10px;
+}
+
+.schedule-nav__title {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    white-space: nowrap;
+}
+
+.schedule-nav__subtitle {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+}
+
+/* ── Nav Controls (today + arrows) ── */
+.schedule-nav__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.schedule-nav__today {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-circle);
+    border: 1px solid var(--clr-accent-a30);
+    background: var(--clr-accent-a20);
+    color: var(--clr-accent-500);
+    cursor: pointer;
+    font-size: var(--fs-lg);
+    padding: 0;
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.schedule-nav__today:active {
+    transform: scale(0.9);
+}
+
+.schedule-nav__today:hover {
+    background: var(--clr-accent-a30);
+}
+
+.schedule-nav__today.hidden {
+    display: none;
+}
+
+/* Split-oval arrow container */
+.schedule-nav__arrows {
+    display: flex;
+    gap: 0;
+    flex-shrink: 0;
+    background: var(--clr-accent-a20);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--clr-accent-a30);
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.schedule-nav__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 34px;
+    border: none;
+    background: transparent;
+    color: var(--clr-accent-500);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    padding: 0;
+    font-size: var(--fs-lg);
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.schedule-nav__btn--prev {
+    border-right: 1px solid var(--clr-accent-a30);
+}
+
+.schedule-nav__btn:hover:not(.disabled) {
+    background: var(--clr-accent-a30);
+}
+
+.schedule-nav__btn:active:not(.disabled) {
+    background: var(--clr-accent-a40);
+}
+
+.schedule-nav__btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ── Prayer Rows ── */
+.schedule-prayers {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.schedule-prayer-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 12px var(--spacing-md);
+    background: var(--clr-bg-card);
+    border: 1px solid var(--clr-border-light);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.schedule-prayer-row__icon {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.65;
+}
+
+.schedule-prayer-row__icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.schedule-prayer-row__name {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-secondary);
+    flex: 1;
+    min-width: 0;
+}
+
+.schedule-prayer-row__time {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+/* ── Active Prayer Highlight ── */
+.schedule-prayer-row--active {
+    background: linear-gradient(135deg, var(--clr-accent-a25), var(--clr-accent-a15));
+    border-color: var(--clr-accent-a40);
+}
+
+.schedule-prayer-row--active .schedule-prayer-row__icon {
+    opacity: 1;
+    color: var(--clr-accent-400);
+}
+
+.schedule-prayer-row--active .schedule-prayer-row__icon svg {
+    fill: var(--clr-accent-400);
+}
+
+.schedule-prayer-row--active .schedule-prayer-row__name {
+    color: var(--clr-accent-400);
+    font-weight: var(--fw-semibold);
+}
+
+.schedule-prayer-row--active .schedule-prayer-row__time {
+    color: var(--clr-accent-400);
+}
+
+/* ── Empty / Error State ── */
+.schedule-page__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-xl) var(--spacing-md);
+    min-height: 300px;
+}
+
+.schedule-page__empty-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--clr-primary-a20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--clr-primary-a30);
+}
+
+.schedule-page__empty-icon i {
+    font-size: 28px;
+    color: var(--clr-info);
+}
+
+.schedule-page__empty-title {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-primary);
+    margin: 0 0 var(--spacing-xs);
+}
+
+.schedule-page__empty-desc {
+    font-size: var(--fs-sm);
+    color: var(--clr-text-muted);
+    line-height: var(--lh-relaxed);
+    margin: 0 0 var(--spacing-lg);
+    max-width: 280px;
+}
+
+/* ── Swipe Slide Transition ── */
+#schedule-swipe-area {
+    overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.schedule-swipe-inner {
+    will-change: transform, opacity;
+}
+
+.schedule-swipe-inner.sliding-out-left {
+    animation: slideOutLeft 200ms ease-in forwards;
+}
+
+.schedule-swipe-inner.sliding-out-right {
+    animation: slideOutRight 200ms ease-in forwards;
+}
+
+.schedule-swipe-inner.sliding-in-left {
+    animation: slideInLeft 200ms ease-out forwards;
+}
+
+.schedule-swipe-inner.sliding-in-right {
+    animation: slideInRight 200ms ease-out forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(-30%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(30%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(30%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(-30%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ── Swipe Hint ── */
+.schedule-swipe-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    opacity: 0.45;
+    transition: opacity 0.3s ease;
+}
+
+.schedule-swipe-hint__text {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.02em;
+}
+
+.schedule-swipe-hint__arrow {
+    font-size: 14px;
+    color: var(--clr-text-muted);
+    animation: swipeHintPulse 2s ease-in-out infinite;
+}
+
+.schedule-swipe-hint__arrow--left {
+    animation-delay: 0s;
+}
+
+.schedule-swipe-hint__arrow--right {
+    animation-delay: 1s;
+}
+
+@keyframes swipeHintPulse {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateX(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(3px);
+    }
+}
+
+.schedule-swipe-hint__arrow--left {
+    animation-name: swipeHintPulseLeft;
+}
+
+@keyframes swipeHintPulseLeft {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateX(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(-3px);
+    }
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 400px) {
+    .schedule-nav {
+        gap: var(--spacing-xs);
+    }
+
+    .schedule-nav__title {
+        font-size: var(--fs-xs);
+    }
+
+    .schedule-nav__title-pill {
+        padding: 3px var(--spacing-md);
+        padding-left: 18px;
+    }
+
+    .schedule-nav__badge-icon {
+        width: 18px;
+        height: 18px;
+        left: -4px;
+        top: -4px;
+        font-size: 9px;
+    }
+
+    .schedule-nav__subtitle {
+        font-size: 11px;
+    }
+
+    .schedule-nav__btn {
+        width: 32px;
+        height: 30px;
+        font-size: var(--fs-md);
+    }
+
+    .schedule-nav__today {
+        width: 30px;
+        height: 30px;
+        font-size: var(--fs-md);
+    }
+
+    .schedule-prayer-row {
+        padding: 10px var(--spacing-sm);
+    }
+
+    .schedule-prayer-row__icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .schedule-prayer-row__name {
+        font-size: var(--fs-xs);
+    }
+
+    .schedule-prayer-row__time {
+        font-size: var(--fs-sm);
+    }
+
+    .schedule-actions {
+        gap: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 360px) {
+    .kiblat-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        padding-left: 24px;
+        min-height: 34px;
+    }
+
+    .kiblat-btn__label {
+        font-size: var(--fs-xs);
+    }
+}
+
+@media (max-width: 340px) {
+    .schedule-nav {
+        padding: var(--spacing-sm);
+    }
+
+    .schedule-nav__title {
+        font-size: 11px;
+    }
+
+    .schedule-nav__btn {
+        width: 28px;
+        height: 28px;
+        font-size: var(--fs-sm);
+    }
+
+    .schedule-nav__today {
+        width: 28px;
+        height: 28px;
+        font-size: var(--fs-sm);
+    }
+
+    .schedule-prayer-row__name {
+        font-size: 11px;
+    }
+
+    .schedule-prayer-row__time {
+        font-size: var(--fs-xs);
+    }
+}

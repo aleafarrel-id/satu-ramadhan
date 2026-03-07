@@ -1,0 +1,29 @@
+{
+  "name": "satu-ramadhan",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/app": "^8.0.1",
+    "@capacitor/cli": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/geolocation": "^8.1.0",
+    "@capacitor/haptics": "^8.0.1",
+    "@capacitor/local-notifications": "^8.0.1",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.1",
+    "cordova-plugin-request-location-accuracy": "^2.3.0",
+    "cordova.plugins.diagnostic": "^7.2.10"
+  }
+}

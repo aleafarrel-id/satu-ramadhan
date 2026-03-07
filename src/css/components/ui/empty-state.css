@@ -1,0 +1,90 @@
+/* =============================================
+   Empty State / Error State Component
+   Reusable across pages (Home, Schedule, etc.)
+   ============================================= */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.empty-state__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--clr-bg-card);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    max-width: 400px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+}
+
+.empty-state__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--clr-primary-a20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--clr-primary-a30);
+}
+
+.empty-state__icon i {
+    font-size: 28px;
+    color: var(--clr-info);
+}
+
+.empty-state__icon--warning i {
+    color: var(--clr-accent-500);
+}
+
+.empty-state__title {
+    margin: 0 0 var(--spacing-xs);
+    color: var(--clr-text-primary);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+}
+
+.empty-state__desc {
+    margin: 0 0 var(--spacing-lg);
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-relaxed);
+    max-width: 280px;
+}
+
+.empty-state__btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.empty-state__btn-icon {
+    font-size: var(--icon-lg);
+}
+
+.empty-state__btn-label {
+    font-weight: var(--fw-medium);
+}
+
+/* ── Compact variant (no card wrapper, e.g. home no-location) ── */
+
+.empty-state--compact {
+    padding: 0;
+    margin-top: var(--spacing-md);
+}
+
+.empty-state--compact .empty-state__desc {
+    margin-bottom: 0;
+}

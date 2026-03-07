@@ -1,0 +1,133 @@
+/* =============================================
+   Qibla Info Card Component
+   ============================================= */
+
+.qibla-info-card {
+    margin-top: var(--spacing-md);
+}
+
+.qibla-info-card__header {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-regular);
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-sm);
+}
+
+.qibla-info-card__content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.qibla-info-card__icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: var(--clr-accent-a40);
+    border: 2px solid var(--clr-accent-a40);
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.qibla-info-card__icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.qibla-info-card__badges {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+}
+
+/* Base Badge Style */
+.qibla-badge {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    padding-left: 24px;
+    min-height: 36px;
+    flex: 1;
+    /* allow badges to grow equally */
+    min-width: 0;
+}
+
+/* Filled Badge (API Target Qibla) */
+.qibla-badge--filled {
+    background: linear-gradient(135deg, var(--clr-accent-a25), var(--clr-accent-a15));
+    border: 1px solid var(--clr-accent-a40);
+}
+
+.qibla-badge--filled .qibla-badge__value {
+    color: var(--clr-accent-400);
+}
+
+.qibla-badge--filled .qibla-badge__icon-circle {
+    background: var(--clr-primary-600);
+    border: 2px solid var(--clr-accent-400);
+    color: var(--clr-accent-300);
+}
+
+/* Outline Badge (Device Actual Angle) */
+.qibla-badge--outline {
+    background: transparent;
+    border: 1px solid var(--clr-accent-a20);
+}
+
+.qibla-badge--outline .qibla-badge__value {
+    color: var(--clr-text-primary);
+}
+
+.qibla-badge--outline .qibla-badge__icon-circle {
+    background: var(--clr-primary-800);
+    border: 1px solid var(--clr-text-muted);
+    color: var(--clr-text-secondary);
+}
+
+/* Common Icon Circle */
+.qibla-badge__icon-circle {
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.qibla-badge__value {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.qibla-info-card__fallback {
+    display: none;
+    margin-top: var(--spacing-sm);
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    text-align: center;
+    line-height: var(--lh-normal);
+}
+
+.qibla-info-card__fallback.is-visible {
+    display: block;
+}
+
+.qibla-badge--outline.is-hidden {
+    display: none;
+}

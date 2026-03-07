@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#1A2B3A" />
+    <meta name="description"
+        content="Satu Ramadhan — Aplikasi waktu sholat dan jadwal puasa Ramadhan untuk Indonesia" />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/src/css/main.css">
+    <link rel="stylesheet" href="/src/assets/vendor/boxicons/css/boxicons.min.css" />
+    <title>Satu Ramadhan</title>
+</head>
+
+<body style="background: #0a3540">
+    <div id="app">
+        <!-- Splash Screen -->
+        <div class="splash-screen" id="splash-screen">
+            <div class="splash-content">
+                <h1 class="splash-title">Satu Ramadhan</h1>
+                <p class="splash-subtitle" id="splash-subtitle">by Alea Farrel</p>
+                <div class="splash-logo-wrapper">
+                    <img src="/favicon/favicon.png" alt="Satu Ramadhan" class="splash-logo" />
+                </div>
+            </div>
+            <div class="splash-footer">
+                <div class="splash-loading-bar">
+                    <div class="splash-loading-fill" id="splash-loading-fill"></div>
+                </div>
+                <p class="splash-loading-text">Memuat Data Aplikasi</p>
+                <p class="splash-version" id="splash-version">v 1.0.0</p>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="app-container" id="app-container">
+            <!-- Header -->
+            <header class="app-header" id="app-header"></header>
+
+            <!-- Scrollable Content Area -->
+            <main class="app-content" id="app-content">
+                <div class="page active" id="page-home"></div>
+                <div class="page" id="page-schedule"></div>
+                <div class="page" id="page-compass"></div>
+                <div class="page" id="page-settings"></div>
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav" id="bottom-nav"></nav>
+        </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

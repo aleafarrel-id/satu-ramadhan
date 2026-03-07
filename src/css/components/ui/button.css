@@ -1,0 +1,86 @@
+/* =============================================
+   Button Component
+   ============================================= */
+
+.btn {
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-xs);
+   padding: var(--spacing-xs) var(--spacing-sm);
+   border-radius: var(--radius-pill);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-semibold);
+   transition: all var(--transition-fast);
+   min-height: var(--size-touch-target);
+   min-width: var(--size-touch-target);
+   justify-content: center;
+   border: none;
+   cursor: pointer;
+}
+
+.btn--outline {
+   border: 1px solid var(--clr-primary-a30);
+   color: var(--clr-text-primary);
+   background: var(--clr-primary-a10);
+}
+
+.btn--outline:active {
+   background: var(--clr-primary-a20);
+}
+
+.btn--gold {
+   background: var(--clr-accent-500);
+   color: var(--clr-text-dark);
+   font-weight: var(--fw-semibold);
+}
+
+.btn--gold:active {
+   background: var(--clr-accent-700);
+}
+
+.btn--gold:hover {
+   box-shadow: var(--shadow-glow);
+   transform: translateY(-1px);
+}
+
+.btn i {
+   font-size: var(--icon-sm);
+   display: inline-block;
+   line-height: 1;
+}
+
+.btn span {
+   line-height: 1.2;
+   display: inline-block;
+}
+
+.btn--accent-outline {
+   border: 1px solid var(--clr-accent-a30);
+   color: var(--clr-accent-500);
+   background: var(--clr-accent-a10);
+   font-size: var(--fs-xs);
+   min-height: 36px;
+   padding: var(--spacing-xs) var(--spacing-md);
+}
+
+.btn--accent-outline i {
+   color: var(--clr-accent-500);
+}
+
+.btn--accent-outline:active {
+   background: var(--clr-accent-a25);
+}
+
+@media (max-width: 360px) {
+   .btn {
+      font-size: var(--fs-2xs);
+      padding: 2px var(--spacing-xs);
+      min-height: 32px;
+      min-width: 32px;
+   }
+
+   .btn--accent-outline {
+      min-height: 28px;
+      padding: 2px var(--spacing-sm);
+   }
+}

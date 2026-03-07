@@ -1,0 +1,185 @@
+/* =============================================
+   Compass UI Component
+   Structured and styled complex compass
+   ============================================= */
+
+.compass-outer-wrapper {
+    margin: var(--sp-8) 0;
+}
+
+.compass-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    --heading: 0deg;
+    --qibla-angle: 0deg;
+}
+
+.compass-dial-wrapper {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    transform: rotate(calc(-1 * var(--heading)));
+    will-change: transform;
+}
+
+/* Base dark circle for dial */
+.compass-dial {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: var(--clr-primary-900);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Ticks container */
+.compass-ticks {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+.compass-tick {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: 50% 130px;
+    background-color: var(--clr-white-a30);
+}
+
+.compass-tick.major {
+    width: 2px;
+    height: 10px;
+    margin-left: -1px;
+}
+
+.compass-tick.minor {
+    width: 1px;
+    height: 6px;
+    margin-left: -0.5px;
+}
+
+/* North tick */
+.compass-tick.north {
+    background-color: var(--clr-danger);
+}
+
+/* Compass Labels (U, T, S, B) */
+.compass-label {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--clr-accent-500);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.north-label {
+    color: var(--clr-danger);
+}
+
+/* Inner lighter circle */
+.compass-inner {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--clr-primary-400);
+    border-radius: 50%;
+    z-index: 5;
+    box-shadow:
+        0 8px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+.compass-needle {
+    position: absolute;
+    width: 30px;
+    height: 180px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CSS shapes for complex needle */
+.needle-top {
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 90px solid var(--clr-accent-600);
+    position: absolute;
+    bottom: 50%;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
+.needle-bottom {
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 90px solid var(--clr-primary-900);
+    position: absolute;
+    top: 50%;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
+.needle-center {
+    width: 12px;
+    height: 12px;
+    background-color: var(--clr-primary-900);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+}
+
+.qibla-indicator-wrapper {
+    position: absolute;
+    inset: -2rem;
+    border-radius: 50%;
+    transform: rotate(var(--qibla-angle));
+    z-index: 20;
+    transition: transform 0.3s ease-out;
+}
+
+.qibla-icon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: var(--clr-accent-500);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px var(--clr-black-a30);
+    border: 2px solid var(--clr-accent-200);
+}
+
+.qibla-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}

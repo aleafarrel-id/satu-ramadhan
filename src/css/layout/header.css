@@ -1,0 +1,39 @@
+/* =============================================
+   Header Bar
+   ============================================= */
+
+.app-header {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: var(--spacing-md);
+   padding-top: calc(var(--spacing-md) + env(safe-area-inset-top));
+}
+
+.header-logo {
+   width: var(--size-logo);
+   height: var(--size-logo);
+   object-fit: contain;
+}
+
+.header-right {
+   text-align: right;
+}
+
+.header-clock {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xl);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+   line-height: var(--lh-none);
+   letter-spacing: var(--ls-tight);
+   font-variant-numeric: tabular-nums;
+}
+
+.header-date {
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-regular);
+   color: var(--clr-text-secondary);
+   margin-top: var(--spacing-xs);
+   line-height: var(--lh-relaxed);
+}

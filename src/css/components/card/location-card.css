@@ -1,0 +1,66 @@
+/* =============================================
+   Location Card Component
+   ============================================= */
+
+.location-card {
+    margin-bottom: var(--spacing-md);
+}
+
+.location-card__header {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-regular);
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+}
+
+.location-card__row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.location-card__icon {
+    font-size: var(--icon-lg);
+    flex-shrink: 0;
+}
+
+.location-card__icon--muted {
+    color: var(--clr-text-muted);
+}
+
+.location-card__icon--info {
+    color: var(--clr-info);
+}
+
+.location-card__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.location-card__name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-secondary);
+}
+
+.location-card__province {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-500);
+}
+
+.location-card__hint {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    margin-top: 2px;
+}
+
+.location-card__action {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}

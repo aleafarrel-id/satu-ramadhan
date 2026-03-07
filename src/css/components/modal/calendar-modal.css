@@ -1,0 +1,231 @@
+/* =============================================
+   Calendar Modal Component
+   Monthly Ramadhan calendar grid overlay
+   ============================================= */
+
+/* ── Overlay Backdrop ── */
+.cal-modal-overlay {
+   position: fixed;
+   inset: 0;
+   z-index: var(--z-modal);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: var(--spacing-lg);
+   background: var(--clr-bg-cal-overlay);
+   backdrop-filter: blur(8px);
+   -webkit-backdrop-filter: blur(8px);
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.cal-modal-overlay.active {
+   opacity: 1;
+   visibility: visible;
+}
+
+/* ── Modal Card ── */
+.cal-modal {
+   width: 100%;
+   max-width: 430px;
+   background: var(--gradient-cal-bg);
+   border: 1px solid var(--clr-primary-a30);
+   border-radius: var(--radius-xl);
+   padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+   box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 40px var(--clr-primary-a10),
+      inset 0 1px 0 var(--clr-white-a05);
+   transform: translateY(24px) scale(0.95);
+   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cal-modal-overlay.active .cal-modal {
+   transform: translateY(0) scale(1);
+}
+
+/* ── Header ── */
+.cal-modal__header {
+   text-align: center;
+   margin-bottom: var(--spacing-lg);
+}
+
+.cal-modal__title {
+   font-family: var(--ff-decorative);
+   font-size: var(--fs-xl);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+   line-height: var(--lh-snug);
+   margin-bottom: var(--spacing-xs);
+}
+
+.cal-modal__subtitle {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-medium);
+   color: var(--clr-text-muted);
+   letter-spacing: var(--ls-tight);
+}
+
+/* ── 7-Column Grid ── */
+.cal-modal__grid {
+   display: grid;
+   width: 100%;
+   grid-template-columns: repeat(7, 1fr);
+   gap: var(--sp-2);
+}
+
+/* ── Weekday Headers ── */
+.cal-modal__weekday {
+   text-align: center;
+   font-family: var(--ff-primary);
+   font-size: 11px;
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+   letter-spacing: var(--ls-wide);
+   padding-bottom: var(--spacing-xs);
+}
+
+/* ── Friday (green) & Sunday (red) column colors ── */
+.cal-modal__weekday[data-weekday="4"] {
+   color: var(--clr-cal-friday);
+}
+
+.cal-modal__weekday[data-weekday="6"] {
+   color: var(--clr-cal-sunday);
+}
+
+.cal-modal__cell[data-weekday="4"] .cal-modal__hijri {
+   color: var(--clr-cal-friday);
+}
+
+.cal-modal__cell[data-weekday="6"] .cal-modal__hijri {
+   color: var(--clr-cal-sunday);
+}
+
+/* Preserve accent color on today/selected even if Friday/Sunday */
+.cal-modal__cell--today[data-weekday="4"] .cal-modal__hijri,
+.cal-modal__cell--today[data-weekday="6"] .cal-modal__hijri {
+   color: var(--clr-accent-400);
+}
+
+/* ── Day Cell ── */
+.cal-modal__cell {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 2px;
+   aspect-ratio: 1;
+   border-radius: var(--radius-md);
+   cursor: pointer;
+   background: var(--clr-white-a05);
+   border: 1px solid transparent;
+   transition: all var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+}
+
+.cal-modal__cell--empty {
+   background: transparent;
+   cursor: default;
+}
+
+/* Hover / active */
+.cal-modal__cell:not(.cal-modal__cell--empty):hover {
+   background: var(--clr-primary-a25);
+   border-color: var(--clr-primary-a30);
+}
+
+.cal-modal__cell:not(.cal-modal__cell--empty):active {
+   transform: scale(0.93);
+}
+
+/* ── Today highlight ── */
+.cal-modal__cell--today {
+   background: var(--clr-accent-a20);
+   border-color: var(--clr-accent-a40);
+   box-shadow: 0 0 8px var(--clr-accent-a20);
+}
+
+.cal-modal__cell--today .cal-modal__hijri {
+   color: var(--clr-accent-400);
+}
+
+.cal-modal__cell--today .cal-modal__greg {
+   color: var(--clr-accent-400);
+}
+
+/* ── Selected (currently viewed) highlight ── */
+.cal-modal__cell--selected {
+   background: linear-gradient(135deg, var(--clr-primary-a30), var(--clr-primary-a20));
+   border-color: var(--clr-primary-400);
+   box-shadow: 0 0 10px var(--clr-primary-a20);
+}
+
+.cal-modal__cell--selected .cal-modal__hijri {
+   color: var(--clr-primary-200);
+}
+
+/* Selected + today combo — today wins color */
+.cal-modal__cell--today.cal-modal__cell--selected {
+   background: linear-gradient(135deg, var(--clr-accent-a30), var(--clr-accent-a20));
+   border-color: var(--clr-accent-500);
+   box-shadow: 0 0 12px var(--clr-accent-a30);
+}
+
+.cal-modal__cell--today.cal-modal__cell--selected .cal-modal__hijri {
+   color: var(--clr-accent-400);
+}
+
+/* ── Hijri Day Number (large, prominent) ── */
+.cal-modal__hijri {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-base);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   line-height: var(--lh-none);
+}
+
+/* ── Gregorian Date (small, muted) ── */
+.cal-modal__greg {
+   font-family: var(--ff-primary);
+   font-size: 9px;
+   font-weight: var(--fw-medium);
+   color: var(--clr-text-muted);
+   line-height: var(--lh-none);
+   white-space: nowrap;
+   opacity: 0.7;
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 360px) {
+   .cal-modal-overlay {
+      padding: var(--spacing-xs);
+   }
+
+   .cal-modal {
+      max-width: calc(100vw - 32px);
+      padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+   }
+
+   .cal-modal__grid {
+      gap: var(--sp-1);
+   }
+
+   .cal-modal__hijri {
+      font-size: var(--fs-sm);
+   }
+
+   .cal-modal__greg {
+      font-size: 7px;
+   }
+
+   .cal-modal__title {
+      font-size: var(--fs-lg);
+   }
+}

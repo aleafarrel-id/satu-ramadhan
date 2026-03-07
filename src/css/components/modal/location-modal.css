@@ -1,0 +1,174 @@
+/* =============================================
+   Location Modal Component
+   GPS / Manual location selection dialog
+   ============================================= */
+
+/* ── Overlay Backdrop ── */
+.location-modal-overlay {
+   position: fixed;
+   inset: 0;
+   z-index: var(--z-modal);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: var(--spacing-lg);
+   background: rgba(4, 26, 32, 0.85);
+   backdrop-filter: blur(8px);
+   -webkit-backdrop-filter: blur(8px);
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.location-modal-overlay.active {
+   opacity: 1;
+   visibility: visible;
+}
+
+/* ── Modal Card ── */
+.location-modal {
+   width: 100%;
+   max-width: 310px;
+   background: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+   border: 1px solid var(--clr-primary-a30);
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-lg) var(--spacing-md);
+   text-align: center;
+   box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 40px var(--clr-primary-a10),
+      inset 0 1px 0 var(--clr-white-a05);
+   transform: translateY(24px) scale(0.95);
+   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.location-modal-overlay.active .location-modal {
+   transform: translateY(0) scale(1);
+}
+
+/* ── GPS Icon Circle ── */
+.location-modal__icon {
+   width: 56px;
+   height: 56px;
+   margin: 0 auto var(--spacing-md);
+   border-radius: var(--radius-full);
+   background: linear-gradient(135deg, var(--clr-accent-a20) 0%, var(--clr-accent-a10) 100%);
+   border: 2px solid var(--clr-accent-a30);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   position: relative;
+}
+
+.location-modal__icon i {
+   font-size: 26px;
+   color: var(--clr-accent-500);
+}
+
+/* Subtle pulse ring */
+.location-modal__icon::after {
+   content: '';
+   position: absolute;
+   inset: -6px;
+   border-radius: var(--radius-full);
+   border: 1.5px solid var(--clr-accent-a25);
+   animation: location-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes location-pulse {
+
+   0%,
+   100% {
+      transform: scale(1);
+      opacity: 0.6;
+   }
+
+   50% {
+      transform: scale(1.08);
+      opacity: 0.2;
+   }
+}
+
+/* ── Text Content ── */
+.location-modal__title {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-md);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   margin: 0 0 var(--spacing-sm);
+   line-height: var(--lh-snug);
+}
+
+.location-modal__desc {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-regular);
+   color: var(--clr-text-secondary);
+   line-height: var(--lh-normal);
+   margin: var(--spacing-lg) 0;
+}
+
+/* ── Buttons ── */
+.location-modal__buttons {
+   display: flex;
+   flex-direction: column;
+   gap: var(--spacing-md);
+}
+
+/* Primary: Akses Lokasi (gold) */
+.location-modal__btn-gps {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: var(--spacing-xs);
+   width: 100%;
+   padding: 10px var(--spacing-sm);
+   border: none;
+   border-radius: var(--radius-full);
+   background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
+   color: var(--clr-text-dark);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-bold);
+   cursor: pointer;
+   transition: all var(--transition-fast);
+   box-shadow: 0 4px 12px var(--clr-accent-a30);
+}
+
+.location-modal__btn-gps:active {
+   transform: scale(0.97);
+   background: linear-gradient(135deg, var(--clr-accent-700) 0%, var(--clr-accent-600) 100%);
+}
+
+.location-modal__btn-gps i {
+   font-size: var(--icon-md);
+}
+
+/* Secondary: Pilih Manual (outline) */
+.location-modal__btn-manual {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: var(--spacing-xs);
+   width: 100%;
+   padding: 10px var(--spacing-sm);
+   border: 1px solid var(--clr-primary-a30);
+   border-radius: var(--radius-full);
+   background: var(--clr-primary-a10);
+   color: var(--clr-text-secondary);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-semibold);
+   cursor: pointer;
+   transition: all var(--transition-fast);
+}
+
+.location-modal__btn-manual:active {
+   transform: scale(0.97);
+   background: var(--clr-primary-a20);
+}
+
+.location-modal__btn-manual i {
+   font-size: var(--icon-md);
+   color: var(--clr-text-muted);
+}

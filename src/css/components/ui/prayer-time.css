@@ -1,0 +1,409 @@
+/* =============================================
+   Prayer Time Components
+   ============================================= */
+
+/* Section title */
+.schedule-title {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-lg);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   margin-top: var(--spacing-lg);
+   margin-bottom: var(--spacing-md);
+   padding-left: var(--spacing-sm);
+}
+
+/* Featured / active prayer card */
+.prayer-featured {
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-md);
+   margin-bottom: 0;
+}
+
+.prayer-featured__icon {
+   width: 64px;
+   height: 64px;
+   color: var(--clr-accent-500);
+   flex-shrink: 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.prayer-featured__icon svg {
+   width: 100%;
+   height: 100%;
+}
+
+.prayer-featured__info {
+   flex: 1;
+}
+
+.prayer-featured__name {
+   font-family: 'Amiri', serif;
+   font-size: var(--fs-lg);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+   line-height: var(--lh-snug);
+}
+
+.prayer-featured__time {
+   font-size: var(--fs-lg);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+}
+
+.prayer-featured__badge {
+   background: var(--clr-accent-a10);
+   border: 1px solid var(--clr-accent-a30);
+   color: var(--clr-accent-500);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-semibold);
+   padding: var(--spacing-xs) var(--spacing-md);
+   border-radius: var(--radius-pill);
+   white-space: nowrap;
+   min-height: 36px;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+}
+
+/* Schedule bottom grid */
+.schedule-bottom {
+   display: grid;
+   grid-template-columns: 1fr 1fr 1fr 1fr;
+   grid-template-rows: auto 1fr;
+   gap: var(--spacing-md);
+   min-height: 280px;
+}
+
+.tube--tall {
+   grid-column: 1;
+   grid-row: 1 / 3;
+}
+
+.schedule-org-cell {
+   grid-column: 2 / 5;
+   grid-row: 1;
+   display: flex;
+   align-items: center;
+   justify-content: stretch;
+}
+
+/* =============================================
+   Individual tube
+   ============================================= */
+.tube {
+   --tube-bg: #1E4152;
+   position: relative;
+   background: var(--tube-bg);
+   border-radius: var(--radius-lg);
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: var(--spacing-md) var(--spacing-xs);
+   overflow: hidden;
+   gap: var(--spacing-sm);
+   min-height: 200px;
+   border: 1px solid var(--clr-primary-a20);
+}
+
+/* =============================================
+   Liquid fill container
+   ============================================= */
+.tube__liquid {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   height: var(--fill-percent, 0%);
+   transform: translateY(0);
+   opacity: 1;
+   overflow: visible;
+   /* Allows waves to sit on top without clipping */
+   z-index: 1;
+   pointer-events: none;
+   transition: height 2s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 2s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 1.5s ease-out;
+}
+
+/* Liquid gradient body with rounded bottom corners */
+.tube__liquid-body {
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: linear-gradient(to top,
+         var(--clr-liquid-deep) 0%,
+         var(--clr-liquid-body) 100%);
+   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+   overflow: hidden;
+}
+
+/* =============================================
+   SVG Waves
+   ============================================= */
+.tube__wave {
+   position: absolute;
+   top: -23px;
+   /* Align precisely with top of liquid body (24px height - 1px overlap) */
+   left: 0;
+   width: 200%;
+   height: 24px;
+   z-index: 2;
+   animation: wave-slide 3s linear infinite;
+}
+
+.tube__wave svg {
+   width: 100%;
+   height: 100%;
+   display: block;
+}
+
+/* Back wave slightly lower and slower */
+.tube__wave--back {
+   top: -21px;
+   animation: wave-slide 4.5s linear infinite;
+   z-index: 1;
+}
+
+@keyframes wave-slide {
+   0% {
+      transform: translateX(0);
+   }
+
+   100% {
+      transform: translateX(-50%);
+   }
+
+   /* Travels exactly one period (half the 200% width) */
+}
+
+/* =============================================
+   Bubble particles
+   ============================================= */
+.tube__bubbles {
+   position: absolute;
+   inset: 0;
+   z-index: 3;
+   pointer-events: none;
+   overflow: hidden;
+}
+
+.tube__bubble {
+   position: absolute;
+   bottom: -10px;
+   border-radius: 50%;
+   background: radial-gradient(circle at 30% 30%,
+         rgba(255, 245, 200, 0.7),
+         var(--clr-liquid-bubble) 60%,
+         transparent 100%);
+   opacity: 0;
+   animation: bubble-rise linear infinite;
+}
+
+.tube__bubble:nth-child(1) {
+   width: 5px;
+   height: 5px;
+   left: 20%;
+   animation-duration: 4s;
+   animation-delay: 0s;
+}
+
+.tube__bubble:nth-child(2) {
+   width: 3px;
+   height: 3px;
+   left: 55%;
+   animation-duration: 5s;
+   animation-delay: 1.2s;
+}
+
+.tube__bubble:nth-child(3) {
+   width: 4px;
+   height: 4px;
+   left: 75%;
+   animation-duration: 4.5s;
+   animation-delay: 2.5s;
+}
+
+.tube__bubble:nth-child(4) {
+   width: 3px;
+   height: 3px;
+   left: 35%;
+   animation-duration: 5.5s;
+   animation-delay: 3.8s;
+}
+
+@keyframes bubble-rise {
+   0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+   }
+
+   10% {
+      opacity: 0.7;
+   }
+
+   50% {
+      transform: translateY(-60px) translateX(4px);
+      opacity: 0.5;
+   }
+
+   80% {
+      opacity: 0.3;
+   }
+
+   100% {
+      transform: translateY(-140px) translateX(-3px);
+      opacity: 0;
+   }
+}
+
+/* =============================================
+   Active tube styling
+   ============================================= */
+.tube.active {
+   --tube-bg: #163845;
+   border-color: var(--clr-primary-a30);
+}
+
+.tube.active .tube__name {
+   color: var(--clr-text-primary);
+}
+
+.tube.active .tube__time {
+   color: #ffffff;
+   font-weight: var(--fw-bold);
+   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.tube.active .tube__icon {
+   color: var(--clr-text-primary);
+}
+
+/* Passed tube — dimmed, no liquid */
+.tube.passed {
+   opacity: 0.6;
+}
+
+/* Inactive tubes — smoothly hide liquid by sinking it below the overflow box */
+.tube:not(.active) .tube__liquid {
+   height: 0% !important;
+   transform: translateY(35px);
+   /* Hide the 24px wave under the parent's overflow:hidden */
+   opacity: 0;
+}
+
+/* =============================================
+   Tube content — above liquid layer
+   ============================================= */
+.tube__icon {
+   width: 28px;
+   height: 28px;
+   color: var(--clr-text-muted);
+   flex-shrink: 0;
+   position: relative;
+   z-index: 5;
+}
+
+.tube__icon svg {
+   width: 100%;
+   height: 100%;
+}
+
+.tube__name {
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-medium);
+   color: var(--clr-text-muted);
+   text-align: center;
+   line-height: var(--lh-snug);
+   position: relative;
+   z-index: 5;
+}
+
+.tube__time {
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-primary);
+   text-align: center;
+   position: relative;
+   z-index: 5;
+}
+
+/* Stacked tubes */
+.tube--stacked {
+   justify-content: space-evenly;
+   padding: var(--spacing-sm) var(--spacing-xs);
+}
+
+.tube__stack-item {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 3px;
+   position: relative;
+   z-index: 5;
+}
+
+.tube__stack-divider {
+   width: 60%;
+   height: 1px;
+   background: var(--clr-white-a15);
+   position: relative;
+   z-index: 5;
+}
+
+/* =============================================
+   Responsive — Small screens (≤360px)
+   ============================================= */
+@media (max-width: 360px) {
+   .prayer-featured {
+      gap: var(--spacing-sm);
+   }
+
+   .prayer-featured__icon {
+      width: 44px;
+      height: 44px;
+   }
+
+   .prayer-featured__name {
+      font-size: var(--fs-sm);
+   }
+
+   .prayer-featured__time {
+      font-size: var(--fs-sm);
+   }
+
+   .prayer-featured__badge {
+      font-size: var(--fs-2xs);
+      padding: 2px var(--spacing-sm);
+      min-height: 28px;
+   }
+
+   .schedule-bottom {
+      gap: var(--spacing-sm);
+      min-height: 220px;
+   }
+
+   .tube {
+      padding: var(--spacing-sm) 2px;
+      min-height: 160px;
+   }
+
+   .tube__icon {
+      width: 22px;
+      height: 22px;
+   }
+
+   .tube__name {
+      font-size: 0.5625rem;
+   }
+
+   .tube__time {
+      font-size: var(--fs-2xs);
+   }
+}

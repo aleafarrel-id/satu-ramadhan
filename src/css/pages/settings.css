@@ -1,0 +1,235 @@
+/* =============================================
+   Settings Page
+   ============================================= */
+
+.settings-page {
+   padding: var(--spacing-sm) 0;
+   animation: fadeIn var(--transition-normal);
+   padding-bottom: 100px;
+   /* space for bottom nav */
+}
+
+.settings-title {
+   font-size: var(--fs-lg);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   margin-bottom: var(--spacing-md);
+   margin-left: var(--spacing-md);
+   font-family: var(--font-primary);
+}
+
+.settings-card {
+   display: flex;
+   flex-direction: column;
+   padding: 0;
+   overflow: hidden;
+   background: var(--clr-bg-card);
+   backdrop-filter: blur(10px);
+   -webkit-backdrop-filter: blur(10px);
+   border-top: 1px solid var(--clr-border-light);
+   border-bottom: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-lg);
+   box-shadow: none;
+}
+
+.settings-item {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: var(--spacing-md) var(--spacing-lg);
+   transition: background var(--transition-fast);
+   min-height: 60px;
+}
+
+.settings-item:active {
+   background: var(--clr-white-a05);
+}
+
+.settings-item-info {
+   display: flex;
+   align-items: center;
+   color: var(--clr-text-secondary);
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-medium);
+}
+
+.settings-item-info i {
+   font-size: var(--icon-md);
+   color: var(--clr-accent-400);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 24px;
+   height: 24px;
+   margin-right: var(--spacing-sm);
+}
+
+.settings-divider {
+   height: 1px;
+   background: var(--clr-border-light);
+   margin: 0 var(--spacing-lg);
+}
+
+.settings-version {
+   text-align: center;
+   margin-top: var(--spacing-xl);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+}
+
+/* =============================================
+   Settings Location Card
+   ============================================= */
+
+.settings-loc-card {
+   background: var(--clr-bg-card);
+   backdrop-filter: blur(10px);
+   -webkit-backdrop-filter: blur(10px);
+   border-top: 1px solid var(--clr-border-light);
+   border-bottom: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-lg);
+   margin-bottom: var(--spacing-lg);
+   box-shadow: none;
+}
+
+.settings-loc-header {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: var(--spacing-sm);
+   margin-bottom: var(--spacing-md);
+}
+
+.settings-loc-title {
+   font-family: var(--font-primary);
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-regular);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+   margin-bottom: var(--spacing-xs);
+}
+
+.settings-loc-icon-wrapper {
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-sm);
+}
+
+.settings-loc-map-icon {
+   font-size: var(--icon-lg);
+   color: var(--clr-info);
+   flex-shrink: 0;
+}
+
+.settings-loc-status-wrapper {
+   flex: 1;
+   min-width: 0;
+   display: flex;
+   align-items: center;
+}
+
+.settings-loc-body {
+   flex: 1;
+   min-width: 0;
+}
+
+.settings-loc-regency {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-secondary);
+}
+
+.settings-loc-province {
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+}
+
+.settings-loc-status {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-secondary);
+   flex: 1;
+   min-width: 0;
+}
+
+.settings-loc-icon {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: var(--clr-info);
+   font-size: var(--icon-lg);
+}
+
+.settings-loc-desc {
+   font-size: var(--fs-xs);
+   color: var(--clr-text-secondary);
+   line-height: var(--lh-normal);
+   margin-bottom: var(--spacing-lg);
+}
+
+.settings-loc-actions {
+   display: flex;
+   flex-direction: column;
+   gap: var(--spacing-md);
+}
+
+.settings-loc-actions .btn {
+   width: 100%;
+   border-radius: var(--radius-full);
+   font-family: var(--font-primary);
+   font-weight: var(--fw-bold);
+   font-size: var(--fs-xs);
+   justify-content: center;
+}
+
+.settings-loc-actions .btn--gold {
+   background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
+   box-shadow: 0 4px 12px var(--clr-accent-a30);
+   color: var(--clr-text-dark);
+   border: none;
+}
+
+.settings-loc-actions .btn--gold:active {
+   background: linear-gradient(135deg, var(--clr-accent-700) 0%, var(--clr-accent-600) 100%);
+   transform: scale(0.97);
+}
+
+.settings-loc-actions .btn--outline {
+   border: 1px solid var(--clr-primary-a30);
+   background: var(--clr-primary-a10);
+   color: var(--clr-text-secondary);
+}
+
+.settings-loc-actions .btn--outline:active {
+   background: var(--clr-primary-a20);
+   transform: scale(0.97);
+}
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(10px);
+   }
+
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}
+
+.settings-loc-map-icon.unset {
+   color: var(--clr-text-muted);
+}
+
+@media (max-width: 360px) {
+   .settings-item-info {
+      font-size: var(--fs-xs);
+   }
+
+   .settings-item-info i {
+      margin-right: var(--spacing-xs);
+   }
+}

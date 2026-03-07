@@ -1,0 +1,230 @@
+[
+  {
+    "id": "11",
+    "name": "Aceh",
+    "latitude": 3.7562836384702747,
+    "longitude": 96.7094796338768
+  },
+  {
+    "id": "12",
+    "name": "Sumatera Utara",
+    "latitude": 1.5936998949446735,
+    "longitude": 98.72031097451347
+  },
+  {
+    "id": "13",
+    "name": "Sumatera Barat",
+    "latitude": -1.1829745945654133,
+    "longitude": 100.2128680258891
+  },
+  {
+    "id": "14",
+    "name": "Riau",
+    "latitude": 0.6708279595423952,
+    "longitude": 101.98477187788872
+  },
+  {
+    "id": "15",
+    "name": "Jambi",
+    "latitude": -1.7002313288677537,
+    "longitude": 102.74603302220002
+  },
+  {
+    "id": "16",
+    "name": "Sumatera Selatan",
+    "latitude": -3.2457679424716166,
+    "longitude": 104.07756137252838
+  },
+  {
+    "id": "17",
+    "name": "Bengkulu",
+    "latitude": -3.8289490209356707,
+    "longitude": 102.5602348410858
+  },
+  {
+    "id": "18",
+    "name": "Lampung",
+    "latitude": -5.036844836179367,
+    "longitude": 104.93169121615307
+  },
+  {
+    "id": "19",
+    "name": "Kepulauan Bangka Belitung",
+    "latitude": -2.5403549058248793,
+    "longitude": 106.7050019818635
+  },
+  {
+    "id": "21",
+    "name": "Kepulauan Riau",
+    "latitude": 1.364906520211367,
+    "longitude": 105.20059844688556
+  },
+  {
+    "id": "31",
+    "name": "DKI Jakarta",
+    "latitude": -6.210465590999952,
+    "longitude": 106.8287555112813
+  },
+  {
+    "id": "32",
+    "name": "Jawa Barat",
+    "latitude": -6.831097688857099,
+    "longitude": 107.60349331067535
+  },
+  {
+    "id": "33",
+    "name": "Jawa Tengah",
+    "latitude": -7.253528976506126,
+    "longitude": 110.24882299490739
+  },
+  {
+    "id": "34",
+    "name": "Daerah Istimewa Yogyakarta",
+    "latitude": -7.873856819540935,
+    "longitude": 110.45416470668857
+  },
+  {
+    "id": "35",
+    "name": "Jawa Timur",
+    "latitude": -7.522749656412298,
+    "longitude": 113.23645662240597
+  },
+  {
+    "id": "36",
+    "name": "Banten",
+    "latitude": -6.50592313122275,
+    "longitude": 105.93762599342489
+  },
+  {
+    "id": "51",
+    "name": "Bali",
+    "latitude": -8.452141885873905,
+    "longitude": 115.14578289034462
+  },
+  {
+    "id": "52",
+    "name": "Nusa Tenggara Barat",
+    "latitude": -8.596593571518913,
+    "longitude": 117.66909907523753
+  },
+  {
+    "id": "53",
+    "name": "Nusa Tenggara Timur",
+    "latitude": -9.138002279131353,
+    "longitude": 122.34425517602658
+  },
+  {
+    "id": "61",
+    "name": "Kalimantan Barat",
+    "latitude": -0.26980331623211795,
+    "longitude": 110.82736078500004
+  },
+  {
+    "id": "62",
+    "name": "Kalimantan Tengah",
+    "latitude": -1.3649915739014569,
+    "longitude": 113.44348362789667
+  },
+  {
+    "id": "63",
+    "name": "Kalimantan Selatan",
+    "latitude": -2.932521606144338,
+    "longitude": 115.71241105966845
+  },
+  {
+    "id": "64",
+    "name": "Kalimantan Timur",
+    "latitude": 0.33293224080382194,
+    "longitude": 116.71479342301896
+  },
+  {
+    "id": "65",
+    "name": "Kalimantan Utara",
+    "latitude": 3.1068348831274326,
+    "longitude": 116.67465770222745
+  },
+  {
+    "id": "71",
+    "name": "Sulawesi Utara",
+    "latitude": 2.0629658376005375,
+    "longitude": 125.07655077162012
+  },
+  {
+    "id": "72",
+    "name": "Sulawesi Tengah",
+    "latitude": -0.9781423787005443,
+    "longitude": 121.63993046598124
+  },
+  {
+    "id": "73",
+    "name": "Sulawesi Selatan",
+    "latitude": -4.301654161085713,
+    "longitude": 120.3525065592951
+  },
+  {
+    "id": "74",
+    "name": "Sulawesi Tenggara",
+    "latitude": -4.546628722755887,
+    "longitude": 122.45924127260116
+  },
+  {
+    "id": "75",
+    "name": "Gorontalo",
+    "latitude": 0.6852468055076606,
+    "longitude": 122.39891668803048
+  },
+  {
+    "id": "76",
+    "name": "Sulawesi Barat",
+    "latitude": -2.3145289228244437,
+    "longitude": 119.37330667834703
+  },
+  {
+    "id": "81",
+    "name": "Maluku",
+    "latitude": -5.708520638797707,
+    "longitude": 130.90436003178604
+  },
+  {
+    "id": "82",
+    "name": "Maluku Utara",
+    "latitude": -0.15139907823691895,
+    "longitude": 127.42029694706738
+  },
+  {
+    "id": "91",
+    "name": "Papua",
+    "latitude": -2.4297338679853695,
+    "longitude": 137.7154479192503
+  },
+  {
+    "id": "92",
+    "name": "Papua Barat",
+    "latitude": -2.7345565170682207,
+    "longitude": 133.7153426127319
+  },
+  {
+    "id": "93",
+    "name": "Papua Selatan",
+    "latitude": -6.7476060615043,
+    "longitude": 139.01052491558784
+  },
+  {
+    "id": "94",
+    "name": "Papua Tengah",
+    "latitude": -3.7372291072755495,
+    "longitude": 136.50387650362026
+  },
+  {
+    "id": "95",
+    "name": "Papua Pegunungan",
+    "latitude": -4.0112076560110905,
+    "longitude": 139.2460088285345
+  },
+  {
+    "id": "96",
+    "name": "Papua Barat Daya",
+    "latitude": -0.9824401527322694,
+    "longitude": 131.1652448565146
+  }
+]

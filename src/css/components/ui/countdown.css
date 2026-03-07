@@ -1,0 +1,86 @@
+/* =============================================
+   Countdown Timer Widget
+   ============================================= */
+
+.countdown {
+   text-align: center;
+   margin-bottom: var(--spacing-md);
+}
+
+.countdown__label {
+   font-size: var(--fs-base);
+   font-weight: var(--fw-medium);
+   color: var(--clr-text-secondary);
+   margin-bottom: var(--spacing-md);
+}
+
+.countdown__prayer-name {
+   font-family: var(--ff-decorative);
+   font-weight: var(--fw-bold);
+   font-size: var(--fs-xl);
+   color: var(--clr-accent-500);
+}
+
+.countdown__timer {
+   display: flex;
+   align-items: flex-start;
+   justify-content: center;
+   gap: var(--spacing-sm);
+}
+
+.countdown__column {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: var(--spacing-xs);
+}
+
+.countdown__digit-box {
+   background: var(--clr-secondary-600);
+   border-radius: var(--radius-md);
+   padding: var(--spacing-sm) var(--spacing-sm);
+   width: 48px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: 1px solid var(--clr-border);
+}
+
+.countdown__number {
+   font-size: var(--fs-xl);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   line-height: var(--lh-none);
+   font-variant-numeric: tabular-nums;
+}
+
+.countdown__unit {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-light);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+   letter-spacing: 0;
+}
+
+.countdown__separator {
+   font-size: var(--fs-lg);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-muted);
+   line-height: var(--lh-none);
+   padding-top: var(--spacing-sm);
+}
+
+@media (max-width: 360px) {
+   .countdown__digit-box {
+      width: 40px;
+      padding: var(--spacing-xs) var(--spacing-xs);
+   }
+
+   .countdown__number {
+      font-size: var(--fs-lg);
+   }
+
+   .countdown__unit {
+      font-size: var(--fs-2xs);
+   }
+}

@@ -1,0 +1,3629 @@
+[
+  {
+    "id": "1101",
+    "province_id": "11",
+    "name": "Aceh Selatan",
+    "latitude": 3.1327716781600463,
+    "longitude": 97.48551448206004
+  },
+  {
+    "id": "1102",
+    "province_id": "11",
+    "name": "Aceh Tenggara",
+    "latitude": 3.345442345095281,
+    "longitude": 97.68332392911911
+  },
+  {
+    "id": "1103",
+    "province_id": "11",
+    "name": "Aceh Timur",
+    "latitude": 4.622174483803968,
+    "longitude": 97.60033599470596
+  },
+  {
+    "id": "1104",
+    "province_id": "11",
+    "name": "Aceh Tengah",
+    "latitude": 4.545687134270873,
+    "longitude": 96.85108575670837
+  },
+  {
+    "id": "1105",
+    "province_id": "11",
+    "name": "Aceh Barat",
+    "latitude": 4.476448546406287,
+    "longitude": 96.19983884868756
+  },
+  {
+    "id": "1106",
+    "province_id": "11",
+    "name": "Aceh Besar",
+    "latitude": 5.392588662744232,
+    "longitude": 95.47809638437215
+  },
+  {
+    "id": "1107",
+    "province_id": "11",
+    "name": "Pidie",
+    "latitude": 5.054621178500043,
+    "longitude": 96.05278605960875
+  },
+  {
+    "id": "1108",
+    "province_id": "11",
+    "name": "Aceh Utara",
+    "latitude": 4.997815364764754,
+    "longitude": 97.16713084691183
+  },
+  {
+    "id": "1109",
+    "province_id": "11",
+    "name": "Simeulue",
+    "latitude": 2.5509301794651646,
+    "longitude": 96.16743747551169
+  },
+  {
+    "id": "1110",
+    "province_id": "11",
+    "name": "Aceh Singkil",
+    "latitude": 2.2578596572308154,
+    "longitude": 97.60619957500002
+  },
+  {
+    "id": "1111",
+    "province_id": "11",
+    "name": "Bireuen",
+    "latitude": 5.07935417662968,
+    "longitude": 96.59634284448151
+  },
+  {
+    "id": "1112",
+    "province_id": "11",
+    "name": "Aceh Barat Daya",
+    "latitude": 3.8279146468889382,
+    "longitude": 96.8496077790371
+  },
+  {
+    "id": "1113",
+    "province_id": "11",
+    "name": "Gayo Lues",
+    "latitude": 4.042245816577824,
+    "longitude": 97.32177277502227
+  },
+  {
+    "id": "1114",
+    "province_id": "11",
+    "name": "Aceh Jaya",
+    "latitude": 4.8780863789143325,
+    "longitude": 95.65970484711434
+  },
+  {
+    "id": "1115",
+    "province_id": "11",
+    "name": "Nagan Raya",
+    "latitude": 4.182661362852985,
+    "longitude": 96.521419461853
+  },
+  {
+    "id": "1116",
+    "province_id": "11",
+    "name": "Aceh Tamiang",
+    "latitude": 4.20375398402946,
+    "longitude": 98.00270120708831
+  },
+  {
+    "id": "1117",
+    "province_id": "11",
+    "name": "Bener Meriah",
+    "latitude": 4.777399456300047,
+    "longitude": 96.98152749360005
+  },
+  {
+    "id": "1118",
+    "province_id": "11",
+    "name": "Pidie Jaya",
+    "latitude": 5.09634898733338,
+    "longitude": 96.20843191071435
+  },
+  {
+    "id": "1171",
+    "province_id": "11",
+    "name": "Kota Banda Aceh",
+    "latitude": 5.568036002428609,
+    "longitude": 95.32910436700006
+  },
+  {
+    "id": "1172",
+    "province_id": "11",
+    "name": "Kota Sabang",
+    "latitude": 5.819732566285755,
+    "longitude": 95.31407093571434
+  },
+  {
+    "id": "1173",
+    "province_id": "11",
+    "name": "Kota Lhokseumawe",
+    "latitude": 5.17335592985719,
+    "longitude": 97.10787325671433
+  },
+  {
+    "id": "1174",
+    "province_id": "11",
+    "name": "Kota Langsa",
+    "latitude": 4.489304262545503,
+    "longitude": 97.99543277900007
+  },
+  {
+    "id": "1175",
+    "province_id": "11",
+    "name": "Kota Subulussalam",
+    "latitude": 2.772185788000042,
+    "longitude": 97.94170829430772
+  },
+  {
+    "id": "1201",
+    "province_id": "12",
+    "name": "Tapanuli Tengah",
+    "latitude": 1.8055994842453331,
+    "longitude": 98.64744766315098
+  },
+  {
+    "id": "1202",
+    "province_id": "12",
+    "name": "Tapanuli Utara",
+    "latitude": 2.0423255549575,
+    "longitude": 99.08785783538303
+  },
+  {
+    "id": "1203",
+    "province_id": "12",
+    "name": "Tapanuli Selatan",
+    "latitude": 1.5080327680172905,
+    "longitude": 99.26631914124142
+  },
+  {
+    "id": "1204",
+    "province_id": "12",
+    "name": "Nias",
+    "latitude": 1.0775760315909535,
+    "longitude": 97.70349336400005
+  },
+  {
+    "id": "1205",
+    "province_id": "12",
+    "name": "Langkat",
+    "latitude": 3.7516805131148026,
+    "longitude": 98.2341310103935
+  },
+  {
+    "id": "1206",
+    "province_id": "12",
+    "name": "Karo",
+    "latitude": 3.100550679731756,
+    "longitude": 98.30887013229274
+  },
+  {
+    "id": "1207",
+    "province_id": "12",
+    "name": "Deli Serdang",
+    "latitude": 3.511671211244492,
+    "longitude": 98.6652494167556
+  },
+  {
+    "id": "1208",
+    "province_id": "12",
+    "name": "Simalungun",
+    "latitude": 3.0474314875373594,
+    "longitude": 99.11533237391049
+  },
+  {
+    "id": "1209",
+    "province_id": "12",
+    "name": "Asahan",
+    "latitude": 2.812915297447419,
+    "longitude": 99.47776982221056
+  },
+  {
+    "id": "1210",
+    "province_id": "12",
+    "name": "Labuhanbatu",
+    "latitude": 2.2013352607674928,
+    "longitude": 100.00133413767448
+  },
+  {
+    "id": "1211",
+    "province_id": "12",
+    "name": "Dairi",
+    "latitude": 2.8617188199429027,
+    "longitude": 98.26829691825719
+  },
+  {
+    "id": "1212",
+    "province_id": "12",
+    "name": "Toba",
+    "latitude": 2.4080794179459972,
+    "longitude": 99.20054891483791
+  },
+  {
+    "id": "1213",
+    "province_id": "12",
+    "name": "Mandailing Natal",
+    "latitude": 0.770789228848518,
+    "longitude": 99.39080095653034
+  },
+  {
+    "id": "1214",
+    "province_id": "12",
+    "name": "Nias Selatan",
+    "latitude": 0.15879403094832523,
+    "longitude": 98.25162349872414
+  },
+  {
+    "id": "1215",
+    "province_id": "12",
+    "name": "Pakpak Bharat",
+    "latitude": 2.5184364699524155,
+    "longitude": 98.2500903319048
+  },
+  {
+    "id": "1216",
+    "province_id": "12",
+    "name": "Humbang Hasundutan",
+    "latitude": 2.2676541128387493,
+    "longitude": 98.58802728877426
+  },
+  {
+    "id": "1217",
+    "province_id": "12",
+    "name": "Samosir",
+    "latitude": 2.5218126545555997,
+    "longitude": 98.72327651574076
+  },
+  {
+    "id": "1218",
+    "province_id": "12",
+    "name": "Serdang Bedagai",
+    "latitude": 3.3147510680357652,
+    "longitude": 99.01934621889293
+  },
+  {
+    "id": "1219",
+    "province_id": "12",
+    "name": "Batu Bara",
+    "latitude": 3.2186037319070238,
+    "longitude": 99.42935453520936
+  },
+  {
+    "id": "1220",
+    "province_id": "12",
+    "name": "Padang Lawas Utara",
+    "latitude": 1.6207227771509924,
+    "longitude": 99.77627958216988
+  },
+  {
+    "id": "1221",
+    "province_id": "12",
+    "name": "Padang Lawas",
+    "latitude": 1.1351708482439455,
+    "longitude": 99.85039050187808
+  },
+  {
+    "id": "1222",
+    "province_id": "12",
+    "name": "Labuhanbatu Selatan",
+    "latitude": 1.8445079594634601,
+    "longitude": 100.14230337375616
+  },
+  {
+    "id": "1223",
+    "province_id": "12",
+    "name": "Labuhanbatu Utara",
+    "latitude": 2.3542366458056088,
+    "longitude": 99.70034525336118
+  },
+  {
+    "id": "1224",
+    "province_id": "12",
+    "name": "Nias Utara",
+    "latitude": 1.3186126174762292,
+    "longitude": 97.35963677919054
+  },
+  {
+    "id": "1225",
+    "province_id": "12",
+    "name": "Nias Barat",
+    "latitude": 1.0418231136428957,
+    "longitude": 97.48530655021435
+  },
+  {
+    "id": "1271",
+    "province_id": "12",
+    "name": "Kota Medan",
+    "latitude": 3.6798109568461936,
+    "longitude": 98.68036202161544
+  },
+  {
+    "id": "1272",
+    "province_id": "12",
+    "name": "Kota Pematangsiantar",
+    "latitude": 2.949040229400032,
+    "longitude": 99.05690499580005
+  },
+  {
+    "id": "1273",
+    "province_id": "12",
+    "name": "Kota Sibolga",
+    "latitude": 1.7427,
+    "longitude": 98.7792
+  },
+  {
+    "id": "1274",
+    "province_id": "12",
+    "name": "Kota Tanjung Balai",
+    "latitude": 2.9584594298000413,
+    "longitude": 99.78333364160005
+  },
+  {
+    "id": "1275",
+    "province_id": "12",
+    "name": "Kota Binjai",
+    "latitude": 3.6099925014286214,
+    "longitude": 98.49809266857152
+  },
+  {
+    "id": "1276",
+    "province_id": "12",
+    "name": "Kota Tebing Tinggi",
+    "latitude": 3.3254,
+    "longitude": 99.1542
+  },
+  {
+    "id": "1277",
+    "province_id": "12",
+    "name": "Kota Padang Sidempuan",
+    "latitude": 1.3700808730000469,
+    "longitude": 99.29020936585718
+  },
+  {
+    "id": "1278",
+    "province_id": "12",
+    "name": "Kota Gunungsitoli",
+    "latitude": 1.2682957496154297,
+    "longitude": 97.57577098561543
+  },
+  {
+    "id": "1301",
+    "province_id": "13",
+    "name": "Pesisir Selatan",
+    "latitude": -1.619966962150897,
+    "longitude": 100.8030567829623
+  },
+  {
+    "id": "1302",
+    "province_id": "13",
+    "name": "Solok",
+    "latitude": -0.9493535232765559,
+    "longitude": 100.81020170606386
+  },
+  {
+    "id": "1303",
+    "province_id": "13",
+    "name": "Sijunjung",
+    "latitude": -0.6627665642221718,
+    "longitude": 101.10852706797229
+  },
+  {
+    "id": "1304",
+    "province_id": "13",
+    "name": "Tanah Datar",
+    "latitude": -0.4651745531537935,
+    "longitude": 100.55145316342312
+  },
+  {
+    "id": "1305",
+    "province_id": "13",
+    "name": "Padang Pariaman",
+    "latitude": -0.5620440637599518,
+    "longitude": 100.25301820464004
+  },
+  {
+    "id": "1306",
+    "province_id": "13",
+    "name": "Agam",
+    "latitude": -0.2614296209687038,
+    "longitude": 100.1725610893438
+  },
+  {
+    "id": "1307",
+    "province_id": "13",
+    "name": "Lima Puluh Kota",
+    "latitude": 0.02498999204550353,
+    "longitude": 100.59091965536368
+  },
+  {
+    "id": "1308",
+    "province_id": "13",
+    "name": "Pasaman",
+    "latitude": 0.3935364672182257,
+    "longitude": 100.05114055072731
+  },
+  {
+    "id": "1309",
+    "province_id": "13",
+    "name": "Kepulauan Mentawai",
+    "latitude": -2.197230833964659,
+    "longitude": 99.65085743556479
+  },
+  {
+    "id": "1310",
+    "province_id": "13",
+    "name": "Dharmasraya",
+    "latitude": -1.1789071930624566,
+    "longitude": 101.5109150310209
+  },
+  {
+    "id": "1311",
+    "province_id": "13",
+    "name": "Solok Selatan",
+    "latitude": -1.3769903718570955,
+    "longitude": 101.23086370228579
+  },
+  {
+    "id": "1312",
+    "province_id": "13",
+    "name": "Pasaman Barat",
+    "latitude": 0.23839215204350947,
+    "longitude": 99.67952505406528
+  },
+  {
+    "id": "1371",
+    "province_id": "13",
+    "name": "Kota Padang",
+    "latitude": -0.9103657139444048,
+    "longitude": 100.43272259572227
+  },
+  {
+    "id": "1372",
+    "province_id": "13",
+    "name": "Kota Solok",
+    "latitude": -0.7890379859999925,
+    "longitude": 100.60944620000002
+  },
+  {
+    "id": "1373",
+    "province_id": "13",
+    "name": "Kota Sawahlunto",
+    "latitude": -0.6523348304999499,
+    "longitude": 100.74485766750004
+  },
+  {
+    "id": "1374",
+    "province_id": "13",
+    "name": "Kota Padang Panjang",
+    "latitude": -0.4666,
+    "longitude": 100.3980
+  },
+  {
+    "id": "1375",
+    "province_id": "13",
+    "name": "Kota Bukittinggi",
+    "latitude": -0.3056,
+    "longitude": 100.3691
+  },
+  {
+    "id": "1376",
+    "province_id": "13",
+    "name": "Kota Payakumbuh",
+    "latitude": -0.23520501957138387,
+    "longitude": 100.6325069854286
+  },
+  {
+    "id": "1377",
+    "province_id": "13",
+    "name": "Kota Pariaman",
+    "latitude": -0.6149445339999714,
+    "longitude": 100.13012523720008
+  },
+  {
+    "id": "1401",
+    "province_id": "14",
+    "name": "Kampar",
+    "latitude": 0.24478664943186337,
+    "longitude": 101.05064236577273
+  },
+  {
+    "id": "1402",
+    "province_id": "14",
+    "name": "Indragiri Hulu",
+    "latitude": -0.6422091653332863,
+    "longitude": 102.28888234835189
+  },
+  {
+    "id": "1403",
+    "province_id": "14",
+    "name": "Bengkalis",
+    "latitude": 1.468263598253378,
+    "longitude": 101.71567354294673
+  },
+  {
+    "id": "1404",
+    "province_id": "14",
+    "name": "Indragiri Hilir",
+    "latitude": -0.3425918053471746,
+    "longitude": 103.2135729853473
+  },
+  {
+    "id": "1405",
+    "province_id": "14",
+    "name": "Pelalawan",
+    "latitude": 0.26522424081254625,
+    "longitude": 102.37147190697502
+  },
+  {
+    "id": "1406",
+    "province_id": "14",
+    "name": "Rokan Hulu",
+    "latitude": 0.9029172751692779,
+    "longitude": 100.50568095809238
+  },
+  {
+    "id": "1407",
+    "province_id": "14",
+    "name": "Rokan Hilir",
+    "latitude": 1.8326991092000464,
+    "longitude": 100.68807208970772
+  },
+  {
+    "id": "1408",
+    "province_id": "14",
+    "name": "Siak",
+    "latitude": 0.8239611635833707,
+    "longitude": 101.80166173336669
+  },
+  {
+    "id": "1409",
+    "province_id": "14",
+    "name": "Kuantan Singingi",
+    "latitude": -0.5220072415740262,
+    "longitude": 101.53455250603712
+  },
+  {
+    "id": "1410",
+    "province_id": "14",
+    "name": "Kepulauan Meranti",
+    "latitude": 0.977756625238144,
+    "longitude": 102.69146398284131
+  },
+  {
+    "id": "1471",
+    "province_id": "14",
+    "name": "Kota Pekanbaru",
+    "latitude": 0.5562828372353313,
+    "longitude": 101.45221100158828
+  },
+  {
+    "id": "1472",
+    "province_id": "14",
+    "name": "Kota Dumai",
+    "latitude": 1.765806654466716,
+    "longitude": 101.35517634946675
+  },
+  {
+    "id": "1501",
+    "province_id": "15",
+    "name": "Kerinci",
+    "latitude": -2.0530726901612453,
+    "longitude": 101.48836905374199
+  },
+  {
+    "id": "1502",
+    "province_id": "15",
+    "name": "Merangin",
+    "latitude": -2.18737050470765,
+    "longitude": 102.07009031349236
+  },
+  {
+    "id": "1503",
+    "province_id": "15",
+    "name": "Sarolangun",
+    "latitude": -2.3330943601384178,
+    "longitude": 102.62133976992315
+  },
+  {
+    "id": "1504",
+    "province_id": "15",
+    "name": "Batanghari",
+    "latitude": -1.7978806419999518,
+    "longitude": 103.12208329653336
+  },
+  {
+    "id": "1505",
+    "province_id": "15",
+    "name": "Muaro Jambi",
+    "latitude": -1.6628223148035193,
+    "longitude": 103.60044186546433
+  },
+  {
+    "id": "1506",
+    "province_id": "15",
+    "name": "Tanjung Jabung Barat",
+    "latitude": -1.0761867631749495,
+    "longitude": 103.15591598077506
+  },
+  {
+    "id": "1507",
+    "province_id": "15",
+    "name": "Tanjung Jabung Timur",
+    "latitude": -1.2655582338510147,
+    "longitude": 103.96799039329788
+  },
+  {
+    "id": "1508",
+    "province_id": "15",
+    "name": "Bungo",
+    "latitude": -1.5813732173094823,
+    "longitude": 101.98171548945244
+  },
+  {
+    "id": "1509",
+    "province_id": "15",
+    "name": "Tebo",
+    "latitude": -1.33956213194732,
+    "longitude": 102.33580274621059
+  },
+  {
+    "id": "1571",
+    "province_id": "15",
+    "name": "Kota Jambi",
+    "latitude": -1.6256484233999458,
+    "longitude": 103.60295274310003
+  },
+  {
+    "id": "1572",
+    "province_id": "15",
+    "name": "Kota Sungai Penuh",
+    "latitude": -2.1156424826999674,
+    "longitude": 101.34582525760004
+  },
+  {
+    "id": "1601",
+    "province_id": "16",
+    "name": "Ogan Komering Ulu",
+    "latitude": -4.083736513649957,
+    "longitude": 104.08749679560007
+  },
+  {
+    "id": "1602",
+    "province_id": "16",
+    "name": "Ogan Komering Ilir",
+    "latitude": -3.451982275807294,
+    "longitude": 105.33053775898173
+  },
+  {
+    "id": "1603",
+    "province_id": "16",
+    "name": "Muara Enim",
+    "latitude": -3.626008672089954,
+    "longitude": 104.01706705963008
+  },
+  {
+    "id": "1604",
+    "province_id": "16",
+    "name": "Lahat",
+    "latitude": -3.9067028509244808,
+    "longitude": 103.34380147309437
+  },
+  {
+    "id": "1605",
+    "province_id": "16",
+    "name": "Musi Rawas",
+    "latitude": -3.1945789658726778,
+    "longitude": 103.12675109403642
+  },
+  {
+    "id": "1606",
+    "province_id": "16",
+    "name": "Musi Banyuasin",
+    "latitude": -2.4997725155428108,
+    "longitude": 103.79817543930484
+  },
+  {
+    "id": "1607",
+    "province_id": "16",
+    "name": "Banyuasin",
+    "latitude": -2.466290247593705,
+    "longitude": 104.66309741888288
+  },
+  {
+    "id": "1608",
+    "province_id": "16",
+    "name": "Ogan Komering Ulu Timur",
+    "latitude": -4.120604484309477,
+    "longitude": 104.52300093390481
+  },
+  {
+    "id": "1609",
+    "province_id": "16",
+    "name": "Ogan Komering Ulu Selatan",
+    "latitude": -4.631572466162743,
+    "longitude": 103.88910640351169
+  },
+  {
+    "id": "1610",
+    "province_id": "16",
+    "name": "Ogan Ilir",
+    "latitude": -3.422605832558094,
+    "longitude": 104.58286264800006
+  },
+  {
+    "id": "1611",
+    "province_id": "16",
+    "name": "Empat Lawang",
+    "latitude": -3.7194278301514685,
+    "longitude": 102.94432696209097
+  },
+  {
+    "id": "1612",
+    "province_id": "16",
+    "name": "Penukal Abab Lematang Ilir",
+    "latitude": -3.2217758210587784,
+    "longitude": 103.93490817702948
+  },
+  {
+    "id": "1613",
+    "province_id": "16",
+    "name": "Musi Rawas Utara",
+    "latitude": -2.702507334053526,
+    "longitude": 102.70695681564293
+  },
+  {
+    "id": "1671",
+    "province_id": "16",
+    "name": "Kota Palembang",
+    "latitude": -2.9677088262352527,
+    "longitude": 104.72721324670593
+  },
+  {
+    "id": "1672",
+    "province_id": "16",
+    "name": "Kota Pagar Alam",
+    "latitude": -4.1187428148332845,
+    "longitude": 103.28523808077783
+  },
+  {
+    "id": "1673",
+    "province_id": "16",
+    "name": "Kota Lubuk Linggau",
+    "latitude": -3.2631454227691803,
+    "longitude": 102.8701355514616
+  },
+  {
+    "id": "1674",
+    "province_id": "16",
+    "name": "Kota Prabumulih",
+    "latitude": -3.446455694999951,
+    "longitude": 104.23181539543756
+  },
+  {
+    "id": "1701",
+    "province_id": "17",
+    "name": "Bengkulu Selatan",
+    "latitude": -4.3387476840908645,
+    "longitude": 103.03663853754551
+  },
+  {
+    "id": "1702",
+    "province_id": "17",
+    "name": "Rejang Lebong",
+    "latitude": -3.423488275153801,
+    "longitude": 102.70717132988466
+  },
+  {
+    "id": "1703",
+    "province_id": "17",
+    "name": "Bengkulu Utara",
+    "latitude": -3.8073027023616546,
+    "longitude": 102.10141829076602
+  },
+  {
+    "id": "1704",
+    "province_id": "17",
+    "name": "Kaur",
+    "latitude": -4.589743339111062,
+    "longitude": 103.42648156361119
+  },
+  {
+    "id": "1705",
+    "province_id": "17",
+    "name": "Seluma",
+    "latitude": -4.0417687828749616,
+    "longitude": 102.73253438412503
+  },
+  {
+    "id": "1706",
+    "province_id": "17",
+    "name": "Muko Muko",
+    "latitude": -2.7372536763332818,
+    "longitude": 101.5257121211667
+  },
+  {
+    "id": "1707",
+    "province_id": "17",
+    "name": "Lebong",
+    "latitude": -3.0774645012187083,
+    "longitude": 102.22527690050006
+  },
+  {
+    "id": "1708",
+    "province_id": "17",
+    "name": "Kepahiang",
+    "latitude": -3.6381051715555137,
+    "longitude": 102.64744730977785
+  },
+  {
+    "id": "1709",
+    "province_id": "17",
+    "name": "Bengkulu Tengah",
+    "latitude": -3.6851528133181377,
+    "longitude": 102.40057519963639
+  },
+  {
+    "id": "1771",
+    "province_id": "17",
+    "name": "Kota Bengkulu",
+    "latitude": -3.868536893399958,
+    "longitude": 102.29746602990005
+  },
+  {
+    "id": "1801",
+    "province_id": "18",
+    "name": "Lampung Selatan",
+    "latitude": -5.4694277917567105,
+    "longitude": 105.46753339437845
+  },
+  {
+    "id": "1802",
+    "province_id": "18",
+    "name": "Lampung Tengah",
+    "latitude": -4.917106900603127,
+    "longitude": 105.19580838677784
+  },
+  {
+    "id": "1803",
+    "province_id": "18",
+    "name": "Lampung Utara",
+    "latitude": -4.820743515342807,
+    "longitude": 104.78683570525719
+  },
+  {
+    "id": "1804",
+    "province_id": "18",
+    "name": "Lampung Barat",
+    "latitude": -5.041689123675629,
+    "longitude": 104.21962170767574
+  },
+  {
+    "id": "1805",
+    "province_id": "18",
+    "name": "Tulang Bawang",
+    "latitude": -4.378971319749952,
+    "longitude": 105.55024096570465
+  },
+  {
+    "id": "1806",
+    "province_id": "18",
+    "name": "Tanggamus",
+    "latitude": -5.538866309618134,
+    "longitude": 104.73000374643642
+  },
+  {
+    "id": "1807",
+    "province_id": "18",
+    "name": "Lampung Timur",
+    "latitude": -5.128480073357095,
+    "longitude": 105.59883550376199
+  },
+  {
+    "id": "1808",
+    "province_id": "18",
+    "name": "Way Kanan",
+    "latitude": -4.527344458634097,
+    "longitude": 104.67391096587812
+  },
+  {
+    "id": "1809",
+    "province_id": "18",
+    "name": "Pesawaran",
+    "latitude": -5.4454423010285256,
+    "longitude": 105.11934824897148
+  },
+  {
+    "id": "1810",
+    "province_id": "18",
+    "name": "Pringsewu",
+    "latitude": -5.34324764017387,
+    "longitude": 104.92651460365224
+  },
+  {
+    "id": "1811",
+    "province_id": "18",
+    "name": "Mesuji",
+    "latitude": -4.035409417538412,
+    "longitude": 105.39946351328213
+  },
+  {
+    "id": "1812",
+    "province_id": "18",
+    "name": "Tulang Bawang Barat",
+    "latitude": -4.408212398827537,
+    "longitude": 105.07806992444834
+  },
+  {
+    "id": "1813",
+    "province_id": "18",
+    "name": "Pesisir Barat",
+    "latitude": -5.305791868279955,
+    "longitude": 104.14122876980004
+  },
+  {
+    "id": "1871",
+    "province_id": "18",
+    "name": "Kota Bandar Lampung",
+    "latitude": -5.440139340799948,
+    "longitude": 105.27213854970005
+  },
+  {
+    "id": "1872",
+    "province_id": "18",
+    "name": "Kota Metro",
+    "latitude": -5.121162241142794,
+    "longitude": 105.2967113724286
+  },
+  {
+    "id": "1901",
+    "province_id": "19",
+    "name": "Bangka",
+    "latitude": -1.949397109195079,
+    "longitude": 105.91564781360981
+  },
+  {
+    "id": "1902",
+    "province_id": "19",
+    "name": "Belitung",
+    "latitude": -2.8510636392765485,
+    "longitude": 107.7131190779362
+  },
+  {
+    "id": "1903",
+    "province_id": "19",
+    "name": "Bangka Selatan",
+    "latitude": -2.828160965083287,
+    "longitude": 106.5025432691459
+  },
+  {
+    "id": "1904",
+    "province_id": "19",
+    "name": "Bangka Tengah",
+    "latitude": -2.456244809399951,
+    "longitude": 106.23670023968575
+  },
+  {
+    "id": "1905",
+    "province_id": "19",
+    "name": "Bangka Barat",
+    "latitude": -1.88393396578374,
+    "longitude": 105.52345307278382
+  },
+  {
+    "id": "1906",
+    "province_id": "19",
+    "name": "Belitung Timur",
+    "latitude": -2.898955575205836,
+    "longitude": 107.99806618452945
+  },
+  {
+    "id": "1971",
+    "province_id": "19",
+    "name": "Kota Pangkal Pinang",
+    "latitude": -2.1066663017499394,
+    "longitude": 106.10156882700005
+  },
+  {
+    "id": "2101",
+    "province_id": "21",
+    "name": "Bintan",
+    "latitude": 1.0251174593611583,
+    "longitude": 104.94971603119448
+  },
+  {
+    "id": "2102",
+    "province_id": "21",
+    "name": "Karimun",
+    "latitude": 0.8267882348298363,
+    "longitude": 103.54988657778728
+  },
+  {
+    "id": "2103",
+    "province_id": "21",
+    "name": "Natuna",
+    "latitude": 3.7751867939737287,
+    "longitude": 108.30681492102633
+  },
+  {
+    "id": "2104",
+    "province_id": "21",
+    "name": "Lingga",
+    "latitude": -0.19029868785479256,
+    "longitude": 104.54823803516135
+  },
+  {
+    "id": "2105",
+    "province_id": "21",
+    "name": "Kepulauan Anambas",
+    "latitude": 3.0583633075600436,
+    "longitude": 106.09102242456007
+  },
+  {
+    "id": "2171",
+    "province_id": "21",
+    "name": "Kota Batam",
+    "latitude": 0.9335968235366333,
+    "longitude": 104.08973920697565
+  },
+  {
+    "id": "2172",
+    "province_id": "21",
+    "name": "Kota Tanjung Pinang",
+    "latitude": 0.9411902738571923,
+    "longitude": 104.48153128842861
+  },
+  {
+    "id": "3101",
+    "province_id": "31",
+    "name": "Administrasi Kepulauan Seribu",
+    "latitude": -5.6200,
+    "longitude": 106.6400
+  },
+  {
+    "id": "3171",
+    "province_id": "31",
+    "name": "Kota Administrasi Jakarta Pusat",
+    "latitude": -6.18104551549996,
+    "longitude": 106.82694987016673
+  },
+  {
+    "id": "3172",
+    "province_id": "31",
+    "name": "Kota Administrasi Jakarta Utara",
+    "latitude": -6.1251477864999515,
+    "longitude": 106.84156284610008
+  },
+  {
+    "id": "3173",
+    "province_id": "31",
+    "name": "Kota Administrasi Jakarta Barat",
+    "latitude": -6.16442797979995,
+    "longitude": 106.74764999050005
+  },
+  {
+    "id": "3174",
+    "province_id": "31",
+    "name": "Kota Administrasi Jakarta Selatan",
+    "latitude": -6.26745625972722,
+    "longitude": 106.79686908018188
+  },
+  {
+    "id": "3175",
+    "province_id": "31",
+    "name": "Kota Administrasi Jakarta Timur",
+    "latitude": -6.266811304076874,
+    "longitude": 106.89595537023084
+  },
+  {
+    "id": "3201",
+    "province_id": "32",
+    "name": "Bogor",
+    "latitude": -6.546653060384569,
+    "longitude": 106.78690427635902
+  },
+  {
+    "id": "3202",
+    "province_id": "32",
+    "name": "Sukabumi",
+    "latitude": -7.036135046724953,
+    "longitude": 106.67953765057507
+  },
+  {
+    "id": "3203",
+    "province_id": "32",
+    "name": "Cianjur",
+    "latitude": -7.08013480348832,
+    "longitude": 107.14708230386051
+  },
+  {
+    "id": "3204",
+    "province_id": "32",
+    "name": "Bandung",
+    "latitude": -7.034895972249959,
+    "longitude": 107.62941222813896
+  },
+  {
+    "id": "3205",
+    "province_id": "32",
+    "name": "Garut",
+    "latitude": -7.3278016238048345,
+    "longitude": 107.80835612946346
+  },
+  {
+    "id": "3206",
+    "province_id": "32",
+    "name": "Tasikmalaya",
+    "latitude": -7.412598307119005,
+    "longitude": 108.17128808783335
+  },
+  {
+    "id": "3207",
+    "province_id": "32",
+    "name": "Ciamis",
+    "latitude": -7.317138169205088,
+    "longitude": 108.44708624658982
+  },
+  {
+    "id": "3208",
+    "province_id": "32",
+    "name": "Kuningan",
+    "latitude": -7.017134055869538,
+    "longitude": 108.57741430643482
+  },
+  {
+    "id": "3209",
+    "province_id": "32",
+    "name": "Cirebon",
+    "latitude": -6.774823028137889,
+    "longitude": 108.57341735444834
+  },
+  {
+    "id": "3210",
+    "province_id": "32",
+    "name": "Majalengka",
+    "latitude": -6.814705601111061,
+    "longitude": 108.23542653862968
+  },
+  {
+    "id": "3211",
+    "province_id": "32",
+    "name": "Sumedang",
+    "latitude": -6.834976434555507,
+    "longitude": 107.97801059429636
+  },
+  {
+    "id": "3212",
+    "province_id": "32",
+    "name": "Indramayu",
+    "latitude": -6.489812540906199,
+    "longitude": 108.16018182943758
+  },
+  {
+    "id": "3213",
+    "province_id": "32",
+    "name": "Subang",
+    "latitude": -6.5078412953666165,
+    "longitude": 107.74962603740005
+  },
+  {
+    "id": "3214",
+    "province_id": "32",
+    "name": "Purwakarta",
+    "latitude": -6.6181833415999565,
+    "longitude": 107.44084994585005
+  },
+  {
+    "id": "3215",
+    "province_id": "32",
+    "name": "Karawang",
+    "latitude": -6.258138661620639,
+    "longitude": 107.32265949458622
+  },
+  {
+    "id": "3216",
+    "province_id": "32",
+    "name": "Bekasi",
+    "latitude": -6.211130738208287,
+    "longitude": 107.09211870600006
+  },
+  {
+    "id": "3217",
+    "province_id": "32",
+    "name": "Bandung Barat",
+    "latitude": -6.878538123366636,
+    "longitude": 107.4620066968334
+  },
+  {
+    "id": "3218",
+    "province_id": "32",
+    "name": "Pangandaran",
+    "latitude": -7.637841811370326,
+    "longitude": 108.52811057166673
+  },
+  {
+    "id": "3271",
+    "province_id": "32",
+    "name": "Kota Bogor",
+    "latitude": -6.620751305285661,
+    "longitude": 106.81836685971435
+  },
+  {
+    "id": "3272",
+    "province_id": "32",
+    "name": "Kota Sukabumi",
+    "latitude": -6.937821776666644,
+    "longitude": 106.92180014183337
+  },
+  {
+    "id": "3273",
+    "province_id": "32",
+    "name": "Kota Bandung",
+    "latitude": -6.915482593999954,
+    "longitude": 107.61274415012507
+  },
+  {
+    "id": "3274",
+    "province_id": "32",
+    "name": "Kota Cirebon",
+    "latitude": -6.727906375399959,
+    "longitude": 108.55366214160006
+  },
+  {
+    "id": "3275",
+    "province_id": "32",
+    "name": "Kota Bekasi",
+    "latitude": -6.3057882470832896,
+    "longitude": 106.96034997475006
+  },
+  {
+    "id": "3276",
+    "province_id": "32",
+    "name": "Kota Depok",
+    "latitude": -6.383165866999951,
+    "longitude": 106.82031811600005
+  },
+  {
+    "id": "3277",
+    "province_id": "32",
+    "name": "Kota Cimahi",
+    "latitude": -6.896775816666633,
+    "longitude": 107.54183008633339
+  },
+  {
+    "id": "3278",
+    "province_id": "32",
+    "name": "Kota Tasikmalaya",
+    "latitude": -7.3418459483999525,
+    "longitude": 108.23754307980005
+  },
+  {
+    "id": "3279",
+    "province_id": "32",
+    "name": "Kota Banjar",
+    "latitude": -7.368694581111072,
+    "longitude": 108.57326515377784
+  },
+  {
+    "id": "3301",
+    "province_id": "33",
+    "name": "Cilacap",
+    "latitude": -7.511928065479119,
+    "longitude": 108.90425555912508
+  },
+  {
+    "id": "3302",
+    "province_id": "33",
+    "name": "Banyumas",
+    "latitude": -7.475883409892819,
+    "longitude": 109.20068226817862
+  },
+  {
+    "id": "3303",
+    "province_id": "33",
+    "name": "Purbalingga",
+    "latitude": -7.310705966210492,
+    "longitude": 109.41924656994745
+  },
+  {
+    "id": "3304",
+    "province_id": "33",
+    "name": "Banjarnegara",
+    "latitude": -7.3673831532902785,
+    "longitude": 109.63300179938715
+  },
+  {
+    "id": "3305",
+    "province_id": "33",
+    "name": "Kebumen",
+    "latitude": -7.625188206428531,
+    "longitude": 109.60177717814291
+  },
+  {
+    "id": "3306",
+    "province_id": "33",
+    "name": "Purworejo",
+    "latitude": -7.697510032066627,
+    "longitude": 109.97778300100005
+  },
+  {
+    "id": "3307",
+    "province_id": "33",
+    "name": "Wonosobo",
+    "latitude": -7.406429248565177,
+    "longitude": 109.8799325593479
+  },
+  {
+    "id": "3308",
+    "province_id": "33",
+    "name": "Magelang",
+    "latitude": -7.493176402149951,
+    "longitude": 110.28134816830004
+  },
+  {
+    "id": "3309",
+    "province_id": "33",
+    "name": "Boyolali",
+    "latitude": -7.416024496677373,
+    "longitude": 110.65303742141943
+  },
+  {
+    "id": "3310",
+    "province_id": "33",
+    "name": "Klaten",
+    "latitude": -7.660578670230721,
+    "longitude": 110.61063788423081
+  },
+  {
+    "id": "3311",
+    "province_id": "33",
+    "name": "Sukoharjo",
+    "latitude": -7.680824115111063,
+    "longitude": 110.81907572544452
+  },
+  {
+    "id": "3312",
+    "province_id": "33",
+    "name": "Wonogiri",
+    "latitude": -7.942310741499954,
+    "longitude": 111.01638050462503
+  },
+  {
+    "id": "3313",
+    "province_id": "33",
+    "name": "Karanganyar",
+    "latitude": -7.59449455022218,
+    "longitude": 110.95294855170377
+  },
+  {
+    "id": "3314",
+    "province_id": "33",
+    "name": "Sragen",
+    "latitude": -7.380945305681768,
+    "longitude": 110.96387696900007
+  },
+  {
+    "id": "3315",
+    "province_id": "33",
+    "name": "Grobogan",
+    "latitude": -7.11829931074281,
+    "longitude": 110.88035311945724
+  },
+  {
+    "id": "3316",
+    "province_id": "33",
+    "name": "Blora",
+    "latitude": -7.083611968448232,
+    "longitude": 111.37012822355182
+  },
+  {
+    "id": "3317",
+    "province_id": "33",
+    "name": "Rembang",
+    "latitude": -6.801088120749961,
+    "longitude": 111.45392813870008
+  },
+  {
+    "id": "3318",
+    "province_id": "33",
+    "name": "Pati",
+    "latitude": -6.7763483672962534,
+    "longitude": 111.01824728740748
+  },
+  {
+    "id": "3319",
+    "province_id": "33",
+    "name": "Kudus",
+    "latitude": -6.83031030470584,
+    "longitude": 110.84637801011772
+  },
+  {
+    "id": "3320",
+    "province_id": "33",
+    "name": "Jepara",
+    "latitude": -6.478858701230733,
+    "longitude": 110.7062153670385
+  },
+  {
+    "id": "3321",
+    "province_id": "33",
+    "name": "Demak",
+    "latitude": -6.926279402499948,
+    "longitude": 110.63044926750007
+  },
+  {
+    "id": "3322",
+    "province_id": "33",
+    "name": "Semarang",
+    "latitude": -7.282060853999954,
+    "longitude": 110.47066044632007
+  },
+  {
+    "id": "3323",
+    "province_id": "33",
+    "name": "Temanggung",
+    "latitude": -7.254114139849959,
+    "longitude": 110.15258600255007
+  },
+  {
+    "id": "3324",
+    "province_id": "33",
+    "name": "Kendal",
+    "latitude": -7.076329452304306,
+    "longitude": 110.13059724626095
+  },
+  {
+    "id": "3325",
+    "province_id": "33",
+    "name": "Batang",
+    "latitude": -7.040275785749959,
+    "longitude": 109.86535376812508
+  },
+  {
+    "id": "3326",
+    "province_id": "33",
+    "name": "Pekalongan",
+    "latitude": -7.048435230999953,
+    "longitude": 109.61839523416673
+  },
+  {
+    "id": "3327",
+    "province_id": "33",
+    "name": "Pemalang",
+    "latitude": -7.054581231159952,
+    "longitude": 109.39473322972007
+  },
+  {
+    "id": "3328",
+    "province_id": "33",
+    "name": "Tegal",
+    "latitude": -7.025744939090864,
+    "longitude": 109.15277555236372
+  },
+  {
+    "id": "3329",
+    "province_id": "33",
+    "name": "Brebes",
+    "latitude": -7.075806360099963,
+    "longitude": 108.93667849303338
+  },
+  {
+    "id": "3371",
+    "province_id": "33",
+    "name": "Kota Magelang",
+    "latitude": -7.4706,
+    "longitude": 110.2178
+  },
+  {
+    "id": "3372",
+    "province_id": "33",
+    "name": "Kota Surakarta",
+    "latitude": -7.55299418942853,
+    "longitude": 110.82723269271435
+  },
+  {
+    "id": "3373",
+    "province_id": "33",
+    "name": "Kota Salatiga",
+    "latitude": -7.3279323153333,
+    "longitude": 110.49643894166672
+  },
+  {
+    "id": "3374",
+    "province_id": "33",
+    "name": "Kota Semarang",
+    "latitude": -7.0332928631817655,
+    "longitude": 110.37446084481822
+  },
+  {
+    "id": "3375",
+    "province_id": "33",
+    "name": "Kota Pekalongan",
+    "latitude": -6.905995659333295,
+    "longitude": 109.67914219066672
+  },
+  {
+    "id": "3376",
+    "province_id": "33",
+    "name": "Kota Tegal",
+    "latitude": -6.872359522599959,
+    "longitude": 109.10841430900007
+  },
+  {
+    "id": "3401",
+    "province_id": "34",
+    "name": "Kulon Progo",
+    "latitude": -7.816432714571387,
+    "longitude": 110.15842733742862
+  },
+  {
+    "id": "3402",
+    "province_id": "34",
+    "name": "Bantul",
+    "latitude": -7.882510704578902,
+    "longitude": 110.35817352947375
+  },
+  {
+    "id": "3403",
+    "province_id": "34",
+    "name": "Gunungkidul",
+    "latitude": -8.025127512761847,
+    "longitude": 110.61303800442862
+  },
+  {
+    "id": "3404",
+    "province_id": "34",
+    "name": "Sleman",
+    "latitude": -7.7494941217332896,
+    "longitude": 110.35900447913339
+  },
+  {
+    "id": "3471",
+    "province_id": "34",
+    "name": "Kota Yogyakarta",
+    "latitude": -7.796600566199959,
+    "longitude": 110.36929553660006
+  },
+  {
+    "id": "3501",
+    "province_id": "35",
+    "name": "Pacitan",
+    "latitude": -8.117244297571387,
+    "longitude": 111.1847899515715
+  },
+  {
+    "id": "3502",
+    "province_id": "35",
+    "name": "Ponorogo",
+    "latitude": -7.962063914428525,
+    "longitude": 111.51355992317865
+  },
+  {
+    "id": "3503",
+    "province_id": "35",
+    "name": "Trenggalek",
+    "latitude": -8.140496689833286,
+    "longitude": 111.62304831093341
+  },
+  {
+    "id": "3504",
+    "province_id": "35",
+    "name": "Tulungagung",
+    "latitude": -8.095849764310293,
+    "longitude": 111.87554602320694
+  },
+  {
+    "id": "3505",
+    "province_id": "35",
+    "name": "Blitar",
+    "latitude": -8.142982036708284,
+    "longitude": 112.21988022937505
+  },
+  {
+    "id": "3506",
+    "province_id": "35",
+    "name": "Kediri",
+    "latitude": -7.81420725467995,
+    "longitude": 112.11441480744004
+  },
+  {
+    "id": "3507",
+    "province_id": "35",
+    "name": "Malang",
+    "latitude": -8.074689492127613,
+    "longitude": 112.612727071149
+  },
+  {
+    "id": "3508",
+    "province_id": "35",
+    "name": "Lumajang",
+    "latitude": -8.115222486333286,
+    "longitude": 113.10233733566675
+  },
+  {
+    "id": "3509",
+    "province_id": "35",
+    "name": "Jember",
+    "latitude": -8.276901810973639,
+    "longitude": 113.58919758597375
+  },
+  {
+    "id": "3510",
+    "province_id": "35",
+    "name": "Banyuwangi",
+    "latitude": -8.401279941849955,
+    "longitude": 114.24951163395008
+  },
+  {
+    "id": "3511",
+    "province_id": "35",
+    "name": "Bondowoso",
+    "latitude": -7.942490607239954,
+    "longitude": 113.93518273892003
+  },
+  {
+    "id": "3512",
+    "province_id": "35",
+    "name": "Situbondo",
+    "latitude": -7.8061448451315325,
+    "longitude": 113.99143437892108
+  },
+  {
+    "id": "3513",
+    "province_id": "35",
+    "name": "Probolinggo",
+    "latitude": -7.881103166078903,
+    "longitude": 113.2818983335527
+  },
+  {
+    "id": "3514",
+    "province_id": "35",
+    "name": "Pasuruan",
+    "latitude": -7.72016127221424,
+    "longitude": 112.83701547800005
+  },
+  {
+    "id": "3515",
+    "province_id": "35",
+    "name": "Sidoarjo",
+    "latitude": -7.469748519368379,
+    "longitude": 112.7099252636316
+  },
+  {
+    "id": "3516",
+    "province_id": "35",
+    "name": "Mojokerto",
+    "latitude": -7.549665559238046,
+    "longitude": 112.47243355009526
+  },
+  {
+    "id": "3517",
+    "province_id": "35",
+    "name": "Jombang",
+    "latitude": -7.5502399627916175,
+    "longitude": 112.2641086640834
+  },
+  {
+    "id": "3518",
+    "province_id": "35",
+    "name": "Nganjuk",
+    "latitude": -7.607593692999951,
+    "longitude": 111.93422369340007
+  },
+  {
+    "id": "3519",
+    "province_id": "35",
+    "name": "Madiun",
+    "latitude": -7.641289717448227,
+    "longitude": 111.6085826446897
+  },
+  {
+    "id": "3520",
+    "province_id": "35",
+    "name": "Magetan",
+    "latitude": -7.6591635215499565,
+    "longitude": 111.38137955905006
+  },
+  {
+    "id": "3521",
+    "province_id": "35",
+    "name": "Ngawi",
+    "latitude": -7.445358558359951,
+    "longitude": 111.34763905560001
+  },
+  {
+    "id": "3522",
+    "province_id": "35",
+    "name": "Bojonegoro",
+    "latitude": -7.253671612031209,
+    "longitude": 111.79288112037506
+  },
+  {
+    "id": "3523",
+    "province_id": "35",
+    "name": "Tuban",
+    "latitude": -6.948509703038417,
+    "longitude": 111.84717636103852
+  },
+  {
+    "id": "3524",
+    "province_id": "35",
+    "name": "Lamongan",
+    "latitude": -7.138707181034437,
+    "longitude": 112.30299982913802
+  },
+  {
+    "id": "3525",
+    "province_id": "35",
+    "name": "Gresik",
+    "latitude": -6.837047723799957,
+    "longitude": 112.54611433364998
+  },
+  {
+    "id": "3526",
+    "province_id": "35",
+    "name": "Bangkalan",
+    "latitude": -7.0527137362608245,
+    "longitude": 112.91529098952181
+  },
+  {
+    "id": "3527",
+    "province_id": "35",
+    "name": "Sampang",
+    "latitude": -7.093659019476147,
+    "longitude": 113.22697069347628
+  },
+  {
+    "id": "3528",
+    "province_id": "35",
+    "name": "Pamekasan",
+    "latitude": -7.083464783857088,
+    "longitude": 113.48624193328578
+  },
+  {
+    "id": "3529",
+    "province_id": "35",
+    "name": "Sumenep",
+    "latitude": -7.0267784445908665,
+    "longitude": 114.75925451190915
+  },
+  {
+    "id": "3571",
+    "province_id": "35",
+    "name": "Kota Kediri",
+    "latitude": -7.83708444049995,
+    "longitude": 112.02114782683338
+  },
+  {
+    "id": "3572",
+    "province_id": "35",
+    "name": "Kota Blitar",
+    "latitude": -8.105433636799955,
+    "longitude": 112.16666547660004
+  },
+  {
+    "id": "3573",
+    "province_id": "35",
+    "name": "Kota Malang",
+    "latitude": -7.978314441124958,
+    "longitude": 112.63995568475008
+  },
+  {
+    "id": "3574",
+    "province_id": "35",
+    "name": "Kota Probolinggo",
+    "latitude": -7.770069659666632,
+    "longitude": 113.19585726683341
+  },
+  {
+    "id": "3575",
+    "province_id": "35",
+    "name": "Kota Pasuruan",
+    "latitude": -7.643327600833298,
+    "longitude": 112.91185671916669
+  },
+  {
+    "id": "3576",
+    "province_id": "35",
+    "name": "Kota Mojokerto",
+    "latitude": -7.4704,
+    "longitude": 112.4340
+  },
+  {
+    "id": "3577",
+    "province_id": "35",
+    "name": "Kota Madiun",
+    "latitude": -7.638837765166613,
+    "longitude": 111.52235672183342
+  },
+  {
+    "id": "3578",
+    "province_id": "35",
+    "name": "Kota Surabaya",
+    "latitude": -7.282299053399953,
+    "longitude": 112.72302590860004
+  },
+  {
+    "id": "3579",
+    "province_id": "35",
+    "name": "Kota Batu",
+    "latitude": -7.818627548699953,
+    "longitude": 112.53036244120005
+  },
+  {
+    "id": "3601",
+    "province_id": "36",
+    "name": "Pandeglang",
+    "latitude": -6.5737677148135125,
+    "longitude": 105.6902861745933
+  },
+  {
+    "id": "3602",
+    "province_id": "36",
+    "name": "Lebak",
+    "latitude": -6.641148495897395,
+    "longitude": 106.19263246287187
+  },
+  {
+    "id": "3603",
+    "province_id": "36",
+    "name": "Tangerang",
+    "latitude": -6.178193311535673,
+    "longitude": 106.53942321621433
+  },
+  {
+    "id": "3604",
+    "province_id": "36",
+    "name": "Serang",
+    "latitude": -6.120084713021698,
+    "longitude": 106.1363015889131
+  },
+  {
+    "id": "3671",
+    "province_id": "36",
+    "name": "Kota Tangerang",
+    "latitude": -6.175491359545413,
+    "longitude": 106.66731926236368
+  },
+  {
+    "id": "3672",
+    "province_id": "36",
+    "name": "Kota Cilegon",
+    "latitude": -5.998665358545421,
+    "longitude": 106.01002697500006
+  },
+  {
+    "id": "3673",
+    "province_id": "36",
+    "name": "Kota Serang",
+    "latitude": -6.115894115916618,
+    "longitude": 106.15428187783338
+  },
+  {
+    "id": "3674",
+    "province_id": "36",
+    "name": "Kota Tangerang Selatan",
+    "latitude": -6.312711554899954,
+    "longitude": 106.72040865440007
+  },
+  {
+    "id": "5101",
+    "province_id": "51",
+    "name": "Jembrana",
+    "latitude": -8.28972424114281,
+    "longitude": 114.68558115742864
+  },
+  {
+    "id": "5102",
+    "province_id": "51",
+    "name": "Tabanan",
+    "latitude": -8.417128635647009,
+    "longitude": 115.10023189400007
+  },
+  {
+    "id": "5103",
+    "province_id": "51",
+    "name": "Badung",
+    "latitude": -8.587613835538416,
+    "longitude": 115.1840531826924
+  },
+  {
+    "id": "5104",
+    "province_id": "51",
+    "name": "Gianyar",
+    "latitude": -8.48915700316663,
+    "longitude": 115.29609990400006
+  },
+  {
+    "id": "5105",
+    "province_id": "51",
+    "name": "Klungkung",
+    "latitude": -8.630975997705836,
+    "longitude": 115.47818650729417
+  },
+  {
+    "id": "5106",
+    "province_id": "51",
+    "name": "Bangli",
+    "latitude": -8.329690302222177,
+    "longitude": 115.34325997022226
+  },
+  {
+    "id": "5107",
+    "province_id": "51",
+    "name": "Karangasem",
+    "latitude": -8.398295820099953,
+    "longitude": 115.51766012925006
+  },
+  {
+    "id": "5108",
+    "province_id": "51",
+    "name": "Buleleng",
+    "latitude": -8.209750723810764,
+    "longitude": 114.9020995786487
+  },
+  {
+    "id": "5171",
+    "province_id": "51",
+    "name": "Kota Denpasar",
+    "latitude": -8.673585147714252,
+    "longitude": 115.21694111900003
+  },
+  {
+    "id": "5201",
+    "province_id": "52",
+    "name": "Lombok Barat",
+    "latitude": -8.662772136733281,
+    "longitude": 116.0872145105334
+  },
+  {
+    "id": "5202",
+    "province_id": "52",
+    "name": "Lombok Tengah",
+    "latitude": -8.70784295018177,
+    "longitude": 116.27769740686371
+  },
+  {
+    "id": "5203",
+    "province_id": "52",
+    "name": "Lombok Timur",
+    "latitude": -8.607360262730726,
+    "longitude": 116.50534688134623
+  },
+  {
+    "id": "5204",
+    "province_id": "52",
+    "name": "Sumbawa",
+    "latitude": -8.654778077628528,
+    "longitude": 117.51473657492866
+  },
+  {
+    "id": "5205",
+    "province_id": "52",
+    "name": "Dompu",
+    "latitude": -8.510549295874954,
+    "longitude": 118.23674869552092
+  },
+  {
+    "id": "5206",
+    "province_id": "52",
+    "name": "Bima",
+    "latitude": -8.444771029677732,
+    "longitude": 118.65069269753333
+  },
+  {
+    "id": "5207",
+    "province_id": "52",
+    "name": "Sumbawa Barat",
+    "latitude": -8.850785929961487,
+    "longitude": 116.93215521884622
+  },
+  {
+    "id": "5208",
+    "province_id": "52",
+    "name": "Lombok Utara",
+    "latitude": -8.364779747166617,
+    "longitude": 116.26367639705563
+  },
+  {
+    "id": "5271",
+    "province_id": "52",
+    "name": "Kota Mataram",
+    "latitude": -8.59676416849994,
+    "longitude": 116.10910422150009
+  },
+  {
+    "id": "5272",
+    "province_id": "52",
+    "name": "Kota Bima",
+    "latitude": -8.450690107799948,
+    "longitude": 118.76370225560007
+  },
+  {
+    "id": "5204",
+    "province_id": "52",
+    "name": "Sumbawa",
+    "latitude": -8.7312,
+    "longitude": 117.4138
+  },
+  {
+    "id": "5207",
+    "province_id": "52",
+    "name": "Sumbawa Barat",
+    "latitude": -8.7652,
+    "longitude": 116.8916
+  },
+  {
+    "id": "5301",
+    "province_id": "53",
+    "name": "Kupang",
+    "latitude": -9.986142255538413,
+    "longitude": 123.77619678969245
+  },
+  {
+    "id": "5302",
+    "province_id": "53",
+    "name": "Timor Tengah Selatan",
+    "latitude": -9.803579478897388,
+    "longitude": 124.37559796474365
+  },
+  {
+    "id": "5303",
+    "province_id": "53",
+    "name": "Timor Tengah Utara",
+    "latitude": -9.381891794307645,
+    "longitude": 124.49291369228213
+  },
+  {
+    "id": "5304",
+    "province_id": "53",
+    "name": "Belu",
+    "latitude": -9.17755716951848,
+    "longitude": 124.95970892129638
+  },
+  {
+    "id": "5305",
+    "province_id": "53",
+    "name": "Alor",
+    "latitude": -8.322919538140304,
+    "longitude": 124.4518398053685
+  },
+  {
+    "id": "5306",
+    "province_id": "53",
+    "name": "Flores Timur",
+    "latitude": -8.383758843089238,
+    "longitude": 122.93228279991077
+  },
+  {
+    "id": "5307",
+    "province_id": "53",
+    "name": "Sikka",
+    "latitude": -8.564542580767394,
+    "longitude": 122.21685634023265
+  },
+  {
+    "id": "5308",
+    "province_id": "53",
+    "name": "Ende",
+    "latitude": -8.676918893068912,
+    "longitude": 121.73685673462077
+  },
+  {
+    "id": "5309",
+    "province_id": "53",
+    "name": "Ngada",
+    "latitude": -8.651595511172369,
+    "longitude": 120.9886611093104
+  },
+  {
+    "id": "5310",
+    "province_id": "53",
+    "name": "Manggarai",
+    "latitude": -8.583399671249948,
+    "longitude": 120.38194382367861
+  },
+  {
+    "id": "5311",
+    "province_id": "53",
+    "name": "Sumba Timur",
+    "latitude": -9.825759337079955,
+    "longitude": 120.21293285564008
+  },
+  {
+    "id": "5312",
+    "province_id": "53",
+    "name": "Sumba Barat",
+    "latitude": -9.636391310679953,
+    "longitude": 119.35397870544003
+  },
+  {
+    "id": "5313",
+    "province_id": "53",
+    "name": "Lembata",
+    "latitude": -8.37711790648776,
+    "longitude": 123.55112071846348
+  },
+  {
+    "id": "5314",
+    "province_id": "53",
+    "name": "Rote Ndao",
+    "latitude": -10.723895557833288,
+    "longitude": 123.15028241195837
+  },
+  {
+    "id": "5315",
+    "province_id": "53",
+    "name": "Manggarai Barat",
+    "latitude": -8.606209253671599,
+    "longitude": 119.84594325541802
+  },
+  {
+    "id": "5316",
+    "province_id": "53",
+    "name": "Nagekeo",
+    "latitude": -8.69656049533329,
+    "longitude": 121.2674592327408
+  },
+  {
+    "id": "5317",
+    "province_id": "53",
+    "name": "Sumba Tengah",
+    "latitude": -9.562558175479952,
+    "longitude": 119.67573678124006
+  },
+  {
+    "id": "5318",
+    "province_id": "53",
+    "name": "Sumba Barat Daya",
+    "latitude": -9.539232870590867,
+    "longitude": 119.19649415163643
+  },
+  {
+    "id": "5319",
+    "province_id": "53",
+    "name": "Manggarai Timur",
+    "latitude": -8.54831825518745,
+    "longitude": 120.68897916162504
+  },
+  {
+    "id": "5320",
+    "province_id": "53",
+    "name": "Sabu Raijua",
+    "latitude": -10.535365095999959,
+    "longitude": 121.85441726220006
+  },
+  {
+    "id": "5321",
+    "province_id": "53",
+    "name": "Malaka",
+    "latitude": -9.537511538399954,
+    "longitude": 124.86335916344004
+  },
+  {
+    "id": "5371",
+    "province_id": "53",
+    "name": "Kota Kupang",
+    "latitude": -10.215839610999954,
+    "longitude": 123.59943982255562
+  },
+  {
+    "id": "6101",
+    "province_id": "61",
+    "name": "Sambas",
+    "latitude": 1.4210028731087434,
+    "longitude": 109.33977629193485
+  },
+  {
+    "id": "6102",
+    "province_id": "61",
+    "name": "Mempawah",
+    "latitude": 0.36842344335298594,
+    "longitude": 109.15877908900008
+  },
+  {
+    "id": "6103",
+    "province_id": "61",
+    "name": "Sanggau",
+    "latitude": 0.3273043827000482,
+    "longitude": 110.41332017984448
+  },
+  {
+    "id": "6104",
+    "province_id": "61",
+    "name": "Ketapang",
+    "latitude": -1.605885367299954,
+    "longitude": 110.55445354568006
+  },
+  {
+    "id": "6105",
+    "province_id": "61",
+    "name": "Sintang",
+    "latitude": 0.10194531342962561,
+    "longitude": 111.9837310077325
+  },
+  {
+    "id": "6106",
+    "province_id": "61",
+    "name": "Kapuas Hulu",
+    "latitude": 0.8642709834491987,
+    "longitude": 112.81414270016955
+  },
+  {
+    "id": "6107",
+    "province_id": "61",
+    "name": "Bengkayang",
+    "latitude": 0.9579201312333804,
+    "longitude": 109.46713252986669
+  },
+  {
+    "id": "6108",
+    "province_id": "61",
+    "name": "Landak",
+    "latitude": 0.5145312217576216,
+    "longitude": 109.69427952092434
+  },
+  {
+    "id": "6109",
+    "province_id": "61",
+    "name": "Sekadau",
+    "latitude": -0.017148410812447785,
+    "longitude": 110.93791815854696
+  },
+  {
+    "id": "6110",
+    "province_id": "61",
+    "name": "Melawi",
+    "latitude": -0.6842475980136532,
+    "longitude": 111.73770113804115
+  },
+  {
+    "id": "6111",
+    "province_id": "61",
+    "name": "Kayong Utara",
+    "latitude": -1.1619785985573332,
+    "longitude": 109.76069799603289
+  },
+  {
+    "id": "6112",
+    "province_id": "61",
+    "name": "Kubu Raya",
+    "latitude": -0.45931728329902194,
+    "longitude": 109.48123680005612
+  },
+  {
+    "id": "6171",
+    "province_id": "61",
+    "name": "Kota Pontianak",
+    "latitude": -0.016067028999957995,
+    "longitude": 109.31651869900007
+  },
+  {
+    "id": "6172",
+    "province_id": "61",
+    "name": "Kota Singkawang",
+    "latitude": 0.8873722335714759,
+    "longitude": 109.02524676392862
+  },
+  {
+    "id": "6201",
+    "province_id": "62",
+    "name": "Kotawaringin Barat",
+    "latitude": -2.4731323887360626,
+    "longitude": 111.7552238734445
+  },
+  {
+    "id": "6202",
+    "province_id": "62",
+    "name": "Kotawaringin Timur",
+    "latitude": -2.1397286637104775,
+    "longitude": 112.70519596984217
+  },
+  {
+    "id": "6203",
+    "province_id": "62",
+    "name": "Kapuas",
+    "latitude": -1.9251552749203074,
+    "longitude": 114.31681198712394
+  },
+  {
+    "id": "6204",
+    "province_id": "62",
+    "name": "Barito Selatan",
+    "latitude": -1.8269269176666203,
+    "longitude": 114.98411059044449
+  },
+  {
+    "id": "6205",
+    "province_id": "62",
+    "name": "Barito Utara",
+    "latitude": -0.8934720113670406,
+    "longitude": 115.17411399310134
+  },
+  {
+    "id": "6206",
+    "province_id": "62",
+    "name": "Katingan",
+    "latitude": -1.572303386621573,
+    "longitude": 112.97049829975684
+  },
+  {
+    "id": "6207",
+    "province_id": "62",
+    "name": "Seruyan",
+    "latitude": -2.0930691943725033,
+    "longitude": 112.1390434176569
+  },
+  {
+    "id": "6208",
+    "province_id": "62",
+    "name": "Sukamara",
+    "latitude": -2.590232560674373,
+    "longitude": 111.14169732232563
+  },
+  {
+    "id": "6209",
+    "province_id": "62",
+    "name": "Lamandau",
+    "latitude": -1.8042560886274026,
+    "longitude": 111.40405884145102
+  },
+  {
+    "id": "6210",
+    "province_id": "62",
+    "name": "Gunung Mas",
+    "latitude": -0.9306415929258794,
+    "longitude": 113.53739134314819
+  },
+  {
+    "id": "6211",
+    "province_id": "62",
+    "name": "Pulang Pisau",
+    "latitude": -2.5898955819076455,
+    "longitude": 113.97220902104623
+  },
+  {
+    "id": "6212",
+    "province_id": "62",
+    "name": "Murung Raya",
+    "latitude": -0.02092853489714785,
+    "longitude": 114.21876275076639
+  },
+  {
+    "id": "6213",
+    "province_id": "62",
+    "name": "Barito Timur",
+    "latitude": -1.9995217263792642,
+    "longitude": 115.14438968041387
+  },
+  {
+    "id": "6271",
+    "province_id": "62",
+    "name": "Kota Palangkaraya",
+    "latitude": -2.0195253377199585,
+    "longitude": 113.78854139280007
+  },
+  {
+    "id": "6301",
+    "province_id": "63",
+    "name": "Tanah Laut",
+    "latitude": -3.7304745786969264,
+    "longitude": 114.9009974043031
+  },
+  {
+    "id": "6302",
+    "province_id": "63",
+    "name": "Kotabaru",
+    "latitude": -3.1085040672524804,
+    "longitude": 116.09988445988894
+  },
+  {
+    "id": "6303",
+    "province_id": "63",
+    "name": "Banjar",
+    "latitude": -3.3082928466666233,
+    "longitude": 115.06863580122817
+  },
+  {
+    "id": "6304",
+    "province_id": "63",
+    "name": "Barito Kuala",
+    "latitude": -3.0536230872499543,
+    "longitude": 114.63464814430009
+  },
+  {
+    "id": "6305",
+    "province_id": "63",
+    "name": "Tapin",
+    "latitude": -2.9091927081922595,
+    "longitude": 115.12364257573084
+  },
+  {
+    "id": "6306",
+    "province_id": "63",
+    "name": "Hulu Sungai Selatan",
+    "latitude": -2.742914276954498,
+    "longitude": 115.25705184581824
+  },
+  {
+    "id": "6307",
+    "province_id": "63",
+    "name": "Hulu Sungai Tengah",
+    "latitude": -2.613058778879954,
+    "longitude": 115.48701638900006
+  },
+  {
+    "id": "6308",
+    "province_id": "63",
+    "name": "Hulu Sungai Utara",
+    "latitude": -2.4486790687499536,
+    "longitude": 115.14010920630008
+  },
+  {
+    "id": "6309",
+    "province_id": "63",
+    "name": "Tabalong",
+    "latitude": -1.8760172308477794,
+    "longitude": 115.49219158073917
+  },
+  {
+    "id": "6310",
+    "province_id": "63",
+    "name": "Tanah Bumbu",
+    "latitude": -3.4015540356388434,
+    "longitude": 115.62864868075008
+  },
+  {
+    "id": "6311",
+    "province_id": "63",
+    "name": "Balangan",
+    "latitude": -2.2939347514799553,
+    "longitude": 115.59220726452011
+  },
+  {
+    "id": "6371",
+    "province_id": "63",
+    "name": "Kota Banjarmasin",
+    "latitude": -3.329463564428522,
+    "longitude": 114.5755566328572
+  },
+  {
+    "id": "6372",
+    "province_id": "63",
+    "name": "Kota Banjarbaru",
+    "latitude": -3.492547040181783,
+    "longitude": 114.78593092618188
+  },
+  {
+    "id": "6401",
+    "province_id": "64",
+    "name": "Paser",
+    "latitude": -1.7663712766666184,
+    "longitude": 116.16795772425293
+  },
+  {
+    "id": "6402",
+    "province_id": "64",
+    "name": "Kutai Kartanegara",
+    "latitude": -0.0646337178389853,
+    "longitude": 116.72374130413662
+  },
+  {
+    "id": "6403",
+    "province_id": "64",
+    "name": "Berau",
+    "latitude": 1.861412341980674,
+    "longitude": 117.51298707714844
+  },
+  {
+    "id": "6407",
+    "province_id": "64",
+    "name": "Kutai Barat",
+    "latitude": -0.4816775035713843,
+    "longitude": 115.80825756106495
+  },
+  {
+    "id": "6408",
+    "province_id": "64",
+    "name": "Kutai Timur",
+    "latitude": 1.0197166742293384,
+    "longitude": 117.34463450077712
+  },
+  {
+    "id": "6409",
+    "province_id": "64",
+    "name": "Penajam Paser Utara",
+    "latitude": -1.130906733756052,
+    "longitude": 116.60429043336595
+  },
+  {
+    "id": "6411",
+    "province_id": "64",
+    "name": "Mahakam Ulu",
+    "latitude": 0.6921700279145688,
+    "longitude": 114.82045062670944
+  },
+  {
+    "id": "6471",
+    "province_id": "64",
+    "name": "Kota Balikpapan",
+    "latitude": -1.1436344811176102,
+    "longitude": 116.84413662400006
+  },
+  {
+    "id": "6472",
+    "province_id": "64",
+    "name": "Kota Samarinda",
+    "latitude": -0.5211571153332881,
+    "longitude": 117.19283862411118
+  },
+  {
+    "id": "6474",
+    "province_id": "64",
+    "name": "Kota Bontang",
+    "latitude": 0.09516519588893944,
+    "longitude": 117.46638743288895
+  },
+  {
+    "id": "6501",
+    "province_id": "65",
+    "name": "Bulungan",
+    "latitude": 2.8305594000952725,
+    "longitude": 117.08880745310321
+  },
+  {
+    "id": "6502",
+    "province_id": "65",
+    "name": "Malinau",
+    "latitude": 2.502527073261941,
+    "longitude": 115.64978635838699
+  },
+  {
+    "id": "6503",
+    "province_id": "65",
+    "name": "Nunukan",
+    "latitude": 3.987465387241425,
+    "longitude": 116.75857135546906
+  },
+  {
+    "id": "6504",
+    "province_id": "65",
+    "name": "Tana Tidung",
+    "latitude": 3.57218626107251,
+    "longitude": 117.25459958563772
+  },
+  {
+    "id": "6571",
+    "province_id": "65",
+    "name": "Kota Tarakan",
+    "latitude": 3.3509175400000473,
+    "longitude": 117.59409164100003
+  },
+  {
+    "id": "7101",
+    "province_id": "71",
+    "name": "Bolaang Mongondow",
+    "latitude": 0.688749258214335,
+    "longitude": 124.01158818430962
+  },
+  {
+    "id": "7102",
+    "province_id": "71",
+    "name": "Minahasa",
+    "latitude": 1.2752401129200461,
+    "longitude": 124.82363223788008
+  },
+  {
+    "id": "7103",
+    "province_id": "71",
+    "name": "Kepulauan Sangihe",
+    "latitude": 3.5456725553333777,
+    "longitude": 125.53437148727784
+  },
+  {
+    "id": "7104",
+    "province_id": "71",
+    "name": "Kepulauan Talaud",
+    "latitude": 4.1222442613514,
+    "longitude": 126.76467595332439
+  },
+  {
+    "id": "7105",
+    "province_id": "71",
+    "name": "Minahasa Selatan",
+    "latitude": 1.0817270932353438,
+    "longitude": 124.53760618985295
+  },
+  {
+    "id": "7105",
+    "province_id": "71",
+    "name": "Minahasa Selatan",
+    "latitude": 1.1539,
+    "longitude": 124.7000
+  },
+  {
+    "id": "7110",
+    "province_id": "71",
+    "name": "Bolaang Mongondow Timur",
+    "latitude": 0.7286,
+    "longitude": 124.5778
+  },
+  {
+    "id": "7106",
+    "province_id": "71",
+    "name": "Minahasa Utara",
+    "latitude": 1.5125965124583776,
+    "longitude": 125.00278124429171
+  },
+  {
+    "id": "7107",
+    "province_id": "71",
+    "name": "Minahasa Tenggara",
+    "latitude": 0.9918682208889417,
+    "longitude": 124.70714457333341
+  },
+  {
+    "id": "7108",
+    "province_id": "71",
+    "name": "Bolaang Mongondow Utara",
+    "latitude": 0.757286798931083,
+    "longitude": 123.46198380862072
+  },
+  {
+    "id": "7109",
+    "province_id": "71",
+    "name": "Kepulauan Siau Tagulandang Biaro",
+    "latitude": 2.5683853950667186,
+    "longitude": 125.40794410420007
+  },
+  {
+    "id": "7110",
+    "province_id": "71",
+    "name": "Bolaang Mongondow Timur",
+    "latitude": 0.7078784091154338,
+    "longitude": 124.50612499246161
+  },
+  {
+    "id": "7111",
+    "province_id": "71",
+    "name": "Bolaang Mongondow Selatan",
+    "latitude": 0.4504733211628345,
+    "longitude": 123.88899141830233
+  },
+  {
+    "id": "7171",
+    "province_id": "71",
+    "name": "Kota Manado",
+    "latitude": 1.5144400425000413,
+    "longitude": 124.84783711220007
+  },
+  {
+    "id": "7172",
+    "province_id": "71",
+    "name": "Kota Bitung",
+    "latitude": 1.4995523085455138,
+    "longitude": 125.14709323400005
+  },
+  {
+    "id": "7173",
+    "province_id": "71",
+    "name": "Kota Tomohon",
+    "latitude": 1.315534217500037,
+    "longitude": 124.80775996212506
+  },
+  {
+    "id": "7174",
+    "province_id": "71",
+    "name": "Kota Kotamobagu",
+    "latitude": 0.7170327716250426,
+    "longitude": 124.33238983575006
+  },
+  {
+    "id": "7201",
+    "province_id": "72",
+    "name": "Banggai",
+    "latitude": -1.0052517448157434,
+    "longitude": 122.61160771531587
+  },
+  {
+    "id": "7202",
+    "province_id": "72",
+    "name": "Poso",
+    "latitude": -1.7137617035737236,
+    "longitude": 120.479678345246
+  },
+  {
+    "id": "7203",
+    "province_id": "72",
+    "name": "Donggala",
+    "latitude": -0.312408487220134,
+    "longitude": 119.84814414866055
+  },
+  {
+    "id": "7204",
+    "province_id": "72",
+    "name": "Toli Toli",
+    "latitude": 0.939917169960836,
+    "longitude": 120.69353212460793
+  },
+  {
+    "id": "7205",
+    "province_id": "72",
+    "name": "Buol",
+    "latitude": 0.9850982130943845,
+    "longitude": 121.47690931584907
+  },
+  {
+    "id": "7206",
+    "province_id": "72",
+    "name": "Morowali",
+    "latitude": -2.8818633593384138,
+    "longitude": 122.09870435706159
+  },
+  {
+    "id": "7207",
+    "province_id": "72",
+    "name": "Banggai Kepulauan",
+    "latitude": -1.3760130214199513,
+    "longitude": 123.1759694951601
+  },
+  {
+    "id": "7208",
+    "province_id": "72",
+    "name": "Parigi Moutong",
+    "latitude": -0.03927081899995167,
+    "longitude": 120.38257701218872
+  },
+  {
+    "id": "7209",
+    "province_id": "72",
+    "name": "Tojo Una Una",
+    "latitude": -0.8264265961752133,
+    "longitude": 121.7422819655464
+  },
+  {
+    "id": "7210",
+    "province_id": "72",
+    "name": "Sigi",
+    "latitude": -1.4290935922968286,
+    "longitude": 119.98156661379693
+  },
+  {
+    "id": "7211",
+    "province_id": "72",
+    "name": "Banggai Laut",
+    "latitude": -1.7782843851428092,
+    "longitude": 123.44843819828577
+  },
+  {
+    "id": "7212",
+    "province_id": "72",
+    "name": "Morowali Utara",
+    "latitude": -1.8679737029696466,
+    "longitude": 121.41086347775763
+  },
+  {
+    "id": "7271",
+    "province_id": "72",
+    "name": "Kota Palu",
+    "latitude": -0.8366223928570933,
+    "longitude": 119.88644624919053
+  },
+  {
+    "id": "7301",
+    "province_id": "73",
+    "name": "Kepulauan Selayar",
+    "latitude": -6.844510909139953,
+    "longitude": 120.87097167292
+  },
+  {
+    "id": "7302",
+    "province_id": "73",
+    "name": "Bulukumba",
+    "latitude": -5.454516826230724,
+    "longitude": 120.2148969229616
+  },
+  {
+    "id": "7303",
+    "province_id": "73",
+    "name": "Bantaeng",
+    "latitude": -5.479908629714251,
+    "longitude": 119.97982065078578
+  },
+  {
+    "id": "7304",
+    "province_id": "73",
+    "name": "Jeneponto",
+    "latitude": -5.536162787666624,
+    "longitude": 119.71375434329639
+  },
+  {
+    "id": "7305",
+    "province_id": "73",
+    "name": "Takalar",
+    "latitude": -5.400689954079951,
+    "longitude": 119.45114148788004
+  },
+  {
+    "id": "7306",
+    "province_id": "73",
+    "name": "Gowa",
+    "latitude": -5.322797923857093,
+    "longitude": 119.66920508457146
+  },
+  {
+    "id": "7307",
+    "province_id": "73",
+    "name": "Sinjai",
+    "latitude": -5.219480156999953,
+    "longitude": 120.11737685300002
+  },
+  {
+    "id": "7308",
+    "province_id": "73",
+    "name": "Bone",
+    "latitude": -4.711255326033287,
+    "longitude": 120.07633000943338
+  },
+  {
+    "id": "7309",
+    "province_id": "73",
+    "name": "Maros",
+    "latitude": -4.985308677965471,
+    "longitude": 119.73425856517242
+  },
+  {
+    "id": "7310",
+    "province_id": "73",
+    "name": "Pangkajene Kepulauan",
+    "latitude": -4.767864124952331,
+    "longitude": 119.65340119771433
+  },
+  {
+    "id": "7311",
+    "province_id": "73",
+    "name": "Barru",
+    "latitude": -4.496012475999953,
+    "longitude": 119.69719794733338
+  },
+  {
+    "id": "7312",
+    "province_id": "73",
+    "name": "Soppeng",
+    "latitude": -4.3165259519354375,
+    "longitude": 119.92752023206455
+  },
+  {
+    "id": "7313",
+    "province_id": "73",
+    "name": "Wajo",
+    "latitude": -4.007467979937452,
+    "longitude": 120.14461847770842
+  },
+  {
+    "id": "7314",
+    "province_id": "73",
+    "name": "Sidenreng Rappang",
+    "latitude": -3.809981079902396,
+    "longitude": 119.99457419629276
+  },
+  {
+    "id": "7315",
+    "province_id": "73",
+    "name": "Pinrang",
+    "latitude": -3.5885545678147728,
+    "longitude": 119.5794247788519
+  },
+  {
+    "id": "7316",
+    "province_id": "73",
+    "name": "Enrekang",
+    "latitude": -3.532809085772685,
+    "longitude": 119.87488957754555
+  },
+  {
+    "id": "7317",
+    "province_id": "73",
+    "name": "Luwu",
+    "latitude": -3.129323910999954,
+    "longitude": 120.15815698092868
+  },
+  {
+    "id": "7318",
+    "province_id": "73",
+    "name": "Tana Toraja",
+    "latitude": -3.128539761658486,
+    "longitude": 119.718130000122
+  },
+  {
+    "id": "7322",
+    "province_id": "73",
+    "name": "Luwu Utara",
+    "latitude": -2.3711925528799513,
+    "longitude": 120.15730369076003
+  },
+  {
+    "id": "7324",
+    "province_id": "73",
+    "name": "Luwu Timur",
+    "latitude": -2.520720492640582,
+    "longitude": 121.07346005350007
+  },
+  {
+    "id": "7326",
+    "province_id": "73",
+    "name": "Toraja Utara",
+    "latitude": -2.902413917148101,
+    "longitude": 119.8783564047778
+  },
+  {
+    "id": "7371",
+    "province_id": "73",
+    "name": "Kota Makassar",
+    "latitude": -5.15371496016662,
+    "longitude": 119.45307181441672
+  },
+  {
+    "id": "7372",
+    "province_id": "73",
+    "name": "Kota Pare Pare",
+    "latitude": -4.029624995999947,
+    "longitude": 119.66488403285723
+  },
+  {
+    "id": "7373",
+    "province_id": "73",
+    "name": "Kota Palopo",
+    "latitude": -2.9776295847999585,
+    "longitude": 120.13284568410003
+  },
+  {
+    "id": "7401",
+    "province_id": "74",
+    "name": "Kolaka",
+    "latitude": -4.089033362749955,
+    "longitude": 121.51868280965913
+  },
+  {
+    "id": "7402",
+    "province_id": "74",
+    "name": "Konawe",
+    "latitude": -3.5480175224132866,
+    "longitude": 121.9142769920801
+  },
+  {
+    "id": "7403",
+    "province_id": "74",
+    "name": "Muna",
+    "latitude": -4.92545422126526,
+    "longitude": 122.65277462600005
+  },
+  {
+    "id": "7404",
+    "province_id": "74",
+    "name": "Buton",
+    "latitude": -5.332146770593709,
+    "longitude": 122.9016737384063
+  },
+  {
+    "id": "7405",
+    "province_id": "74",
+    "name": "Konawe Selatan",
+    "latitude": -4.282075406106337,
+    "longitude": 122.4743002651065
+  },
+  {
+    "id": "7406",
+    "province_id": "74",
+    "name": "Bombana",
+    "latitude": -4.86932381631703,
+    "longitude": 121.86428067531715
+  },
+  {
+    "id": "7407",
+    "province_id": "74",
+    "name": "Wakatobi",
+    "latitude": -5.648592620111056,
+    "longitude": 123.82831669751859
+  },
+  {
+    "id": "7408",
+    "province_id": "74",
+    "name": "Kolaka Utara",
+    "latitude": -3.231142108224959,
+    "longitude": 121.13042853622505
+  },
+  {
+    "id": "7409",
+    "province_id": "74",
+    "name": "Konawe Utara",
+    "latitude": -3.4179441897376566,
+    "longitude": 122.10487628904926
+  },
+  {
+    "id": "7410",
+    "province_id": "74",
+    "name": "Buton Utara",
+    "latitude": -4.788771322924959,
+    "longitude": 123.01830736697507
+  },
+  {
+    "id": "7411",
+    "province_id": "74",
+    "name": "Kolaka Timur",
+    "latitude": -3.8084013882592105,
+    "longitude": 121.61329841168524
+  },
+  {
+    "id": "7412",
+    "province_id": "74",
+    "name": "Konawe Kepulauan",
+    "latitude": -4.117089083692258,
+    "longitude": 123.10704818000008
+  },
+  {
+    "id": "7413",
+    "province_id": "74",
+    "name": "Muna Barat",
+    "latitude": -4.822954241555506,
+    "longitude": 122.52025332516672
+  },
+  {
+    "id": "7414",
+    "province_id": "74",
+    "name": "Buton Tengah",
+    "latitude": -5.316006515172369,
+    "longitude": 122.35708362731039
+  },
+  {
+    "id": "7415",
+    "province_id": "74",
+    "name": "Buton Selatan",
+    "latitude": -5.619313977421008,
+    "longitude": 122.64349405484217
+  },
+  {
+    "id": "7471",
+    "province_id": "74",
+    "name": "Kota Kendari",
+    "latitude": -3.9854905142999484,
+    "longitude": 122.53377077140007
+  },
+  {
+    "id": "7472",
+    "province_id": "74",
+    "name": "Kota Bau Bau",
+    "latitude": -5.438943080583286,
+    "longitude": 122.65508291366673
+  },
+  {
+    "id": "7501",
+    "province_id": "75",
+    "name": "Gorontalo",
+    "latitude": 0.70640754685719,
+    "longitude": 122.66986697457149
+  },
+  {
+    "id": "7502",
+    "province_id": "75",
+    "name": "Boalemo",
+    "latitude": 0.6492672072500503,
+    "longitude": 122.34793934917865
+  },
+  {
+    "id": "7503",
+    "province_id": "75",
+    "name": "Bone Bolango",
+    "latitude": 0.5538339828965961,
+    "longitude": 123.26835173517247
+  },
+
+  {
+    "id": "7504",
+    "province_id": "75",
+    "name": "Pohuwato",
+    "latitude": 0.6784825981463882,
+    "longitude": 121.63439765302445
+  },
+  {
+    "id": "7505",
+    "province_id": "75",
+    "name": "Gorontalo Utara",
+    "latitude": 0.8729165684762414,
+    "longitude": 122.69272130328582
+  },
+  {
+    "id": "7571",
+    "province_id": "75",
+    "name": "Kota Gorontalo",
+    "latitude": 0.52630415742861,
+    "longitude": 123.06447704328578
+  },
+  {
+    "id": "7601",
+    "province_id": "76",
+    "name": "Pasangkayu",
+    "latitude": -1.3915556382272236,
+    "longitude": 119.52032832681824
+  },
+  {
+    "id": "7602",
+    "province_id": "76",
+    "name": "Mamuju",
+    "latitude": -2.5716517987884155,
+    "longitude": 119.28043404511547
+  },
+  {
+    "id": "7603",
+    "province_id": "76",
+    "name": "Mamasa",
+    "latitude": -3.003762719512149,
+    "longitude": 119.32219092909766
+  },
+  {
+    "id": "7604",
+    "province_id": "76",
+    "name": "Polewali Mandar",
+    "latitude": -3.3260434943234816,
+    "longitude": 119.18336125923535
+  },
+  {
+    "id": "7605",
+    "province_id": "76",
+    "name": "Majene",
+    "latitude": -3.193333984166613,
+    "longitude": 118.92538913023343
+  },
+  {
+    "id": "7606",
+    "province_id": "76",
+    "name": "Mamuju Tengah",
+    "latitude": -2.0232070636570976,
+    "longitude": 119.51190037000005
+  },
+  {
+    "id": "8101",
+    "province_id": "81",
+    "name": "Maluku Tengah",
+    "latitude": -3.3359148420195606,
+    "longitude": 128.94561550049028
+  },
+  {
+    "id": "8102",
+    "province_id": "81",
+    "name": "Maluku Tenggara",
+    "latitude": -5.7307574929090475,
+    "longitude": 132.8752948765455
+  },
+  {
+    "id": "8103",
+    "province_id": "81",
+    "name": "Kepulauan Tanimbar",
+    "latitude": -7.526149227920744,
+    "longitude": 131.31720412974266
+  },
+  {
+    "id": "8104",
+    "province_id": "81",
+    "name": "Buru",
+    "latitude": -3.335439378249954,
+    "longitude": 126.72512279632696
+  },
+  {
+    "id": "8105",
+    "province_id": "81",
+    "name": "Seram Bagian Timur",
+    "latitude": -3.503537118166621,
+    "longitude": 130.5643178410371
+  },
+  {
+    "id": "8106",
+    "province_id": "81",
+    "name": "Seram Bagian Barat",
+    "latitude": -3.15899275760755,
+    "longitude": 128.1853277467849
+  },
+  {
+    "id": "8107",
+    "province_id": "81",
+    "name": "Kepulauan Aru",
+    "latitude": -6.1326591177748195,
+    "longitude": 134.4964961552305
+  },
+  {
+    "id": "8108",
+    "province_id": "81",
+    "name": "Maluku Barat Daya",
+    "latitude": -7.891154998766094,
+    "longitude": 127.81578961457271
+  },
+  {
+    "id": "8109",
+    "province_id": "81",
+    "name": "Buru Selatan",
+    "latitude": -3.5596972216779195,
+    "longitude": 126.59905791725431
+  },
+  {
+    "id": "8171",
+    "province_id": "81",
+    "name": "Kota Ambon",
+    "latitude": -3.675231005928526,
+    "longitude": 128.17930935785722
+  },
+  {
+    "id": "8172",
+    "province_id": "81",
+    "name": "Kota Tual",
+    "latitude": -5.525851851142805,
+    "longitude": 132.42642591678577
+  },
+  {
+    "id": "8201",
+    "province_id": "82",
+    "name": "Halmahera Barat",
+    "latitude": 1.2910465269388225,
+    "longitude": 127.60761619277557
+  },
+  {
+    "id": "8202",
+    "province_id": "82",
+    "name": "Halmahera Tengah",
+    "latitude": 0.33244870075389615,
+    "longitude": 128.39047532556924
+  },
+  {
+    "id": "8203",
+    "province_id": "82",
+    "name": "Halmahera Utara",
+    "latitude": 1.5468474887455035,
+    "longitude": 127.80592452463642
+  },
+  {
+    "id": "8204",
+    "province_id": "82",
+    "name": "Halmahera Selatan",
+    "latitude": -0.7465834431933221,
+    "longitude": 127.6552931830885
+  },
+  {
+    "id": "8205",
+    "province_id": "82",
+    "name": "Kepulauan Sula",
+    "latitude": -1.9940721353487896,
+    "longitude": 125.8788578261396
+  },
+  {
+    "id": "8206",
+    "province_id": "82",
+    "name": "Halmahera Timur",
+    "latitude": 0.9287655278429116,
+    "longitude": 128.31022528017147
+  },
+  {
+    "id": "8207",
+    "province_id": "82",
+    "name": "Pulau Morotai",
+    "latitude": 2.3098604183929092,
+    "longitude": 128.38956802446435
+  },
+  {
+    "id": "8208",
+    "province_id": "82",
+    "name": "Pulau Taliabu",
+    "latitude": -1.8331904756046018,
+    "longitude": 124.80388444930239
+  },
+  {
+    "id": "8271",
+    "province_id": "82",
+    "name": "Kota Ternate",
+    "latitude": 0.8016305191250411,
+    "longitude": 127.34610913137506
+  },
+  {
+    "id": "8272",
+    "province_id": "82",
+    "name": "Kota Tidore Kepulauan",
+    "latitude": 0.46384454486051147,
+    "longitude": 127.66263339360476
+  },
+  {
+    "id": "9101",
+    "province_id": "93",
+    "name": "Merauke",
+    "latitude": -7.776648061357973,
+    "longitude": 139.31909054353707
+  },
+  {
+    "id": "9102",
+    "province_id": "95",
+    "name": "Jayawijaya",
+    "latitude": -4.113245418474958,
+    "longitude": 138.85735479602505
+  },
+  {
+    "id": "9103",
+    "province_id": "91",
+    "name": "Jayapura",
+    "latitude": -3.0621374617208827,
+    "longitude": 140.00971870024426
+  },
+  {
+    "id": "9104",
+    "province_id": "94",
+    "name": "Nabire",
+    "latitude": -3.334919262754854,
+    "longitude": 135.47370927579422
+  },
+  {
+    "id": "9105",
+    "province_id": "91",
+    "name": "Kepulauan Yapen",
+    "latitude": -1.7208372844877597,
+    "longitude": 136.0746032753659
+  },
+  {
+    "id": "9106",
+    "province_id": "91",
+    "name": "Biak Numfor",
+    "latitude": -1.0098013118856703,
+    "longitude": 135.6474000443715
+  },
+  {
+    "id": "9107",
+    "province_id": "94",
+    "name": "Puncak Jaya",
+    "latitude": -3.515314520833286,
+    "longitude": 137.9450399270834
+  },
+  {
+    "id": "9108",
+    "province_id": "94",
+    "name": "Paniai",
+    "latitude": -3.8088157516499552,
+    "longitude": 136.56407548873338
+  },
+  {
+    "id": "9109",
+    "province_id": "94",
+    "name": "Mimika",
+    "latitude": -4.457536205265579,
+    "longitude": 136.67593618118752
+  },
+  {
+    "id": "9110",
+    "province_id": "91",
+    "name": "Sarmi",
+    "latitude": -2.5518618453234847,
+    "longitude": 139.03831459045105
+  },
+  {
+    "id": "9111",
+    "province_id": "91",
+    "name": "Keerom",
+    "latitude": -3.5500445162902747,
+    "longitude": 140.59334120448395
+  },
+  {
+    "id": "9112",
+    "province_id": "95",
+    "name": "Pegunungan Bintang",
+    "latitude": -4.275286765609708,
+    "longitude": 140.38791679152445
+  },
+  {
+    "id": "9113",
+    "province_id": "95",
+    "name": "Yahukimo",
+    "latitude": -4.463135137079954,
+    "longitude": 139.5570713200201
+  },
+  {
+    "id": "9114",
+    "province_id": "95",
+    "name": "Tolikara",
+    "latitude": -3.3398688927272278,
+    "longitude": 138.4344370430364
+  },
+  {
+    "id": "9115",
+    "province_id": "91",
+    "name": "Waropen",
+    "latitude": -2.8729270436264596,
+    "longitude": 136.79626702128922
+  },
+  {
+    "id": "9116",
+    "province_id": "93",
+    "name": "Boven Digoel",
+    "latitude": -6.240796596597358,
+    "longitude": 140.30727960681824
+  },
+  {
+    "id": "9117",
+    "province_id": "93",
+    "name": "Mappi",
+    "latitude": -6.565978500333288,
+    "longitude": 139.20360717404952
+  },
+  {
+    "id": "9118",
+    "province_id": "93",
+    "name": "Asmat",
+    "latitude": -5.229576208542506,
+    "longitude": 138.61044610167025
+  },
+  {
+    "id": "9119",
+    "province_id": "91",
+    "name": "Supiori",
+    "latitude": -0.756888407947321,
+    "longitude": 135.60264471610535
+  },
+  {
+    "id": "9120",
+    "province_id": "91",
+    "name": "Mamberamo Raya",
+    "latitude": -2.5803948820881892,
+    "longitude": 138.09705659356632
+  },
+  {
+    "id": "9121",
+    "province_id": "95",
+    "name": "Mamberamo Tengah",
+    "latitude": -3.5745816091956057,
+    "longitude": 138.9947895895218
+  },
+  {
+    "id": "9122",
+    "province_id": "95",
+    "name": "Yalimo",
+    "latitude": -3.8091743514666176,
+    "longitude": 139.51074688065006
+  },
+  {
+    "id": "9123",
+    "province_id": "95",
+    "name": "Lanny Jaya",
+    "latitude": -3.9760477497631093,
+    "longitude": 138.36381480244742
+  },
+  {
+    "id": "9124",
+    "province_id": "95",
+    "name": "Nduga",
+    "latitude": -4.4285585314931035,
+    "longitude": 138.38755705216445
+  },
+  {
+    "id": "9125",
+    "province_id": "94",
+    "name": "Puncak",
+    "latitude": -3.635335654730289,
+    "longitude": 137.4174525576855
+  },
+  {
+    "id": "9126",
+    "province_id": "94",
+    "name": "Dogiyai",
+    "latitude": -4.043778579340376,
+    "longitude": 135.6002604612341
+  },
+  {
+    "id": "9127",
+    "province_id": "94",
+    "name": "Intan Jaya",
+    "latitude": -3.487865437011448,
+    "longitude": 136.85877062108054
+  },
+  {
+    "id": "9128",
+    "province_id": "94",
+    "name": "Deiyai",
+    "latitude": -4.214614135270788,
+    "longitude": 136.44637952487503
+  },
+  {
+    "id": "9171",
+    "province_id": "91",
+    "name": "Kota Jayapura",
+    "latitude": -2.6528951735999526,
+    "longitude": 140.78375880400012
+  },
+  {
+    "id": "9201",
+    "province_id": "96",
+    "name": "Sorong",
+    "latitude": -1.1962632214174287,
+    "longitude": 131.4881275819806
+  },
+  {
+    "id": "9202",
+    "province_id": "92",
+    "name": "Manokwari",
+    "latitude": -0.9644704217499508,
+    "longitude": 133.80675810834103
+  },
+  {
+    "id": "9203",
+    "province_id": "92",
+    "name": "Fak Fak",
+    "latitude": -3.037403301292258,
+    "longitude": 132.73539989766164
+  },
+  {
+    "id": "9204",
+    "province_id": "96",
+    "name": "Sorong Selatan",
+    "latitude": -1.6857264990677472,
+    "longitude": 132.15538624833906
+  },
+  {
+    "id": "9205",
+    "province_id": "96",
+    "name": "Raja Ampat",
+    "latitude": -0.7677097165591631,
+    "longitude": 130.5311502999212
+  },
+  {
+    "id": "9206",
+    "province_id": "92",
+    "name": "Teluk Bintuni",
+    "latitude": -2.332027070840158,
+    "longitude": 133.6014944840053
+  },
+  {
+    "id": "9207",
+    "province_id": "92",
+    "name": "Teluk Wondama",
+    "latitude": -2.5895354685280445,
+    "longitude": 134.36534507819107
+  },
+  {
+    "id": "9208",
+    "province_id": "92",
+    "name": "Kaimana",
+    "latitude": -3.6525007069762836,
+    "longitude": 134.1335761456214
+  },
+  {
+    "id": "9209",
+    "province_id": "96",
+    "name": "Tambrauw",
+    "latitude": -0.819077236656673,
+    "longitude": 132.67844189610457
+  },
+  {
+    "id": "9210",
+    "province_id": "96",
+    "name": "Maybrat",
+    "latitude": -1.4061838253957848,
+    "longitude": 132.50684493989593
+  },
+  {
+    "id": "9211",
+    "province_id": "92",
+    "name": "Manokwari Selatan",
+    "latitude": -1.5268655157142363,
+    "longitude": 134.00775003722862
+  },
+  {
+    "id": "9212",
+    "province_id": "92",
+    "name": "Pegunungan Arfak",
+    "latitude": -1.2531669808094765,
+    "longitude": 133.6842836359524
+  },
+  {
+    "id": "9271",
+    "province_id": "96",
+    "name": "Kota Sorong",
+    "latitude": -0.8665977658888488,
+    "longitude": 131.33041308677784
+  }
+]

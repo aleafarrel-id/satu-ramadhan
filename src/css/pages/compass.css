@@ -1,0 +1,58 @@
+/* =============================================
+   Compass Page
+   ============================================= */
+
+/* ── Guide Button Wrapper ── */
+
+.compass-guide-wrapper {
+   display: flex;
+   justify-content: flex-start;
+   margin-bottom: var(--spacing-md);
+   margin-top: var(--spacing-sm);
+}
+
+.btn--compass-guide {
+   padding: 6px 14px;
+   min-height: 32px;
+   border-radius: var(--radius-full);
+}
+
+/* ── Location Card Skeleton (Compass) ── */
+
+.compass-skeleton-loc {
+   margin-bottom: var(--spacing-md);
+}
+
+.compass-skeleton-loc__row {
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-sm);
+}
+
+.compass-skeleton-loc__body {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+/* ── Qibla Card Skeleton ── */
+
+.compass-skeleton-qibla {
+   border: 1px solid var(--clr-border-light);
+   background: var(--clr-bg-card);
+}
+
+.compass-skeleton-qibla__badges {
+   display: flex;
+   gap: var(--spacing-sm);
+   flex: 1;
+}
+
+/* ── Compass Dial Skeleton ── */
+
+.compass-skeleton-dial {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}

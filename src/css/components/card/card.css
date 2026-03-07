@@ -1,0 +1,22 @@
+/* =============================================
+   Card Component
+   ============================================= */
+
+.card {
+   background: var(--clr-bg-card);
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-md);
+   border: 1px solid var(--clr-border-light);
+   box-shadow: var(--shadow-sm);
+}
+
+.card--inner {
+   background: rgba(30, 65, 82, 0.7);
+   border: 1px solid var(--clr-primary-a20);
+}
+
+.card--container {
+   border-radius: var(--radius-xl);
+   border: 1px solid var(--clr-border);
+   padding: var(--spacing-md);
+}

@@ -1,0 +1,262 @@
+/* =============================================
+   Skeleton Loading Variants
+   Base .skeleton class lives in app-shell.css
+   These are specialized skeleton shapes/sizes
+   ============================================= */
+
+/* ── Shape Variants ── */
+
+.skeleton--circle {
+    border-radius: 50%;
+}
+
+.skeleton--pill {
+    border-radius: var(--radius-pill);
+}
+
+.skeleton--rounded {
+    border-radius: var(--radius-lg);
+}
+
+/* ── Row/Column Layouts ── */
+
+.skeleton-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.skeleton-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── Countdown Skeleton ── */
+
+.skeleton-countdown-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.skeleton--countdown-label {
+    height: 14px;
+    width: 35%;
+    margin: 0 auto var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+.skeleton--countdown-box {
+    height: 52px;
+    width: 56px;
+    border-radius: var(--radius-md);
+}
+
+.skeleton--countdown-unit {
+    height: 10px;
+    width: 28px;
+    border-radius: var(--radius-sm);
+}
+
+.countdown__separator--dim {
+    opacity: 0.3;
+}
+
+/* ── Featured Card Skeleton ── */
+
+.skeleton-featured {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.skeleton--featured-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton--featured-icon-sm {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+}
+
+.skeleton-featured__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.skeleton-featured__body--ml {
+    margin-left: var(--spacing-md);
+}
+
+/* ── Tube Grid Skeleton ── */
+
+.skeleton--tube {
+    border-radius: var(--radius-lg);
+    min-height: 200px;
+}
+
+.skeleton--tube-tall {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    border-radius: var(--radius-lg);
+    min-height: 280px;
+}
+
+/* ── Org Toggle Skeleton ── */
+
+.skeleton-org {
+    position: relative;
+    width: 100%;
+    min-height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding-left: 28px;
+}
+
+.skeleton-org__icon {
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.skeleton-org__label {
+    height: 12px;
+    width: 60%;
+    border-radius: var(--radius-sm);
+    opacity: 0.5;
+}
+
+/* ── Schedule Page Skeleton ── */
+
+.skeleton--prayer-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.skeleton--nav-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+}
+
+/* ── Generic Size Helpers ── */
+
+.skeleton--badge {
+    height: 32px;
+    width: 70px;
+    border-radius: var(--radius-pill);
+}
+
+.skeleton--badge-lg {
+    width: 80px;
+    height: 36px;
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+}
+
+.skeleton--action-btn {
+    height: 38px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton--action-btn-fill {
+    height: 38px;
+    flex: 1;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton--action-btn-fixed {
+    height: 38px;
+    width: 90px;
+    border-radius: var(--radius-lg);
+}
+
+/* ── Inline Spacing ── */
+
+.skeleton--mb-md {
+    margin-bottom: var(--spacing-md);
+}
+
+.skeleton--mt-sm {
+    margin-top: 4px;
+}
+
+.skeleton--ml-auto {
+    margin-left: auto;
+}
+
+/* ── Compass Page Skeleton ── */
+
+.skeleton--compass-dial {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+}
+
+.skeleton--icon-lg {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton--icon-md {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.skeleton--badge-flex {
+    height: 36px;
+    border-radius: var(--radius-lg);
+    flex: 1;
+}
+
+/* ── Generic Text Skeleton Sizes ── */
+
+.skeleton--text-xl {
+    height: 20px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton--text-lg {
+    height: 18px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton--text-md {
+    height: 16px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton--text-sm {
+    height: 14px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton--text-xs {
+    height: 13px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton--text-base {
+    height: 12px;
+    border-radius: var(--radius-sm);
+}
