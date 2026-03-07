@@ -10,7 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-android
+# android (commented out to track custom native code for notifications)
 ios
 *.local
 

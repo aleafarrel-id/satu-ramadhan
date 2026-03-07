@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Satu Ramadhan</string>
+    <string name="title_activity_main">Satu Ramadhan</string>
+    <string name="package_name">com.saturamadhan.app</string>
+    <string name="custom_url_scheme">com.saturamadhan.app</string>
+
+    <!-- Notification Strings -->
+    <string name="notification_channel_playback_name">Prayer Playback</string>
+    <string name="notification_channel_playback_desc">Kontrol pemutaran adzan</string>
+    <string name="notification_title_adzan">Adzan %1$s</string>
+    <string name="notification_text_adzan_arrived">%1$s Telah Tiba</string>
+    <string name="notification_action_stop_adzan">Hentikan Adzan</string>
+    <string name="notification_channel_standard_name">Waktu Pengingat Standar</string>
+    <string name="notification_channel_standard_desc">Notifikasi Imsak dan waktu lainnya</string>
+    <string name="notification_text_reminder_default">Waktu pengingat telah tiba</string>
+</resources>
