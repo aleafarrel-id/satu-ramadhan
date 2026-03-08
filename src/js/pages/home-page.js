@@ -10,6 +10,7 @@ import { PRAYER_LIST, getCurrentPrayer, getTubeFillPercent, parseTimeToDate } fr
 import { startCountdown, stopCountdown } from '../modules/countdown.js';
 import { getSelectedOrg, getOrgDisplayName } from '../modules/ramadhan.js';
 import { schedulePrayerNotifications } from '../modules/native-notification.js';
+import { updateWatcher } from '../modules/prayer-watcher.js';
 
 import { renderLocationCard as renderLocationCardShared, bindLocationCardEvents } from '../components/card/location-card.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
@@ -165,6 +166,7 @@ async function renderContent() {
 
     // Schedule prayer notifications (reschedule on each data load)
     schedulePrayerNotifications(_timings);
+    updateWatcher(_timings);
 }
 
 /**

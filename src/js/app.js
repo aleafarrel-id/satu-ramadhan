@@ -6,10 +6,11 @@
 import { CONFIG } from './config.js';
 
 import { getSavedLocation } from './core/geolocation.js';
-import { getQiblaDirection } from './core/api.js';
+import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
 
 import { initBackHandler } from './modules/back-handler.js';
 import { initNotificationService } from './modules/native-notification.js';
+import { updateWatcher } from './modules/prayer-watcher.js';
 
 import * as header from './components/ui/header.js';
 import * as navBar from './components/ui/nav-bar.js';
@@ -56,6 +57,9 @@ export async function initApp() {
 
     // Animate loading bar
     animateLoadingBar(fillEl);
+
+    // Initialize global prayer watcher if location is available
+    prefetchAndInitWatcher();
 
     // Initialize header
     const headerEl = document.getElementById('app-header');
@@ -142,4 +146,19 @@ async function prefetchQiblaDirection() {
     } catch (e) {
         console.warn('[App] Qibla prefetch failed:', e.message);
     }
+}
+
+/**
+ * Prefetch timings and initialize global prayer watcher
+ */
+async function prefetchAndInitWatcher() {
+    try {
+        const location = await getSavedLocation();
+        if (location?.latitude && location?.longitude) {
+            const timings = await getPrayerTimesByCoords(location.latitude, location.longitude);
+            if (timings) {
+                updateWatcher(timings);
+            }
+        }
+    } catch (e) { }
 }
