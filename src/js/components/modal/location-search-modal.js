@@ -38,7 +38,6 @@ export function showLocationSearchModal() {
                     <i class='bx bx-map'></i>
                     <div class="loc-search-item-info">
                         <div class="loc-search-item-title">Hasil pencarian untuk "${query}"</div>
-                        <div class="loc-search-item-subtitle">Fitur ini masih dalam tahap pengembangan</div>
                     </div>
                 </div>
             `;

@@ -126,13 +126,21 @@
 }
 
 .loc-search-item-title {
-    font-size: var(--fs-base);
+    font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
     color: var(--clr-text-primary);
+    line-height: var(--lh-snug);
+    word-break: break-word;
 }
 
 .loc-search-item-subtitle {
     font-size: var(--fs-xs);
     color: var(--clr-text-muted);
     margin-top: 2px;
+}
+
+@media (max-width: 380px) {
+    .loc-search-item-title {
+        font-size: var(--fs-xs);
+    }
 }
