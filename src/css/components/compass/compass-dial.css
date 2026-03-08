@@ -183,3 +183,66 @@
     height: 24px;
     object-fit: contain;
 }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 320px) {
+    .compass-container {
+        width: 250px;
+        height: 250px;
+    }
+
+    .compass-dial-wrapper {
+        width: 220px;
+        height: 220px;
+    }
+
+    .compass-tick {
+        transform-origin: 50% 110px;
+    }
+
+    .compass-label {
+        top: 8px;
+        font-size: 12px;
+    }
+
+    .compass-inner {
+        width: 120px;
+        height: 120px;
+    }
+
+    .compass-needle {
+        width: 24px;
+        height: 150px;
+    }
+
+    .needle-top {
+        border-left-width: 12px;
+        border-right-width: 12px;
+        border-bottom-width: 75px;
+    }
+
+    .needle-bottom {
+        border-left-width: 12px;
+        border-right-width: 12px;
+        border-top-width: 75px;
+    }
+
+    .needle-center {
+        width: 10px;
+        height: 10px;
+    }
+
+    .qibla-indicator-wrapper {
+        inset: -1.5rem;
+    }
+
+    .qibla-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .qibla-icon img {
+        width: 18px;
+        height: 18px;
+    }
+}

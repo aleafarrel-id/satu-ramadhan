@@ -1,15 +1,19 @@
-/**
- * Settings Page
- * Location selection and app preferences
- */
-
 import { CONFIG } from '../config.js';
 
 import * as settingsPanel from '../components/ui/settings-panel.js';
 import * as settingsLocCard from '../components/ui/settings-loc-card.js';
 
+/* --- STATE --- */
 let _container = null;
 
+/* --- LIFECYCLE --- */
+
+/**
+ * Renders the main settings page shell and delegates rendering
+ * to the location card and application settings panel components.
+ *
+ * @param {HTMLElement} container - The DOM element to render into.
+ */
 export function render(container) {
     _container = container;
 
@@ -34,7 +38,12 @@ export function render(container) {
     }
 }
 
+/**
+ * Disposes child components to prevent memory leaks and
+ * safely nullifies the page container reference.
+ */
 export function destroy() {
     settingsLocCard.destroy();
     settingsPanel.destroy();
+    _container = null;
 }

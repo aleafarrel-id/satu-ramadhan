@@ -56,6 +56,10 @@ export function showLocationSearchModal() {
     }, 300);
 }
 
+/**
+ * Hide modal
+ */
+
 export function hideModal() {
     if (!_overlayEl) return;
     _overlayEl.classList.remove('active');

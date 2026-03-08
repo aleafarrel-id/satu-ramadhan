@@ -37,7 +37,7 @@ export function unregisterModalDismiss(dismissFn) {
 export function initBackHandler() {
     try {
         App.addListener('backButton', () => {
-            // 1. If there's an active modal, close the top-most one
+            // If there's an active modal, close the top-most one
             if (_modalDismissStack.length > 0) {
                 const dismiss = _modalDismissStack.pop();
                 if (typeof dismiss === 'function') {
@@ -46,7 +46,7 @@ export function initBackHandler() {
                 return;
             }
 
-            // 2. Clear history if navigating to same page or check history stack
+            // Clear history if navigating to same page or check history stack
             if (router.canGoBack()) {
                 const prevPage = router.goBack();
                 if (prevPage) {
@@ -56,7 +56,7 @@ export function initBackHandler() {
                 return;
             }
 
-            // 3. App is at the root level (home, no history, no modal), exit app
+            // App is at the root level (home, no history, no modal), exit app
             App.exitApp();
         });
         console.log('[App] Back handler initialized');

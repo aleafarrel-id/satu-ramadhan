@@ -115,7 +115,6 @@ const PREF_KEYS = {
 
 // ── State ──────────────────────────────────────────────────────────
 let _initialized = false;
-let _listenerRegistered = false;
 
 // ── Public API ─────────────────────────────────────────────────────
 

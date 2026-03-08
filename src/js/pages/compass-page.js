@@ -1,8 +1,3 @@
-/**
- * Compass Page
- * Qibla direction compass with location card
- */
-
 import { getSavedLocation } from '../core/geolocation.js';
 
 import QiblaCompass from '../modules/compass.js';
@@ -14,49 +9,65 @@ import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
 import { showCompassGuideModal } from '../components/modal/compass-guide-modal.js';
 
+/* --- STATE --- */
 let _container = null;
 let _location = null;
 let _compass = null;
 
+/* --- LIFECYCLE --- */
+
 /**
- * Render the compass page
+ * Initializes and renders the compass page.
+ * Displays a skeleton UI while fetching the user's saved location
+ * and preparing the Qibla compass module.
+ *
+ * @param {HTMLElement} container - The DOM element to render into.
  */
 export async function render(container) {
     _container = container;
 
-    // Show skeleton immediately while awaiting data
     renderSkeleton();
 
-    // Load saved location
     _location = await getSavedLocation();
-
-    // Initialize compass with qibla direction + device heading
-    // This fetches the actual qibla direction from API. We wait for it
-    // so the initial render already has the correct degree, preventing animation from 0.
     await initCompass();
 
-    // Render final content and apply values synchronously
     renderContent();
 }
 
 /**
- * Initialize or reinitialize the qibla compass
+ * Cleans up compass instance and frees memory
+ * when navigating away from the page.
+ */
+export function destroy() {
+    _compass?.stop();
+    _compass = null;
+    _container = null;
+    _location = null;
+}
+
+/* --- INITIALIZATION --- */
+
+/**
+ * Instantiates the QiblaCompass module and prepares it
+ * with the user's coordinates if available. Returns immediately
+ * and starts tracking the device orientation.
  */
 async function initCompass() {
-    // Clean up previous instance
     _compass?.stop();
     _compass = new QiblaCompass();
 
     if (_location?.latitude && _location?.longitude) {
-        // Safe to call even before DOM exists, updates will fail gracefully
         await _compass.init(_location.latitude, _location.longitude);
     }
 
     _compass.start();
 }
 
+/* --- RENDER METHODS --- */
+
 /**
- * Get Compass Dial Skeleton HTML
+ * Returns the HTML string for the compass dial skeleton.
+ * Shown during the initial loading phase.
  */
 function getCompassSkeleton() {
     return `
@@ -67,7 +78,8 @@ function getCompassSkeleton() {
 }
 
 /**
- * Get Qibla Info Card Skeleton HTML
+ * Returns the HTML string for the Qibla info card skeleton.
+ * Displays placeholder UI below the compass dial.
  */
 function getQiblaCardSkeleton() {
     return `
@@ -85,11 +97,11 @@ function getQiblaCardSkeleton() {
 }
 
 /**
- * Render skeleton loading state
+ * Injects the complete skeleton layout into the container.
+ * Assumes the container is empty.
  */
 function renderSkeleton() {
     _container.innerHTML = `
-        <!-- Location Card Skeleton -->
         <div class="card compass-skeleton-loc">
             <div class="skeleton skeleton--text-sm" style="width: 80px; margin-bottom: var(--spacing-sm)"></div>
             <div class="compass-skeleton-loc__row">
@@ -100,22 +112,20 @@ function renderSkeleton() {
                 </div>
             </div>
         </div>
-        
         ${getCompassSkeleton()}
-
         ${getQiblaCardSkeleton()}
     `;
 }
 
 /**
- * Render page content
+ * Determines if sufficient location data is available, then
+ * populates the page with actual compass and location card elements.
+ * Binds required event listeners immediately after insertion.
  */
 function renderContent() {
-    // Determine if we have acquired full data to show the compass and angles
     const hasData = _location?.latitude && _location?.longitude && _compass?.qiblaAngle !== null;
 
     _container.innerHTML = `
-        <!-- Location Card -->
         ${renderLocationCard(_location)}
         
         ${hasData ? `
@@ -130,7 +140,6 @@ function renderContent() {
             ${renderCompass()}
         </div>
 
-        <!-- Qibla Info Card -->
         ${renderQiblaInfoCard()}
         ` : `
         ${getCompassSkeleton()}
@@ -138,26 +147,26 @@ function renderContent() {
         `}
     `;
 
-    // Immediately apply the correct angles before browser paints,
-    // avoiding the initial transition animation from 0deg.
     if (hasData && _compass) {
         updateCompassUI(_compass.heading, _compass.qiblaAngle);
         updateQiblaInfoCard(_compass.heading, _compass.qiblaAngle, _compass.hasGyroscope);
     }
 
-    // Bind location card button (always interactive even without data)
     bindLocationCardEvents(showLocationModalForCompass, _container);
     _container.querySelector('#btn-compass-guide')?.addEventListener('click', showCompassGuideModal);
 }
 
+/* --- EVENT HANDLERS --- */
+
 /**
- * Show location modal and handle result
+ * Opens the location selection modal specifically tailored
+ * for the compass page. It re-initializes the compass upon detecting
+ * a new location string to ensure accurate Qibla direction.
  */
 function showLocationModalForCompass() {
     showLocationModal({
         onLocationDetected: async (location) => {
             _location = location;
-            // Show skeleton for compass block while fetching qibla mapping after location change
             renderContent();
             await initCompass();
             renderContent();
@@ -166,14 +175,4 @@ function showLocationModalForCompass() {
             showLocationSearchModal();
         },
     });
-}
-
-/**
- * Cleanup
- */
-export function destroy() {
-    _compass?.stop();
-    _compass = null;
-    _container = null;
-    _location = null;
 }
