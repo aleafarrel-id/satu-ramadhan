@@ -126,7 +126,7 @@
     width: 100%;
     padding: 10px var(--spacing-sm);
     border: 1px solid var(--clr-primary-a30);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     background: var(--clr-primary-a10);
     color: var(--clr-text-secondary);
     font-family: var(--ff-primary);
