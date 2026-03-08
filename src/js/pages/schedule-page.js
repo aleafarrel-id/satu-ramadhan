@@ -501,20 +501,26 @@ function resetGesture() {
 
 /* ── Animated Navigation ── */
 
-let _isAnimating = false;
+let _animPhase = 'idle'; // 'idle', 'out', 'in'
+let _animDirection = null;
+let _animId = 0;
 
 /**
  * Navigate to prev/next day with slide animation
  * @param {'left'|'right'} direction - slide direction
  */
 function navigateWithAnimation(direction) {
-    if (_isAnimating) return;
-
     if (direction === 'left' && _currentDayIndex < 29) {
         _currentDayIndex++;
     } else if (direction === 'right' && _currentDayIndex > 0) {
         _currentDayIndex--;
     } else {
+        return;
+    }
+
+    // If we're already sliding out in the same direction, simply let it finish.
+    // The slide-in phase will naturally pick up the latest _currentDayIndex.
+    if (_animPhase === 'out' && _animDirection === direction) {
         return;
     }
 
@@ -529,27 +535,42 @@ function animateSlide(direction) {
     const inner = document.getElementById('schedule-swipe-inner');
     if (!inner) { renderDayView(); return; }
 
-    _isAnimating = true;
+    const currentAnimId = ++_animId;
+    _animPhase = 'out';
+    _animDirection = direction;
 
     // Phase 1: slide out
+    inner.classList.remove('sliding-out-left', 'sliding-out-right', 'sliding-in-left', 'sliding-in-right');
+    void inner.offsetWidth; // Force reflow
+
     const outClass = direction === 'left' ? 'sliding-out-left' : 'sliding-out-right';
     inner.classList.add(outClass);
 
-    inner.addEventListener('animationend', function onOut() {
+    inner.addEventListener('animationend', function onOut(e) {
+        if (e.target !== inner) return;
         inner.removeEventListener('animationend', onOut);
+
+        if (currentAnimId !== _animId) return; // Aborted by newer swipe
+
         inner.classList.remove(outClass);
 
         // Re-render the swipe inner content with new day data
         updateSwipeInnerContent();
 
         // Phase 2: slide in
+        _animPhase = 'in';
         const inClass = direction === 'left' ? 'sliding-in-left' : 'sliding-in-right';
         inner.classList.add(inClass);
 
-        inner.addEventListener('animationend', function onIn() {
+        inner.addEventListener('animationend', function onIn(e) {
+            if (e.target !== inner) return;
             inner.removeEventListener('animationend', onIn);
+
+            if (currentAnimId !== _animId) return; // Aborted by newer swipe
+
             inner.classList.remove(inClass);
-            _isAnimating = false;
+            _animPhase = 'idle';
+            _animDirection = null;
         });
     });
 }

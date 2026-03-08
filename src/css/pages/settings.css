@@ -39,6 +39,7 @@
    padding: var(--spacing-md) var(--spacing-lg);
    transition: background var(--transition-fast);
    min-height: 60px;
+   cursor: pointer;
 }
 
 .settings-item:active {

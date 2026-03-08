@@ -6,27 +6,27 @@
 export function render(container) {
     container.innerHTML = `
         <div class="card settings-card">
-            <div class="settings-item">
+            <label class="settings-item" for="toggle-notification">
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
                     <span>Hidupkan Notifikasi</span>
                 </div>
-                <label class="switch-toggle" for="toggle-notification">
+                <div class="switch-toggle">
                     <input type="checkbox" id="toggle-notification" checked>
                     <span class="slider"></span>
-                </label>
-            </div>
+                </div>
+            </label>
             <div class="settings-divider"></div>
-            <div class="settings-item">
+            <label class="settings-item" for="toggle-adzan">
                 <div class="settings-item-info">
                     <i class='bx bx-volume-full'></i>
                     <span>Hidupkan Suara Adzan</span>
                 </div>
-                <label class="switch-toggle" for="toggle-adzan">
+                <div class="switch-toggle">
                     <input type="checkbox" id="toggle-adzan" checked>
                     <span class="slider"></span>
-                </label>
-            </div>
+                </div>
+            </label>
         </div>
     `;
 
