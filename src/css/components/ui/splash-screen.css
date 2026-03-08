@@ -87,3 +87,18 @@
     color: var(--clr-accent-500);
     text-align: center;
 }
+
+@media (max-width: 320px) {
+    .splash-title {
+        font-size: var(--fs-md);
+    }
+
+    .splash-subtitle {
+        font-size: var(--fs-sm);
+    }
+
+    .splash-loading-text,
+    .splash-version {
+        font-size: var(--fs-2xs);
+    }
+}

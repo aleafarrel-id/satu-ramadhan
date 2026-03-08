@@ -64,3 +64,15 @@
     justify-content: center;
     gap: 4px;
 }
+
+@media (max-width: 320px) {
+
+    .location-card__header,
+    .location-card__name {
+        font-size: var(--fs-xs);
+    }
+
+    .location-card__province {
+        font-size: var(--fs-2xs);
+    }
+}

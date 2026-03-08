@@ -226,11 +226,25 @@
 }
 
 @media (max-width: 360px) {
+
    .settings-item-info {
       font-size: var(--fs-xs);
    }
 
    .settings-item-info i {
       margin-right: var(--spacing-xs);
+   }
+}
+
+@media (max-width: 320px) {
+
+   .settings-loc-title,
+   .settings-loc-regency {
+      font-size: var(--fs-xs);
+   }
+
+   .settings-loc-province,
+   .settings-loc-desc {
+      font-size: var(--fs-2xs);
    }
 }

@@ -131,3 +131,13 @@
 .qibla-badge--outline.is-hidden {
     display: none;
 }
+
+@media (max-width: 320px) {
+    .qibla-info-card__header {
+        font-size: var(--fs-xs);
+    }
+
+    .qibla-info-card__fallback {
+        font-size: var(--fs-2xs);
+    }
+}

@@ -137,3 +137,9 @@
       transform: rotate(360deg);
    }
 }
+
+@media (max-width: 320px) {
+   .custom-ptr {
+      font-size: var(--fs-xs);
+   }
+}
