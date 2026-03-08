@@ -7,7 +7,7 @@
    align-items: center;
    justify-content: space-between;
    padding: var(--spacing-md);
-   padding-top: calc(var(--spacing-md) + env(safe-area-inset-top));
+   padding-top: max(var(--spacing-md), env(safe-area-inset-top));
 }
 
 .header-logo {
