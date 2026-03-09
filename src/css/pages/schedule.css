@@ -457,7 +457,7 @@
 }
 
 .schedule-swipe-hint__arrow {
-    font-size: 14px;
+    font-size: var(--fs-sm);
     color: var(--clr-text-muted);
     animation: swipeHintPulse 2s ease-in-out infinite;
 }
@@ -560,10 +560,6 @@
     .schedule-prayer-row__time {
         font-size: var(--fs-sm);
     }
-
-    .schedule-actions {
-        gap: var(--spacing-sm);
-    }
 }
 
 @media (max-width: 360px) {
@@ -605,5 +601,10 @@
 
     .schedule-prayer-row__time {
         font-size: var(--fs-xs);
+    }
+
+    .schedule-swipe-hint__text,
+    .schedule-swipe-hint__arrow {
+        font-size: var(--fs-2xs);
     }
 }
