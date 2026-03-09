@@ -201,6 +201,8 @@ async function renderDayView() {
  * to core navigation patterns alongside dynamic organization modals.
  */
 function bindEvents() {
+    unbindSwipeEvents();
+
     document.getElementById('schedule-prev')?.addEventListener('click', () => {
         if (_currentDayIndex > 0) {
             navigateWithAnimation('right');
@@ -268,8 +270,12 @@ function handleSwipe(direction) {
 /* --- ANIMATION --- */
 
 /**
- * Injects fluid motion transition steps ensuring a flawless
- * left/right shift resolving boundaries automatically.
+ * Navigates to the next/previous day with interrupt-safe animation.
+ *
+ * Rapid same-direction taps: only the index is updated — the already-running
+ * slide-out callback will read the latest _currentDayIndex when it fires.
+ * Rapid reverse-direction or mid-slide-in taps: the running animation is
+ * cancelled via _animId and a fresh slide starts immediately.
  *
  * @param {string} direction - Navigational vector mapping next steps.
  */
@@ -282,6 +288,8 @@ function navigateWithAnimation(direction) {
         return;
     }
 
+    /* Already sliding out in the same direction: the in-flight onOut handler
+       will pick up the updated _currentDayIndex when it fires — no restart needed. */
     if (_animPhase === 'out' && _animDirection === direction) {
         return;
     }
@@ -290,8 +298,9 @@ function navigateWithAnimation(direction) {
 }
 
 /**
- * Composes a two-tiered phase transition (slide-out/in) chaining DOM 
+ * Composes a two-tiered phase transition (slide-out/in) chaining DOM
  * listeners seamlessly hiding rendering delays on heavy interfaces.
+ * Cancels any in-flight animation via _animId before starting a new one.
  *
  * @param {string} direction - Denotes either left or right slide logic maps.
  */
@@ -299,6 +308,7 @@ function animateSlide(direction) {
     const inner = document.getElementById('schedule-swipe-inner');
     if (!inner) { renderDayView(); return; }
 
+    /* Cancels any in-flight animationend callbacks from a previous animation */
     const currentAnimId = ++_animId;
     _animPhase = 'out';
     _animDirection = direction;
@@ -318,7 +328,7 @@ function animateSlide(direction) {
         inner.classList.remove(outClass);
 
         const entry = _scheduleData[_currentDayIndex];
-        _lastActivePrayerKey = updateScheduleContent(entry, _currentDayIndex, _container);
+        updateScheduleContent(entry, _currentDayIndex, _container);
 
         _animPhase = 'in';
         const inClass = direction === 'left' ? 'sliding-in-left' : 'sliding-in-right';
@@ -336,3 +346,4 @@ function animateSlide(direction) {
         });
     });
 }
+

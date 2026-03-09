@@ -155,7 +155,7 @@ async function renderContent() {
     `;
 
     document.getElementById('org-toggle')?.addEventListener('click', handleOrgToggle);
-    bindLocationCardEvents(showLocationModalForHome);
+    bindLocationCardEvents(showLocationModalForHome, _container);
 
     _lastPrayerIndex = prayerState.currentIndex;
 
@@ -186,9 +186,18 @@ function showLocationModalForHome() {
 }
 
 /**
- * Switches the organizational source for fetching timings 
- * (e.g. between Kemenag and Muhammadiyah or NU) visually.
+ * Switches the organizational source for fetching timings
+ * (e.g. between Kemenag and Muhammadiyah or NU), then re-fetches
+ * timings and re-renders content so prayer times reflect the new org.
  */
 async function handleOrgToggle() {
-    await handleOrgToggleShared('org-label');
+    await handleOrgToggleShared('org-label', async () => {
+        if (_location) {
+            try {
+                _timings = await getPrayerTimesByCoords(_location.latitude, _location.longitude);
+            } catch { /* handled in renderContent */ }
+            stopCountdown();
+            await renderContent();
+        }
+    });
 }

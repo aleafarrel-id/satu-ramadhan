@@ -22,10 +22,10 @@ function cleanTime(timeStr) {
  * @param {object} timings - prayer timings object { imsak, subuh, ... }
  * @returns {string} HTML string
  */
-export function renderFeaturedCard(timings) {
+export function renderFeaturedCard(timings, prayerState = null) {
     if (!timings) return '';
 
-    const prayerState = getCurrentPrayer(timings);
+    if (!prayerState) prayerState = getCurrentPrayer(timings);
     const current = prayerState.current;
     if (!current) return '';
 

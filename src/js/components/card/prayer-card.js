@@ -168,7 +168,7 @@ export function renderPrayerCardSkeleton() {
  */
 function renderFeaturedCard(timings, prayerState) {
     if (!prayerState.current) return '';
-    return `<div class="featured-card-wrapper">${renderFeaturedCardShared(timings)}</div>`;
+    return `<div class="featured-card-wrapper">${renderFeaturedCardShared(timings, prayerState)}</div>`;
 }
 
 /**
