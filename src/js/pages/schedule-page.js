@@ -155,7 +155,7 @@ function renderError(hasLocation) {
     const title = hasLocation ? 'Gagal Memuat Jadwal' : 'Lokasi Belum Diatur';
     const desc = hasLocation
         ? 'Tidak dapat memuat jadwal Ramadhan. Periksa koneksi internet Anda dan coba lagi.'
-        : 'Atur lokasi terlebih dahulu di Pengaturan untuk melihat jadwal Ramadhan.';
+        : 'Atur lokasi terlebih dahulu di Pengaturan untuk melihat jadwal secara lengkap.';
 
     _container.innerHTML = `
         <div class="schedule-page">

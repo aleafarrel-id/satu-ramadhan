@@ -8,6 +8,8 @@ import { renderCompass, updateCompassUI } from '../components/compass/compass-di
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
 import { showCompassGuideModal } from '../components/modal/compass-guide-modal.js';
+import { renderCompassSkeleton, getCompassSkeletonInner } from '../components/ui/skeleton-compass.js';
+import { renderEmptyState } from '../components/ui/empty-state.js';
 
 /* --- STATE --- */
 let _container = null;
@@ -26,9 +28,9 @@ let _compass = null;
 export async function render(container) {
     _container = container;
 
-    renderSkeleton();
-
     _location = await getSavedLocation();
+    renderCompassSkeleton(_container, _location, showLocationModalForCompass);
+
     await initCompass();
 
     renderContent();
@@ -69,53 +71,7 @@ async function initCompass() {
  * Returns the HTML string for the compass dial skeleton.
  * Shown during the initial loading phase.
  */
-function getCompassSkeleton() {
-    return `
-        <div class="compass-outer-wrapper compass-skeleton-dial">
-            <div class="skeleton skeleton--compass-dial"></div>
-        </div>
-    `;
-}
 
-/**
- * Returns the HTML string for the Qibla info card skeleton.
- * Displays placeholder UI below the compass dial.
- */
-function getQiblaCardSkeleton() {
-    return `
-        <div class="card qibla-info-card compass-skeleton-qibla">
-            <div class="skeleton skeleton--text-sm" style="width: 100px; margin-bottom: var(--spacing-sm)"></div>
-            <div class="qibla-info-card__content">
-                <div class="skeleton skeleton--icon-lg"></div>
-                <div class="qibla-info-card__badges compass-skeleton-qibla__badges">
-                    <div class="skeleton skeleton--badge-flex"></div>
-                    <div class="skeleton skeleton--badge-flex"></div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-/**
- * Injects the complete skeleton layout into the container.
- * Assumes the container is empty.
- */
-function renderSkeleton() {
-    _container.innerHTML = `
-        <div class="card compass-skeleton-loc">
-            <div class="skeleton skeleton--text-sm" style="width: 80px; margin-bottom: var(--spacing-sm)"></div>
-            <div class="compass-skeleton-loc__row">
-                <div class="skeleton skeleton--icon-md"></div>
-                <div class="compass-skeleton-loc__body">
-                    <div class="skeleton skeleton--text-md" style="width: 50%"></div>
-                    <div class="skeleton skeleton--text-base" style="width: 30%"></div>
-                </div>
-            </div>
-        </div>
-        ${getCompassSkeleton()}
-        ${getQiblaCardSkeleton()}
-    `;
-}
 
 /**
  * Determines if sufficient location data is available, then
@@ -123,12 +79,46 @@ function renderSkeleton() {
  * Binds required event listeners immediately after insertion.
  */
 function renderContent() {
+    if (!_location) {
+        _container.innerHTML = `
+            ${renderLocationCard(_location)}
+            ${renderEmptyState({
+            icon: 'bx-map-pin',
+            title: 'Lokasi Belum Diatur',
+            description: 'Arah kiblat akan ditampilkan setelah lokasi Anda diatur.',
+            compact: true,
+        })}
+            <div class="compass-skeleton-placeholder">
+                ${getCompassSkeletonInner()}
+            </div>
+        `;
+        bindLocationCardEvents(showLocationModalForCompass, _container);
+        return;
+    }
+
     const hasData = _location?.latitude && _location?.longitude && _compass?.qiblaAngle !== null;
+
+    if (!hasData) {
+        _container.innerHTML = `
+            ${renderLocationCard(_location)}
+            ${renderEmptyState({
+            icon: 'bx-compass',
+            iconVariant: 'warning',
+            title: 'Kompas Tidak Tersedia',
+            description: 'Arah kiblat tidak dapat dihitung atau sensor kompas tidak tersedia di perangkat Anda.',
+            compact: true,
+        })}
+            <div class="compass-skeleton-placeholder">
+                ${getCompassSkeletonInner()}
+            </div>
+        `;
+        bindLocationCardEvents(showLocationModalForCompass, _container);
+        return;
+    }
 
     _container.innerHTML = `
         ${renderLocationCard(_location)}
         
-        ${hasData ? `
         <div class="compass-guide-wrapper">
             <button class="btn btn--accent-outline btn--compass-guide" id="btn-compass-guide">
                 <i class='bx bx-info-circle'></i>
@@ -141,10 +131,6 @@ function renderContent() {
         </div>
 
         ${renderQiblaInfoCard()}
-        ` : `
-        ${getCompassSkeleton()}
-        ${getQiblaCardSkeleton()}
-        `}
     `;
 
     if (hasData && _compass) {

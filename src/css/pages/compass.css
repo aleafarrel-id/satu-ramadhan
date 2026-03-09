@@ -17,25 +17,6 @@
    border-radius: var(--radius-full);
 }
 
-/* ── Location Card Skeleton (Compass) ── */
-
-.compass-skeleton-loc {
-   margin-bottom: var(--spacing-md);
-}
-
-.compass-skeleton-loc__row {
-   display: flex;
-   align-items: center;
-   gap: var(--spacing-sm);
-}
-
-.compass-skeleton-loc__body {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   gap: 6px;
-}
-
 /* ── Qibla Card Skeleton ── */
 
 .compass-skeleton-qibla {

@@ -204,6 +204,11 @@
 
 /* ── Compass Page Skeleton ── */
 
+.compass-skeleton-placeholder {
+    pointer-events: none;
+    margin-top: var(--spacing-md);
+}
+
 .skeleton--compass-dial {
     width: 260px;
     height: 260px;
