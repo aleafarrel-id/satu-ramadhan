@@ -6,8 +6,8 @@
  * Extracted from schedule-page.js for Separation of Concerns.
  */
 
-import { PRAYER_LIST, getCurrentPrayer } from '../../modules/prayer-times.js';
-import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../ui/prayer-widgets.js';
+import { PRAYER_LIST, getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
+import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
 
 /* ── Constants ── */
 

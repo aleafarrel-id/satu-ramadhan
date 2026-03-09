@@ -5,9 +5,9 @@
 
 import { App } from '@capacitor/app';
 
-import * as router from '../router.js';
+import * as router from '../../router.js';
 
-import * as navBar from '../components/ui/nav-bar.js';
+import * as navBar from '../../components/ui/nav-bar.js';
 
 // Stack to track active modals
 const _modalDismissStack = [];

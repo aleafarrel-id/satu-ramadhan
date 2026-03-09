@@ -3,7 +3,7 @@
  * Used for manual location search
  */
 
-import { registerModalDismiss, unregisterModalDismiss } from '../../modules/back-handler.js';
+import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 
 let _overlayEl = null;
 

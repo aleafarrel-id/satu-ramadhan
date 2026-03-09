@@ -6,8 +6,8 @@
  * Extracted from home-page.js for Separation of Concerns.
  */
 
-import { PRAYER_LIST, getTubeFillPercent, parseTimeToDate } from '../../modules/prayer-times.js';
-import { renderFeaturedCard as renderFeaturedCardShared } from '../ui/prayer-widgets.js';
+import { PRAYER_LIST, getTubeFillPercent, parseTimeToDate } from '../../modules/prayer/prayer-times.js';
+import { renderFeaturedCard as renderFeaturedCardShared } from '../prayer/prayer-widgets.js';
 
 /* ── Constants ── */
 

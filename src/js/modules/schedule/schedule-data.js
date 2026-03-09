@@ -4,9 +4,9 @@
  * Separated from schedule-page.js for clean business logic isolation.
  */
 
-import { getMonthlyPrayerTimes } from '../core/api.js';
-import { getRamadhanConfig } from '../core/database.js';
-import { getSelectedOrg } from '../modules/ramadhan.js';
+import { getMonthlyPrayerTimes } from '../../core/api.js';
+import { getRamadhanConfig } from '../../core/database.js';
+import { getSelectedOrg } from './ramadhan.js';
 
 /* ── Public API ── */
 

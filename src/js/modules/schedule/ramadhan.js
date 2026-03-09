@@ -3,8 +3,8 @@
  * Handles Ramadhan schedule, Muhammadiyah/NU date differences
  */
 
-import { getRamadhanConfig } from '../core/database.js';
-import * as storage from '../core/storage.js';
+import { getRamadhanConfig } from '../../core/database.js';
+import * as storage from '../../core/storage.js';
 
 const ORG_KEY = 'selected_org';
 

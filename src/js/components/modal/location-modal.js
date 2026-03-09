@@ -6,8 +6,8 @@
 
 import { detectLocation, checkGpsEnabled, openLocationSettings } from '../../core/geolocation.js';
 
-import * as notif from '../../modules/notification.js';
-import { registerModalDismiss, unregisterModalDismiss } from '../../modules/back-handler.js';
+import * as notif from '../../modules/notification/notification.js';
+import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 
 /* ── DOM References ── */
 let _overlayEl = null;

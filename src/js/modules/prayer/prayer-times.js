@@ -3,19 +3,20 @@
  * Handles prayer time logic, current/next prayer detection, tube fill calculation
  */
 
-import iconMoonSvg from '../../assets/icon/moon.svg?raw';
-import iconSunSvg from '../../assets/icon/sun.svg?raw';
-import iconSunRiseSvg from '../../assets/icon/sun-rise.svg?raw';
-import iconSunSetSvg from '../../assets/icon/sun-set.svg?raw';
-import iconSunFogSvg from '../../assets/icon/sun-fog.svg?raw';
-import iconCloudSunSvg from '../../assets/icon/cloud-sun.svg?raw';
+import iconMoonSvg from '../../../assets/icon/moon.svg?raw';
+import iconMoonStarsSvg from '../../../assets/icon/moon-stars.svg?raw';
+import iconSunSvg from '../../../assets/icon/sun.svg?raw';
+import iconSunRiseSvg from '../../../assets/icon/sun-rise.svg?raw';
+import iconSunSetSvg from '../../../assets/icon/sun-set.svg?raw';
+import iconSunFogSvg from '../../../assets/icon/sun-fog.svg?raw';
+import iconCloudSunSvg from '../../../assets/icon/cloud-sun.svg?raw';
 
 /**
  * Prayer time definitions with metadata
  */
 export const PRAYER_LIST = [
-    { key: 'imsak', name: 'Imsak', icon: iconSunFogSvg },
-    { key: 'subuh', name: 'Subuh', icon: iconSunRiseSvg },
+    { key: 'imsak', name: 'Imsak', icon: iconMoonStarsSvg },
+    { key: 'subuh', name: 'Subuh', icon: iconSunFogSvg },
     { key: 'terbit', name: 'Terbit', icon: iconSunRiseSvg },
     { key: 'dzuhur', name: 'Dzuhur', icon: iconSunSvg },
     { key: 'ashar', name: 'Ashar', icon: iconCloudSunSvg },

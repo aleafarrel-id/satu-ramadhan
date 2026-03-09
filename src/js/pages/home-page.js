@@ -1,20 +1,20 @@
 import { getSavedLocation } from '../core/geolocation.js';
 import { getPrayerTimesByCoords } from '../core/api.js';
 
-import { getCurrentPrayer } from '../modules/prayer-times.js';
-import { startCountdown, stopCountdown } from '../modules/countdown.js';
-import { getSelectedOrg, getOrgDisplayName } from '../modules/ramadhan.js';
-import { schedulePrayerNotifications } from '../modules/native-notification.js';
-import { updateWatcher } from '../modules/prayer-watcher.js';
+import { getCurrentPrayer } from '../modules/prayer/prayer-times.js';
+import { startCountdown, stopCountdown } from '../modules/schedule/countdown.js';
+import { getSelectedOrg, getOrgDisplayName } from '../modules/schedule/ramadhan.js';
+import { schedulePrayerNotifications } from '../modules/notification/native-notification.js';
+import { updateWatcher } from '../modules/prayer/prayer-watcher.js';
 
 import { renderPrayerCard, updatePrayerCardFills, updatePrayerCardDynamicUI } from '../components/card/prayer-card.js';
 import { renderLocationCard as renderLocationCardShared, bindLocationCardEvents } from '../components/card/location-card.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
-import { handleOrgToggle as handleOrgToggleShared } from '../components/ui/prayer-widgets.js';
-import { renderHomeSkeleton } from '../components/ui/skeleton-home.js';
+import { handleOrgToggle as handleOrgToggleShared } from '../components/prayer/prayer-widgets.js';
+import { renderHomeSkeleton } from '../components/skeleton/skeleton-home.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
-import { renderCountdownCard } from '../components/ui/countdown-card.js';
+import { renderCountdownCard } from '../components/card/countdown-card.js';
 
 /* --- STATE --- */
 let _container = null;

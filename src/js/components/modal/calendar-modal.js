@@ -6,7 +6,7 @@
 
 /* ── Constants ── */
 
-import { registerModalDismiss, unregisterModalDismiss } from '../../modules/back-handler.js';
+import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 
 const WEEKDAY_HEADERS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 

@@ -8,9 +8,9 @@ import { CONFIG } from './config.js';
 import { getSavedLocation } from './core/geolocation.js';
 import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
 
-import { initBackHandler } from './modules/back-handler.js';
-import { initNotificationService } from './modules/native-notification.js';
-import { updateWatcher } from './modules/prayer-watcher.js';
+import { initBackHandler } from './modules/system/back-handler.js';
+import { initNotificationService } from './modules/notification/native-notification.js';
+import { updateWatcher } from './modules/prayer/prayer-watcher.js';
 
 import * as header from './components/ui/header.js';
 import * as navBar from './components/ui/nav-bar.js';

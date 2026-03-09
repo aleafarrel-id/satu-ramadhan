@@ -1,6 +1,6 @@
 import { getSavedLocation } from '../core/geolocation.js';
 
-import QiblaCompass from '../modules/compass.js';
+import QiblaCompass from '../modules/compass/compass.js';
 
 import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
 import { renderQiblaInfoCard, updateQiblaInfoCard } from '../components/card/qibla-info-card.js';
@@ -8,7 +8,7 @@ import { renderCompass, updateCompassUI } from '../components/compass/compass-di
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
 import { showCompassGuideModal } from '../components/modal/compass-guide-modal.js';
-import { renderCompassSkeleton, getCompassSkeletonInner } from '../components/ui/skeleton-compass.js';
+import { renderCompassSkeleton, getCompassSkeletonInner } from '../components/skeleton/skeleton-compass.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 
 /* --- STATE --- */

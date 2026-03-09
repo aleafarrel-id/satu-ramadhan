@@ -5,7 +5,7 @@
 
 import { getSavedLocation, detectLocation, checkGpsEnabled, openLocationSettings } from '../../core/geolocation.js';
 
-import * as notif from '../../modules/notification.js';
+import * as notif from '../../modules/notification/notification.js';
 
 import { showLocationSearchModal } from '../modal/location-search-modal.js';
 

@@ -3,10 +3,10 @@
  * Reusable across Home and Schedule pages (DRY)
  */
 
-import { getCurrentPrayer } from '../../modules/prayer-times.js';
-import { toggleOrg, getOrgDisplayName } from '../../modules/ramadhan.js';
-import { impact } from '../../modules/haptic.js';
-import * as notif from '../../modules/notification.js';
+import { getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
+import { toggleOrg, getOrgDisplayName } from '../../modules/schedule/ramadhan.js';
+import { impact } from '../../modules/system/haptic.js';
+import * as notif from '../../modules/notification/notification.js';
 
 /* ── Helpers ── */
 

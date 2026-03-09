@@ -1,7 +1,7 @@
 import { CONFIG } from '../config.js';
 
-import * as settingsPanel from '../components/ui/settings-panel.js';
-import * as settingsLocCard from '../components/ui/settings-loc-card.js';
+import * as settingsPanel from '../components/settings/settings-panel.js';
+import * as settingsLocCard from '../components/card/settings-loc-card.js';
 
 /* --- STATE --- */
 let _container = null;

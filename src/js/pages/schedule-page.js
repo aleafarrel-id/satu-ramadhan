@@ -1,9 +1,9 @@
 import { getPrayerTimesByCoords } from '../core/api.js';
 import { getSavedLocation } from '../core/geolocation.js';
 
-import { getSelectedOrg, getOrgDisplayName } from '../modules/ramadhan.js';
-import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule-data.js';
-import { onPrayerChange, offPrayerChange } from '../modules/prayer-watcher.js';
+import { getSelectedOrg, getOrgDisplayName } from '../modules/schedule/ramadhan.js';
+import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
+import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watcher.js';
 
 import {
     renderScheduleCard,
@@ -12,11 +12,11 @@ import {
     updateScheduleFeaturedCard,
     getActivePrayerKey,
 } from '../components/card/schedule-card.js';
-import { handleOrgToggle } from '../components/ui/prayer-widgets.js';
-import { renderScheduleSkeleton } from '../components/ui/skeleton-schedule.js';
+import { handleOrgToggle } from '../components/prayer/prayer-widgets.js';
+import { renderScheduleSkeleton } from '../components/skeleton/skeleton-schedule.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { showCalendarModal } from '../components/modal/calendar-modal.js';
-import { bindSwipeEvents, unbindSwipeEvents } from '../components/ui/schedule-swipe.js';
+import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
 
 /* --- STATE --- */
 

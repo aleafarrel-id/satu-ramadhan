@@ -19,12 +19,20 @@
 /* UI */
 @import './components/ui/splash-screen.css';
 @import './components/ui/button.css';
-@import './components/ui/countdown.css';
 @import './components/ui/toggle.css';
-@import './components/ui/prayer-time.css';
-@import './components/ui/notification.css';
-@import './components/ui/skeleton.css';
 @import './components/ui/empty-state.css';
+
+/* Prayer */
+@import './components/prayer/prayer-time.css';
+
+/* Schedule */
+@import './components/schedule/countdown.css';
+
+/* Notification */
+@import './components/notification/notification.css';
+
+/* Skeleton */
+@import './components/skeleton/skeleton.css';
 
 /* Card */
 @import './components/card/card.css';

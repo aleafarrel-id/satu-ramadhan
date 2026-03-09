@@ -8,7 +8,7 @@
  */
 
 import { getCurrentPrayer } from './prayer-times.js';
-import { info } from './notification.js';
+import { info } from '../notification/notification.js';
 
 let _timeout = null;
 let _timings = null;

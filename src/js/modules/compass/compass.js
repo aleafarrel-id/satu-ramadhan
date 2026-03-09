@@ -7,12 +7,12 @@
  * preventing jittery dial movement on mobile devices.
  */
 
-import { getQiblaDirection } from '../core/api.js';
+import { getQiblaDirection } from '../../core/api.js';
 
-import { updateCompassUI } from '../components/compass/compass-dial.js';
-import { updateQiblaInfoCard } from '../components/card/qibla-info-card.js';
+import { updateCompassUI } from '../../components/compass/compass-dial.js';
+import { updateQiblaInfoCard } from '../../components/card/qibla-info-card.js';
 
-import { doubleVibrate } from './haptic.js';
+import { doubleVibrate } from '../system/haptic.js';
 
 /* ── Configuration ── */
 const QIBLA_TOLERANCE_DEG = 2;

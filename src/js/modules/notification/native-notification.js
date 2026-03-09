@@ -15,7 +15,7 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 
-import { parseTimeToDate } from './prayer-times.js';
+import { parseTimeToDate } from '../prayer/prayer-times.js';
 
 // ── Custom Plugin Bridge ───────────────────────────────────────────
 const PrayerService = registerPlugin('PrayerService');
