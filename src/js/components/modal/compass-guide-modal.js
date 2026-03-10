@@ -74,7 +74,7 @@ function createModalDOM() {
             </div>
             <h2 class="compass-guide-modal__title">Panduan Kalibrasi</h2>
             <p class="compass-guide-modal__desc">
-                Orientasikan perangkat secara mendatar di atas permukaan datar untuk akurasi terbaik. 
+                Orientasikan perangkat secara mendatar untuk akurasi terbaik. 
                 Kompas memerlukan sensor <strong>Gyroscope</strong>.
             </p>
             <div class="compass-guide-modal__buttons">

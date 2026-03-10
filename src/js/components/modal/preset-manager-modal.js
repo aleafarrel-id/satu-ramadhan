@@ -35,7 +35,10 @@ let _editingId = null;
  * @param {Function} [options.onPresetsChanged] - Called when any CRUD operation completes
  */
 export function showPresetManagerModal({ onPresetsChanged } = {}) {
-    if (_overlayEl) removeModal();
+    if (_overlayEl) {
+        unregisterModalDismiss(hideModal);
+        removeModal();
+    }
 
     _onPresetsChanged = onPresetsChanged || null;
     _editingId = null;
@@ -62,6 +65,7 @@ export function showPresetManagerModal({ onPresetsChanged } = {}) {
  */
 export function hideModal() {
     if (!_overlayEl) return;
+    unregisterModalDismiss(hideModal);
     _overlayEl.classList.remove('active');
 
     const sheet = _overlayEl.querySelector('.preset-mgr-sheet');
@@ -84,7 +88,6 @@ function removeModal() {
     }
     _editingId = null;
     _onPresetsChanged = null;
-    unregisterModalDismiss(hideModal);
 }
 
 /**

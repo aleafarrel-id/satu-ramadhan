@@ -33,7 +33,10 @@ export function showConfirmModal({
     onCancel
 }) {
     // If a modal is already open, remove it immediately to prevent overlap issues
-    if (_overlayEl) removeModal();
+    if (_overlayEl) {
+        unregisterModalDismiss(handleCancel);
+        removeModal();
+    }
 
     _onConfirmCallback = onConfirm;
     _onCancelCallback = onCancel || null;

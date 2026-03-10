@@ -315,6 +315,16 @@
     border-color: var(--clr-primary-400);
 }
 
+/* Fix Chrome/Webview autocomplete auto-fill bright background */
+.preset-mgr-form-input:-webkit-autofill,
+.preset-mgr-form-input:-webkit-autofill:hover,
+.preset-mgr-form-input:-webkit-autofill:focus,
+.preset-mgr-form-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--clr-bg-dark) inset !important;
+    -webkit-text-fill-color: var(--clr-text-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Date input styling for dark theme */
 .preset-mgr-form-input[type="date"] {
     color-scheme: dark;
