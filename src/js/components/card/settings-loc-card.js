@@ -87,7 +87,20 @@ export async function render(container) {
     });
 
     btnManual?.addEventListener('click', () => {
-        showLocationSearchModal();
+        showLocationSearchModal({
+            onLocationSelected: (location) => {
+                notif.success(`Lokasi diatur: ${location.regencyName}`);
+                // Update UI directly
+                const statusWrapper = container.querySelector('#settings-loc-status-wrapper');
+                if (statusWrapper) {
+                    statusWrapper.innerHTML = renderStatus(location);
+                }
+                const mapIcon = container.querySelector('.settings-loc-map-icon');
+                if (mapIcon) {
+                    mapIcon.classList.remove('unset');
+                }
+            },
+        });
     });
 }
 

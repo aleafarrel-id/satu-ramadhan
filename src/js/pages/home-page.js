@@ -180,7 +180,15 @@ function showLocationModalForHome() {
             await renderContent();
         },
         onManualSelect: () => {
-            showLocationSearchModal();
+            showLocationSearchModal({
+                onLocationSelected: async (location) => {
+                    _location = location;
+                    try {
+                        _timings = await getPrayerTimesByCoords(location.latitude, location.longitude);
+                    } catch { /* handled in renderContent */ }
+                    await renderContent();
+                },
+            });
         },
     });
 }

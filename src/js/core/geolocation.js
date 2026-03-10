@@ -4,13 +4,29 @@
  */
 
 import { Geolocation } from '@capacitor/geolocation';
-import { getRegencies, getProvinceById } from './database.js';
+import { fetchRegencies, getProvinceById } from './database.js';
 import * as storage from './storage.js';
 
 const STORAGE_KEY = 'user_location';
 
+/* ── Haversine Helpers ── */
+
+/**
+ * Convert degrees to radians
+ * @param {number} deg
+ * @returns {number}
+ */
+function toRad(deg) {
+    return deg * (Math.PI / 180);
+}
+
 /**
  * Calculate Haversine distance between two coordinates (in km)
+ * @param {number} lat1
+ * @param {number} lon1
+ * @param {number} lat2
+ * @param {number} lon2
+ * @returns {number}
  */
 function haversine(lat1, lon1, lat2, lon2) {
     const R = 6371;
@@ -22,15 +38,16 @@ function haversine(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function toRad(deg) {
-    return deg * (Math.PI / 180);
-}
+/* ── Location Detection ── */
 
 /**
  * Find nearest regency to given coordinates
+ * @param {number} lat
+ * @param {number} lng
+ * @returns {Promise<{regency: object, province: object|null, distance: number}|null>}
  */
-export function findNearestRegency(lat, lng) {
-    const regencies = getRegencies();
+export async function findNearestRegency(lat, lng) {
+    const regencies = await fetchRegencies();
     let nearest = null;
     let minDist = Infinity;
 
@@ -43,11 +60,11 @@ export function findNearestRegency(lat, lng) {
     }
 
     if (nearest) {
-        const province = getProvinceById(nearest.province_id);
+        const province = await getProvinceById(nearest.province_id);
         return {
             regency: nearest,
             province: province,
-            distance: minDist
+            distance: minDist,
         };
     }
 
@@ -56,6 +73,7 @@ export function findNearestRegency(lat, lng) {
 
 /**
  * Get user's current GPS position via Capacitor Geolocation
+ * @returns {Promise<{latitude: number, longitude: number}>}
  */
 export async function getCurrentPosition() {
     try {
@@ -111,6 +129,7 @@ export async function getCurrentPosition() {
  * Detect location and find nearest regency
  * Returns cached result if available (unless forceRefresh is true), otherwise fetches GPS
  * @param {boolean} forceRefresh - If true, skips cache and forces new GPS fetch.
+ * @returns {Promise<object|null>}
  */
 export async function detectLocation(forceRefresh = false) {
     if (!forceRefresh) {
@@ -121,7 +140,7 @@ export async function detectLocation(forceRefresh = false) {
 
     try {
         const coords = await getCurrentPosition();
-        const result = findNearestRegency(coords.latitude, coords.longitude);
+        const result = await findNearestRegency(coords.latitude, coords.longitude);
 
         if (result) {
             const location = {
@@ -130,7 +149,7 @@ export async function detectLocation(forceRefresh = false) {
                 provinceId: result.province?.id,
                 provinceName: result.province?.name,
                 latitude: coords.latitude,
-                longitude: coords.longitude
+                longitude: coords.longitude,
             };
             await storage.set(STORAGE_KEY, location);
             return location;
@@ -142,9 +161,12 @@ export async function detectLocation(forceRefresh = false) {
     return null;
 }
 
+/* ── Device GPS Checks ── */
+
 /**
  * Check if Device GPS/Location Services is enabled using cordova-plugin-diagnostic
  * Returns true if enabled or on platform without plugin, false if disabled.
+ * @returns {Promise<boolean>}
  */
 export async function checkGpsEnabled() {
     if (!window.cordova || !window.cordova.plugins || !window.cordova.plugins.diagnostic) {
@@ -171,17 +193,28 @@ export function openLocationSettings() {
     }
 }
 
+/* ── Manual Location ── */
+
 /**
- * Manually set location
+ * Manually set location (supports both local DB and Nominatim results)
+ * @param {object} locationData
+ * @param {string} locationData.regencyId
+ * @param {string} locationData.regencyName
+ * @param {string|null} locationData.provinceId
+ * @param {string|null} locationData.provinceName
+ * @param {number} locationData.latitude
+ * @param {number} locationData.longitude
+ * @returns {Promise<object>} The saved location
  */
-export async function setManualLocation(regencyId, regencyName, provinceId, provinceName) {
-    const location = { regencyId, regencyName, provinceId, provinceName };
+export async function setManualLocation({ regencyId, regencyName, provinceId, provinceName, latitude, longitude }) {
+    const location = { regencyId, regencyName, provinceId, provinceName, latitude, longitude };
     await storage.set(STORAGE_KEY, location);
     return location;
 }
 
 /**
  * Get saved location (from cache only, no GPS)
+ * @returns {Promise<object|null>}
  */
 export async function getSavedLocation() {
     return await storage.get(STORAGE_KEY);

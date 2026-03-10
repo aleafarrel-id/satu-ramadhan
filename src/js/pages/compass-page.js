@@ -158,7 +158,14 @@ function showLocationModalForCompass() {
             renderContent();
         },
         onManualSelect: () => {
-            showLocationSearchModal();
+            showLocationSearchModal({
+                onLocationSelected: async (location) => {
+                    _location = location;
+                    renderContent();
+                    await initCompass();
+                    renderContent();
+                },
+            });
         },
     });
 }
