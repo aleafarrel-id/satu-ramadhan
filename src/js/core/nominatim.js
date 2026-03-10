@@ -5,8 +5,10 @@
  */
 
 /* ── Configuration ── */
+import { CONFIG } from '../config.js';
+
 const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
-const USER_AGENT = 'satu-ramadhan-app/1.0';
+const USER_AGENT = `${CONFIG.appName.toLowerCase().replace(/\s+/g, '-')}-app/${CONFIG.version}`;
 const REQUEST_TIMEOUT_MS = 8000;
 const MAX_RESULTS = 5;
 
