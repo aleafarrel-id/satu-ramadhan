@@ -55,7 +55,7 @@
 .confirm-message {
     font-size: var(--fs-xs);
     color: var(--clr-text-secondary);
-    line-height: var(--lh-relaxed);
+    line-height: var(--lh-normal);
 }
 
 .confirm-actions {
