@@ -104,6 +104,10 @@
    --clr-badge-local-text: var(--clr-cal-friday);
    --clr-badge-online-bg: rgba(0, 151, 178, 0.15);
    --clr-badge-online-text: var(--clr-info);
+   --clr-badge-override-bg: rgba(251, 191, 36, 0.15);
+   --clr-badge-override-text: #fbbf24;
+   --clr-badge-active-bg: rgba(52, 211, 153, 0.15);
+   --clr-badge-active-text: #34d399;
 
    /* === Typography === */
    --ff-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

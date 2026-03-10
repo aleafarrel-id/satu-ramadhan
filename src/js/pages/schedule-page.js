@@ -1,7 +1,7 @@
 import { getPrayerTimesByCoords } from '../core/api.js';
 import { getSavedLocation } from '../core/geolocation.js';
 
-import { getSelectedOrg, getOrgDisplayName } from '../modules/schedule/ramadhan.js';
+import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
 import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watcher.js';
 
@@ -83,6 +83,32 @@ export function destroy() {
     _lastDateStr = null;
 }
 
+/**
+ * Re-fetch schedule data and re-render after preset changes.
+ * Exported so other modules (settings) can trigger a refresh.
+ */
+export async function refreshScheduleData() {
+    if (!_container) return;
+    const location = await getSavedLocation();
+    if (!location) return;
+
+    const [scheduleResult, todayTimingsResult] = await Promise.all([
+        fetchScheduleData(location),
+        getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
+    ]);
+
+    _scheduleData = scheduleResult;
+    _todayTimings = todayTimingsResult;
+
+    if (!_scheduleData) {
+        renderError(true);
+        return;
+    }
+
+    _currentDayIndex = findTodayIndex(_scheduleData);
+    await renderDayView();
+}
+
 /* --- INITIALIZATION --- */
 
 /**
@@ -154,7 +180,7 @@ function renderError(hasLocation) {
     const icon = hasLocation ? 'bx-wifi-off' : 'bx-map-pin';
     const title = hasLocation ? 'Gagal Memuat Jadwal' : 'Lokasi Belum Diatur';
     const desc = hasLocation
-        ? 'Tidak dapat memuat jadwal Ramadhan. Periksa koneksi internet Anda dan coba lagi.'
+        ? 'Tidak dapat memuat jadwal lengkap. Periksa koneksi internet Anda dan coba lagi.'
         : 'Atur lokasi terlebih dahulu di Pengaturan untuk melihat jadwal secara lengkap.';
 
     _container.innerHTML = `
@@ -182,10 +208,9 @@ async function renderDayView() {
     if (!_scheduleData || !_scheduleData[_currentDayIndex]) return;
 
     const entry = _scheduleData[_currentDayIndex];
-    const org = await getSelectedOrg();
-    const orgName = getOrgDisplayName(org);
+    const orgName = await getOrgDisplayNameAsync();
 
-    _container.innerHTML = renderScheduleCard(entry, orgName, _todayTimings, _currentDayIndex);
+    _container.innerHTML = renderScheduleCard(entry, orgName, _todayTimings, _currentDayIndex, _scheduleData.length);
 
     _lastDateStr = getTodayDateStr();
 
@@ -201,6 +226,8 @@ async function renderDayView() {
  * to core navigation patterns alongside dynamic organization modals.
  */
 function bindEvents() {
+    const lastIndex = _scheduleData ? _scheduleData.length - 1 : 0;
+
     unbindSwipeEvents();
 
     document.getElementById('schedule-prev')?.addEventListener('click', () => {
@@ -210,7 +237,7 @@ function bindEvents() {
     });
 
     document.getElementById('schedule-next')?.addEventListener('click', () => {
-        if (_currentDayIndex < 29) {
+        if (_currentDayIndex < lastIndex) {
             navigateWithAnimation('left');
         }
     });
@@ -257,10 +284,13 @@ function bindEvents() {
 
 /**
  * Handle swipe gesture direction from the swipe module.
+ * Uses dynamic schedule length instead of hardcoded 29.
  * @param {string} direction - 'left' or 'right'
  */
 function handleSwipe(direction) {
-    if (direction === 'left' && _currentDayIndex < 29) {
+    const lastIndex = _scheduleData ? _scheduleData.length - 1 : 0;
+
+    if (direction === 'left' && _currentDayIndex < lastIndex) {
         navigateWithAnimation('left');
     } else if (direction === 'right' && _currentDayIndex > 0) {
         navigateWithAnimation('right');
@@ -271,16 +301,14 @@ function handleSwipe(direction) {
 
 /**
  * Navigates to the next/previous day with interrupt-safe animation.
- *
- * Rapid same-direction taps: only the index is updated — the already-running
- * slide-out callback will read the latest _currentDayIndex when it fires.
- * Rapid reverse-direction or mid-slide-in taps: the running animation is
- * cancelled via _animId and a fresh slide starts immediately.
+ * Uses dynamic schedule length instead of hardcoded bounds.
  *
  * @param {string} direction - Navigational vector mapping next steps.
  */
 function navigateWithAnimation(direction) {
-    if (direction === 'left' && _currentDayIndex < 29) {
+    const lastIndex = _scheduleData ? _scheduleData.length - 1 : 0;
+
+    if (direction === 'left' && _currentDayIndex < lastIndex) {
         _currentDayIndex++;
     } else if (direction === 'right' && _currentDayIndex > 0) {
         _currentDayIndex--;
@@ -328,7 +356,7 @@ function animateSlide(direction) {
         inner.classList.remove(outClass);
 
         const entry = _scheduleData[_currentDayIndex];
-        updateScheduleContent(entry, _currentDayIndex, _container);
+        updateScheduleContent(entry, _currentDayIndex, _container, _scheduleData.length);
 
         _animPhase = 'in';
         const inClass = direction === 'left' ? 'sliding-in-left' : 'sliding-in-right';
@@ -346,4 +374,3 @@ function animateSlide(direction) {
         });
     });
 }
-

@@ -43,6 +43,17 @@
    transform: translateY(-1px);
 }
 
+.btn--danger {
+   background: var(--clr-danger);
+   color: var(--clr-text-primary);
+   font-weight: var(--fw-semibold);
+}
+
+.btn--danger:active {
+   background: #e62e2e;
+   /* slightly darker red for press state */
+}
+
 .btn i {
    font-size: var(--icon-sm);
    display: inline-block;

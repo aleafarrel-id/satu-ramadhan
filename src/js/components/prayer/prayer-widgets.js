@@ -4,7 +4,7 @@
  */
 
 import { getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
-import { toggleOrg, getOrgDisplayName } from '../../modules/schedule/ramadhan.js';
+import { toggleOrg, getOrgDisplayNameAsync } from '../../modules/schedule/ramadhan.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as notif from '../../modules/notification/notification.js';
 
@@ -59,21 +59,22 @@ export function renderOrgToggle(orgName, id = 'org-toggle') {
 }
 
 /**
- * Handle org toggle click — switches org and updates label
+ * Handle org toggle click — switches org and updates label dynamically.
+ * Uses getOrgDisplayNameAsync() for dynamic name resolution from presets.
  * @param {string} [labelId='org-toggle-label'] - ID of the label element to update
  * @param {Function} [onToggle] - optional callback after toggling
  */
 export async function handleOrgToggle(labelId = 'org-toggle-label', onToggle) {
     impact('medium');
 
-    const newOrg = await toggleOrg();
-    const displayName = getOrgDisplayName(newOrg);
+    await toggleOrg();
+    const displayName = await getOrgDisplayNameAsync();
     const label = document.getElementById(labelId);
     if (label) label.textContent = displayName;
 
     notif.success(`Organisasi Diubah: ${displayName}`);
 
-    if (onToggle) onToggle(newOrg);
+    if (onToggle) onToggle();
 }
 
 /* ── Kiblat Button ── */

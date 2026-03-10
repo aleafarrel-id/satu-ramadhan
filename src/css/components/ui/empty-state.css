@@ -70,7 +70,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0 0 0;
+    gap: var(--spacing-xs);
 }
 
 .empty-state__btn-icon {
@@ -133,5 +134,9 @@
     .empty-state__desc {
         font-size: 11px;
         margin: 0 0 var(--spacing-xs);
+    }
+
+    .empty-state__btn {
+        margin: var(--spacing-sm) 0 0 0;
     }
 }

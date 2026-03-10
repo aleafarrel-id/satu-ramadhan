@@ -3,7 +3,7 @@ import { getPrayerTimesByCoords } from '../core/api.js';
 
 import { getCurrentPrayer } from '../modules/prayer/prayer-times.js';
 import { startCountdown, stopCountdown } from '../modules/schedule/countdown.js';
-import { getSelectedOrg, getOrgDisplayName } from '../modules/schedule/ramadhan.js';
+import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 import { schedulePrayerNotifications } from '../modules/notification/native-notification.js';
 import { updateWatcher } from '../modules/prayer/prayer-watcher.js';
 
@@ -55,6 +55,19 @@ export function destroy() {
     stopCountdown();
     _container = null;
     _timings = null;
+}
+
+/**
+ * Re-render the home content after preset changes (called from Settings).
+ * Exported so other modules can trigger a refresh without full page reload.
+ */
+export async function refreshHomeContent() {
+    if (!_container || !_location) return;
+    try {
+        _timings = await getPrayerTimesByCoords(_location.latitude, _location.longitude);
+    } catch { /* handled in renderContent */ }
+    stopCountdown();
+    await renderContent();
 }
 
 /* --- INITIALIZATION --- */
@@ -128,7 +141,7 @@ async function renderContent() {
             icon: 'bx-wifi-off',
             iconVariant: 'warning',
             title: 'Gagal Memuat Jadwal',
-            description: 'Tidak dapat memuat jadwal waktu sholat. Periksa koneksi internet Anda dan coba lagi.',
+            description: 'Tidak dapat memuat jadwal. Periksa koneksi internet Anda dan coba lagi.',
             action: {
                 label: 'Coba Lagi',
                 icon: 'bx-refresh',
@@ -141,8 +154,7 @@ async function renderContent() {
     }
 
     const prayerState = getCurrentPrayer(_timings);
-    const org = await getSelectedOrg();
-    const orgName = getOrgDisplayName(org);
+    const orgName = await getOrgDisplayNameAsync();
 
     _container.innerHTML = `
         ${renderLocationCardShared(_location)}
@@ -195,8 +207,8 @@ function showLocationModalForHome() {
 
 /**
  * Switches the organizational source for fetching timings
- * (e.g. between Kemenag and Muhammadiyah or NU), then re-fetches
- * timings and re-renders content so prayer times reflect the new org.
+ * (e.g. between Kemenag and Muhammadiyah or NU), then re-renders
+ * content so prayer times reflect the new org.
  */
 async function handleOrgToggle() {
     await handleOrgToggleShared('org-label', async () => {

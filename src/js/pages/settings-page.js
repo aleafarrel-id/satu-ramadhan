@@ -2,6 +2,7 @@ import { CONFIG } from '../config.js';
 
 import * as settingsPanel from '../components/settings/settings-panel.js';
 import * as settingsLocCard from '../components/card/settings-loc-card.js';
+import * as settingsPresetCard from '../components/card/settings-preset-card.js';
 
 /* --- STATE --- */
 let _container = null;
@@ -10,7 +11,7 @@ let _container = null;
 
 /**
  * Renders the main settings page shell and delegates rendering
- * to the location card and application settings panel components.
+ * to the location card, preset card, and application settings panel components.
  *
  * @param {HTMLElement} container - The DOM element to render into.
  */
@@ -21,6 +22,7 @@ export function render(container) {
         <div class="settings-page">
             <h2 class="settings-title">Pengaturan</h2>
             <div id="settings-loc-card-container"></div>
+            <div id="settings-preset-card-container"></div>
             <div id="settings-panel-container"></div>
             
             <p class="settings-version">${CONFIG.appName} v ${CONFIG.version}</p>
@@ -30,6 +32,11 @@ export function render(container) {
     const locCardContainer = document.getElementById('settings-loc-card-container');
     if (locCardContainer) {
         settingsLocCard.render(locCardContainer);
+    }
+
+    const presetCardContainer = document.getElementById('settings-preset-card-container');
+    if (presetCardContainer) {
+        settingsPresetCard.render(presetCardContainer);
     }
 
     const panelContainer = document.getElementById('settings-panel-container');
@@ -44,6 +51,7 @@ export function render(container) {
  */
 export function destroy() {
     settingsLocCard.destroy();
+    settingsPresetCard.destroy();
     settingsPanel.destroy();
     _container = null;
 }

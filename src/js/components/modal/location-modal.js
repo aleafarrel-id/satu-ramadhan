@@ -4,16 +4,15 @@
  * Used on first launch (no cached location) or when user taps "Ubah".
  */
 
-import { detectLocation, checkGpsEnabled, openLocationSettings } from '../../core/geolocation.js';
-
-import * as notif from '../../modules/notification/notification.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+
+import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
 
 /* ── DOM References ── */
 let _overlayEl = null;
 
 /* ── State ── */
-let _isDetecting = false;
+// State is purely DOM-based now (button.disabled)
 
 /* ── Public API ── */
 
@@ -39,40 +38,11 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
 
     // ── Bind: GPS button ──
     const btnGps = _overlayEl.querySelector('#loc-modal-btn-gps');
-    btnGps?.addEventListener('click', async () => {
-        if (_isDetecting) return;
-        _isDetecting = true;
-        setGpsButtonLoading(true);
-
-        // Check if GPS is enabled on device
-        const isGpsOn = await checkGpsEnabled();
-        if (!isGpsOn) {
-            notif.error('GPS belum aktif. Menunggu...');
-            openLocationSettings();
-
-            // Keep the modal visible and reset loading state so user can retry
-            setGpsButtonLoading(false);
-            _isDetecting = false;
-            return;
-        }
-
-        try {
-            // Pass `true` for forceRefresh so it ignores cached location
-            const location = await detectLocation(true);
-            if (location) {
-                notif.success(`Lokasi terdeteksi: ${location.regencyName}`);
-                hideModal();
-                onLocationDetected?.(location);
-            } else {
-                notif.error('Lokasi tidak ditemukan, coba lagi atau pilih manual');
-                setGpsButtonLoading(false);
-            }
-        } catch {
-            notif.error('GPS gagal, pastikan GPS aktif atau pilih manual');
-            setGpsButtonLoading(false);
-        } finally {
-            _isDetecting = false;
-        }
+    btnGps?.addEventListener('click', () => {
+        handleGpsDetectionWithButton(btnGps, (location) => {
+            hideModal();
+            onLocationDetected?.(location);
+        });
     });
 
     // ── Bind: Manual button ──
@@ -84,7 +54,8 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
 
     // ── Bind: Click outside to close ──
     _overlayEl.addEventListener('click', (e) => {
-        if (e.target === _overlayEl && !_isDetecting) {
+        const isDetecting = btnGps?.disabled;
+        if (e.target === _overlayEl && !isDetecting) {
             hideModal();
         }
     });
@@ -108,31 +79,8 @@ function removeModal() {
         _overlayEl.remove();
         _overlayEl = null;
     }
-    _isDetecting = false;
     // Unregister from hardware back handler
     unregisterModalDismiss(hideModal);
-}
-
-/**
- * Toggle GPS button between normal and loading state.
- */
-function setGpsButtonLoading(loading) {
-    const btn = _overlayEl?.querySelector('#loc-modal-btn-gps');
-    if (!btn) return;
-
-    if (loading) {
-        btn.disabled = true;
-        btn.innerHTML = `
-            <i class='bx bx-loader-alt bx-spin'></i>
-            <span>Mendeteksi Lokasi...</span>
-        `;
-    } else {
-        btn.disabled = false;
-        btn.innerHTML = `
-            <i class='bx bx-current-location'></i>
-            <span>Akses Lokasi</span>
-        `;
-    }
 }
 
 /**

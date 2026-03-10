@@ -225,6 +225,108 @@
    color: var(--clr-text-muted);
 }
 
+/* =============================================
+   Settings Preset Card
+   ============================================= */
+
+.settings-preset-card {
+   background: var(--clr-bg-card);
+   backdrop-filter: blur(10px);
+   -webkit-backdrop-filter: blur(10px);
+   border-top: 1px solid var(--clr-border-light);
+   border-bottom: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-lg);
+   margin-bottom: var(--spacing-lg);
+   box-shadow: none;
+}
+
+.settings-preset-header {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: var(--spacing-sm);
+   margin-bottom: var(--spacing-md);
+}
+
+.settings-preset-title {
+   font-family: var(--font-primary);
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-regular);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+   margin-bottom: var(--spacing-xs);
+}
+
+.settings-preset-icon-wrapper {
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-sm);
+}
+
+.settings-preset-calendar-icon {
+   font-size: var(--icon-lg);
+   color: var(--clr-accent-400);
+   flex-shrink: 0;
+}
+
+.settings-preset-status-wrapper {
+   flex: 1;
+   min-width: 0;
+   display: flex;
+   align-items: center;
+}
+
+.settings-preset-body {
+   flex: 1;
+   min-width: 0;
+}
+
+.settings-preset-org {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-secondary);
+}
+
+.settings-preset-dates {
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+}
+
+.settings-preset-desc {
+   font-size: var(--fs-xs);
+   color: var(--clr-text-secondary);
+   line-height: var(--lh-normal);
+   margin-bottom: var(--spacing-lg);
+}
+
+.settings-preset-actions {
+   display: flex;
+   flex-direction: column;
+   gap: var(--spacing-md);
+}
+
+.settings-preset-actions .btn {
+   width: 100%;
+   border-radius: var(--radius-full);
+   font-family: var(--font-primary);
+   font-weight: var(--fw-bold);
+   font-size: var(--fs-xs);
+   justify-content: center;
+}
+
+.settings-preset-actions .btn--outline {
+   border: 1px solid var(--clr-primary-a30);
+   background: var(--clr-primary-a10);
+   color: var(--clr-text-secondary);
+}
+
+.settings-preset-actions .btn--outline:active {
+   background: var(--clr-primary-a20);
+   transform: scale(0.97);
+}
+
 @media (max-width: 360px) {
 
    .settings-item-info {

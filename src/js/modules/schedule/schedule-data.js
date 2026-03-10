@@ -6,21 +6,20 @@
 
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { getRamadhanConfig } from '../../core/database.js';
-import { getSelectedOrg } from './ramadhan.js';
+import { getActivePreset } from './ramadhan.js';
 
 /* ── Public API ── */
 
 /**
- * Fetch 30-day Ramadhan prayer schedule for the given location.
- * Computes Ramadhan dates, resolves required API months,
- * and merges API data with local calendar metadata.
+ * Fetch the full Ramadhan prayer schedule for the given location.
+ * Computes Ramadhan dates dynamically from preset's startDate/endDate,
+ * resolves required API months, and merges API data with calendar metadata.
  *
  * @param {Object} location - Coordinates { latitude, longitude }
  * @returns {Promise<Array|null>} Array of day entries or null on failure
  */
 export async function fetchScheduleData(location) {
-    const org = await getSelectedOrg();
-    const { dates } = computeRamadhanDates(org);
+    const { dates } = await computeRamadhanDates();
     const requiredMonths = getRequiredMonths(dates);
 
     const monthResults = await Promise.all(
@@ -77,16 +76,19 @@ export function getTodayDateStr() {
 /* ── Internal Functions ── */
 
 /**
- * Compute the 30 Gregorian dates corresponding to Ramadhan
- * based on the selected organization's start date.
+ * Compute all Gregorian dates for Ramadhan based on the active preset.
+ * Duration is dynamic: calculated from startDate to endDate (inclusive).
+ * @returns {Promise<{ startDate: Date, dates: Date[] }>}
  */
-function computeRamadhanDates(org) {
-    const config = getRamadhanConfig();
-    const startStr = config.tanggalSatuRamadhan[org];
-    const startDate = new Date(startStr + 'T00:00:00');
+async function computeRamadhanDates() {
+    const preset = await getActivePreset();
+    const startDate = new Date(preset.startDate + 'T00:00:00');
+    const endDate = new Date(preset.endDate + 'T00:00:00');
+
+    const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
     const dates = [];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < totalDays; i++) {
         const d = new Date(startDate);
         d.setDate(d.getDate() + i);
         dates.push(d);

@@ -3,9 +3,12 @@
  * Real search with debounce, loading states, and location selection.
  */
 
-import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { searchLocation } from '../../core/location-search.js';
 import { setManualLocation } from '../../core/geolocation.js';
+
+import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+
+import { handleManualLocationSelection } from '../../utils/location-feedback.js';
 
 /* ── State ── */
 let _overlayEl = null;
@@ -145,6 +148,7 @@ function bindResultItems(container, results) {
 
             // Save to storage
             await setManualLocation(selected);
+            await handleManualLocationSelection(selected);
 
             // Invoke callback before closing
             const callback = _onLocationSelected;
@@ -187,7 +191,7 @@ function renderError() {
     return `
         <div class="loc-search-placeholder">
             <i class='bx bx-error-circle loc-search-placeholder-icon'></i>
-            <span>Gagal mencari lokasi. Periksa koneksi internet.</span>
+            <span>Pencarian gagal. Periksa koneksi internet.</span>
         </div>
     `;
 }

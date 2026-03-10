@@ -44,6 +44,8 @@
 @import './components/modal/location-search-modal.css';
 @import './components/modal/compass-guide-modal.css';
 @import './components/modal/calendar-modal.css';
+@import './components/modal/preset-manager-modal.css';
+@import './components/modal/confirm-modal.css';
 
 /* Compass */
 @import './components/compass/compass-dial.css';

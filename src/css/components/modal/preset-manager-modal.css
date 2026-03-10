@@ -1,0 +1,366 @@
+/* =============================================
+   Preset Manager Modal (Bottom-sheet)
+   ============================================= */
+
+.preset-mgr-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.preset-mgr-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.preset-mgr-sheet {
+    background: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+    border-top: 1px solid var(--clr-primary-a30);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 430px;
+    max-height: 80vh;
+    margin: 0 auto;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--clr-white-a05);
+    display: flex;
+    flex-direction: column;
+}
+
+.preset-mgr-overlay.active .preset-mgr-sheet {
+    transform: translateY(0);
+}
+
+/* ── Header ── */
+
+.preset-mgr-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+}
+
+.preset-mgr-title {
+    font-family: var(--font-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+}
+
+/* ── List ── */
+
+.preset-mgr-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 100px;
+    margin: 0 calc(-1 * var(--spacing-lg));
+    padding: 0 var(--spacing-lg);
+    scrollbar-width: thin;
+    scrollbar-color: var(--clr-primary-500) transparent;
+}
+
+.preset-mgr-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.preset-mgr-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.preset-mgr-list::-webkit-scrollbar-thumb {
+    background: var(--clr-primary-600);
+    border-radius: var(--radius-full);
+}
+
+/* ── Item ── */
+
+.preset-mgr-item {
+    padding: var(--spacing-md) 0 10px 0;
+    border-bottom: 1px solid var(--clr-border-light);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.preset-mgr-item:last-child {
+    border-bottom: none;
+}
+
+.preset-mgr-item--active {
+    border-left: 3px solid var(--clr-accent-400);
+    padding-left: var(--spacing-sm);
+    margin-left: calc(-1 * var(--spacing-sm));
+}
+
+.preset-mgr-item-select {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.preset-mgr-item-radio {
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--clr-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all var(--transition-fast);
+}
+
+.preset-mgr-item-radio--checked {
+    background: var(--clr-accent-500);
+    border-color: var(--clr-accent-500);
+    color: var(--clr-text-dark);
+    font-size: var(--fs-sm);
+}
+
+.preset-mgr-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.preset-mgr-item-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-primary);
+    line-height: var(--lh-snug);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+.preset-mgr-item-dates {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    margin-top: 2px;
+}
+
+.preset-mgr-item-badges {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+/* ── Badges ── */
+
+.preset-mgr-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-tight);
+    padding: 4px 8px;
+    border-radius: var(--radius-pill);
+    line-height: normal;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.preset-mgr-badge--base {
+    background: var(--clr-primary-a20);
+    color: var(--clr-text-secondary);
+}
+
+.preset-mgr-badge--custom {
+    background: var(--clr-badge-online-bg);
+    color: var(--clr-badge-online-text);
+}
+
+.preset-mgr-badge--override {
+    background: var(--clr-badge-override-bg);
+    color: var(--clr-badge-override-text);
+}
+
+.preset-mgr-badge--active {
+    background: var(--clr-badge-active-bg);
+    color: var(--clr-badge-active-text);
+    font-size: var(--fs-2xs);
+    margin-left: var(--spacing-xs);
+}
+
+/* ── Item Actions ── */
+
+.preset-mgr-item-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+    align-items: flex-start;
+    margin-top: 2px;
+}
+
+.preset-mgr-item-action {
+    background: none;
+    border: 1px solid var(--clr-border-light);
+    color: var(--clr-text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--icon-sm);
+    padding: 0;
+}
+
+.preset-mgr-item-action:active {
+    background: var(--clr-white-a05);
+    transform: scale(0.92);
+}
+
+.preset-mgr-item-action--delete {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.2);
+}
+
+.preset-mgr-item-action--delete:active {
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.preset-mgr-item-action--reset {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.2);
+}
+
+.preset-mgr-item-action--reset:active {
+    background: rgba(251, 191, 36, 0.1);
+}
+
+/* ── Edit Form ── */
+
+.preset-mgr-edit-form {
+    width: 100%;
+}
+
+.preset-mgr-form {
+    padding: var(--spacing-md) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    animation: presetFormSlideIn 0.2s ease-out;
+}
+
+@keyframes presetFormSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.preset-mgr-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.preset-mgr-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+}
+
+.preset-mgr-form-label {
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-tight);
+}
+
+.preset-mgr-form-input {
+    width: 100%;
+    background: var(--clr-bg-dark);
+    border: 1px solid var(--clr-border-light);
+    color: var(--clr-text-primary);
+    font-size: var(--fs-sm);
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: border-color var(--transition-fast);
+    font-family: inherit;
+}
+
+.preset-mgr-form-input:focus {
+    border-color: var(--clr-primary-400);
+}
+
+/* Date input styling for dark theme */
+.preset-mgr-form-input[type="date"] {
+    color-scheme: dark;
+}
+
+.preset-mgr-form-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+/* Button style override specific for inline form actions to ensure pill shape */
+.preset-mgr-form-btn {
+    padding: 0 var(--spacing-md);
+    min-width: 80px;
+    min-height: 36px;
+    font-size: var(--fs-xs);
+}
+
+/* ── Footer ── */
+
+.preset-mgr-footer {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--clr-border-light);
+    margin-top: var(--spacing-sm);
+}
+
+.preset-mgr-add-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ── Add Form ── */
+
+.preset-mgr-add-form:empty {
+    display: none;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 380px) {
+    .preset-mgr-item-name {
+        font-size: var(--fs-xs);
+    }
+
+    .preset-mgr-form-row {
+        grid-template-columns: 1fr;
+    }
+}

@@ -31,10 +31,11 @@ const MONTH_ID = {
  * @param {Object} entry        - Day entry { ramadhanDay, date, isToday, timings, tahunHijriah }
  * @param {string} orgName      - Display name of selected organization
  * @param {Object|null} todayTimings - Today's prayer timings (for featured card)
- * @param {number} dayIndex     - Current day index (0-29)
+ * @param {number} dayIndex     - Current day index
+ * @param {number} [totalDays=30] - Total number of Ramadhan days
  * @returns {string} HTML string
  */
-export function renderScheduleCard(entry, orgName, todayTimings, dayIndex) {
+export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, totalDays = 30) {
     const viewingToday = entry.isToday;
     const activePrayerKey = viewingToday ? getActivePrayerKey(entry.timings) : null;
     const featuredHtml = todayTimings ? renderFeaturedCard(todayTimings) : '';
@@ -50,7 +51,7 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex) {
             </div>
 
             <div class="card card--container schedule-content-card${viewingToday ? ' schedule-content-card--today' : ''}" id="schedule-swipe-area">
-                ${renderDateNav(entry, dayIndex)}
+                ${renderDateNav(entry, dayIndex, totalDays)}
                 <div class="schedule-swipe-inner" id="schedule-swipe-inner">
                     <div class="schedule-prayers">
                         ${renderPrayerRows(entry.timings, activePrayerKey, viewingToday)}
@@ -70,11 +71,12 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex) {
  * Update swipe inner content and navigation state without full reflow.
  * Used during slide animations to swap content efficiently.
  * @param {Object} entry     - Day entry for the target day
- * @param {number} dayIndex  - Current day index (0-29)
+ * @param {number} dayIndex  - Current day index
  * @param {HTMLElement} container - Parent container for scoped queries
+ * @param {number} [totalDays=30] - Total number of Ramadhan days
  * @returns {string|null} Active prayer key (for state tracking)
  */
-export function updateScheduleContent(entry, dayIndex, container) {
+export function updateScheduleContent(entry, dayIndex, container, totalDays = 30) {
     const viewingToday = entry.isToday;
     const activePrayerKey = viewingToday ? getActivePrayerKey(entry.timings) : null;
 
@@ -118,7 +120,7 @@ export function updateScheduleContent(entry, dayIndex, container) {
         prevBtn.disabled = isPrevDisabled;
     }
     if (nextBtn) {
-        const isNextDisabled = dayIndex >= 29;
+        const isNextDisabled = dayIndex >= totalDays - 1;
         nextBtn.classList.toggle('disabled', isNextDisabled);
         nextBtn.disabled = isNextDisabled;
     }
@@ -223,7 +225,7 @@ export function renderScheduleCardSkeleton() {
 /**
  * Render the date navigation bar with title, subtitle, and controls.
  */
-function renderDateNav(entry, dayIndex) {
+function renderDateNav(entry, dayIndex, totalDays = 30) {
     const { ramadhanDay, date, isToday: today, timings, tahunHijriah } = entry;
 
     const weekdayEn = timings?.weekday?.en || date.toLocaleDateString('en', { weekday: 'long' });
@@ -233,7 +235,7 @@ function renderDateNav(entry, dayIndex) {
         : date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
     const isPrevDisabled = dayIndex <= 0;
-    const isNextDisabled = dayIndex >= 29;
+    const isNextDisabled = dayIndex >= totalDays - 1;
 
     return `
         <div class="schedule-nav">
