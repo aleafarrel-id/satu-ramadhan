@@ -18,13 +18,14 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Iterator;
 
 @CapacitorPlugin(name = "PrayerService")
 public class PrayerServicePlugin extends Plugin {
 
     private static final String TAG = "PrayerServicePlugin";
-    private static final String PREF_NAME = "PrayerAlarms";
+
+    /** Must match JS NOTIFICATION_BASE_ID (native-notification.js) */
+    private static final int JS_NOTIFICATION_BASE_ID = 1000;
 
     @PluginMethod()
     public void schedule(PluginCall call) {
@@ -36,6 +37,7 @@ public class PrayerServicePlugin extends Plugin {
 
         Context context = getContext();
         saveAlarmsToStorage(context, alarmsArr);
+        setNotificationsEnabled(context, true);
         scheduleAlarms(context, alarmsArr);
 
         call.resolve();
@@ -44,7 +46,9 @@ public class PrayerServicePlugin extends Plugin {
     @PluginMethod()
     public void cancelAll(PluginCall call) {
         Context context = getContext();
+        setNotificationsEnabled(context, false);
         cancelAllAlarms(context);
+        clearSavedAlarms(context);
         call.resolve();
     }
 
@@ -87,12 +91,12 @@ public class PrayerServicePlugin extends Plugin {
     // ── Internal Scheduling Logic ────────────────────────────────────
 
     private void saveAlarmsToStorage(Context context, JSArray alarms) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString("alarms_data", alarms.toString()).apply();
     }
 
     public static void rescheduleAlarmsFromStorage(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
         String alarmsStr = prefs.getString("alarms_data", null);
         if (alarmsStr != null) {
             try {
@@ -168,18 +172,53 @@ public class PrayerServicePlugin extends Plugin {
         if (alarmManager == null) return;
 
         String[] allKeys = {"imsak", "subuh", "terbit", "dzuhur", "ashar", "magrib", "isya"};
+
+        // Cancel with Java-based request codes (3000-series)
         for (String key : allKeys) {
-            Intent intent = new Intent(context, PrayerAlarmReceiver.class);
-            int requestCode = getRequestCode(key);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context, requestCode, intent,
-                    PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
-            );
-            if (pendingIntent != null) {
-                alarmManager.cancel(pendingIntent);
-                pendingIntent.cancel();
-            }
+            cancelPendingIntent(context, alarmManager, getRequestCode(key));
         }
+
+        // Cancel with JS-based request codes (1001-1007)
+        for (int i = 0; i < allKeys.length; i++) {
+            cancelPendingIntent(context, alarmManager, JS_NOTIFICATION_BASE_ID + i + 1);
+        }
+
+        Log.d(TAG, "All alarms cancelled (both ID sets)");
+    }
+
+    /**
+     * Cancel a single PendingIntent alarm by its request code.
+     */
+    private static void cancelPendingIntent(Context context, AlarmManager alarmManager, int requestCode) {
+        Intent intent = new Intent(context, PrayerAlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context, requestCode, intent,
+                PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
+        );
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
+        }
+    }
+
+    /**
+     * Clear saved alarm data from SharedPreferences.
+     * Prevents BootReceiver from rescheduling cancelled alarms.
+     */
+    private static void clearSavedAlarms(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().remove("alarms_data").apply();
+        Log.d(TAG, "Saved alarm data cleared");
+    }
+
+    /**
+     * Set the notifications enabled flag in SharedPreferences.
+     * PrayerAlarmReceiver checks this as a final guard before showing notifications.
+     */
+    private static void setNotificationsEnabled(Context context, boolean enabled) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, enabled).apply();
+        Log.d(TAG, "Notifications enabled flag set to: " + enabled);
     }
 
     private static int getRequestCode(String key) {

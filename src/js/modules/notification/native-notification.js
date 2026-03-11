@@ -3,13 +3,11 @@
  * Handles Android prayer time notifications with full adzan playback.
  *
  * Architecture:
- * - @capacitor/local-notifications → scheduling & basic notification display
- * - Custom AdzanService plugin     → full-length adzan via Foreground Service
+ * - Custom PrayerService plugin → AlarmManager scheduling & alarm dispatch
+ * - PrayerAlarmReceiver (Java)  → decides adzan playback vs standard notification
+ * - @capacitor/local-notifications → permission management only
  *
- * Notification channels:
- * - adzan_subuh   → silent channel (audio via MediaPlayer) for Subuh
- * - adzan_regular → silent channel (audio via MediaPlayer) for Dzuhur/Ashar/Magrib/Isya
- * - prayer_default → system default sound for Imsak/Terbit
+ * All notification channels are created natively by the Java layer.
  */
 
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -27,47 +25,40 @@ const NOTIFICATION_BASE_ID = 1000;
 
 /**
  * Single source of truth for prayer notification configuration.
- * Maps prayer key → { channelId, title, body, isAdzan }
+ * Maps prayer key → { title, body, isAdzan }
  */
 const PRAYER_NOTIFICATION_MAP = {
     imsak: {
-        channelId: 'prayer_default',
         title: 'Waktu Imsak',
         body: 'Waktunya untuk mulai berpuasa',
         isAdzan: false,
     },
     subuh: {
-        channelId: 'adzan_subuh',
         title: 'Waktu Subuh',
         body: 'Saatnya menunaikan sholat Subuh',
         isAdzan: true,
     },
     terbit: {
-        channelId: 'prayer_default',
         title: 'Matahari Terbit',
         body: 'Waktu syuruq — matahari telah terbit',
         isAdzan: false,
     },
     dzuhur: {
-        channelId: 'adzan_regular',
         title: 'Waktu Dzuhur',
         body: 'Saatnya menunaikan sholat Dzuhur',
         isAdzan: true,
     },
     ashar: {
-        channelId: 'adzan_regular',
         title: 'Waktu Ashar',
         body: 'Saatnya menunaikan sholat Ashar',
         isAdzan: true,
     },
     magrib: {
-        channelId: 'adzan_regular',
         title: 'Waktu Magrib',
         body: 'Saatnya menunaikan sholat Magrib',
         isAdzan: true,
     },
     isya: {
-        channelId: 'adzan_regular',
         title: "Waktu Isya'",
         body: "Saatnya menunaikan sholat Isya'",
         isAdzan: true,
@@ -77,42 +68,6 @@ const PRAYER_NOTIFICATION_MAP = {
 /** All prayer keys in chronological order */
 const PRAYER_KEYS = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'magrib', 'isya'];
 
-/** Notification channel definitions */
-const CHANNELS = [
-    {
-        id: 'adzan_subuh',
-        name: 'Adzan Subuh',
-        description: 'Notifikasi adzan waktu Subuh',
-        importance: 4, // HIGH — so notification pops up
-        sound: '', // Silent — audio played via MediaPlayer
-        vibration: true,
-    },
-    {
-        id: 'adzan_regular',
-        name: 'Adzan',
-        description: 'Notifikasi adzan waktu sholat',
-        importance: 4,
-        sound: '',
-        vibration: true,
-    },
-    {
-        id: 'prayer_default',
-        name: 'Pengingat Sholat',
-        description: 'Notifikasi pengingat waktu sholat',
-        importance: 3, // DEFAULT — with system sound
-        vibration: true,
-    },
-];
-
-/**
- * Preferences keys — prepared for future toggle features.
- * Not actively used in UI yet, but the module respects them.
- */
-const PREF_KEYS = {
-    NOTIFICATION_ENABLED: 'notif_enabled',
-    ADZAN_SOUND_ENABLED: 'adzan_sound_enabled',
-};
-
 // ── State ──────────────────────────────────────────────────────────
 let _initialized = false;
 
@@ -121,7 +76,7 @@ let _initialized = false;
 /**
  * Initialize the notification service.
  * Should be called once at app startup.
- * Sets up permissions, channels, action types, and event listeners.
+ * Requests notification permissions from the user.
  */
 export async function initNotificationService() {
     if (!Capacitor.isNativePlatform()) {
@@ -137,8 +92,6 @@ export async function initNotificationService() {
             console.warn('[NativeNotif] Notification permission denied');
             return;
         }
-
-        await ensureChannels();
 
         _initialized = true;
         console.log('[NativeNotif] Initialized successfully');
@@ -158,8 +111,18 @@ export async function schedulePrayerNotifications(timings) {
     if (!Capacitor.isNativePlatform() || !_initialized) return;
     if (!timings) return;
 
+    // Baca pengaturan toggle dari localStorage
+    const isNotifEnabled = localStorage.getItem('satu_ramadhan_notif') !== 'false';
+    const isAdzanEnabled = localStorage.getItem('satu_ramadhan_adzan') !== 'false';
+
     try {
         await cancelAllPrayerNotifications();
+
+        // Jika notifikasi dimatikan, cukup cancel semua dan berhenti
+        if (!isNotifEnabled) {
+            console.log('[NativeNotif] Notifikasi dimatikan oleh pengguna.');
+            return;
+        }
 
         const now = new Date();
         const alarmsToSchedule = [];
@@ -174,23 +137,26 @@ export async function schedulePrayerNotifications(timings) {
             const config = PRAYER_NOTIFICATION_MAP[key];
             if (!config) return;
 
-            // Send rich alarm data to native AlarmManager
+            // Jika adzan dimatikan, override isAdzan ke false
+            // agar Native hanya menampilkan notifikasi teks standar
+            const shouldPlayAdzan = config.isAdzan && isAdzanEnabled;
+
             alarmsToSchedule.push({
                 id: getNotificationId(index),
                 key: key,
                 title: config.title,
                 body: config.body,
-                isAdzan: config.isAdzan,
+                isAdzan: shouldPlayAdzan,
                 timestamp: date.getTime()
             });
         });
 
-        // Schedule all (Adzan + Standard) natively via our generic plugin
+        // Schedule all natively via our generic plugin
         if (alarmsToSchedule.length > 0) {
             await PrayerService.schedule({ alarms: alarmsToSchedule });
-            console.log(`[NativeNotif] Scheduled ${alarmsToSchedule.length} native alarms (Unification)`);
+            console.log(`[NativeNotif] Scheduled ${alarmsToSchedule.length} native alarms`);
         } else {
-            console.log('[NativeNotif] No alarms to schedule');
+            console.log('[NativeNotif] No future alarms to schedule');
         }
     } catch (e) {
         console.error('[NativeNotif] Scheduling failed:', e);
@@ -205,26 +171,8 @@ export async function cancelAllPrayerNotifications() {
 
     try {
         await PrayerService.cancelAll();
-        // Fallback cleanup for old Capacitor notifications just in case
-        const ids = PRAYER_KEYS.map((_, i) => ({ id: getNotificationId(i) }));
-        await LocalNotifications.cancel({ notifications: ids });
     } catch (e) {
         console.warn('[NativeNotif] Cancel failed:', e);
-    }
-}
-
-/**
- * Stop adzan playback from JS side.
- * Can be called from UI if needed.
- */
-export async function stopAdzan() {
-    if (!Capacitor.isNativePlatform()) return;
-
-    try {
-        await PrayerService.stop();
-        console.log('[NativeNotif] Adzan stopped via JS');
-    } catch (e) {
-        console.warn('[NativeNotif] Stop adzan failed:', e);
     }
 }
 
@@ -241,25 +189,6 @@ async function ensurePermissions() {
     const request = await LocalNotifications.requestPermissions();
     return request.display === 'granted';
 }
-
-// ── Internal: Channels ─────────────────────────────────────────────
-
-/**
- * Create notification channels (Android 8+).
- * Channels are idempotent — creating an existing channel is a no-op.
- */
-async function ensureChannels() {
-    for (const channel of CHANNELS) {
-        await LocalNotifications.createChannel(channel);
-    }
-    console.log('[NativeNotif] Channels created:', CHANNELS.map(c => c.id).join(', '));
-}
-
-// Removed unused Action Types
-
-// ── Internal: Event Listeners ──────────────────────────────────────
-
-// Removed Event Listeners since Native Alarm handles everything
 
 // ── Internal: Helpers ──────────────────────────────────────────────
 

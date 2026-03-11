@@ -25,4 +25,8 @@ public final class Constants {
 
     // --- Notification IDs ---
     public static final int NOTIFICATION_ID_PLAYBACK = 2000;
+
+    // --- SharedPreferences ---
+    public static final String PREF_NAME = "PrayerAlarms";
+    public static final String KEY_NOTIFICATIONS_ENABLED = "notifications_enabled";
 }

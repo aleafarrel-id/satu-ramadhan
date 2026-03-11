@@ -3,6 +3,10 @@
  * Renders the settings card with toggles
  */
 
+import { schedulePrayerNotifications } from '../../modules/notification/native-notification.js';
+import { getTimings } from '../../pages/home-page.js';
+import * as Notif from '../../modules/notification/notification.js';
+
 export function render(container) {
     container.innerHTML = `
         <div class="card settings-card">
@@ -17,7 +21,7 @@ export function render(container) {
                 </div>
             </label>
             <div class="settings-divider"></div>
-            <label class="settings-item" for="toggle-adzan">
+            <label class="settings-item" id="adzan-row" for="toggle-adzan">
                 <div class="settings-item-info">
                     <i class='bx bx-volume-full'></i>
                     <span>Hidupkan Suara Adzan</span>
@@ -45,13 +49,51 @@ export function render(container) {
         adzanToggle.checked = savedAdzan === 'true';
     }
 
+    // Sinkronisasi visual awal: mute adzan row jika notifikasi mati
+    updateAdzanRowState(notificationToggle.checked);
+
     notificationToggle?.addEventListener('change', (e) => {
-        localStorage.setItem('satu_ramadhan_notif', e.target.checked);
+        const enabled = e.target.checked;
+        localStorage.setItem('satu_ramadhan_notif', enabled);
+        updateAdzanRowState(enabled);
+        rescheduleNotifications();
+        Notif.show(
+            enabled ? 'Notifikasi diaktifkan' : 'Notifikasi dimatikan',
+            enabled ? 'success' : 'info'
+        );
     });
 
     adzanToggle?.addEventListener('change', (e) => {
-        localStorage.setItem('satu_ramadhan_adzan', e.target.checked);
+        const enabled = e.target.checked;
+        localStorage.setItem('satu_ramadhan_adzan', enabled);
+        rescheduleNotifications();
+        Notif.show(
+            enabled ? 'Suara adzan diaktifkan' : 'Suara adzan dimatikan',
+            enabled ? 'success' : 'info'
+        );
     });
+}
+
+/**
+ * Toggle visual disabled state on the adzan row.
+ * When notifications are off, adzan toggle is irrelevant.
+ * @param {boolean} notifEnabled
+ */
+function updateAdzanRowState(notifEnabled) {
+    const adzanRow = document.getElementById('adzan-row');
+    if (!adzanRow) return;
+    adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
+}
+
+/**
+ * Re-schedules native prayer notifications based on current
+ * localStorage toggles and today's timings.
+ */
+function rescheduleNotifications() {
+    const timings = getTimings();
+    if (timings) {
+        schedulePrayerNotifications(timings);
+    }
 }
 
 export function destroy() {

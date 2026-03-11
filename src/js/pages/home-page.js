@@ -58,6 +58,15 @@ export function destroy() {
 }
 
 /**
+ * Getter for current prayer timings.
+ * Used by settings-panel to re-schedule notifications on toggle change.
+ * @returns {object|null} Current prayer timings or null if not loaded
+ */
+export function getTimings() {
+    return _timings;
+}
+
+/**
  * Re-render the home content after preset changes (called from Settings).
  * Exported so other modules can trigger a refresh without full page reload.
  */

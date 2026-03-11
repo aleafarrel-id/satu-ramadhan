@@ -3,12 +3,17 @@ package com.saturamadhan.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
 /**
  * Receiver that handles prayer alarms triggered by the system.
  * It decides whether to play adzan audio or show a standard notification.
+ *
+ * Defense-in-depth: checks SharedPreferences flag before acting,
+ * so even if an alarm fires during a cancel race condition,
+ * the notification is silently dropped.
  */
 public class PrayerAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "PrayerAlarmReceiver";
@@ -17,12 +22,20 @@ public class PrayerAlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent == null) return;
 
+        // Defense-in-depth: check if notifications are still enabled
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        boolean notificationsEnabled = prefs.getBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, true);
+        if (!notificationsEnabled) {
+            Log.d(TAG, "Alarm fired but notifications are disabled — silently dropping.");
+            return;
+        }
+
         String prayerKey = intent.getStringExtra(Constants.EXTRA_PRAYER_KEY);
         String prayerName = intent.getStringExtra(Constants.EXTRA_PRAYER_NAME);
         boolean isAdzan = intent.getBooleanExtra(Constants.EXTRA_IS_ADZAN, true);
         String bodyText = intent.getStringExtra(Constants.EXTRA_BODY);
 
-        Log.d(TAG, "Adzan Alarm Triggered! Key=" + prayerKey + ", Name=" + prayerName + ", isAdzan=" + isAdzan);
+        Log.d(TAG, "Alarm Triggered! Key=" + prayerKey + ", Name=" + prayerName + ", isAdzan=" + isAdzan);
 
         if (isAdzan) {
             startAdzanService(context, prayerKey, prayerName);
