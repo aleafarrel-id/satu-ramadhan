@@ -383,7 +383,7 @@ function validateDates(startDate, endDate) {
     const end = new Date(endDate + 'T00:00:00');
     const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
     if (diffDays !== 29 && diffDays !== 30) {
-        notif.warning(`Durasi Ramadhan harus 29 atau 30 hari (saat ini ${diffDays} hari)`);
+        notif.warning(`Durasi Ramadhan harus 29 atau 30 hari`);
         return false;
     }
 
