@@ -40,6 +40,12 @@ export function initPullToRefresh(options) {
 
     scroller.addEventListener('touchstart', (e) => {
         if (scroller.scrollTop > 0 || isRefreshing) return;
+        
+        // Prevent pull-to-refresh when interacting with map card
+        if (e.target.closest('.qibla-map-card') || e.target.closest('.leaflet-container')) {
+            return;
+        }
+
         startY = e.touches[0].clientY;
         isPulling = true;
         dy = 0;
