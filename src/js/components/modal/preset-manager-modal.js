@@ -58,6 +58,15 @@ export function showPresetManagerModal({ onPresetsChanged } = {}) {
         if (e.target === _overlayEl) hideModal();
     });
 
+    // Handle virtual keyboard scroll behavior
+    _overlayEl.addEventListener('focusin', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            setTimeout(() => {
+                e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    });
+
     // Populate list
     refreshList();
 }
@@ -208,6 +217,15 @@ function bindListEvents(listEl, presets, selectedId) {
             const id = el.dataset.id;
             _editingId = _editingId === id ? null : id;
             showEditForm(id, presets);
+
+            if (_editingId === id) {
+                setTimeout(() => {
+                    const formContainer = _overlayEl?.querySelector(`#edit-form-${id}`);
+                    if (formContainer) {
+                        formContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }, 150);
+            }
         });
     });
 
@@ -263,6 +281,15 @@ function bindListEvents(listEl, presets, selectedId) {
     _overlayEl?.querySelector('.preset-mgr-add-btn')?.addEventListener('click', () => {
         _editingId = '__new__';
         showAddForm();
+        setTimeout(() => {
+            const contentContainer = _overlayEl?.querySelector('.preset-mgr-content');
+            if (contentContainer) {
+                contentContainer.scrollTo({
+                    top: contentContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }, 150);
     });
 }
 
@@ -498,8 +525,10 @@ function createModalDOM() {
             <div class="preset-mgr-header">
                 <h3 class="preset-mgr-title">Preset Ramadhan</h3>
             </div>
-            <div class="preset-mgr-list"></div>
-            <div class="preset-mgr-add-form"></div>
+            <div class="preset-mgr-content">
+                <div class="preset-mgr-list"></div>
+                <div class="preset-mgr-add-form"></div>
+            </div>
             <div class="preset-mgr-footer">
                 <button class="btn btn--outline preset-mgr-add-btn">
                     <i class='bx bx-plus'></i>

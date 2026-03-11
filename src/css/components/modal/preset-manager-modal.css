@@ -60,9 +60,9 @@
     color: var(--clr-text-primary);
 }
 
-/* ── List ── */
+/* ── Content Wrapper ── */
 
-.preset-mgr-list {
+.preset-mgr-content {
     flex: 1;
     overflow-y: auto;
     min-height: 100px;
@@ -70,19 +70,27 @@
     padding: 0 var(--spacing-lg);
     scrollbar-width: thin;
     scrollbar-color: var(--clr-primary-500) transparent;
+    padding-bottom: var(--spacing-md);
 }
 
-.preset-mgr-list::-webkit-scrollbar {
+.preset-mgr-content::-webkit-scrollbar {
     width: 4px;
 }
 
-.preset-mgr-list::-webkit-scrollbar-track {
+.preset-mgr-content::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.preset-mgr-list::-webkit-scrollbar-thumb {
+.preset-mgr-content::-webkit-scrollbar-thumb {
     background: var(--clr-primary-600);
     border-radius: var(--radius-full);
+}
+
+/* ── List ── */
+
+.preset-mgr-list {
+    display: flex;
+    flex-direction: column;
 }
 
 /* ── Item ── */
