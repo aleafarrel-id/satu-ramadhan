@@ -83,7 +83,7 @@ async function renderCardContent() {
                 Kelola organisasi serta tanggal awal-akhir Ramadhan
             </p>
             <div class="settings-preset-actions">
-                <button class="btn btn--outline" id="btn-manage-presets">
+                <button class="btn btn--gold" id="btn-manage-presets">
                     <i class='bx bx-cog'></i>
                     <span>Kelola Preset</span>
                 </button>

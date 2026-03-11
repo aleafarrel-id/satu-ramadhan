@@ -270,7 +270,7 @@
 
 .settings-preset-calendar-icon {
    font-size: var(--icon-lg);
-   color: var(--clr-accent-400);
+   color: var(--clr-info);
    flex-shrink: 0;
 }
 
@@ -318,6 +318,18 @@
    font-weight: var(--fw-bold);
    font-size: var(--fs-xs);
    justify-content: center;
+}
+
+.settings-preset-actions .btn--gold {
+   background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
+   box-shadow: 0 4px 12px var(--clr-accent-a30);
+   color: var(--clr-text-dark);
+   border: none;
+}
+
+.settings-preset-actions .btn--gold:active {
+   background: linear-gradient(135deg, var(--clr-accent-700) 0%, var(--clr-accent-600) 100%);
+   transform: scale(0.97);
 }
 
 .settings-preset-actions .btn--outline {

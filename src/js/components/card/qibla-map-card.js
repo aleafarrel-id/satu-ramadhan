@@ -19,6 +19,8 @@ const KAABA_LNG = 39.8262;
 
 const TILE_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png';
 const TILE_MAX_ZOOM = 18;
+const MIN_ZOOM = 2;
+const WORLD_BOUNDS = L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180));
 
 const GEODESIC_STEPS = 80;
 const FIT_BOUNDS_PADDING = [30, 30];
@@ -105,6 +107,9 @@ export function destroyQiblaMapCard() {
 function _createMap(mapId) {
     return L.map(mapId, {
         zoomControl: false,
+        minZoom: MIN_ZOOM,
+        maxBounds: WORLD_BOUNDS,
+        maxBoundsViscosity: 1.0,
         dragging: true,
         scrollWheelZoom: true,
         touchZoom: true,
@@ -124,6 +129,8 @@ function _createMap(mapId) {
 function _addTileLayer(map, mapId) {
     const layer = L.tileLayer(TILE_URL, {
         maxZoom: TILE_MAX_ZOOM,
+        noWrap: true,
+        bounds: WORLD_BOUNDS,
         attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
     }).addTo(map);
 

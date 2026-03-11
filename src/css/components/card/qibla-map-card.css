@@ -98,15 +98,23 @@
    0% {
       box-shadow: 0 0 0 0 var(--clr-map-user-dot-a70);
    }
+
    70% {
       box-shadow: 0 0 0 10px transparent;
    }
+
    100% {
       box-shadow: 0 0 0 0 transparent;
    }
 }
 
 /* ── Leaflet Overrides (scoped to map card) ── */
+
+/* Fix Leaflet sub-pixel tile gaps (white lines glitching/background bleed) */
+.qibla-map-card .leaflet-tile {
+   outline: 1px solid transparent;
+   box-shadow: 0 0 1px transparent;
+}
 
 /* Remove default Leaflet marker styling (shadows, icons) for Capacitor */
 .qibla-map-card .leaflet-marker-icon {
