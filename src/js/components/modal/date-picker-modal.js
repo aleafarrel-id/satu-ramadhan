@@ -22,6 +22,9 @@ let _viewDate     = null; // Month currently displayed (always day 1)
 let _selectedDate = null; // Date the user has selected
 let _onSelect     = null; // External callback
 
+let _minDate      = null; // Optional minimum selectable Date
+let _maxDate      = null; // Optional maximum selectable Date
+
 let _animPhase     = 'idle';
 let _animDirection = null;
 let _animId        = 0;
@@ -124,8 +127,10 @@ function animateSlide(direction, onMiddle) {
  * @param {object}          options
  * @param {string|Date}    [options.initialDate] - Pre-selected date (YYYY-MM-DD string or Date)
  * @param {Function}        options.onSelect     - Callback(dateString) on selection
+ * @param {string|Date}    [options.minDate]    - Minimum selectable date
+ * @param {string|Date}    [options.maxDate]    - Maximum selectable date
  */
-export function showDatePickerModal({ initialDate, onSelect }) {
+export function showDatePickerModal({ initialDate, onSelect, minDate, maxDate }) {
     if (_overlayEl) {
         unregisterModalDismiss(hideDatePickerModal);
         removeModal();
@@ -149,6 +154,24 @@ export function showDatePickerModal({ initialDate, onSelect }) {
     } else {
         _selectedDate = null;
         _viewDate     = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    }
+
+    // Parse constraint dates
+    if (minDate) {
+        _minDate = typeof minDate === 'string' ? parseDateLocal(minDate) : new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+    } else {
+        _minDate = null;
+    }
+
+    if (maxDate) {
+        _maxDate = typeof maxDate === 'string' ? parseDateLocal(maxDate) : new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+    } else {
+        _maxDate = null;
+    }
+
+    // If initial view date is before minDate, snap view to minDate's month
+    if (_minDate && _viewDate < new Date(_minDate.getFullYear(), _minDate.getMonth(), 1)) {
+        _viewDate = new Date(_minDate.getFullYear(), _minDate.getMonth(), 1);
     }
 
     _overlayEl = createModalDOM();
@@ -186,6 +209,8 @@ function removeModal() {
         _overlayEl = null;
     }
     _onSelect = null;
+    _minDate = null;
+    _maxDate = null;
     _animPhase = 'idle';
     _animId++;    
 }
@@ -387,9 +412,12 @@ function renderCalendar() {
                             && cellDate.getDate()     === _selectedDate.getDate()
                             && cellDate.getMonth()    === _selectedDate.getMonth()
                             && cellDate.getFullYear() === _selectedDate.getFullYear();
+        
+        const isDisabled     = (_minDate && cellDate < _minDate) || (_maxDate && cellDate > _maxDate);
 
         const classes = [
             'date-picker-cell',
+            isDisabled      ? 'date-picker-cell--disabled' : '',
             !isCurrentMonth ? 'date-picker-cell--muted'    : '',
             isToday         ? 'date-picker-cell--today'    : '',
             isSelected      ? 'date-picker-cell--selected' : '',
@@ -401,7 +429,12 @@ function renderCalendar() {
     daysEl.innerHTML = html;
 
     // ── Bind: Day cell clicks ──
-    daysEl.querySelectorAll('.date-picker-cell[data-date]').forEach(cell => {
+    daysEl.querySelectorAll('.date-picker-cell.date-picker-cell--disabled').forEach(cell => {
+        // Stop clicks on disabled cells
+        cell.addEventListener('click', (e) => e.stopPropagation());
+    });
+
+    daysEl.querySelectorAll('.date-picker-cell[data-date]:not(.date-picker-cell--disabled)').forEach(cell => {
         cell.addEventListener('click', () => {
             impact('medium');
 

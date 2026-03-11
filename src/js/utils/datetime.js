@@ -74,3 +74,19 @@ export function isSameDay(d1, d2) {
            d1.getMonth() === d2.getMonth() &&
            d1.getDate() === d2.getDate();
 }
+
+/**
+ * Calculates the 29th and 30th days of Ramadhan from a given start date.
+ * @param {string} startDateStr - YYYY-MM-DD
+ * @returns {{ day29: string, day30: string }}
+ */
+export function calcRamadhanEndDates(startDateStr) {
+    const [y, m, d] = startDateStr.split('-').map(Number);
+    const start = new Date(y, m - 1, d);
+    const day29 = new Date(start); day29.setDate(start.getDate() + 28);
+    const day30 = new Date(start); day30.setDate(start.getDate() + 29);
+    return {
+        day29: formatDateToYYYYMMDD(day29),
+        day30: formatDateToYYYYMMDD(day30),
+    };
+}

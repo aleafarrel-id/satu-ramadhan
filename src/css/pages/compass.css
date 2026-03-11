@@ -12,9 +12,17 @@
 }
 
 .btn--compass-guide {
-   padding: 6px 14px;
-   min-height: 32px;
-   border-radius: var(--radius-full);
+   width: 36px;
+   min-width: 36px;
+   height: 36px;
+   min-height: 36px;
+   padding: 0;
+   border-radius: var(--radius-circle);
+   aspect-ratio: 1;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   font-size: var(--fs-md);
 }
 
 /* ── Qibla Card Skeleton ── */

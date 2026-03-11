@@ -184,6 +184,17 @@
    --z-sticky: 200;
    --z-modal: 300;
 
+   /* === Map Card === */
+   --clr-map-fallback: var(--clr-bg-card-solid);
+   --clr-map-route: var(--clr-primary-400);
+   --clr-map-route-a80: rgba(45, 158, 158, 0.8);
+   --clr-map-user-dot: var(--clr-info);
+   --clr-map-user-dot-a40: rgba(0, 151, 178, 0.4);
+   --clr-map-user-dot-a70: rgba(0, 151, 178, 0.7);
+   --size-map-card-height: 160px;
+   --size-map-icon: 32px;
+   --size-map-user-dot: 12px;
+
    /* ======================================
       Legacy aliases (backward compat)
       ====================================== */

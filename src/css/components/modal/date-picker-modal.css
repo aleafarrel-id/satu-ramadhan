@@ -228,14 +228,20 @@
     background: transparent !important;
 }
 
+.date-picker-cell--disabled {
+    opacity: 0.2;
+    pointer-events: none;
+    cursor: default;
+}
+
 /* Hover */
-.date-picker-cell:not(.date-picker-cell--empty):hover {
+.date-picker-cell:not(.date-picker-cell--empty):not(.date-picker-cell--disabled):hover {
     background: var(--clr-primary-a25);
     border-color: var(--clr-primary-a30);
 }
 
 /* Press */
-.date-picker-cell:not(.date-picker-cell--empty):active:not(.date-picker-cell--selected) {
+.date-picker-cell:not(.date-picker-cell--empty):not(.date-picker-cell--disabled):active:not(.date-picker-cell--selected) {
     transform: scale(0.93);
     /* Matches cal-modal */
 }

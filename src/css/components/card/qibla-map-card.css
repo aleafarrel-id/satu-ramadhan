@@ -1,0 +1,130 @@
+/* =============================================
+   Qibla Map Card Component
+   Interactive Leaflet map showing geodesic route
+   from user location to Ka'bah.
+   ============================================= */
+
+/* ── Card Wrapper ── */
+
+.qibla-map-card {
+   position: relative;
+   padding: 0;
+   overflow: hidden;
+   height: var(--size-map-card-height);
+   margin-bottom: var(--spacing-md);
+   border: 1px solid var(--clr-accent-a25);
+   background: var(--clr-map-fallback);
+}
+
+/* ── Leaflet Container ── */
+
+.qibla-map-card__container {
+   width: 100%;
+   height: 100%;
+   z-index: 1;
+}
+
+/* ── Branded Label Overlay ── */
+
+.qibla-map-card__label {
+   position: absolute;
+   top: var(--spacing-sm);
+   left: var(--spacing-sm);
+   z-index: 2;
+   display: inline-flex;
+   align-items: center;
+   gap: var(--sp-1);
+   padding: var(--sp-1) var(--sp-2);
+   background: var(--clr-bg-overlay);
+   border-radius: var(--radius-sm);
+   border: 1px solid var(--clr-border-light);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+   letter-spacing: var(--ls-wide);
+   pointer-events: none;
+}
+
+.qibla-map-card__label i {
+   font-size: var(--fs-xs);
+   color: var(--clr-accent-500);
+}
+
+/* ── Ka'bah Marker with Ring ── */
+
+.kaaba-marker {
+   background: none !important;
+   border: none !important;
+}
+
+.kaaba-marker__ring {
+   width: var(--size-map-icon);
+   height: var(--size-map-icon);
+   border-radius: var(--radius-full);
+   border: 2px solid var(--clr-accent-500);
+   background: var(--clr-bg-overlay);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   box-shadow: 0 0 8px var(--clr-accent-a40), var(--shadow-sm);
+}
+
+.kaaba-marker__img {
+   width: 18px;
+   height: 18px;
+   object-fit: contain;
+}
+
+/* ── User Location Pulse Marker ── */
+
+.user-location-marker {
+   background: none !important;
+   border: none !important;
+}
+
+.user-location-marker .pulse-dot {
+   width: var(--size-map-user-dot);
+   height: var(--size-map-user-dot);
+   background-color: var(--clr-map-user-dot);
+   border-radius: var(--radius-full);
+   border: 2px solid var(--clr-text-primary);
+   box-shadow: 0 0 0 0 var(--clr-map-user-dot-a40);
+   animation: qibla-pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes qibla-pulse-ring {
+   0% {
+      box-shadow: 0 0 0 0 var(--clr-map-user-dot-a70);
+   }
+   70% {
+      box-shadow: 0 0 0 10px transparent;
+   }
+   100% {
+      box-shadow: 0 0 0 0 transparent;
+   }
+}
+
+/* ── Leaflet Overrides (scoped to map card) ── */
+
+/* Remove default Leaflet marker styling (shadows, icons) for Capacitor */
+.qibla-map-card .leaflet-marker-icon {
+   background: none !important;
+   border: none !important;
+}
+
+.qibla-map-card .leaflet-marker-shadow {
+   display: none !important;
+}
+
+.qibla-map-card .leaflet-control-attribution {
+   background: var(--clr-black-a30) !important;
+   color: var(--clr-white-a70) !important;
+   font-size: var(--fs-2xs) !important;
+   padding: 1px 4px !important;
+}
+
+.qibla-map-card .leaflet-control-attribution a {
+   color: var(--clr-white-a70) !important;
+}

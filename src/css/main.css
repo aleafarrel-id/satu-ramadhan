@@ -38,6 +38,7 @@
 @import './components/card/card.css';
 @import './components/card/qibla-info-card.css';
 @import './components/card/location-card.css';
+@import './components/card/qibla-map-card.css';
 
 /* Modal */
 @import './components/modal/location-modal.css';

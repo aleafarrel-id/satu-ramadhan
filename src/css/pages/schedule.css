@@ -4,7 +4,6 @@
 
 /* ── Page Layout ── */
 .schedule-page {
-    padding-bottom: var(--spacing-md);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);

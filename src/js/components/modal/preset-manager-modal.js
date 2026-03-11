@@ -22,7 +22,7 @@ import * as notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
 import { showConfirmModal } from './confirm-modal.js';
 import { showDatePickerModal } from './date-picker-modal.js';
-import { formatDateShort, formatDateVerbose } from '../../utils/datetime.js';
+import { formatDateShort, formatDateVerbose, calcRamadhanEndDates } from '../../utils/datetime.js';
 
 /* ── State ── */
 let _overlayEl = null;
@@ -299,19 +299,65 @@ function bindListEvents(listEl, presets, selectedId) {
  * Bind a date-picker trigger to a field element.
  * When a date is selected it updates the field's data-date attribute and display text.
  * @param {HTMLElement} fieldEl  - Element with data-date attribute and a <span> child
- * @param {string}     [initial] - Optional initial date string YYYY-MM-DD
+ * @param {object}      [options]
+ * @param {string}      [options.initial] - Optional initial date string YYYY-MM-DD
+ * @param {Function}    [options.onSelectCallback] - Optional callback after selection
+ * @param {Function}    [options.getConstraints] - Optional function returning {minDate, maxDate}
  */
-function bindDateField(fieldEl, initial) {
+function bindDateField(fieldEl, { initial, onSelectCallback, getConstraints } = {}) {
     if (!fieldEl) return;
     if (initial) fieldEl.dataset.date = initial;
 
     fieldEl.addEventListener('click', () => {
+        const constraints = getConstraints ? getConstraints() : {};
+
         showDatePickerModal({
             initialDate: fieldEl.dataset.date || new Date(),
+            minDate: constraints.minDate,
+            maxDate: constraints.maxDate,
             onSelect: (dateStr) => {
                 fieldEl.dataset.date = dateStr;
                 fieldEl.querySelector('span').textContent = formatDateVerbose(dateStr);
+                if (onSelectCallback) onSelectCallback(dateStr);
             },
+        });
+    });
+}
+
+/**
+ * Shared helper to render End Date recommendations (29 & 30 days).
+ * @param {string} startStr - Start date string (YYYY-MM-DD)
+ * @param {HTMLElement} container - DOM element to render into
+ * @param {HTMLElement} targetField - Field to update when suggestion is clicked
+ */
+function renderSuggestions(startStr, container, targetField) {
+    if (!startStr || !container) {
+        if (container) container.innerHTML = '';
+        return;
+    }
+    const { day29, day30 } = calcRamadhanEndDates(startStr);
+
+    container.innerHTML = `
+        <div class="preset-mgr-suggestion-title"><i class='bx bx-bulb'></i> Rekomendasi Tanggal Akhir</div>
+        <div class="preset-mgr-suggestion-chips">
+            <button class="preset-mgr-date-chip" data-date="${day29}">
+                <span class="chip-duration">29 Hari</span>
+                <span class="chip-date">${formatDateShort(day29)}</span>
+            </button>
+            <button class="preset-mgr-date-chip" data-date="${day30}">
+                <span class="chip-duration">30 Hari</span>
+                <span class="chip-date">${formatDateShort(day30)}</span>
+            </button>
+        </div>
+    `;
+
+    container.querySelectorAll('.preset-mgr-date-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            e.preventDefault();
+            const d = chip.dataset.date;
+            targetField.dataset.date = d;
+            targetField.querySelector('span').textContent = formatDateVerbose(d);
+            impact('light');
         });
     });
 }
@@ -331,6 +377,16 @@ function validateDates(startDate, endDate) {
         notif.warning('Tanggal akhir harus setelah tanggal mulai');
         return false;
     }
+
+    // Durasi Ramadhan harus 29 atau 30 hari
+    const start = new Date(startDate + 'T00:00:00');
+    const end = new Date(endDate + 'T00:00:00');
+    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    if (diffDays !== 29 && diffDays !== 30) {
+        notif.warning(`Durasi Ramadhan harus 29 atau 30 hari (saat ini ${diffDays} hari)`);
+        return false;
+    }
+
     return true;
 }
 
@@ -384,6 +440,7 @@ function showEditForm(id, presets) {
                     </div>
                 </div>
             </div>
+            <div id="edit-suggestions-${id}" class="preset-mgr-date-suggestions"></div>
             ${showName ? `
             <div class="preset-mgr-form-group">
                 <label class="preset-mgr-form-label">Keterangan (opsional)</label>
@@ -404,14 +461,28 @@ function showEditForm(id, presets) {
     });
 
     const editStartField = formContainer.querySelector(`#edit-start-${id}`);
-    const editEndField   = formContainer.querySelector(`#edit-end-${id}`);
+    const editEndField = formContainer.querySelector(`#edit-end-${id}`);
+    const suggestionsContainer = formContainer.querySelector(`#edit-suggestions-${id}`);
 
-    bindDateField(editStartField);
-    bindDateField(editEndField);
+    // Initial render
+    renderSuggestions(editStartField?.dataset.date, suggestionsContainer, editEndField);
+
+    bindDateField(editStartField, {
+        onSelectCallback: (dateStr) => renderSuggestions(dateStr, suggestionsContainer, editEndField)
+    });
+
+    bindDateField(editEndField, {
+        getConstraints: () => {
+            const startStr = editStartField?.dataset.date;
+            if (!startStr) return {};
+            const { day29, day30 } = calcRamadhanEndDates(startStr);
+            return { minDate: day29, maxDate: day30 };
+        }
+    });
 
     formContainer.querySelector(`#edit-save-${id}`)?.addEventListener('click', async () => {
         const startDate = editStartField?.dataset.date;
-        const endDate   = editEndField?.dataset.date;
+        const endDate = editEndField?.dataset.date;
 
         if (!validateDates(startDate, endDate)) return;
 
@@ -465,6 +536,7 @@ function showAddForm() {
                     </div>
                 </div>
             </div>
+            <div id="add-suggestions" class="preset-mgr-date-suggestions"></div>
             <div class="preset-mgr-form-group">
                 <label class="preset-mgr-form-label">Keterangan (opsional)</label>
                 <input type="text" class="preset-mgr-form-input" id="add-desc" placeholder="Keterangan singkat">
@@ -483,15 +555,29 @@ function showAddForm() {
     });
 
     const addStartField = addFormContainer.querySelector('#add-start');
-    const addEndField   = addFormContainer.querySelector('#add-end');
+    const addEndField = addFormContainer.querySelector('#add-end');
+    const suggestionsContainer = addFormContainer.querySelector('#add-suggestions');
 
-    bindDateField(addStartField);
-    bindDateField(addEndField);
+    // Initial render (likely empty)
+    renderSuggestions(addStartField?.dataset.date, suggestionsContainer, addEndField);
+
+    bindDateField(addStartField, {
+        onSelectCallback: (dateStr) => renderSuggestions(dateStr, suggestionsContainer, addEndField)
+    });
+
+    bindDateField(addEndField, {
+        getConstraints: () => {
+            const startStr = addStartField?.dataset.date;
+            if (!startStr) return {};
+            const { day29, day30 } = calcRamadhanEndDates(startStr);
+            return { minDate: day29, maxDate: day30 };
+        }
+    });
 
     addFormContainer.querySelector('#add-save')?.addEventListener('click', async () => {
-        const name        = addFormContainer.querySelector('#add-name')?.value.trim();
-        const startDate   = addStartField?.dataset.date;
-        const endDate     = addEndField?.dataset.date;
+        const name = addFormContainer.querySelector('#add-name')?.value.trim();
+        const startDate = addStartField?.dataset.date;
+        const endDate = addEndField?.dataset.date;
         const description = addFormContainer.querySelector('#add-desc')?.value.trim();
 
         if (!name) {

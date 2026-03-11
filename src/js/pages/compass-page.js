@@ -4,6 +4,7 @@ import QiblaCompass from '../modules/compass/compass.js';
 
 import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
 import { renderQiblaInfoCard, updateQiblaInfoCard } from '../components/card/qibla-info-card.js';
+import { renderQiblaMapCard, initQiblaMapCard, destroyQiblaMapCard } from '../components/card/qibla-map-card.js';
 import { renderCompass, updateCompassUI } from '../components/compass/compass-dial.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
@@ -41,6 +42,7 @@ export async function render(container) {
  * when navigating away from the page.
  */
 export function destroy() {
+    destroyQiblaMapCard();
     _compass?.stop();
     _compass = null;
     _container = null;
@@ -117,12 +119,12 @@ function renderContent() {
     }
 
     _container.innerHTML = `
+        ${renderQiblaMapCard('qibla-mini-map')}
         ${renderLocationCard(_location)}
         
         <div class="compass-guide-wrapper">
             <button class="btn btn--accent-outline btn--compass-guide" id="btn-compass-guide">
                 <i class='bx bx-info-circle'></i>
-                <span>Panduan</span>
             </button>
         </div>
         
@@ -140,6 +142,11 @@ function renderContent() {
 
     bindLocationCardEvents(showLocationModalForCompass, _container);
     _container.querySelector('#btn-compass-guide')?.addEventListener('click', showCompassGuideModal);
+
+    /* Initialise map card after DOM is ready */
+    if (_location?.latitude && _location?.longitude) {
+        initQiblaMapCard('qibla-mini-map', _location.latitude, _location.longitude);
+    }
 }
 
 /* --- EVENT HANDLERS --- */
