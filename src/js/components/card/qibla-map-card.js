@@ -45,6 +45,9 @@ export function renderQiblaMapCard(mapId = 'qibla-map') {
                 <span>Peta Kiblat</span>
             </div>
             <div id="${mapId}" class="qibla-map-card__container"></div>
+            <div id="${mapId}-loader" class="qibla-map-card__loader">
+                <i class='bx bx-loader-alt bx-spin'></i>
+            </div>
         </div>
     `;
 }
@@ -69,7 +72,7 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             destroyQiblaMapCard();
 
             const map = _createMap(mapId);
-            _addTileLayer(map);
+            _addTileLayer(map, mapId);
             _addMarkers(map, userLat, userLng);
             _addGeodesicLine(map, userLat, userLng);
             _fitView(map, userLat, userLng);
@@ -116,12 +119,21 @@ function _createMap(mapId) {
 /**
  * Add CartoDB Voyager (no labels) tile layer for a clean premium look.
  * @param {L.Map} map
+ * @param {string} mapId
  */
-function _addTileLayer(map) {
-    L.tileLayer(TILE_URL, {
+function _addTileLayer(map, mapId) {
+    const layer = L.tileLayer(TILE_URL, {
         maxZoom: TILE_MAX_ZOOM,
         attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
     }).addTo(map);
+
+    // Remove the loader overlay once the tile layer is fully loaded
+    layer.on('load', () => {
+        const loader = document.getElementById(`${mapId}-loader`);
+        if (loader) {
+            loader.classList.add('is-hidden');
+        }
+    });
 }
 
 /**

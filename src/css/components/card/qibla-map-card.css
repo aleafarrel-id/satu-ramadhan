@@ -128,3 +128,26 @@
 .qibla-map-card .leaflet-control-attribution a {
    color: var(--clr-white-a70) !important;
 }
+
+/* ── Loader Overlay ── */
+
+.qibla-map-card__loader {
+   position: absolute;
+   inset: 0;
+   z-index: 10;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: var(--clr-map-fallback);
+   color: var(--clr-primary-400);
+   font-size: var(--icon-xl, 32px);
+   opacity: 1;
+   visibility: visible;
+   transition: opacity var(--transition-normal, 0.4s ease), visibility var(--transition-normal, 0.4s ease);
+}
+
+.qibla-map-card__loader.is-hidden {
+   opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
+}
