@@ -21,6 +21,8 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import * as notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
 import { showConfirmModal } from './confirm-modal.js';
+import { showDatePickerModal } from './date-picker-modal.js';
+import { formatDateShort, formatDateVerbose } from '../../utils/datetime.js';
 
 /* ── State ── */
 let _overlayEl = null;
@@ -264,6 +266,47 @@ function bindListEvents(listEl, presets, selectedId) {
     });
 }
 
+/* ── Shared Form Helpers ── */
+
+/**
+ * Bind a date-picker trigger to a field element.
+ * When a date is selected it updates the field's data-date attribute and display text.
+ * @param {HTMLElement} fieldEl  - Element with data-date attribute and a <span> child
+ * @param {string}     [initial] - Optional initial date string YYYY-MM-DD
+ */
+function bindDateField(fieldEl, initial) {
+    if (!fieldEl) return;
+    if (initial) fieldEl.dataset.date = initial;
+
+    fieldEl.addEventListener('click', () => {
+        showDatePickerModal({
+            initialDate: fieldEl.dataset.date || new Date(),
+            onSelect: (dateStr) => {
+                fieldEl.dataset.date = dateStr;
+                fieldEl.querySelector('span').textContent = formatDateVerbose(dateStr);
+            },
+        });
+    });
+}
+
+/**
+ * Validate start/end date inputs and show a warning notification if invalid.
+ * @param {string} startDate - YYYY-MM-DD
+ * @param {string} endDate   - YYYY-MM-DD
+ * @returns {boolean} true if valid
+ */
+function validateDates(startDate, endDate) {
+    if (!startDate || !endDate) {
+        notif.warning('Tanggal mulai dan akhir wajib diisi');
+        return false;
+    }
+    if (endDate < startDate) {
+        notif.warning('Tanggal akhir harus setelah tanggal mulai');
+        return false;
+    }
+    return true;
+}
+
 /* ── Edit Form ── */
 
 /**
@@ -301,11 +344,17 @@ function showEditForm(id, presets) {
             <div class="preset-mgr-form-row">
                 <div class="preset-mgr-form-group">
                     <label class="preset-mgr-form-label">Tanggal Mulai</label>
-                    <input type="date" class="preset-mgr-form-input" id="edit-start-${id}" value="${preset.startDate}">
+                    <div class="preset-mgr-form-input preset-mgr-date-input" id="edit-start-${id}" data-date="${preset.startDate}">
+                        <span>${formatDateVerbose(preset.startDate)}</span>
+                        <i class='bx bx-calendar'></i>
+                    </div>
                 </div>
                 <div class="preset-mgr-form-group">
                     <label class="preset-mgr-form-label">Tanggal Akhir</label>
-                    <input type="date" class="preset-mgr-form-input" id="edit-end-${id}" value="${preset.endDate}">
+                    <div class="preset-mgr-form-input preset-mgr-date-input" id="edit-end-${id}" data-date="${preset.endDate}">
+                        <span>${formatDateVerbose(preset.endDate)}</span>
+                        <i class='bx bx-calendar'></i>
+                    </div>
                 </div>
             </div>
             ${showName ? `
@@ -327,19 +376,17 @@ function showEditForm(id, presets) {
         formContainer.innerHTML = '';
     });
 
-    formContainer.querySelector(`#edit-save-${id}`)?.addEventListener('click', async () => {
-        const startDate = formContainer.querySelector(`#edit-start-${id}`)?.value;
-        const endDate = formContainer.querySelector(`#edit-end-${id}`)?.value;
+    const editStartField = formContainer.querySelector(`#edit-start-${id}`);
+    const editEndField   = formContainer.querySelector(`#edit-end-${id}`);
 
-        // Validation: endDate >= startDate
-        if (!startDate || !endDate) {
-            notif.warning('Tanggal mulai dan akhir wajib diisi');
-            return;
-        }
-        if (endDate < startDate) {
-            notif.warning('Tanggal akhir harus sama atau setelah tanggal mulai');
-            return;
-        }
+    bindDateField(editStartField);
+    bindDateField(editEndField);
+
+    formContainer.querySelector(`#edit-save-${id}`)?.addEventListener('click', async () => {
+        const startDate = editStartField?.dataset.date;
+        const endDate   = editEndField?.dataset.date;
+
+        if (!validateDates(startDate, endDate)) return;
 
         const newData = { startDate, endDate };
 
@@ -378,11 +425,17 @@ function showAddForm() {
             <div class="preset-mgr-form-row">
                 <div class="preset-mgr-form-group">
                     <label class="preset-mgr-form-label">Tanggal Mulai</label>
-                    <input type="date" class="preset-mgr-form-input" id="add-start">
+                    <div class="preset-mgr-form-input preset-mgr-date-input" id="add-start" data-date="">
+                        <span>Pilih Tanggal</span>
+                        <i class='bx bx-calendar'></i>
+                    </div>
                 </div>
                 <div class="preset-mgr-form-group">
                     <label class="preset-mgr-form-label">Tanggal Akhir</label>
-                    <input type="date" class="preset-mgr-form-input" id="add-end">
+                    <div class="preset-mgr-form-input preset-mgr-date-input" id="add-end" data-date="">
+                        <span>Pilih Tanggal</span>
+                        <i class='bx bx-calendar'></i>
+                    </div>
                 </div>
             </div>
             <div class="preset-mgr-form-group">
@@ -402,24 +455,23 @@ function showAddForm() {
         addFormContainer.innerHTML = '';
     });
 
+    const addStartField = addFormContainer.querySelector('#add-start');
+    const addEndField   = addFormContainer.querySelector('#add-end');
+
+    bindDateField(addStartField);
+    bindDateField(addEndField);
+
     addFormContainer.querySelector('#add-save')?.addEventListener('click', async () => {
-        const name = addFormContainer.querySelector('#add-name')?.value.trim();
-        const startDate = addFormContainer.querySelector('#add-start')?.value;
-        const endDate = addFormContainer.querySelector('#add-end')?.value;
+        const name        = addFormContainer.querySelector('#add-name')?.value.trim();
+        const startDate   = addStartField?.dataset.date;
+        const endDate     = addEndField?.dataset.date;
         const description = addFormContainer.querySelector('#add-desc')?.value.trim();
 
         if (!name) {
             notif.warning('Nama organisasi wajib diisi');
             return;
         }
-        if (!startDate || !endDate) {
-            notif.warning('Tanggal mulai dan akhir wajib diisi');
-            return;
-        }
-        if (endDate < startDate) {
-            notif.warning('Tanggal akhir harus sama atau setelah tanggal mulai');
-            return;
-        }
+        if (!validateDates(startDate, endDate)) return;
 
         impact('light');
         await addCustomPreset({ name, startDate, endDate, description });
@@ -429,20 +481,6 @@ function showAddForm() {
         emitChange();
         await refreshList();
     });
-}
-
-/* ── Date Formatting ── */
-
-/**
- * Short date format for list items.
- * @param {string} dateStr - YYYY-MM-DD
- * @returns {string} e.g. "19 Feb"
- */
-function formatDateShort(dateStr) {
-    if (!dateStr) return '-';
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const [, m, d] = dateStr.split('-');
-    return `${parseInt(d)} ${months[parseInt(m) - 1]}`;
 }
 
 /* ── DOM Construction ── */

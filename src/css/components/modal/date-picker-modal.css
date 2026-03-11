@@ -1,0 +1,356 @@
+/* =============================================
+   Date Picker Modal Component
+   Centered popup — visual design aligned with calendar-modal
+   ============================================= */
+
+/* ── Overlay Backdrop ── */
+
+.date-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) + 10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.date-picker-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ── Modal Card ── */
+
+.date-picker-sheet {
+    width: 100%;
+    max-width: 430px;
+    background: var(--gradient-cal-bg);
+    border: 1px solid var(--clr-primary-a30);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px var(--clr-primary-a10),
+        inset 0 1px 0 var(--clr-white-a05);
+    transform: translateY(24px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    touch-action: pan-y;
+    user-select: none;
+}
+
+.date-picker-overlay.active .date-picker-sheet {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Navigation Header ── */
+
+.date-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.date-picker-title {
+    font-family: var(--ff-decorative);
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-500);
+    line-height: var(--lh-snug);
+    text-transform: capitalize;
+    flex: 1;
+}
+
+.date-picker-nav-btn {
+    background: var(--clr-white-a05);
+    border: 1px solid var(--clr-border-light);
+    color: var(--clr-text-primary);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--icon-md);
+    padding: 0;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.date-picker-nav-btn:active {
+    background: var(--clr-primary-a20);
+    transform: scale(0.92);
+}
+
+/* ── Calendar Grid ── */
+
+.date-picker-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    overflow-x: hidden;
+}
+
+/* Weekday header row */
+.date-picker-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--sp-2);
+    text-align: center;
+    font-family: var(--ff-primary);
+    font-size: 11px;
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    padding-bottom: var(--spacing-xs);
+}
+
+/* Friday (Mon-based index 4) and Sunday (index 6) header colors */
+.date-picker-weekdays [data-weekday="4"] {
+    color: var(--clr-cal-friday);
+}
+
+.date-picker-weekdays [data-weekday="6"] {
+    color: var(--clr-cal-sunday);
+}
+
+/* Day cells container — exact padding to 42 cells guarantees 6-row height */
+.date-picker-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: var(--sp-2);
+    will-change: transform, opacity;
+}
+
+/* ── Swipe Slide Transition ── */
+
+.date-picker-days.sliding-out-left {
+    animation: slideOutLeft 200ms ease-in forwards;
+}
+
+.date-picker-days.sliding-out-right {
+    animation: slideOutRight 200ms ease-in forwards;
+}
+
+.date-picker-days.sliding-in-left {
+    animation: slideInLeft 200ms ease-out forwards;
+}
+
+.date-picker-days.sliding-in-right {
+    animation: slideInRight 200ms ease-out forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(-30%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(30%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(30%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(-30%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ── Day Cell ── */
+
+.date-picker-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ff-primary);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    border-radius: var(--radius-md);
+    background: var(--clr-white-a05);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    line-height: var(--lh-none);
+}
+
+.date-picker-cell--muted {
+    opacity: 0.35;
+    background: transparent !important;
+}
+
+/* Hover */
+.date-picker-cell:not(.date-picker-cell--empty):hover {
+    background: var(--clr-primary-a25);
+    border-color: var(--clr-primary-a30);
+}
+
+/* Press */
+.date-picker-cell:not(.date-picker-cell--empty):active:not(.date-picker-cell--selected) {
+    transform: scale(0.93);
+    /* Matches cal-modal */
+}
+
+/* Friday column (Mon-based index 4) */
+.date-picker-cell[data-weekday="4"]:not(.date-picker-cell--today):not(.date-picker-cell--selected) {
+    color: var(--clr-cal-friday);
+}
+
+/* Sunday column (Mon-based index 6) */
+.date-picker-cell[data-weekday="6"]:not(.date-picker-cell--today):not(.date-picker-cell--selected) {
+    color: var(--clr-cal-sunday);
+}
+
+/* ── Today highlight ── */
+
+.date-picker-cell--today {
+    background: var(--clr-accent-a20);
+    border-color: var(--clr-accent-a40);
+    color: var(--clr-accent-400);
+    box-shadow: 0 0 8px var(--clr-accent-a20);
+}
+
+/* ── Selected highlight ── */
+
+.date-picker-cell--selected {
+    background: linear-gradient(135deg, var(--clr-primary-a30), var(--clr-primary-a20));
+    border-color: var(--clr-primary-400);
+    color: var(--clr-primary-200);
+    box-shadow: 0 0 10px var(--clr-primary-a20);
+}
+
+/* Today + selected — today's accent wins */
+.date-picker-cell--today.date-picker-cell--selected {
+    background: linear-gradient(135deg, var(--clr-accent-a30), var(--clr-accent-a20));
+    border-color: var(--clr-accent-500);
+    color: var(--clr-accent-400);
+    box-shadow: 0 0 12px var(--clr-accent-a30);
+}
+
+/* ── Footer ── */
+
+.date-picker-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--sp-2);
+    padding-top: var(--sp-2);
+    border-top: 1px solid var(--clr-primary-a20);
+}
+
+.date-picker-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    color: var(--clr-text-muted);
+    font-size: 10px;
+    font-family: var(--ff-primary);
+    opacity: 0.8;
+}
+
+.date-picker-hint i {
+    font-size: var(--icon-sm);
+}
+
+.date-picker-today-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-500);
+    background: transparent;
+    border: 1px solid var(--clr-accent-a40);
+    cursor: pointer;
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--radius-pill);
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.date-picker-today-btn:active {
+    background: var(--clr-accent-a10);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 360px) {
+    .date-picker-overlay {
+        padding: var(--spacing-xs);
+    }
+
+    .date-picker-sheet {
+        max-width: calc(100vw - 32px);
+        padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+    }
+
+    .date-picker-grid {
+        gap: var(--sp-1);
+    }
+
+    .date-picker-weekdays {
+        gap: var(--sp-1);
+    }
+
+    .date-picker-days {
+        gap: var(--sp-1);
+    }
+
+    .date-picker-title {
+        font-size: var(--fs-lg);
+    }
+
+    .date-picker-cell {
+        font-size: var(--fs-sm);
+    }
+}

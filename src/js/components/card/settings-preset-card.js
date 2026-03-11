@@ -80,7 +80,7 @@ async function renderCardContent() {
                 </div>
             </div>
             <p class="settings-preset-desc">
-                Kelola organisasi serta tanggal awal dan akhir Ramadhan
+                Kelola organisasi serta tanggal awal-akhir Ramadhan
             </p>
             <div class="settings-preset-actions">
                 <button class="btn btn--outline" id="btn-manage-presets">

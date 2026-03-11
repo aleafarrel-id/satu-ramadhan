@@ -7,14 +7,7 @@
 /* ── Constants ── */
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
-
-const WEEKDAY_HEADERS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-
-const MONTH_ID = {
-    1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April',
-    5: 'Mei', 6: 'Juni', 7: 'Juli', 8: 'Agustus',
-    9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember',
-};
+import { MONTH_ID, WEEKDAY_HEADERS_MON_FIRST } from '../../utils/datetime.js';
 
 /* ── DOM State ── */
 
@@ -111,7 +104,7 @@ function buildCalendarGrid(scheduleData, currentIndex) {
     `;
 
     // Weekday row
-    const weekdayRow = WEEKDAY_HEADERS.map((d, i) =>
+    const weekdayRow = WEEKDAY_HEADERS_MON_FIRST.map((d, i) =>
         `<div class="cal-modal__weekday" data-weekday="${i}">${d}</div>`
     ).join('');
 

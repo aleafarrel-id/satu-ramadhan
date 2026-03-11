@@ -46,6 +46,7 @@
 @import './components/modal/calendar-modal.css';
 @import './components/modal/preset-manager-modal.css';
 @import './components/modal/confirm-modal.css';
+@import './components/modal/date-picker-modal.css';
 
 /* Compass */
 @import './components/compass/compass-dial.css';

@@ -23,7 +23,7 @@
 }
 
 .preset-mgr-sheet {
-    background: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+    background: var(--gradient-cal-bg);
     border-top: 1px solid var(--clr-primary-a30);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -235,7 +235,7 @@
 }
 
 .preset-mgr-item-action--delete {
-    color: #f87171;
+    color: var(--clr-cal-sunday);
     border-color: rgba(248, 113, 113, 0.2);
 }
 
@@ -244,12 +244,12 @@
 }
 
 .preset-mgr-item-action--reset {
-    color: #fbbf24;
-    border-color: rgba(251, 191, 36, 0.2);
+    color: var(--clr-badge-override-text);
+    border-color: var(--clr-badge-override-bg);
 }
 
 .preset-mgr-item-action--reset:active {
-    background: rgba(251, 191, 36, 0.1);
+    background: var(--clr-badge-override-bg);
 }
 
 /* ── Edit Form ── */
@@ -291,6 +291,7 @@
 }
 
 .preset-mgr-form-label {
+    margin: 0 var(--spacing-sm);
     font-size: var(--fs-2xs);
     font-weight: var(--fw-semibold);
     color: var(--clr-text-muted);
@@ -304,8 +305,8 @@
     border: 1px solid var(--clr-border-light);
     color: var(--clr-text-primary);
     font-size: var(--fs-sm);
-    padding: 10px 12px;
-    border-radius: var(--radius-md);
+    padding: 12px;
+    border-radius: var(--radius-lg);
     outline: none;
     transition: border-color var(--transition-fast);
     font-family: inherit;
@@ -313,6 +314,10 @@
 
 .preset-mgr-form-input:focus {
     border-color: var(--clr-primary-400);
+}
+
+.preset-mgr-form-input::placeholder {
+    color: var(--clr-text-muted);
 }
 
 /* Fix Chrome/Webview autocomplete auto-fill bright background */
@@ -325,9 +330,27 @@
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Date input styling for dark theme */
-.preset-mgr-form-input[type="date"] {
-    color-scheme: dark;
+/* Custom date input styling for div */
+.preset-mgr-date-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.preset-mgr-date-input i {
+    color: var(--clr-text-muted);
+    font-size: var(--icon-md);
+    transition: color var(--transition-fast);
+}
+
+.preset-mgr-date-input:hover i {
+    color: var(--clr-primary-400);
+}
+
+.preset-mgr-date-input:active {
+    background-color: var(--clr-white-a05);
 }
 
 .preset-mgr-form-actions {
