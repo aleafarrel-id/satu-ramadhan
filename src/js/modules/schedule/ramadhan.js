@@ -1,15 +1,18 @@
 /**
  * Ramadhan Module
  * Handles hybrid presets: base data from JSON + user overrides/customs from Storage.
- * Provides CRUD operations and smart year-reset mechanism.
+ * Provides CRUD operations, smart year-reset mechanism,
+ * and Hijri offset calibration for year-round calendar support.
  *
  * Storage Keys (via storage.js):
  *   - 'user_presets'  → { overrides: { [id]: { startDate?, endDate? } }, customs: [...] }
  *   - 'saved_year'    → number (last known tahunHijriah)
  *   - 'selected_org'  → string (active preset ID)
+ *   - 'hijri_offset'  → number (cached offset days between preset and API)
  */
 
 import { getRamadhanConfig } from '../../core/database.js';
+import { getPrayerTimesByCoords } from '../../core/api.js';
 import * as storage from '../../core/storage.js';
 
 /* ── Storage Keys ── */
@@ -17,6 +20,67 @@ import * as storage from '../../core/storage.js';
 const ORG_KEY = 'selected_org';
 const USER_PRESETS_KEY = 'user_presets';
 const SAVED_YEAR_KEY = 'saved_year';
+const HIJRI_OFFSET_KEY = 'hijri_offset';
+
+/* ── Hijri Offset Calibration ── */
+
+/**
+ * Calculate the offset (in days) between the preset's 1 Ramadhan
+ * date and the API's astronomical Hijri calendar for that same day.
+ *
+ * Example: If NU says 1 Ramadhan = Feb 19, but API says Feb 19 = 2 Ramadhan,
+ * then offset = 1 - 2 = -1 (preset is 1 day behind the API).
+ *
+ * This offset is applied to all Hijri month calculations so that
+ * months outside Ramadhan stay calibrated to the local authority.
+ *
+ * @param {{ latitude: number, longitude: number }} location
+ * @returns {Promise<number>} offset in days (negative = preset behind API)
+ */
+export async function getHijriOffset(location) {
+    // Try cached offset first
+    const cached = await storage.get(HIJRI_OFFSET_KEY);
+    if (cached !== null && cached !== undefined) return cached;
+
+    const preset = await getActivePreset();
+    if (!preset) return 0;
+
+    const startDate = new Date(preset.startDate + 'T00:00:00');
+
+    try {
+        // Fetch API data for the preset's 1 Ramadhan date
+        const apiData = await getPrayerTimesByCoords(
+            location.latitude, location.longitude, startDate
+        );
+
+        if (!apiData?.hijri) return 0;
+
+        const apiHijriDay = parseInt(apiData.hijri.day, 10);
+        const apiHijriMonth = apiData.hijri.month.number;
+
+        let offset = 0;
+
+        if (apiHijriMonth === 9) {
+            // Same month (Ramadhan) — direct comparison
+            // Preset says this date is day 1, API says it's day N
+            offset = 1 - apiHijriDay;
+        } else if (apiHijriMonth === 8) {
+            // API still in Sha'ban — preset is ahead of API
+            // Days remaining in Sha'ban + 1 (for day 1)
+            const shabanDays = apiData.hijri.month.days || 29;
+            offset = shabanDays - apiHijriDay + 1;
+        } else {
+            // Unlikely edge case; default to 0
+            offset = 0;
+        }
+
+        // Cache the offset for this year
+        await storage.set(HIJRI_OFFSET_KEY, offset);
+        return offset;
+    } catch {
+        return 0;
+    }
+}
 
 /* ── User Presets Storage Helpers ── */
 
@@ -51,8 +115,9 @@ async function checkAndResetYear(jsonYear) {
     const savedYear = await storage.get(SAVED_YEAR_KEY);
 
     if (savedYear !== null && jsonYear > savedYear) {
-        // Year changed — clear user modifications
+        // Year changed — clear user modifications and offset cache
         await saveUserPresetsData({ overrides: {}, customs: [] });
+        await storage.remove(HIJRI_OFFSET_KEY);
     }
 
     // Always sync the year

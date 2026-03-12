@@ -4,27 +4,51 @@
  * DRY implementation for consistent month/day names across components.
  */
 
-// Full localized month names (1-indexed mapping implicitly or 0-indexed in array)
+// Full localized Gregorian month names (0-indexed in array)
 export const MONTH_NAMES = [
     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
 ];
 
-// Short localized month names
+// Short localized Gregorian month names
 export const MONTH_NAMES_SHORT = [
     'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
     'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
 ];
 
-// 1-indexed object mapping for direct lookup (legacy support)
+// 1-indexed object mapping for direct lookup (Gregorian months)
 export const MONTH_ID = {
     1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April',
     5: 'Mei', 6: 'Juni', 7: 'Juli', 8: 'Agustus',
     9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember',
 };
 
-// Weekday headers (Monday-first or Sunday-first depending on context, typically Mon-Sun or Sun-Sat)
-// In JS Date, 0 is Sunday.
+// Hijri month names (Indonesian), 1-indexed
+export const HIJRI_MONTH_NAMES = {
+    1: 'Muharram',
+    2: 'Safar',
+    3: 'Rabiul Awal',
+    4: 'Rabiul Akhir',
+    5: 'Jumadil Awal',
+    6: 'Jumadil Akhir',
+    7: 'Rajab',
+    8: "Sya'ban",
+    9: 'Ramadan',
+    10: 'Syawal',
+    11: "Dzulqa'dah",
+    12: 'Dzulhijjah',
+};
+
+// English-to-Indonesian weekday mapping (for API weekday.en → display)
+export const WEEKDAY_ID = {
+    Sunday: 'Minggu', Monday: 'Senin', Tuesday: 'Selasa',
+    Wednesday: 'Rabu', Thursday: 'Kamis', Friday: 'Jumat', Saturday: 'Sabtu',
+};
+
+// Ordered prayer time keys used in the schedule view
+export const SCHEDULE_PRAYERS = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'magrib', 'isya'];
+
+// Weekday headers (Monday-first or Sunday-first)
 export const WEEKDAY_HEADERS_SUN_FIRST = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 export const WEEKDAY_HEADERS_MON_FIRST = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 

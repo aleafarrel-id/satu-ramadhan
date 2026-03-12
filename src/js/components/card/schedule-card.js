@@ -2,37 +2,24 @@
  * Schedule Card Component
  * Renders the daily prayer schedule view: date navigation,
  * prayer time rows, featured card, action buttons, and skeleton.
+ * Displays dynamic Hijri month names (not hardcoded to Ramadan).
  *
  * Extracted from schedule-page.js for Separation of Concerns.
  */
 
 import { PRAYER_LIST, getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
-
-/* ── Constants ── */
-
-const SCHEDULE_PRAYERS = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'magrib', 'isya'];
-
-const WEEKDAY_ID = {
-    Sunday: 'Minggu', Monday: 'Senin', Tuesday: 'Selasa',
-    Wednesday: 'Rabu', Thursday: 'Kamis', Friday: 'Jumat', Saturday: 'Sabtu',
-};
-
-const MONTH_ID = {
-    1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April',
-    5: 'Mei', 6: 'Juni', 7: 'Juli', 8: 'Agustus',
-    9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember',
-};
+import { SCHEDULE_PRAYERS, WEEKDAY_ID, MONTH_ID } from '../../utils/datetime.js';
 
 /* ── Public API ── */
 
 /**
  * Render the complete schedule page HTML structure.
- * @param {Object} entry        - Day entry { ramadhanDay, date, isToday, timings, tahunHijriah }
+ * @param {Object} entry        - Day entry { hijriDay, hijriMonthName, hijriYear, date, isToday, timings }
  * @param {string} orgName      - Display name of selected organization
  * @param {Object|null} todayTimings - Today's prayer timings (for featured card)
  * @param {number} dayIndex     - Current day index
- * @param {number} [totalDays=30] - Total number of Ramadhan days
+ * @param {number} [totalDays=30] - Total number of days in the Hijri month
  * @returns {string} HTML string
  */
 export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, totalDays = 30) {
@@ -95,7 +82,7 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
     const subtitleEl = container?.querySelector('.schedule-nav__subtitle');
 
     if (titleEl) {
-        titleEl.textContent = `${entry.ramadhanDay} Ramadan ${entry.tahunHijriah}`;
+        titleEl.textContent = `${entry.hijriDay} ${entry.hijriMonthName} ${entry.hijriYear}`;
     }
     if (subtitleEl) {
         const weekdayEn = entry.timings?.weekday?.en || entry.date.toLocaleDateString('en', { weekday: 'long' });
@@ -226,7 +213,7 @@ export function renderScheduleCardSkeleton() {
  * Render the date navigation bar with title, subtitle, and controls.
  */
 function renderDateNav(entry, dayIndex, totalDays = 30) {
-    const { ramadhanDay, date, isToday: today, timings, tahunHijriah } = entry;
+    const { hijriDay, hijriMonthName, hijriYear, date, isToday: today, timings } = entry;
 
     const weekdayEn = timings?.weekday?.en || date.toLocaleDateString('en', { weekday: 'long' });
     const weekdayId = WEEKDAY_ID[weekdayEn] || weekdayEn;
@@ -242,7 +229,7 @@ function renderDateNav(entry, dayIndex, totalDays = 30) {
             <div class="schedule-nav__info">
                 <div class="schedule-nav__title-pill" id="btn-calendar-modal" role="button" tabindex="0">
                     <span class="schedule-nav__badge-icon"><i class='bx bxs-calendar'></i></span>
-                    <span class="schedule-nav__title">${ramadhanDay} Ramadan ${tahunHijriah}</span>
+                    <span class="schedule-nav__title">${hijriDay} ${hijriMonthName} ${hijriYear}</span>
                 </div>
                 <span class="schedule-nav__subtitle">${weekdayId}, ${dateFormatted}</span>
             </div>

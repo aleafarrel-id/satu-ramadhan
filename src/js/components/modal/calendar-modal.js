@@ -1,6 +1,7 @@
 /**
  * Calendar Modal Component
- * Shows a monthly Ramadhan calendar grid (Hijri day prominent, Gregorian small).
+ * Shows a monthly Hijri calendar grid (Hijri day prominent, Gregorian small).
+ * Works for any Hijri month (Ramadhan, Syawal, etc.).
  * Reuses the overlay pattern from location-modal.
  */
 
@@ -89,16 +90,17 @@ function buildCalendarGrid(scheduleData, currentIndex) {
     if (!scheduleData || scheduleData.length === 0) return '';
 
     const firstDate = scheduleData[0].date;
-    const tahunHijriah = scheduleData[0].tahunHijriah;
+    const hijriMonthName = scheduleData[0].hijriMonthName || 'Hijriah';
+    const hijriYear = scheduleData[0].hijriYear || '';
 
     // Determine Gregorian month range for the subtitle
     const firstGreg = formatGregorianShort(firstDate);
     const lastGreg = formatGregorianShort(scheduleData[scheduleData.length - 1].date);
 
-    // Build header
+    // Build header — dynamic Hijri month name
     const header = `
         <div class="cal-modal__header">
-            <div class="cal-modal__title">Ramadan ${tahunHijriah}</div>
+            <div class="cal-modal__title">${hijriMonthName} ${hijriYear}</div>
             <div class="cal-modal__subtitle">${firstGreg} – ${lastGreg}</div>
         </div>
     `;
@@ -131,7 +133,7 @@ function buildCalendarGrid(scheduleData, currentIndex) {
 
         return `
             <div class="${classes}" data-day-index="${index}" data-weekday="${weekday}">
-                <span class="cal-modal__hijri">${entry.ramadhanDay}</span>
+                <span class="cal-modal__hijri">${entry.hijriDay}</span>
                 <span class="cal-modal__greg">${gregDay} ${gregMonth}</span>
             </div>
         `;
