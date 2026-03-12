@@ -357,12 +357,16 @@
 @media (max-width: 320px) {
 
    .settings-loc-title,
-   .settings-loc-regency {
+   .settings-loc-regency,
+   .settings-preset-title,
+   .settings-preset-org {
       font-size: var(--fs-xs);
    }
 
    .settings-loc-province,
-   .settings-loc-desc {
+   .settings-loc-desc,
+   .settings-preset-dates,
+   .settings-preset-desc {
       font-size: var(--fs-2xs);
    }
 }
