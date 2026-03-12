@@ -6,6 +6,7 @@
 import { schedulePrayerNotifications } from '../../modules/notification/native-notification.js';
 import { getTimings } from '../../pages/home-page.js';
 import * as Notif from '../../modules/notification/notification.js';
+import { impact } from '../../modules/system/haptic.js';
 
 export function render(container) {
     container.innerHTML = `
@@ -52,8 +53,9 @@ export function render(container) {
     // Sinkronisasi visual awal: mute adzan row jika notifikasi mati
     updateAdzanRowState(notificationToggle.checked);
 
-    notificationToggle?.addEventListener('change', (e) => {
+    notificationToggle?.addEventListener('change', async (e) => {
         const enabled = e.target.checked;
+        await impact('medium');
         localStorage.setItem('satu_ramadhan_notif', enabled);
         updateAdzanRowState(enabled);
         rescheduleNotifications();
@@ -63,8 +65,9 @@ export function render(container) {
         );
     });
 
-    adzanToggle?.addEventListener('change', (e) => {
+    adzanToggle?.addEventListener('change', async (e) => {
         const enabled = e.target.checked;
+        await impact('medium');
         localStorage.setItem('satu_ramadhan_adzan', enabled);
         rescheduleNotifications();
         Notif.show(

@@ -29,6 +29,8 @@ const INIT_DELAY_MS = 100;
 /* ── Module State ── */
 
 let _mapInstance = null;
+let _userMarker = null;
+let _geodesicLine = null;
 
 /* ── Public API ── */
 
@@ -67,12 +69,46 @@ export function renderQiblaMapCard(mapId = 'qibla-map') {
 export function initQiblaMapCard(mapId, userLat, userLng) {
     return new Promise((resolve) => {
         setTimeout(() => {
-            const container = document.getElementById(mapId);
-            if (!container) { resolve(null); return; }
+            const newContainer = document.getElementById(mapId);
+            if (!newContainer) { resolve(null); return; }
 
-            // Prevent duplicate initialisation
-            destroyQiblaMapCard();
+            // If map instance already exists, reuse it and update the markers/view.
+            if (_mapInstance) {
+                const cachedContainer = _mapInstance.getContainer();
+                
+                // If the DOM was re-rendered, swap the newly created empty container
+                // with our fully intact cached Leaflet container.
+                if (newContainer !== cachedContainer && newContainer.parentNode) {
+                    newContainer.parentNode.replaceChild(cachedContainer, newContainer);
+                }
 
+                // Hide loader in case it was re-rendered in the parent markup
+                const loader = document.getElementById(`${mapId}-loader`);
+                if (loader) {
+                    loader.classList.add('is-hidden');
+                }
+
+                // Update existing user marker location
+                if (_userMarker) {
+                    _userMarker.setLatLng([userLat, userLng]);
+                }
+
+                // Update geodesic path
+                if (_geodesicLine) {
+                    const path = _calcGeodesicPath(userLat, userLng, KAABA_LAT, KAABA_LNG, GEODESIC_STEPS);
+                    _geodesicLine.setLatLngs(path);
+                }
+
+                _fitView(_mapInstance, userLat, userLng);
+                
+                // Ensure map recalculates its size after being placed in the DOM
+                _mapInstance.invalidateSize();
+                
+                resolve(_mapInstance);
+                return;
+            }
+
+            // Normal initialisation
             const map = _createMap(mapId);
             _addTileLayer(map, mapId);
             _addMarkers(map, userLat, userLng);
@@ -93,6 +129,8 @@ export function destroyQiblaMapCard() {
     if (_mapInstance) {
         _mapInstance.remove();
         _mapInstance = null;
+        _userMarker = null;
+        _geodesicLine = null;
     }
 }
 
@@ -174,7 +212,7 @@ function _addMarkers(map, userLat, userLng) {
     });
 
     L.marker([KAABA_LAT, KAABA_LNG], { icon: kaabaIcon, interactive: false }).addTo(map);
-    L.marker([userLat, userLng], { icon: userIcon, interactive: false }).addTo(map);
+    _userMarker = L.marker([userLat, userLng], { icon: userIcon, interactive: false }).addTo(map);
 }
 
 /**
@@ -186,7 +224,7 @@ function _addMarkers(map, userLat, userLng) {
 function _addGeodesicLine(map, userLat, userLng) {
     const path = _calcGeodesicPath(userLat, userLng, KAABA_LAT, KAABA_LNG, GEODESIC_STEPS);
 
-    L.polyline(path, {
+    _geodesicLine = L.polyline(path, {
         color: getComputedStyle(document.documentElement)
             .getPropertyValue('--clr-map-route').trim() || '#2d9e9e',
         weight: 2,
