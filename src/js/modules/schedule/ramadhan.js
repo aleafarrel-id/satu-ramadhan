@@ -38,12 +38,14 @@ const HIJRI_OFFSET_KEY = 'hijri_offset';
  * @returns {Promise<number>} offset in days (negative = preset behind API)
  */
 export async function getHijriOffset(location) {
-    // Try cached offset first
-    const cached = await storage.get(HIJRI_OFFSET_KEY);
-    if (cached !== null && cached !== undefined) return cached;
-
     const preset = await getActivePreset();
     if (!preset) return 0;
+
+    const cacheKey = `${HIJRI_OFFSET_KEY}_${preset.id}`;
+
+    // Try cached offset first (per-preset)
+    const cached = await storage.get(cacheKey);
+    if (cached !== null && cached !== undefined) return cached;
 
     const startDate = new Date(preset.startDate + 'T00:00:00');
 
@@ -74,8 +76,8 @@ export async function getHijriOffset(location) {
             offset = 0;
         }
 
-        // Cache the offset for this year
-        await storage.set(HIJRI_OFFSET_KEY, offset);
+        // Cache the offset for this specific preset
+        await storage.set(cacheKey, offset);
         return offset;
     } catch {
         return 0;
@@ -110,14 +112,23 @@ async function saveUserPresetsData(data) {
  * Compare stored year with JSON year.
  * If JSON has a newer year, clear all user overrides & customs.
  * @param {number} jsonYear - tahunHijriah from the JSON config
+ * @param {Array} basePresets - array of base presets from config
  */
-async function checkAndResetYear(jsonYear) {
+async function checkAndResetYear(jsonYear, basePresets) {
     const savedYear = await storage.get(SAVED_YEAR_KEY);
 
     if (savedYear !== null && jsonYear > savedYear) {
-        // Year changed — clear user modifications and offset cache
+        // Year changed — clear user modifications
+        const { customs } = await getUserPresetsData();
         await saveUserPresetsData({ overrides: {}, customs: [] });
-        await storage.remove(HIJRI_OFFSET_KEY);
+
+        // Clear offset cache for all presets
+        for (const preset of basePresets) {
+            await storage.remove(`${HIJRI_OFFSET_KEY}_${preset.id}`);
+        }
+        for (const custom of customs) {
+            await storage.remove(`${HIJRI_OFFSET_KEY}_${custom.id}`);
+        }
     }
 
     // Always sync the year
@@ -138,7 +149,7 @@ export async function getAllPresets() {
     const basePresets = config.presets || [];
 
     // Smart year reset
-    await checkAndResetYear(config.tahunHijriah);
+    await checkAndResetYear(config.tahunHijriah, basePresets);
 
     const { overrides, customs } = await getUserPresetsData();
 
