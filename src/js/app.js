@@ -5,11 +5,14 @@
 
 import { CONFIG } from './config.js';
 
+import { App } from '@capacitor/app';
+
 import { getSavedLocation } from './core/geolocation.js';
 import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
 
 import { initBackHandler } from './modules/system/back-handler.js';
 import { initNotificationService } from './modules/notification/native-notification.js';
+import { syncNotifications } from './modules/notification/notification-sync.js';
 import { updateWatcher } from './modules/prayer/prayer-watcher.js';
 
 import * as header from './components/ui/header.js';
@@ -39,8 +42,14 @@ export async function initApp() {
     // Initialize hardware back button handler
     initBackHandler();
 
-    // Initialize native notification service (fire-and-forget)
+    // Initialize native notification service (permissions)
     initNotificationService();
+
+    // Fire-and-forget: 30-day rolling notification sync on startup
+    syncNotifications();
+
+    // Listen for app resume → re-sync 30-day notifications
+    initAppResumeListener();
 
     const splashEl = document.getElementById('splash-screen');
     const fillEl = document.getElementById('splash-loading-fill');
@@ -161,4 +170,22 @@ async function prefetchAndInitWatcher() {
             }
         }
     } catch (e) { }
+}
+
+/**
+ * Initialize the App lifecycle listener.
+ * On every resume from background → trigger 30-day notification sync.
+ */
+function initAppResumeListener() {
+    try {
+        App.addListener('appStateChange', (state) => {
+            if (state.isActive) {
+                console.log('[App] Resumed — syncing 30-day notifications');
+                syncNotifications();
+            }
+        });
+        console.log('[App] Resume listener initialized');
+    } catch (e) {
+        console.warn('[App] Could not register appStateChange listener:', e.message);
+    }
 }

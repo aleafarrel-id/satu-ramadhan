@@ -36,6 +36,14 @@ public class PrayerServicePlugin extends Plugin {
         }
 
         Context context = getContext();
+
+        // Save anchor location for Phase 2 background detection
+        Double anchorLat = call.getDouble("anchorLat");
+        Double anchorLon = call.getDouble("anchorLon");
+        if (anchorLat != null && anchorLon != null) {
+            saveAnchorLocation(context, anchorLat, anchorLon);
+        }
+
         saveAlarmsToStorage(context, alarmsArr);
         setNotificationsEnabled(context, true);
         scheduleAlarms(context, alarmsArr);
@@ -173,17 +181,22 @@ public class PrayerServicePlugin extends Plugin {
 
         String[] allKeys = {"imsak", "subuh", "terbit", "dzuhur", "ashar", "magrib", "isya"};
 
-        // Cancel with Java-based request codes (3000-series)
+        // Cancel legacy Java-based request codes (3000-series)
         for (String key : allKeys) {
             cancelPendingIntent(context, alarmManager, getRequestCode(key));
         }
 
-        // Cancel with JS-based request codes (1001-1007)
+        // Cancel legacy JS-based request codes (1001-1007)
         for (int i = 0; i < allKeys.length; i++) {
             cancelPendingIntent(context, alarmManager, JS_NOTIFICATION_BASE_ID + i + 1);
         }
 
-        Log.d(TAG, "All alarms cancelled (both ID sets)");
+        // Cancel rolling 30-day schedule (ID range 5000 – 5299)
+        for (int i = 0; i < Constants.ROLLING_ALARM_MAX_COUNT; i++) {
+            cancelPendingIntent(context, alarmManager, Constants.ROLLING_ALARM_BASE_ID + i);
+        }
+
+        Log.d(TAG, "All alarms cancelled (legacy + rolling 30-day range)");
     }
 
     /**
@@ -232,5 +245,18 @@ public class PrayerServicePlugin extends Plugin {
             case "isya": return 3005;
             default: return 3099;
         }
+    }
+
+    /**
+     * Save anchor location to SharedPreferences.
+     * Used by Phase 2 background location detection worker.
+     */
+    private static void saveAnchorLocation(Context context, double lat, double lon) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putFloat(Constants.KEY_ANCHOR_LAT, (float) lat)
+                .putFloat(Constants.KEY_ANCHOR_LON, (float) lon)
+                .apply();
+        Log.d(TAG, "Anchor location saved: " + lat + ", " + lon);
     }
 }

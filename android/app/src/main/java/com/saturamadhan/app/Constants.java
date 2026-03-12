@@ -29,4 +29,14 @@ public final class Constants {
     // --- SharedPreferences ---
     public static final String PREF_NAME = "PrayerAlarms";
     public static final String KEY_NOTIFICATIONS_ENABLED = "notifications_enabled";
+
+    // --- Anchor Location (Phase 2 preparation, stored on every sync) ---
+    public static final String KEY_ANCHOR_LAT = "anchor_lat";
+    public static final String KEY_ANCHOR_LON = "anchor_lon";
+
+    // --- 30-Day Rolling Schedule ID Range ---
+    /** Base ID for rolling alarms: ID = BASE + (dayOffset * 10) + prayerIndex */
+    public static final int ROLLING_ALARM_BASE_ID = 5000;
+    /** Total ID slots reserved for rolling schedule (30 days × 10 slots/day) */
+    public static final int ROLLING_ALARM_MAX_COUNT = 300;
 }

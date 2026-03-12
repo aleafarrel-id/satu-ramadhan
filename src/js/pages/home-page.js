@@ -4,7 +4,7 @@ import { getPrayerTimesByCoords } from '../core/api.js';
 import { getCurrentPrayer } from '../modules/prayer/prayer-times.js';
 import { startCountdown, stopCountdown } from '../modules/schedule/countdown.js';
 import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
-import { schedulePrayerNotifications } from '../modules/notification/native-notification.js';
+
 import { updateWatcher } from '../modules/prayer/prayer-watcher.js';
 
 import { renderPrayerCard, updatePrayerCardFills, updatePrayerCardDynamicUI } from '../components/card/prayer-card.js';
@@ -181,7 +181,7 @@ async function renderContent() {
     _lastPrayerIndex = prayerState.currentIndex;
 
     startCountdownTimer();
-    schedulePrayerNotifications(_timings);
+
     updateWatcher(_timings);
 }
 

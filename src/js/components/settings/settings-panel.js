@@ -3,8 +3,7 @@
  * Renders the settings card with toggles
  */
 
-import { schedulePrayerNotifications } from '../../modules/notification/native-notification.js';
-import { getTimings } from '../../pages/home-page.js';
+import { syncNotifications } from '../../modules/notification/notification-sync.js';
 import * as Notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
 
@@ -89,14 +88,11 @@ function updateAdzanRowState(notifEnabled) {
 }
 
 /**
- * Re-schedules native prayer notifications based on current
- * localStorage toggles and today's timings.
+ * Re-syncs 30-day rolling notification schedule based on
+ * current localStorage toggles and saved location.
  */
 function rescheduleNotifications() {
-    const timings = getTimings();
-    if (timings) {
-        schedulePrayerNotifications(timings);
-    }
+    syncNotifications();
 }
 
 export function destroy() {
