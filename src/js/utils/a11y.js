@@ -117,12 +117,9 @@ export function trapFocus(overlayEl) {
 
     // Delay focus lightly to avoid racing with CSS visibility changes (e.g. .active class)
     setTimeout(() => {
-        const visibleEls = getVisibleFocusables();
-        if (visibleEls.length > 0) {
-            visibleEls[0].focus();
-        } else {
-            overlayEl.focus();
-        }
+        // Focus the modal container to prevent programmatic focus outline on buttons
+        // while still announcing the modal to screen readers.
+        overlayEl.focus({ preventScroll: true });
     }, 100);
 
     // Tab-cycling handler
@@ -160,12 +157,7 @@ export function trapFocus(overlayEl) {
         // If the newly focused element is not inside our modal overlay...
         if (!overlayEl.contains(e.target)) {
             e.stopPropagation();
-            const visibleEls = getVisibleFocusables();
-            if (visibleEls.length > 0) {
-                visibleEls[0].focus();
-            } else {
-                overlayEl.focus();
-            }
+            overlayEl.focus({ preventScroll: true });
         }
     }
 

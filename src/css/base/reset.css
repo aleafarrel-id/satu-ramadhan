@@ -81,6 +81,10 @@ select {
    -webkit-tap-highlight-color: transparent;
 }
 
+[tabindex="-1"]:focus {
+   outline: none;
+}
+
 :focus-visible {
    outline: 2px solid var(--clr-accent-500);
    outline-offset: 2px;
