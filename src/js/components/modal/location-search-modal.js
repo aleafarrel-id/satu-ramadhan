@@ -9,12 +9,14 @@ import { setManualLocation } from '../../core/geolocation.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 
 import { handleManualLocationSelection } from '../../utils/location-feedback.js';
+import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 /* ── State ── */
 let _overlayEl = null;
 let _debounceTimer = null;
 let _onLocationSelected = null;
 let _currentQuery = '';
+let _releaseFocus = null;
 
 /* ── Configuration ── */
 const DEBOUNCE_MS = 600; // Adjusted for Nominatim's 1 req/sec limit
@@ -39,10 +41,16 @@ export function showLocationSearchModal({ onLocationSelected } = {}) {
     // Trigger entrance sliding animation
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
 
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
+
     // Bind overlay dismiss (click outside modal content)
     _overlayEl.addEventListener('click', (e) => {
         if (e.target === _overlayEl) hideModal();
     });
+
+    // ── Bind: Escape to close ──
+    addEscHandler(_overlayEl, hideModal);
 
     // Bind search input with debounce
     const searchInput = _overlayEl.querySelector('.loc-search-input');
@@ -83,6 +91,10 @@ export function hideModal() {
 /* ── Internal Helpers ── */
 
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;
@@ -142,7 +154,7 @@ function bindResultItems(container, results) {
     const items = container.querySelectorAll('.loc-search-item');
 
     items.forEach((item, index) => {
-        item.addEventListener('click', async () => {
+        makeAccessibleBtn(item, async () => {
             const selected = results[index];
             if (!selected) return;
 
@@ -208,7 +220,7 @@ function renderResultItem(location) {
         : '<span class="loc-search-badge loc-search-badge--online">Online</span>';
 
     return `
-        <div class="loc-search-item">
+        <div class="loc-search-item" data-focus-item>
             <i class='bx ${icon}'></i>
             <div class="loc-search-item-info">
                 <div class="loc-search-item-title">${location.regencyName}</div>
@@ -235,7 +247,7 @@ function createModalDOM() {
                 <i class='bx bx-search loc-search-icon'></i>
                 <input type="text" class="loc-search-input" placeholder="Cari kota atau lokasi..." autocomplete="off">
             </div>
-            <div class="loc-search-results">
+            <div class="loc-search-results" data-focus-group="loc-search-results" data-focus-direction="vertical">
                 ${renderPlaceholder()}
             </div>
         </div>

@@ -9,6 +9,7 @@
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
 import { WEEKDAY_HEADERS_MON_FIRST, MONTH_NAMES, formatDateToYYYYMMDD } from '../../utils/datetime.js';
+import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 /* ── Constants ── */
 
@@ -28,6 +29,7 @@ let _maxDate      = null; // Optional maximum selectable Date
 let _animPhase     = 'idle';
 let _animDirection = null;
 let _animId        = 0;
+let _releaseFocus  = null;
 
 /* ── Helpers ── */
 
@@ -185,6 +187,9 @@ export function showDatePickerModal({ initialDate, onSelect, minDate, maxDate })
 
     // Trigger entrance animation on next frame
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
+
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
 }
 
 /**
@@ -204,6 +209,10 @@ export function hideDatePickerModal() {
 /* ── Internal Helpers ── */
 
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;
@@ -351,6 +360,9 @@ function createModalDOM() {
         if (e.target === overlay) hideDatePickerModal();
     });
 
+    // ── Bind: Escape to close ──
+    addEscHandler(overlay, hideDatePickerModal);
+
     // ── Bind: Navigation buttons ──
     overlay.querySelector('#dp-prev').addEventListener('click', () => {
         impact('light');
@@ -435,7 +447,7 @@ function renderCalendar() {
     });
 
     daysEl.querySelectorAll('.date-picker-cell[data-date]:not(.date-picker-cell--disabled)').forEach(cell => {
-        cell.addEventListener('click', () => {
+        makeAccessibleBtn(cell, () => {
             impact('medium');
 
             const dateStr = cell.dataset.date;

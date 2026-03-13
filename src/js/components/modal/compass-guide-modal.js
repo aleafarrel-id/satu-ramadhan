@@ -5,8 +5,10 @@
 
 /* ── DOM References ── */
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;
+let _releaseFocus = null;
 
 /* ── Public API ── */
 
@@ -26,6 +28,9 @@ export function showCompassGuideModal() {
     // Trigger entrance animation on next frame
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
 
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
+
     // ── Bind: Close button ──
     const btnClose = _overlayEl.querySelector('#compass-guide-close');
     btnClose?.addEventListener('click', hideModal);
@@ -36,6 +41,9 @@ export function showCompassGuideModal() {
             hideModal();
         }
     });
+
+    // ── Bind: Escape to close ──
+    addEscHandler(_overlayEl, hideModal);
 }
 
 /**
@@ -52,6 +60,10 @@ export function hideModal() {
 /* ── Internal Helpers ── */
 
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;

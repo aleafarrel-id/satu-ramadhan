@@ -7,16 +7,21 @@ import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watche
 
 import {
     renderScheduleCard,
+    renderScheduleCardBottomSkeleton,
     updateScheduleContent,
     updateScheduleHighlights,
     updateScheduleFeaturedCard,
     getActivePrayerKey,
 } from '../components/card/schedule-card.js';
+import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
 import { handleOrgToggle } from '../components/prayer/prayer-widgets.js';
 import { renderScheduleSkeleton } from '../components/skeleton/skeleton-schedule.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { showCalendarModal } from '../components/modal/calendar-modal.js';
+import { showLocationModal } from '../components/modal/location-modal.js';
+import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
+import { makeAccessibleBtn } from '../utils/a11y.js';
 
 /* --- STATE --- */
 
@@ -177,27 +182,62 @@ function stopDayCrossingCheck() {
  * @param {boolean} hasLocation - Deciphers which warning layout to mount.
  */
 function renderError(hasLocation) {
-    const icon = hasLocation ? 'bx-wifi-off' : 'bx-map-pin';
-    const title = hasLocation ? 'Gagal Memuat Jadwal' : 'Lokasi Belum Diatur';
-    const desc = hasLocation
-        ? 'Tidak dapat memuat jadwal lengkap. Periksa koneksi internet Anda dan coba lagi.'
-        : 'Atur lokasi terlebih dahulu di Pengaturan untuk melihat jadwal secara lengkap.';
+    if (!hasLocation) {
+        _container.innerHTML = `
+            ${renderLocationCard(null)}
+            ${renderEmptyState({
+            icon: 'bx-map-pin',
+            title: 'Lokasi Belum Diatur',
+            description: 'Jadwal akan ditampilkan setelah lokasi Anda diatur.',
+            compact: true,
+        })}
+            <div class="schedule-skeleton-placeholder" style="margin-top: var(--spacing-lg); pointer-events: none;">
+                ${renderScheduleCardBottomSkeleton()}
+            </div>
+        `;
+        bindLocationCardEvents(showLocationModalForSchedule, _container);
+        return;
+    }
+
+    const icon = 'bx-wifi-off';
+    const title = 'Gagal Memuat Jadwal';
+    const desc = 'Tidak dapat memuat jadwal lengkap. Periksa koneksi internet Anda dan coba lagi.';
 
     _container.innerHTML = `
         <div class="schedule-page">
             ${renderEmptyState({
         icon,
-        iconVariant: hasLocation ? 'warning' : undefined,
+        iconVariant: 'warning',
         title,
         description: desc,
-        action: hasLocation ? {
+        action: {
             label: 'Coba Lagi',
             icon: 'bx-refresh',
             onclick: 'location.reload()',
-        } : undefined,
+        },
     })}
         </div>
     `;
+}
+
+/**
+ * Opens the location selection modal tailored for the schedule page's empty state.
+ */
+function showLocationModalForSchedule() {
+    showLocationModal({
+        onLocationDetected: async () => {
+            renderScheduleSkeleton(_container);
+            await refreshScheduleData();
+        },
+        onManualSelect: () => {
+            showLocationSearchModal({
+                onLocationSelected: async () => {
+                    renderScheduleSkeleton(_container);
+                    await refreshScheduleData();
+                },
+            });
+        },
+    });
 }
 
 /**
@@ -266,7 +306,7 @@ function bindEvents() {
         document.querySelector('.nav-item[data-tab="compass"]')?.click();
     });
 
-    document.getElementById('btn-calendar-modal')?.addEventListener('click', () => {
+    makeAccessibleBtn(document.getElementById('btn-calendar-modal'), () => {
         showCalendarModal({
             scheduleData: _scheduleData,
             currentIndex: _currentDayIndex,

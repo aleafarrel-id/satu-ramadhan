@@ -142,7 +142,23 @@ export function renderPrayerCardSkeleton() {
         <!-- Tube Grid Skeleton (matches schedule-bottom grid) -->
         <div class="schedule-bottom">
             <!-- Tall stacked tube (col 1, rows 1-2) -->
-            <div class="skeleton skeleton--tube-tall"></div>
+            <div class="skeleton skeleton--tube-tall" style="display: flex; flex-direction: column; justify-content: space-around; padding: 1.25rem 0.75rem;">
+                <div class="tube__stack-item" style="opacity: 0.5; align-items: center; border: none; background: transparent;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+                <div class="tube__stack-divider" style="opacity: 0.2; background: rgba(255, 255, 255, 0.2); margin: 0 auto;"></div>
+                <div class="tube__stack-item" style="opacity: 0.5; align-items: center; border: none; background: transparent;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+                <div class="tube__stack-divider" style="opacity: 0.2; background: rgba(255, 255, 255, 0.2); margin: 0 auto;"></div>
+                <div class="tube__stack-item" style="opacity: 0.5; align-items: center; border: none; background: transparent;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+            </div>
+            
             <!-- Org toggle row (cols 2-4, row 1) -->
             <div class="schedule-org-cell">
                 <div class="skeleton skeleton-org">
@@ -150,10 +166,36 @@ export function renderPrayerCardSkeleton() {
                     <div class="skeleton skeleton-org__label"></div>
                 </div>
             </div>
+            
             <!-- 3 tubes (cols 2-4, row 2) -->
-            <div class="skeleton skeleton--tube"></div>
-            <div class="skeleton skeleton--tube"></div>
-            <div class="skeleton skeleton--tube"></div>
+            <!-- Second tube: Stacked 2 -->
+            <div class="skeleton skeleton--tube" style="display: flex; flex-direction: column; justify-content: space-around; padding: 10px 5px;">
+                 <div class="tube__stack-item" style="opacity: 0.5; transform: scale(0.9); align-items: center; border: none; background: transparent;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 6px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+                <div class="tube__stack-divider" style="opacity: 0.2; background: rgba(255, 255, 255, 0.2); margin: 0 auto;"></div>
+                 <div class="tube__stack-item" style="opacity: 0.5; transform: scale(0.9); align-items: center; border: none; background: transparent;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 6px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+            </div>
+
+            <!-- Third tube: Single -->
+            <div class="skeleton skeleton--tube" style="display: flex; flex-direction: column; justify-content: center; padding: 1.25rem 0.75rem;">
+                 <div style="opacity: 0.5; display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+            </div>
+
+            <!-- Fourth tube: Single -->
+            <div class="skeleton skeleton--tube" style="display: flex; flex-direction: column; justify-content: center; padding: 1.25rem 0.75rem;">
+                <div style="opacity: 0.5; display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <div class="skeleton skeleton--prayer-icon" style="margin-bottom: 8px;"></div>
+                    <div class="skeleton skeleton--text-sm" style="width: 60%; margin-bottom: 4px;"></div>
+                </div>
+            </div>
         </div>
     `;
 }

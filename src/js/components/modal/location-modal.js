@@ -5,11 +5,13 @@
  */
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
 
 /* ── DOM References ── */
 let _overlayEl = null;
+let _releaseFocus = null;
 
 /* ── State ── */
 // State is purely DOM-based now (button.disabled)
@@ -36,6 +38,9 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
     // Trigger entrance animation on next frame
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
 
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
+
     // ── Bind: GPS button ──
     const btnGps = _overlayEl.querySelector('#loc-modal-btn-gps');
     btnGps?.addEventListener('click', () => {
@@ -59,6 +64,9 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
             hideModal();
         }
     });
+
+    // ── Bind: Escape to close ──
+    addEscHandler(_overlayEl, hideModal);
 }
 
 /**
@@ -75,6 +83,10 @@ export function hideModal() {
 /* ── Internal Helpers ── */
 
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;
@@ -100,12 +112,12 @@ function createModalDOM() {
                 Untuk menampilkan jadwal sholat yang akurat sesuai lokasi Anda,
                 aplikasi memerlukan akses GPS perangkat.
             </p>
-            <div class="location-modal__buttons">
-                <button class="location-modal__btn-gps" id="loc-modal-btn-gps">
+            <div class="location-modal__buttons" data-focus-group="location-modal-btns" data-focus-direction="vertical">
+                <button class="location-modal__btn-gps" id="loc-modal-btn-gps" data-focus-item>
                     <i class='bx bx-current-location'></i>
                     <span>Akses Lokasi</span>
                 </button>
-                <button class="location-modal__btn-manual" id="loc-modal-btn-manual">
+                <button class="location-modal__btn-manual" id="loc-modal-btn-manual" data-focus-item>
                     <i class='bx bx-search'></i>
                     <span>Pilih Manual</span>
                 </button>

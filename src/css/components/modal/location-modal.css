@@ -144,6 +144,11 @@
    font-size: var(--icon-md);
 }
 
+.location-modal__btn-gps:focus-visible {
+   outline: none;
+   box-shadow: 0 0 0 2px #102632, 0 0 0 4px var(--clr-accent-500);
+}
+
 /* Secondary: Pilih Manual (outline) */
 .location-modal__btn-manual {
    display: flex;
@@ -171,4 +176,9 @@
 .location-modal__btn-manual i {
    font-size: var(--icon-md);
    color: var(--clr-text-muted);
+}
+
+.location-modal__btn-manual:focus-visible {
+   outline: none;
+   box-shadow: 0 0 0 2px #102632, 0 0 0 4px var(--clr-accent-500);
 }

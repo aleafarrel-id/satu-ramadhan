@@ -25,6 +25,7 @@ import * as settingsPage from './pages/settings-page.js';
 import * as router from './router.js';
 
 import { initPullToRefresh } from './utils/pull-to-refresh.js';
+import { initGlobalFocusManager } from './utils/focus-manager.js';
 
 const SPLASH_MIN_DURATION = 1500;
 
@@ -44,6 +45,7 @@ export async function initApp() {
 
     // Initialize native notification service (permissions)
     initNotificationService();
+    initGlobalFocusManager();
 
     // Fire-and-forget: 30-day rolling notification sync on startup
     syncNotifications();

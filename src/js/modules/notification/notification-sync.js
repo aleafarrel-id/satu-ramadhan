@@ -12,13 +12,11 @@
  * It replaces the old per-day `schedulePrayerNotifications()` approach.
  */
 
-import { Capacitor, registerPlugin } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 
 import { getSavedLocation } from '../../core/geolocation.js';
 import { getMonthlyPrayerTimes } from '../../core/api.js';
-
-// ── Custom Plugin Bridge ───────────────────────────────────────────
-const PrayerService = registerPlugin('PrayerService');
+import { PrayerService } from './native-notification.js';
 
 // ── Constants ──────────────────────────────────────────────────────
 

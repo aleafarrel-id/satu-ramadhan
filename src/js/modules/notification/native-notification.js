@@ -17,7 +17,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 
 // ── Custom Plugin Bridge ───────────────────────────────────────────
-const PrayerService = registerPlugin('PrayerService');
+export const PrayerService = registerPlugin('PrayerService');
 
 // ── State ──────────────────────────────────────────────────────────
 let _initialized = false;

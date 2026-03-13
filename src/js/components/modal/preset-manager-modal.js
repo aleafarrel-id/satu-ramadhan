@@ -23,11 +23,13 @@ import { impact } from '../../modules/system/haptic.js';
 import { showConfirmModal } from './confirm-modal.js';
 import { showDatePickerModal } from './date-picker-modal.js';
 import { formatDateShort, formatDateVerbose, calcRamadhanEndDates } from '../../utils/datetime.js';
+import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 /* ── State ── */
 let _overlayEl = null;
 let _onPresetsChanged = null;
 let _editingId = null;
+let _releaseFocus = null;
 
 /* ── Public API ── */
 
@@ -53,10 +55,16 @@ export function showPresetManagerModal({ onPresetsChanged } = {}) {
     // Trigger entrance animation
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
 
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
+
     // Dismiss on overlay click
     _overlayEl.addEventListener('click', (e) => {
         if (e.target === _overlayEl) hideModal();
     });
+
+    // ── Bind: Escape to close ──
+    addEscHandler(_overlayEl, hideModal);
 
     // Handle virtual keyboard scroll behavior
     _overlayEl.addEventListener('focusin', (e) => {
@@ -93,6 +101,10 @@ export function hideModal() {
 /* ── Internal Helpers ── */
 
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;
@@ -162,7 +174,7 @@ function renderPresetItem(preset, selectedId) {
         : '';
 
     return `
-        <div class="preset-mgr-item${isActive ? ' preset-mgr-item--active' : ''}" data-id="${preset.id}">
+        <div class="preset-mgr-item${isActive ? ' preset-mgr-item--active' : ''}" data-id="${preset.id}" data-focus-item>
             <div class="preset-mgr-item-select" data-id="${preset.id}">
                 <div class="preset-mgr-item-radio ${isActive ? 'preset-mgr-item-radio--checked' : ''}">
                     ${isActive ? '<i class="bx bx-check"></i>' : ''}
@@ -198,7 +210,7 @@ function renderPresetItem(preset, selectedId) {
 function bindListEvents(listEl, presets, selectedId) {
     // Select preset (click on the select area)
     listEl.querySelectorAll('.preset-mgr-item-select').forEach(el => {
-        el.addEventListener('click', async () => {
+        makeAccessibleBtn(el, async () => {
             const id = el.dataset.id;
             if (id !== selectedId) {
                 impact('light');
@@ -308,7 +320,7 @@ function bindDateField(fieldEl, { initial, onSelectCallback, getConstraints } = 
     if (!fieldEl) return;
     if (initial) fieldEl.dataset.date = initial;
 
-    fieldEl.addEventListener('click', () => {
+    makeAccessibleBtn(fieldEl, () => {
         const constraints = getConstraints ? getConstraints() : {};
 
         showDatePickerModal({
@@ -339,12 +351,12 @@ function renderSuggestions(startStr, container, targetField) {
 
     container.innerHTML = `
         <div class="preset-mgr-suggestion-title"><i class='bx bx-bulb'></i> Rekomendasi Tanggal Akhir</div>
-        <div class="preset-mgr-suggestion-chips">
-            <button class="preset-mgr-date-chip" data-date="${day29}">
+        <div class="preset-mgr-suggestion-chips" data-focus-group="preset-mgr-suggestions" data-focus-direction="horizontal">
+            <button class="preset-mgr-date-chip" data-date="${day29}" data-focus-item>
                 <span class="chip-duration">29 Hari</span>
                 <span class="chip-date">${formatDateShort(day29)}</span>
             </button>
-            <button class="preset-mgr-date-chip" data-date="${day30}">
+            <button class="preset-mgr-date-chip" data-date="${day30}" data-focus-item>
                 <span class="chip-duration">30 Hari</span>
                 <span class="chip-date">${formatDateShort(day30)}</span>
             </button>
@@ -447,9 +459,9 @@ function showEditForm(id, presets) {
                 <input type="text" class="preset-mgr-form-input" id="edit-desc-${id}" value="${preset.description || ''}" placeholder="Keterangan singkat">
             </div>
             ` : ''}
-            <div class="preset-mgr-form-actions">
-                <button class="btn preset-mgr-form-btn btn--outline" id="edit-cancel-${id}">Batal</button>
-                <button class="btn preset-mgr-form-btn btn--gold" id="edit-save-${id}">Simpan</button>
+            <div class="preset-mgr-form-actions" data-focus-group="preset-mgr-edit-actions" data-focus-direction="horizontal">
+                <button class="btn preset-mgr-form-btn btn--outline" id="edit-cancel-${id}" data-focus-item>Batal</button>
+                <button class="btn preset-mgr-form-btn btn--gold" id="edit-save-${id}" data-focus-item>Simpan</button>
             </div>
         </div>
     `;
@@ -541,9 +553,9 @@ function showAddForm() {
                 <label class="preset-mgr-form-label">Keterangan (opsional)</label>
                 <input type="text" class="preset-mgr-form-input" id="add-desc" placeholder="Keterangan singkat">
             </div>
-            <div class="preset-mgr-form-actions">
-                <button class="btn preset-mgr-form-btn btn--outline" id="add-cancel">Batal</button>
-                <button class="btn preset-mgr-form-btn btn--gold" id="add-save">Tambah</button>
+            <div class="preset-mgr-form-actions" data-focus-group="preset-mgr-add-actions" data-focus-direction="horizontal">
+                <button class="btn preset-mgr-form-btn btn--outline" id="add-cancel" data-focus-item>Batal</button>
+                <button class="btn preset-mgr-form-btn btn--gold" id="add-save" data-focus-item>Tambah</button>
             </div>
         </div>
     `;
@@ -612,7 +624,7 @@ function createModalDOM() {
                 <h3 class="preset-mgr-title">Preset Ramadhan</h3>
             </div>
             <div class="preset-mgr-content">
-                <div class="preset-mgr-list"></div>
+                <div class="preset-mgr-list" data-focus-group="preset-mgr-list" data-focus-direction="vertical"></div>
                 <div class="preset-mgr-add-form"></div>
             </div>
             <div class="preset-mgr-footer">

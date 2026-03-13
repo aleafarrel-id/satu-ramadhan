@@ -9,8 +9,8 @@ import { impact } from '../../modules/system/haptic.js';
 
 export function render(container) {
     container.innerHTML = `
-        <div class="card settings-card">
-            <label class="settings-item" for="toggle-notification">
+        <div class="card settings-card" data-focus-group="settings-list" data-focus-direction="vertical">
+            <label class="settings-item" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
                     <span>Hidupkan Notifikasi</span>
@@ -21,7 +21,7 @@ export function render(container) {
                 </div>
             </label>
             <div class="settings-divider"></div>
-            <label class="settings-item" id="adzan-row" for="toggle-adzan">
+            <label class="settings-item" id="adzan-row" for="toggle-adzan" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-volume-full'></i>
                     <span>Hidupkan Suara Adzan</span>

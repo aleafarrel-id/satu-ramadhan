@@ -6,10 +6,12 @@
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
+import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;
 let _onConfirmCallback = null;
 let _onCancelCallback = null;
+let _releaseFocus = null;
 
 /**
  * Shows a confirmation dialog.
@@ -50,6 +52,9 @@ export function showConfirmModal({
     // Trigger entrance animation next frame
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
 
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
+
     // Bind events
     bindEvents();
 }
@@ -85,6 +90,9 @@ function bindEvents() {
     // Buttons
     _overlayEl.querySelector('#confirm-btn-cancel')?.addEventListener('click', handleCancel);
     _overlayEl.querySelector('#confirm-btn-action')?.addEventListener('click', handleConfirm);
+
+    // ── Bind: Escape to cancel ──
+    addEscHandler(_overlayEl, handleCancel);
 }
 
 /**
@@ -111,6 +119,10 @@ function hideModal() {
  * Physically removes the element from the DOM and cleans up references.
  */
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;

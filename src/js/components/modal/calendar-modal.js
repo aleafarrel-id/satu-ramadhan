@@ -9,10 +9,12 @@
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { MONTH_ID, WEEKDAY_HEADERS_MON_FIRST } from '../../utils/datetime.js';
+import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 /* ── DOM State ── */
 
 let _overlayEl = null;
+let _releaseFocus = null;
 
 /* ── Public API ── */
 
@@ -34,6 +36,9 @@ export function showCalendarModal({ scheduleData, currentIndex, onSelectDay }) {
 
     // Trigger entrance animation on next frame
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
+
+    // Trap focus inside modal
+    _releaseFocus = trapFocus(_overlayEl);
 }
 
 /**
@@ -50,6 +55,10 @@ export function hideCalendarModal() {
 /* ── Internal Helpers ── */
 
 function removeModal() {
+    if (_releaseFocus) {
+        _releaseFocus();
+        _releaseFocus = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;
@@ -132,7 +141,7 @@ function buildCalendarGrid(scheduleData, currentIndex) {
         ].filter(Boolean).join(' ');
 
         return `
-            <div class="${classes}" data-day-index="${index}" data-weekday="${weekday}">
+            <div class="${classes}" data-day-index="${index}" data-weekday="${weekday}" data-focus-item="true">
                 <span class="cal-modal__hijri">${entry.hijriDay}</span>
                 <span class="cal-modal__greg">${gregDay} ${gregMonth}</span>
             </div>
@@ -141,7 +150,7 @@ function buildCalendarGrid(scheduleData, currentIndex) {
 
     return `
         ${header}
-        <div class="cal-modal__grid">
+        <div class="cal-modal__grid" data-focus-group="calendar-grid" data-focus-direction="grid" data-focus-grid-cols="7">
             ${weekdayRow}
             ${emptyCells}
             ${dayCells}
@@ -166,7 +175,7 @@ function createModalDOM(scheduleData, currentIndex, onSelectDay) {
 
     // ── Bind: Day cell clicks ──
     overlay.querySelectorAll('.cal-modal__cell[data-day-index]').forEach(cell => {
-        cell.addEventListener('click', () => {
+        makeAccessibleBtn(cell, () => {
             const index = parseInt(cell.dataset.dayIndex, 10);
             hideCalendarModal();
             onSelectDay?.(index);
@@ -179,6 +188,9 @@ function createModalDOM(scheduleData, currentIndex, onSelectDay) {
             hideCalendarModal();
         }
     });
+
+    // ── Bind: Escape to close ──
+    addEscHandler(overlay, hideCalendarModal);
 
     return overlay;
 }

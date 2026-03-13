@@ -207,6 +207,39 @@ export function renderScheduleCardSkeleton() {
     `;
 }
 
+/**
+ * Render the bottom skeleton specifically used in empty/error states.
+ * @returns {string} HTML string
+ */
+export function renderScheduleCardBottomSkeleton() {
+    const skeletonRows = Array.from({ length: 7 }, () => `
+        <div class="schedule-prayer-row">
+            <div class="skeleton skeleton--prayer-icon"></div>
+            <div class="skeleton skeleton--text-sm" style="width: 30%"></div>
+            <div class="skeleton skeleton--text-md skeleton--ml-auto" style="width: 18%"></div>
+        </div>
+    `).join('');
+
+    return `
+        <!-- Date nav skeleton -->
+        <div class="schedule-nav">
+            <div class="schedule-nav__info">
+                <div class="skeleton skeleton--text-lg" style="width: 55%"></div>
+                <div class="skeleton skeleton--text-xs skeleton--mt-sm" style="width: 40%"></div>
+            </div>
+            <div class="schedule-nav__arrows">
+                <div class="skeleton skeleton--nav-arrow"></div>
+                <div class="skeleton skeleton--nav-arrow"></div>
+            </div>
+        </div>
+
+        <!-- Prayer rows skeleton -->
+        <div class="schedule-prayers" style="margin-top: 5px;">
+            ${skeletonRows}
+        </div>
+    `;
+}
+
 /* ── Internal Render Functions ── */
 
 /**
@@ -225,25 +258,25 @@ function renderDateNav(entry, dayIndex, totalDays = 30) {
     const isNextDisabled = dayIndex >= totalDays - 1;
 
     return `
-        <div class="schedule-nav">
+        <div class="schedule-nav" data-focus-group="schedule-nav" data-focus-direction="horizontal">
             <div class="schedule-nav__info">
-                <div class="schedule-nav__title-pill" id="btn-calendar-modal" role="button" tabindex="0">
+                <div class="schedule-nav__title-pill" id="btn-calendar-modal" role="button" tabindex="0" data-focus-item>
                     <span class="schedule-nav__badge-icon"><i class='bx bxs-calendar'></i></span>
                     <span class="schedule-nav__title">${hijriDay} ${hijriMonthName} ${hijriYear}</span>
                 </div>
                 <span class="schedule-nav__subtitle">${weekdayId}, ${dateFormatted}</span>
             </div>
             <div class="schedule-nav__controls">
-                <button class="schedule-nav__today${today ? ' hidden' : ''}" id="schedule-today">
+                <button class="schedule-nav__today${today ? ' hidden' : ''}" id="schedule-today" data-focus-item>
                     <i class='bx bx-reset'></i>
                 </button>
                 <div class="schedule-nav__arrows">
                     <button class="schedule-nav__btn schedule-nav__btn--prev${isPrevDisabled ? ' disabled' : ''}"
-                            id="schedule-prev" ${isPrevDisabled ? 'disabled' : ''}>
+                            id="schedule-prev" ${isPrevDisabled ? 'disabled' : ''} data-focus-item>
                         <i class='bx bxs-chevron-left'></i>
                     </button>
                     <button class="schedule-nav__btn schedule-nav__btn--next${isNextDisabled ? ' disabled' : ''}"
-                            id="schedule-next" ${isNextDisabled ? 'disabled' : ''}>
+                            id="schedule-next" ${isNextDisabled ? 'disabled' : ''} data-focus-item>
                         <i class='bx bxs-chevron-right'></i>
                     </button>
                 </div>

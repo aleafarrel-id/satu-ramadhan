@@ -30,6 +30,8 @@ export function render(container, onNavigate) {
     // Foreground nav list
     const list = document.createElement('div');
     list.className = 'nav-list';
+    list.setAttribute('data-focus-group', 'bottom-nav');
+    list.setAttribute('data-focus-direction', 'horizontal');
 
     // Sliding indicator (single element that moves)
     _slider = document.createElement('span');
@@ -41,6 +43,7 @@ export function render(container, onNavigate) {
         item.className = 'nav-item';
         item.dataset.tab = tab.id;
         item.setAttribute('aria-label', tab.label);
+        item.setAttribute('data-focus-item', 'true');
 
         const icon = document.createElement('i');
         icon.className = `bx ${tab.icon}`;
