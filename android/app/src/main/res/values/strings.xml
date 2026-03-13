@@ -14,4 +14,10 @@
     <string name="notification_channel_standard_name">Waktu Pengingat Standar</string>
     <string name="notification_channel_standard_desc">Notifikasi Imsak dan waktu lainnya</string>
     <string name="notification_text_reminder_default">Waktu pengingat telah tiba</string>
+
+    <!-- Location Detection Notification Strings -->
+    <string name="notification_channel_location_name">Deteksi Lokasi</string>
+    <string name="notification_channel_location_desc">Pemberitahuan saat lokasi Anda berubah signifikan</string>
+    <string name="notification_title_location_changed">Lokasi Anda Berubah</string>
+    <string name="notification_text_location_changed">Nampaknya lokasi Anda telah berubah. Ketuk untuk memperbarui jadwal notifikasi.</string>
 </resources>

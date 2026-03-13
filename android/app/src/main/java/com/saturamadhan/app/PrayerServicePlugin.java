@@ -8,6 +8,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -17,6 +21,8 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.concurrent.TimeUnit;
 
 
 @CapacitorPlugin(name = "PrayerService")
@@ -37,7 +43,7 @@ public class PrayerServicePlugin extends Plugin {
 
         Context context = getContext();
 
-        // Save anchor location for Phase 2 background detection
+        // Save anchor location for background detection
         Double anchorLat = call.getDouble("anchorLat");
         Double anchorLon = call.getDouble("anchorLon");
         if (anchorLat != null && anchorLon != null) {
@@ -94,6 +100,46 @@ public class PrayerServicePlugin extends Plugin {
         JSObject result = new JSObject();
         result.put("playing", PrayerPlaybackService.isCurrentlyPlaying());
         call.resolve(result);
+    }
+
+    // ── Background Location Detection ────────────────────────────────
+
+    /**
+     * Start the passive background location detection worker.
+     * Uses WorkManager PeriodicWork (~6h interval, ~3h flex window).
+     * Policy KEEP ensures no duplicate workers are enqueued.
+     */
+    @PluginMethod()
+    public void startLocationDetection(PluginCall call) {
+        Context context = getContext();
+
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+                LocationDetectWorker.class,
+                6, TimeUnit.HOURS,
+                3, TimeUnit.HOURS
+        )
+                .addTag(Constants.WORKER_TAG)
+                .build();
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                Constants.WORKER_TAG,
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
+
+        Log.d(TAG, "Location detection worker enqueued (6h interval, 3h flex)");
+        call.resolve();
+    }
+
+    /**
+     * Stop the background location detection worker.
+     */
+    @PluginMethod()
+    public void stopLocationDetection(PluginCall call) {
+        Context context = getContext();
+        WorkManager.getInstance(context).cancelUniqueWork(Constants.WORKER_TAG);
+        Log.d(TAG, "Location detection worker cancelled");
+        call.resolve();
     }
 
     // ── Internal Scheduling Logic ────────────────────────────────────
@@ -249,7 +295,7 @@ public class PrayerServicePlugin extends Plugin {
 
     /**
      * Save anchor location to SharedPreferences.
-     * Used by Phase 2 background location detection worker.
+     * Used by background location detection worker.
      */
     private static void saveAnchorLocation(Context context, double lat, double lon) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);

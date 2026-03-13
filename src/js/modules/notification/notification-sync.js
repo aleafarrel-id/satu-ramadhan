@@ -6,7 +6,7 @@
  *   1. Cancels ALL existing prayer alarms from the system
  *   2. Fetches prayer times for today → today + 29 days
  *   3. Builds & schedules up to 210 alarms (7 prayers × 30 days)
- *   4. Sends "Anchor Location" to Native Java for Phase 2 background detection
+ *   4. Sends "Anchor Location" to Native Java for background location detection
  *
  * This module is the SINGLE entry point for notification scheduling.
  * It replaces the old per-day `schedulePrayerNotifications()` approach.
@@ -187,6 +187,16 @@ export async function syncNotifications() {
             );
         } else {
             console.log('[NotifSync] No future alarms to schedule');
+        }
+
+        // ─── 8. Start background location detection ──────
+        //    Ensures the passive worker is always active after sync.
+        //    Uses KEEP policy — safe to call on every sync without duplicates.
+        try {
+            await PrayerService.startLocationDetection();
+            console.log('[NotifSync] Background location detection worker active');
+        } catch (e) {
+            console.warn('[NotifSync] Could not start location detection:', e.message);
         }
     } catch (e) {
         console.error('[NotifSync] Sync failed:', e);
