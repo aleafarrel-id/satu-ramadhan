@@ -8,9 +8,6 @@
  * - PrayerAlarmReceiver (Java)  → decides adzan playback vs standard notification
  * - @capacitor/local-notifications → permission management only
  *
- * NOTE: Scheduling logic has been moved to `notification-sync.js`
- * which handles 30-day rolling pre-scheduling. This module is kept
- * for permission management and cancel/play utility functions.
  */
 
 import { LocalNotifications } from '@capacitor/local-notifications';

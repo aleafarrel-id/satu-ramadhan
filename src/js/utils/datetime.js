@@ -114,3 +114,46 @@ export function calcRamadhanEndDates(startDateStr) {
         day30: formatDateToYYYYMMDD(day30),
     };
 }
+
+/* ── Ihtiyat: Centralized Prayer Time Adjustment ── */
+
+/**
+ * Strip timezone suffix from an API time string.
+ * Example: "04:30 (WIB)" → "04:30"
+ *
+ * @param {string} timeStr - Raw time string from the API
+ * @returns {string} Clean time string in "HH:mm" format
+ */
+export function cleanTimeStr(timeStr) {
+    if (!timeStr) return timeStr;
+    return timeStr.toString().replace(/\s*\(.*\)/, '').trim();
+}
+
+/**
+ * Add or subtract minutes from a time string ("HH:mm" or "HH:mm (WIB)").
+ * Handles hour rollover automatically (e.g. 23:59 + 2 → 00:01).
+ * Always returns a clean "HH:mm" string.
+ *
+ * Used centrally for applying Ihtiyat (Kemenag RI +2 min precaution)
+ * and deriving Imsak (Fajr − 10 min) across the entire application.
+ *
+ * @param {string} timeStr - e.g. "04:30" or "04:30 (WIB)"
+ * @param {number} minutesToAdd - Minutes to offset (negative to subtract)
+ * @returns {string} Adjusted time, e.g. "04:32"
+ */
+export function adjustTimeStr(timeStr, minutesToAdd) {
+    if (!timeStr) return timeStr;
+    const clean = cleanTimeStr(timeStr);
+    const [hours, mins] = clean.split(':').map(Number);
+
+    if (isNaN(hours) || isNaN(mins)) return timeStr;
+
+    // Use an arbitrary Date object to handle hour rollover gracefully
+    const d = new Date(2000, 0, 1, hours, mins, 0);
+    d.setMinutes(d.getMinutes() + minutesToAdd);
+
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+
+    return `${h}:${m}`;
+}

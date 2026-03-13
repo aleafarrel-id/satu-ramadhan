@@ -4,6 +4,7 @@
  */
 
 import * as storage from './storage.js';
+import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
 
 /* ── API Mirrors (tried in order) ── */
 const API_MIRRORS = [
@@ -137,21 +138,35 @@ function sleep(ms) {
 }
 
 /**
- * Transform raw API timings to app format
+ * Transform raw API timings to app format.
+ * Applies Ihtiyat precaution (+2 min) per Kemenag RI standard.
+ *
  * @param {object} apiData - validated API response
  * @param {string} dateStr
  * @returns {object}
  */
 function transformTimings(apiData, dateStr) {
     const timings = apiData.data.timings;
+
+    // Ihtiyat (Kemenag RI): +2 min precaution for all prayer times except Sunrise
+    const subuh  = adjustTimeStr(timings.Fajr, 2);
+    const terbit = cleanTimeStr(timings.Sunrise);  // Pure astronomical, no Ihtiyat
+    const dzuhur = adjustTimeStr(timings.Dhuhr, 2);
+    const ashar  = adjustTimeStr(timings.Asr, 2);
+    const magrib = adjustTimeStr(timings.Maghrib, 2);
+    const isya   = adjustTimeStr(timings.Isha, 2);
+
+    // Imsak = adjusted Fajr − 10 minutes
+    const imsak  = adjustTimeStr(subuh, -10);
+
     return {
-        imsak: timings.Imsak,
-        subuh: timings.Fajr,
-        terbit: timings.Sunrise,
-        dzuhur: timings.Dhuhr,
-        ashar: timings.Asr,
-        magrib: timings.Maghrib,
-        isya: timings.Isha,
+        imsak,
+        subuh,
+        terbit,
+        dzuhur,
+        ashar,
+        magrib,
+        isya,
         date: dateStr,
         hijri: apiData.data.date.hijri,
     };
@@ -289,21 +304,33 @@ async function tryAllMirrorsMonthly(year, month, latitude, longitude) {
 }
 
 /**
- * Transform raw monthly API data to simplified app format
+ * Transform raw monthly API data to simplified app format.
+ * Applies Ihtiyat precaution (+2 min) per Kemenag RI standard.
+ *
  * @param {Array} apiDays - array of day objects from API
  * @returns {Array<object>}
  */
 function transformMonthlyData(apiDays) {
     return apiDays.map(day => {
         const t = day.timings;
+
+        // Ihtiyat (Kemenag RI): +2 min for all prayers except Sunrise
+        const subuh  = adjustTimeStr(t.Fajr, 2);
+        const terbit = cleanTimeStr(t.Sunrise);
+        const dzuhur = adjustTimeStr(t.Dhuhr, 2);
+        const ashar  = adjustTimeStr(t.Asr, 2);
+        const magrib = adjustTimeStr(t.Maghrib, 2);
+        const isya   = adjustTimeStr(t.Isha, 2);
+        const imsak  = adjustTimeStr(subuh, -10);
+
         return {
-            imsak: t.Imsak,
-            subuh: t.Fajr,
-            terbit: t.Sunrise,
-            dzuhur: t.Dhuhr,
-            ashar: t.Asr,
-            magrib: t.Maghrib,
-            isya: t.Isha,
+            imsak,
+            subuh,
+            terbit,
+            dzuhur,
+            ashar,
+            magrib,
+            isya,
             date: day.date.gregorian.date,       // "DD-MM-YYYY"
             weekday: day.date.gregorian.weekday,  // { en: "Monday" }
             gregorian: day.date.gregorian,
