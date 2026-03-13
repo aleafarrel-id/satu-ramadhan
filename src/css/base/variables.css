@@ -208,8 +208,8 @@
    --color-text-primary: var(--clr-text-primary);
    --color-text-secondary: var(--clr-text-secondary);
    --color-text-accent: var(--clr-text-accent);
-   --color-skeleton: #1a3a4a;
-   --color-skeleton-shine: #245565;
+   --color-skeleton: rgba(26, 58, 74, 0.5);
+   --color-skeleton-shine: rgba(36, 85, 101, 0.5);
    --color-tube-empty: rgba(20, 50, 65, 0.8);
    --color-nav-bg: var(--clr-secondary-700);
    --color-nav-active: var(--clr-accent-500);
