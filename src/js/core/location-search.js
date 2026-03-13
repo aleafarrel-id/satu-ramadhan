@@ -4,7 +4,7 @@
  * Merges, deduplicates, and returns normalized location results.
  */
 
-import { fetchRegencies, getProvinceById } from './database.js';
+import { fetchRegencies, fetchProvinces } from './database.js';
 import { searchNominatim } from './nominatim.js';
 
 /* ── Configuration ── */
@@ -35,32 +35,57 @@ function haversineQuick(lat1, lon1, lat2, lon2) {
 
 /**
  * Search the local regency database by name (case-insensitive).
+ * Searches both regency names AND province names.
+ * Priority order:
+ *   1. Regencies whose name matches the query (direct match)
+ *   2. Remaining regencies that belong to a province whose name matches the query
+ * Duplicates are eliminated using a Set of regency IDs.
+ *
  * @param {string} query
  * @returns {Promise<Array<object>>} Normalized local results
  */
 async function searchLocalDB(query) {
-    const regencies = await fetchRegencies();
+    const [regencies, provinces] = await Promise.all([
+        fetchRegencies(),
+        fetchProvinces(),
+    ]);
+
     const q = query.toLowerCase();
 
-    const matches = regencies.filter(r =>
+    // Build a quick province-id → province-name map
+    const provinceMap = new Map(provinces.map(p => [p.id, p.name]));
+
+    // Regencies whose name directly matches the query
+    const regencyMatches = regencies.filter(r =>
         r.name.toLowerCase().includes(q)
     );
 
-    // Normalize to standard location shape and resolve province names
-    const results = await Promise.all(
-        matches.slice(0, 10).map(async (reg) => {
-            const province = await getProvinceById(reg.province_id);
-            return {
-                regencyId: reg.id,
-                regencyName: reg.name,
-                provinceId: reg.province_id,
-                provinceName: province?.name || null,
-                latitude: reg.latitude,
-                longitude: reg.longitude,
-                source: 'local',
-            };
-        })
+    // Provinces whose name matches the query
+    const matchedProvinceIds = new Set(
+        provinces
+            .filter(p => p.name.toLowerCase().includes(q))
+            .map(p => p.id)
     );
+
+    // Regencies belonging to matched provinces (excluding already matched)
+    const seenIds = new Set(regencyMatches.map(r => r.id));
+    const provinceBasedMatches = matchedProvinceIds.size > 0
+        ? regencies.filter(r => matchedProvinceIds.has(r.province_id) && !seenIds.has(r.id))
+        : [];
+
+    // Merge — regency-name matches first, then province-based matches
+    const merged = [...regencyMatches, ...provinceBasedMatches];
+
+    // Take top 10 and normalize
+    const results = merged.slice(0, 10).map(reg => ({
+        regencyId: reg.id,
+        regencyName: reg.name,
+        provinceId: reg.province_id,
+        provinceName: provinceMap.get(reg.province_id) || null,
+        latitude: reg.latitude,
+        longitude: reg.longitude,
+        source: 'local',
+    }));
 
     return results;
 }
