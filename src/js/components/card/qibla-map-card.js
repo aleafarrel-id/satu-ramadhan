@@ -211,8 +211,8 @@ function _addMarkers(map, userLat, userLng) {
         iconAnchor: [10, 10],
     });
 
-    L.marker([KAABA_LAT, KAABA_LNG], { icon: kaabaIcon, interactive: false }).addTo(map);
-    _userMarker = L.marker([userLat, userLng], { icon: userIcon, interactive: false }).addTo(map);
+    L.marker([KAABA_LAT, KAABA_LNG], { icon: kaabaIcon, interactive: false, keyboard: false }).addTo(map);
+    _userMarker = L.marker([userLat, userLng], { icon: userIcon, interactive: false, keyboard: false }).addTo(map);
 }
 
 /**
