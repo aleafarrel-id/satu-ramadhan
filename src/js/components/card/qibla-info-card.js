@@ -11,7 +11,10 @@ export function renderQiblaInfoCard() {
     return `
         <div class="card qibla-info-card">
             <div class="qibla-info-card__header">
-                ARAH KIBLAT
+                <span>ARAH KIBLAT</span>
+                <button class="btn btn--compass-guide" id="btn-compass-guide" aria-label="Panduan Kalibrasi">
+                    <i class='bx bx-info-circle'></i>
+                </button>
             </div>
             <div class="qibla-info-card__content">
                 <div class="qibla-info-card__icon-wrapper">
@@ -39,7 +42,7 @@ export function renderQiblaInfoCard() {
             
             <!-- Fallback text for devices without Gyroscope (hidden by default) -->
             <div class="qibla-info-card__fallback" id="qibla-fallback-text">
-                Kompas tidak dapat digunakan. Perangkat tidak memiliki sensor gyroscope.
+                Perangkat tidak memiliki sensor gyroscope.
             </div>
         </div>
     `;

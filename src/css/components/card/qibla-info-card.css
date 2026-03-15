@@ -7,6 +7,9 @@
 }
 
 .qibla-info-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-family: var(--ff-primary);
     font-size: var(--fs-sm);
     font-weight: var(--fw-regular);

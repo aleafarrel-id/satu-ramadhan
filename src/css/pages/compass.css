@@ -2,27 +2,27 @@
    Compass Page
    ============================================= */
 
-/* ── Guide Button Wrapper ── */
-
-.compass-guide-wrapper {
-   display: flex;
-   justify-content: flex-start;
-   margin-bottom: var(--spacing-md);
-   margin-top: var(--spacing-sm);
-}
-
 .btn--compass-guide {
-   width: 36px;
-   min-width: 36px;
-   height: 36px;
-   min-height: 36px;
+   background: transparent;
+   color: var(--clr-text-muted);
+   width: var(--spacing-lg);
+   min-width: var(--spacing-lg);
+   height: var(--spacing-lg);
+   min-height: var(--spacing-lg);
    padding: 0;
+   margin: calc(var(--spacing-xs) * -1) 0;
    border-radius: var(--radius-circle);
-   aspect-ratio: 1;
    display: inline-flex;
    align-items: center;
    justify-content: center;
    font-size: var(--fs-md);
+   transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.btn--compass-guide:hover,
+.btn--compass-guide:active {
+   background: var(--clr-bg-hover, rgba(0, 0, 0, 0.05));
+   color: var(--clr-text-primary);
 }
 
 /* ── Qibla Card Skeleton ── */
@@ -44,4 +44,14 @@
    display: flex;
    justify-content: center;
    align-items: center;
+}
+
+@media (max-width: 320px) {
+   .btn--compass-guide {
+      width: var(--icon-md);
+      min-width: var(--icon-md);
+      height: var(--icon-md);
+      min-height: var(--icon-md);
+      font-size: var(--fs-sm);
+   }
 }

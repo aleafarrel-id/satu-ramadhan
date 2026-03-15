@@ -122,12 +122,6 @@ function renderContent() {
         ${renderQiblaMapCard('qibla-mini-map')}
         ${renderLocationCard(_location)}
         
-        <div class="compass-guide-wrapper">
-            <button class="btn btn--accent-outline btn--compass-guide" id="btn-compass-guide">
-                <i class='bx bx-info-circle'></i>
-            </button>
-        </div>
-        
         <div class="compass-outer-wrapper">
             ${renderCompass()}
         </div>
