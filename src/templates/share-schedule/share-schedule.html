@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satu Ramadhan — Jadwal Imsakiyah</title>
+
+    <!-- Design Tokens -->
+    <link rel="stylesheet" href="../../css/base/variables.css">
+
+    <!-- Boxicons (Local) -->
+    <link rel="stylesheet" href="../../assets/vendor/boxicons/css/boxicons.min.css">
+
+    <!-- Template Stylesheet -->
+    <link rel="stylesheet" href="share-schedule.css">
+</head>
+
+<body>
+    <div class="share-schedule" id="share-schedule-container">
+
+        <!-- Header -->
+        <header class="share-schedule__header">
+            <div class="share-schedule__header-left">
+                <div class="share-schedule__header-titles">
+                    <h1 class="share-schedule__title">Jadwal Imsakiyah &amp; Waktu Sholat</h1>
+                    <h2 class="share-schedule__hijri-title" id="share-schedule-hijri-title">Ramadan 1447 H</h2>
+                </div>
+                <div class="share-schedule__header-meta">
+                    <div class="share-schedule__location-badge card location-card">
+                        <div class="location-card__row">
+                            <i class='bx bx-map location-card__icon location-card__icon--info'></i>
+                            <div class="location-card__body">
+                                <div class="location-card__name" id="share-schedule-location">Kota Jakarta</div>
+                                <div class="location-card__province" id="share-schedule-province">DKI Jakarta</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="share-schedule__org-badge org-toggle">
+                        <span class="org-toggle__icon-circle"><i class='bx bxs-home'></i></span>
+                        <span class="org-toggle__label" id="share-schedule-org">Kementerian Agama RI</span>
+                    </div>
+                </div>
+            </div>
+            <div class="share-schedule__header-right">
+                <div class="share-schedule__qibla">
+                    <div class="share-schedule__qibla-icon-wrapper">
+                        <img class="share-schedule__qibla-icon" src="/assets/icon/kaaba.webp" alt="Ka'bah" width="32"
+                            height="32">
+                    </div>
+                    <div class="share-schedule__qibla-label">Arah Kiblat</div>
+                    <div class="share-schedule__qibla-value" id="share-schedule-qibla">295.4°</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Body / Table -->
+        <main class="share-schedule__body">
+            <div class="share-schedule__table-wrapper">
+                <table class="share-schedule__table" id="share-schedule-table">
+                    <thead>
+                        <tr>
+                            <th class="share-schedule__col-hijri">Hari</th>
+                            <th class="share-schedule__col-date">Tanggal</th>
+                            <th>Imsak</th>
+                            <th>Subuh</th>
+                            <th>Dzuhur</th>
+                            <th>Ashar</th>
+                            <th>Maghrib</th>
+                            <th>Isya</th>
+                        </tr>
+                    </thead>
+                    <tbody id="share-schedule-tbody">
+                        <!-- Data injected via share-schedule-mock.js or app data -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="share-schedule__footer">
+            <div class="share-schedule__footer-left">
+                <p class="share-schedule__footer-note">* Waktu sholat berdasarkan perhitungan astronomis oleh sumber
+                    data terkait</p>
+                <p class="share-schedule__footer-note">* Jadwal dibuat secara otomatis oleh aplikasi Satu Ramadhan</p>
+            </div>
+            <div class="share-schedule__footer-right">
+                <div class="share-schedule__branding">
+                    <img class="share-schedule__branding-logo" src="/favicon/favicon.png" alt="Satu Ramadhan" width="40"
+                        height="40">
+                    <div class="share-schedule__branding-info">
+                        <span class="share-schedule__branding-name">Satu Ramadhan</span>
+                        <span class="share-schedule__branding-author">by Alea Farrel</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</body>
+
+</html>

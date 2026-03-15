@@ -39,6 +39,7 @@
 @import './components/card/qibla-info-card.css';
 @import './components/card/location-card.css';
 @import './components/card/qibla-map-card.css';
+@import './components/card/share-schedule-card.css';
 
 /* Modal */
 @import './components/modal/location-modal.css';
@@ -48,6 +49,7 @@
 @import './components/modal/preset-manager-modal.css';
 @import './components/modal/confirm-modal.css';
 @import './components/modal/date-picker-modal.css';
+@import './components/modal/share-schedule-modal.css';
 
 /* Compass */
 @import './components/compass/compass-dial.css';

@@ -1,0 +1,555 @@
+/* ==============================================
+   Share Schedule — A4 Export Template Stylesheet
+   Resolution: 1240px × 1754px (A4 Ratio)
+   Consumes design tokens from variables.css
+   Locally loaded fonts via @font-face (offline-capable)
+   ============================================== */
+
+
+/* === LOCAL RESET === */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+
+/* === LOCAL FONT-FACE === */
+
+/* Poppins (UI / sans-serif) */
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../assets/font/poppins/Poppins-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../assets/font/poppins/Poppins-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../assets/font/poppins/Poppins-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../assets/font/poppins/Poppins-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../../assets/font/poppins/Poppins-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Amiri (Display / Arabic-style Serif) */
+@font-face {
+    font-family: 'Amiri';
+    src: url('../../assets/font/amiri/Amiri-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Amiri';
+    src: url('../../assets/font/amiri/Amiri-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+/* === BODY / PREVIEW === */
+
+body {
+    background-color: #111827;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    font-family: var(--ff-primary), sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* === A4 CONTAINER === */
+
+.share-schedule {
+    width: 1240px;
+    height: 1754px;
+    background: var(--clr-bg-gradient);
+    background-color: var(--clr-bg-dark);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+}
+
+
+/* === BACKGROUND DECORATION === */
+
+.share-schedule::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 100% 0%, var(--clr-primary-a15) 0%, transparent 40%),
+        radial-gradient(circle at 0% 100%, var(--clr-accent-a10) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.share-schedule__header,
+.share-schedule__body,
+.share-schedule__footer {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* === HEADER === */
+
+/* --- Header layout --- */
+
+.share-schedule__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 44px 56px 24px;
+}
+
+.share-schedule__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 1;
+    min-width: 0;
+}
+
+.share-schedule__header-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.share-schedule__header-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.share-schedule__header-right {
+    flex-shrink: 0;
+    margin-left: 32px;
+}
+
+/* --- Title & subtitle --- */
+
+.share-schedule__title {
+    font-family: var(--ff-primary);
+    color: var(--clr-accent-500);
+    font-size: 40px;
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-normal);
+    line-height: var(--lh-tight);
+}
+
+.share-schedule__hijri-title {
+    font-family: var(--ff-primary);
+    color: var(--clr-text-primary);
+    font-size: 26px;
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-relaxed);
+}
+
+/* --- Location badge & Toggle (using App tokens) --- */
+/* Vertical layout (column) consistent with location-card in app */
+
+.share-schedule__location-badge {
+    background: var(--clr-bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--clr-border-light);
+    box-shadow: var(--shadow-sm);
+    min-width: 200px;
+}
+
+.location-card__row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.location-card__icon {
+    font-size: var(--icon-lg);
+    flex-shrink: 0;
+}
+
+.location-card__icon--info {
+    color: var(--clr-info);
+}
+
+.location-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.location-card__name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-secondary);
+}
+
+.location-card__province {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-500);
+}
+
+/* --- Organization badge (App .org-toggle styling) --- */
+
+.org-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    background: var(--gradient-org-badge);
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-left: 28px;
+    width: auto;
+    min-height: 48px;
+    min-width: 200px;
+    box-shadow: var(--shadow-sm);
+}
+
+.org-toggle__icon-circle {
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 32px;
+    height: 32px;
+    background: var(--clr-secondary-600);
+    border: 2px solid var(--clr-secondary-200);
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-secondary-200);
+    font-size: 16px;
+}
+
+.org-toggle__label {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    white-space: nowrap;
+}
+
+/* --- Qibla indicator --- */
+
+.share-schedule__qibla {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+}
+
+.share-schedule__qibla-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: var(--clr-accent-a40);
+    border: 2px solid var(--clr-accent-a40);
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.share-schedule__qibla-icon {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.share-schedule__qibla-label {
+    font-family: var(--ff-primary);
+    font-size: 12px;
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wider);
+}
+
+.share-schedule__qibla-value {
+    font-family: var(--ff-primary);
+    font-size: 28px;
+    font-weight: var(--fw-bold);
+    color: var(--clr-accent-400);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    line-height: 1;
+}
+
+
+/* === BODY / TABLE === */
+
+/* --- Table wrapper --- */
+
+.share-schedule__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 48px 16px;
+    min-height: 0;
+}
+
+.share-schedule__table-wrapper {
+    flex: 1;
+    background: rgba(10, 30, 42, 0.85);
+    border: 1px solid var(--clr-primary-a25);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        var(--shadow-lg),
+        inset 0 1px 0 var(--clr-white-a05);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Table base --- */
+
+.share-schedule__table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    table-layout: fixed;
+    flex: 1;
+}
+
+/* --- Table header (thead) --- */
+
+.share-schedule__table thead {
+    background: linear-gradient(180deg, #0c3847 0%, #0a2f3c 100%);
+}
+
+.share-schedule__table th {
+    font-family: var(--ff-primary);
+    color: var(--clr-accent-400);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid var(--clr-accent-a40);
+    padding: 14px 6px;
+}
+
+.share-schedule__col-hijri {
+    width: 13%;
+}
+
+.share-schedule__col-date {
+    width: 13%;
+}
+
+/* Prayer time columns (6 columns) — ~12.3% each automatically */
+
+/* --- Table body (tbody) — rows --- */
+
+.share-schedule__table tbody .share-schedule__row {
+    border-bottom: 1px solid var(--clr-border-light);
+}
+
+.share-schedule__table tbody .share-schedule__row:last-child {
+    border-bottom: none;
+}
+
+.share-schedule__table td {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-primary);
+    padding: 10px 5px;
+    vertical-align: middle;
+    line-height: var(--lh-tight);
+}
+
+/* --- Cell variants --- */
+
+/* Hijri Date column — highlighted */
+td.share-schedule__cell-hijri {
+    color: var(--clr-text-primary);
+}
+
+.share-schedule__cell-hijri {
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    background: rgba(212, 175, 55, 0.06);
+}
+
+.share-schedule__cell-date {
+    color: var(--clr-text-secondary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-regular);
+}
+
+.share-schedule__cell-time {
+    color: var(--clr-text-primary);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-md);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* Imsak column — gold highlighted */
+.share-schedule__cell-imsak {
+    color: var(--clr-accent-300);
+    font-weight: var(--fw-bold);
+    background: rgba(212, 175, 55, 0.06);
+}
+
+.share-schedule__cell-maghrib {
+    color: var(--clr-cal-friday);
+    font-weight: var(--fw-bold);
+}
+
+/* --- Row modifiers (alternating) --- */
+
+.share-schedule__table tbody .share-schedule__row:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+/* Ensure column highlight still appears on even rows */
+.share-schedule__table tbody .share-schedule__row:nth-child(even) .share-schedule__cell-hijri {
+    background: rgba(212, 175, 55, 0.08);
+}
+
+.share-schedule__table tbody .share-schedule__row:nth-child(even) .share-schedule__cell-imsak {
+    background: rgba(212, 175, 55, 0.08);
+}
+
+/* --- Day color variants (friday, sunday) --- */
+
+.share-schedule__cell-hijri--friday {
+    color: var(--clr-cal-friday);
+}
+
+.share-schedule__cell-hijri--sunday {
+    color: var(--clr-cal-sunday);
+}
+
+
+/* === FOOTER === */
+
+/* --- Footer layout --- */
+
+.share-schedule__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 56px 36px;
+    border-top: 1px solid rgba(45, 158, 158, 0.12);
+}
+
+/* --- Footer notes --- */
+
+.share-schedule__footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.share-schedule__footer-note {
+    font-family: var(--ff-primary);
+    color: var(--clr-text-muted);
+    font-size: 13px;
+    font-weight: var(--fw-medium);
+    font-style: italic;
+    line-height: var(--lh-normal);
+}
+
+/* --- App branding --- */
+
+.share-schedule__branding {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 8px 20px 8px 8px;
+    border-radius: 100px;
+    border: 1px solid var(--clr-white-a10);
+}
+
+.share-schedule__branding-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-circle);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.share-schedule__branding-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.share-schedule__branding-name {
+    font-family: var(--ff-primary);
+    color: var(--clr-text-primary);
+    font-size: 18px;
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-normal);
+    line-height: var(--lh-tight);
+}
+
+.share-schedule__branding-author {
+    font-family: var(--ff-primary);
+    color: var(--clr-accent-500);
+    font-size: 11px;
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+}

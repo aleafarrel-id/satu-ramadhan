@@ -1,4 +1,4 @@
-import { getPrayerTimesByCoords } from '../core/api.js';
+import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { getSavedLocation } from '../core/geolocation.js';
 
 import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
@@ -14,12 +14,15 @@ import {
     getActivePrayerKey,
 } from '../components/card/schedule-card.js';
 import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
+import { renderShareScheduleCard, bindShareScheduleCardEvents } from '../components/card/share-schedule-card.js';
 import { handleOrgToggle } from '../components/prayer/prayer-widgets.js';
 import { renderScheduleSkeleton } from '../components/skeleton/skeleton-schedule.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { showCalendarModal } from '../components/modal/calendar-modal.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
+import { showShareScheduleModal } from '../components/modal/share-schedule-modal.js';
+import { downloadScheduleImage, shareScheduleImage } from '../modules/share/share-schedule-exporter.js';
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
 import { makeAccessibleBtn } from '../utils/a11y.js';
 
@@ -251,12 +254,49 @@ async function renderDayView() {
     const orgName = await getOrgDisplayNameAsync();
 
     _container.innerHTML = renderScheduleCard(entry, orgName, _todayTimings, _currentDayIndex, _scheduleData.length);
+    bindShareScheduleCardEvents(() => handleShareSchedule(), _container);
 
     _lastDateStr = getTodayDateStr();
 
     bindEvents();
     subscribePrayerWatcher();
     startDayCrossingCheck();
+}
+
+/* --- SHARE SCHEDULE --- */
+
+/**
+ * Collect active state data and show the share schedule preview modal.
+ * Guard: only callable after _scheduleData is populated.
+ */
+async function handleShareSchedule() {
+    if (!_scheduleData) return;
+
+    const location = await getSavedLocation();
+    const orgName  = await getOrgDisplayNameAsync();
+    const qiblaAngle = location
+        ? await getQiblaDirection(location.latitude, location.longitude)
+        : null;
+
+    // Extract Hijri metadata from the first schedule entry
+    const firstEntry = _scheduleData[0];
+    const hijriMonthName = firstEntry?.hijriMonthName || '—';
+    const hijriYear      = firstEntry?.hijriYear || 0;
+
+    const payload = {
+        location,
+        orgName,
+        qiblaAngle,
+        scheduleData: _scheduleData,
+        hijriMonthName,
+        hijriYear,
+    };
+
+    showShareScheduleModal({
+        payload,
+        onShare:    async (canvas) => shareScheduleImage(canvas),
+        onDownload: async (canvas) => downloadScheduleImage(canvas),
+    });
 }
 
 /* --- EVENTS & HANDLERS --- */

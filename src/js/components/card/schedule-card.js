@@ -10,6 +10,7 @@
 import { PRAYER_LIST, getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
 import { SCHEDULE_PRAYERS, WEEKDAY_ID, MONTH_ID } from '../../utils/datetime.js';
+import { renderShareScheduleCard } from './share-schedule-card.js';
 
 /* ── Public API ── */
 
@@ -36,6 +37,8 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, total
                     ${renderOrgToggle(orgName, 'schedule-org-toggle')}
                 </div>
             </div>
+
+            ${renderShareScheduleCard()}
 
             <div class="card card--container schedule-content-card${viewingToday ? ' schedule-content-card--today' : ''}" id="schedule-swipe-area">
                 ${renderDateNav(entry, dayIndex, totalDays)}

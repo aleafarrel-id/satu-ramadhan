@@ -1,0 +1,68 @@
+/* =============================================
+   Share Schedule Card Component
+   ============================================= */
+
+.share-schedule-card {
+    margin-bottom: var(--spacing-md);
+}
+
+.share-schedule-card__header {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-regular);
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-tight);
+    margin-bottom: var(--spacing-xs);
+}
+
+.share-schedule-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.share-schedule-card__desc {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    color: var(--clr-text-secondary);
+    line-height: var(--lh-normal);
+}
+
+.share-schedule-card__actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.share-schedule-card__btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    font-size: var(--fs-xs);
+    border-radius: var(--radius-pill);
+    transition: opacity var(--transition-fast);
+}
+
+.share-schedule-card__btn:active {
+    opacity: 0.75;
+}
+
+/* Responsive — small screens */
+@media (max-width: 320px) {
+
+    .share-schedule-card__header {
+        font-size: var(--fs-xs);
+    }
+
+    .share-schedule-card__desc {
+        font-size: var(--fs-2xs);
+    }
+
+    .share-schedule-card__btn {
+        font-size: var(--fs-2xs);
+        min-height: 36px;
+    }
+}

@@ -18,6 +18,14 @@
    cursor: pointer;
 }
 
+.btn:disabled {
+   opacity: 0.5;
+   pointer-events: none;
+   cursor: not-allowed;
+   box-shadow: none;
+   transform: none;
+}
+
 .btn--outline {
    border: 1px solid var(--clr-primary-a30);
    color: var(--clr-text-primary);
@@ -93,5 +101,9 @@
    .btn--accent-outline {
       min-height: 28px;
       padding: 2px var(--spacing-sm);
+   }
+
+   .btn i {
+      font-size: var(--fs-sm);
    }
 }

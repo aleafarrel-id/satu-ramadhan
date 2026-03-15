@@ -1,0 +1,174 @@
+/* =============================================
+   Share Schedule Modal
+   Preview + Share/Download Dialog Component
+   Follows: confirm-modal.css pattern
+   ============================================= */
+
+
+/* === OVERLAY === */
+
+.ss-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) + 10);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.ss-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* === DIALOG (Now Fullscreen Wrapper) === */
+
+.ss-modal {
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    max-height: 100%;
+    padding: var(--spacing-xs);
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    position: relative;
+    pointer-events: none;
+}
+
+/* Re-enable pointer events for interactive children */
+.ss-modal>* {
+    pointer-events: auto;
+}
+
+.ss-modal-overlay.active .ss-modal {
+    transform: translateY(0);
+}
+
+
+/* === PREVIEW === */
+
+.ss-modal__preview-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    border-radius: var(--radius-md);
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ss-modal__preview-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.ss-modal__preview-img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    object-fit: contain;
+}
+
+
+/* === LOADING SPINNER === */
+
+.ss-modal__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl) 0;
+}
+
+.ss-modal__loading i {
+    font-size: 32px;
+    color: var(--clr-primary-400);
+}
+
+.ss-modal__loading .ss-modal__error-icon {
+    color: var(--clr-danger);
+}
+
+.ss-modal__loading-text {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    color: var(--clr-text-primary);
+    margin-top: var(--spacing-xs);
+}
+
+
+/* === ACTIONS === */
+
+.ss-modal__actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    padding-bottom: env(safe-area-inset-bottom, var(--spacing-sm));
+    flex-shrink: 0;
+}
+
+.ss-modal__btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 var(--spacing-sm);
+    font-size: var(--fs-xs);
+    min-height: 48px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#ss-modal-btn-download {
+    background: var(--clr-white-a10);
+    color: var(--clr-text-primary);
+    border-color: var(--clr-white-a30);
+}
+
+#ss-modal-btn-download:active {
+    background: var(--clr-white-a15);
+}
+
+/* === RESPONSIVE === */
+
+@media (max-width: 380px) {
+
+    /* Actions adjustment */
+    .ss-modal__btn {
+        min-height: 40px;
+        font-size: var(--fs-2xs);
+        padding: 0 var(--spacing-xs);
+    }
+
+    .ss-modal__btn i {
+        font-size: var(--fs-sm);
+    }
+
+    /* Loading text adjustment */
+    .ss-modal__loading i {
+        font-size: 28px;
+    }
+
+    .ss-modal__loading-text {
+        font-size: var(--fs-2xs);
+    }
+}

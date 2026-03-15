@@ -52,7 +52,7 @@ const PRAYER_NOTIFICATION_MAP = {
     },
     terbit: {
         title: 'Matahari Terbit',
-        body: 'Waktu syuruq — matahari telah terbit',
+        body: 'Waktu Syuruq — Matahari telah terbit',
         isAdzan: false,
     },
     dzuhur: {
