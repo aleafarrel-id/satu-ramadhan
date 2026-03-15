@@ -44,7 +44,7 @@ export async function captureScheduleImage(element) {
     const fontEmbedCSS = element._fontEmbedCSS || '';
 
     const options = {
-        pixelRatio: 4,
+        pixelRatio: 2,
         backgroundColor: null,
         cacheBust: true,
         width: TEMPLATE_WIDTH,
