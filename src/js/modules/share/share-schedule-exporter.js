@@ -14,6 +14,8 @@ import { toCanvas } from 'html-to-image';
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import { Media } from '@capacitor-community/media';
+import { success as notifySuccess, error as notifyError } from '../notification/notification.js';
 
 /** ── Constants ── */
 
@@ -63,7 +65,9 @@ export async function captureScheduleImage(element) {
 }
 
 /**
- * Download a canvas as a PNG file via browser blob download.
+ * Download a canvas as a PNG file.
+ * On native platforms (Android/iOS), saves to the Documents folder using Capacitor Filesystem.
+ * On web, defaults to browser blob download.
  *
  * @param {HTMLCanvasElement} canvas
  * @param {string} [filename]
@@ -72,6 +76,48 @@ export async function captureScheduleImage(element) {
 export async function downloadScheduleImage(canvas, filename = DEFAULT_FILENAME) {
     if (!canvas) throw new Error('downloadScheduleImage: canvas is required');
 
+    if (Capacitor.getPlatform() !== 'web') {
+        try {
+            const dataUrl = canvas.toDataURL('image/png');
+
+            let nativeFileName = filename === DEFAULT_FILENAME
+                ? `jadwal-imsakiyah-${Date.now()}`
+                : filename.replace(/\.png$/i, '');
+
+            // On Android, albumIdentifier is required.
+            // We'll try to find or create "Satu Ramadhan" album.
+            const albumName = 'Satu Ramadhan';
+            let { albums } = await Media.getAlbums();
+            let album = albums.find(a => a.name === albumName);
+
+            if (!album) {
+                try {
+                    await Media.createAlbum({ name: albumName });
+                    const { albums: refreshedAlbums } = await Media.getAlbums();
+                    album = refreshedAlbums.find(a => a.name === albumName);
+                } catch (albumErr) {
+                    console.warn('[share-schedule-exporter] Failed to create album, falling back to first available or none:', albumErr);
+                    // Fallback to first album if creation fails, or try without identifier (might still fail on some Android versions)
+                    album = albums[0];
+                }
+            }
+
+            await Media.savePhoto({
+                path: dataUrl,
+                fileName: nativeFileName,
+                albumIdentifier: album?.identifier
+            });
+
+            notifySuccess(`Jadwal berhasil disimpan ke Galeri`, 3500);
+            return;
+        } catch (error) {
+            console.error('[share-schedule-exporter] Native download failed:', error);
+            notifyError('Gagal menyimpan jadwal ke Galeri', 3500);
+            return;
+        }
+    }
+
+    // Web fallback
     return new Promise((resolve, reject) => {
         canvas.toBlob((blob) => {
             if (!blob) {

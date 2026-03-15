@@ -6,6 +6,8 @@
 import { CONFIG } from './config.js';
 
 import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem } from '@capacitor/filesystem';
 
 import { getSavedLocation } from './core/geolocation.js';
 import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
@@ -46,6 +48,18 @@ export async function initApp() {
     // Initialize native notification service (permissions)
     initNotificationService();
     initGlobalFocusManager();
+
+    // Request native file system permissions upfront (if needed)
+    if (Capacitor.getPlatform() !== 'web') {
+        try {
+            const permStatus = await Filesystem.checkPermissions();
+            if (permStatus.publicStorage !== 'granted') {
+                await Filesystem.requestPermissions();
+            }
+        } catch (e) {
+            console.warn('[App] Storage permissions request failed:', e.message);
+        }
+    }
 
     // Fire-and-forget: 30-day rolling notification sync on startup
     syncNotifications();
