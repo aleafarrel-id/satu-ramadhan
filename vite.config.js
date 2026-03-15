@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
     // base: './' sangat penting untuk Capacitor agar file index.html 
@@ -12,6 +13,12 @@ export default defineConfig({
         emptyOutDir: true,
         // Memastikan sourcemap tersedia untuk debugging di device jika diperlukan
         sourcemap: true,
+        rollupOptions: {
+            input: {
+                main: resolve(process.cwd(), 'index.html'),
+                shareSchedule: resolve(process.cwd(), 'src/templates/share-schedule/share-schedule.html'),
+            }
+        }
     },
 
     server: {

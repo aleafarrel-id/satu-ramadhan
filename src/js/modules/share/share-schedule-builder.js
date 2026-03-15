@@ -17,27 +17,34 @@
 
 import { MONTH_NAMES_SHORT, cleanTimeStr } from '../../utils/datetime.js';
 
-/* ── Constants ── */
-
-/** Template URL served by Vite dev server */
-const TEMPLATE_URL = '/src/templates/share-schedule/share-schedule.html';
+/** Template URL served by Vite or compiled by Rollup */
+const TEMPLATE_URL = import.meta.env.DEV 
+    ? '/src/templates/share-schedule/share-schedule.html'
+    : './src/templates/share-schedule/share-schedule.html';
 
 /** Template A4 dimensions */
 const TEMPLATE_WIDTH  = 1240;
 const TEMPLATE_HEIGHT = 1754;
 
-
+import fontPoppinsLight from '../../../assets/font/poppins/Poppins-Light.woff2?url';
+import fontPoppinsRegular from '../../../assets/font/poppins/Poppins-Regular.woff2?url';
+import fontPoppinsMedium from '../../../assets/font/poppins/Poppins-Medium.woff2?url';
+import fontPoppinsSemiBold from '../../../assets/font/poppins/Poppins-SemiBold.woff2?url';
+import fontPoppinsBold from '../../../assets/font/poppins/Poppins-Bold.woff2?url';
+import fontAmiriRegular from '../../../assets/font/amiri/Amiri-Regular.woff2?url';
+import fontAmiriBold from '../../../assets/font/amiri/Amiri-Bold.woff2?url';
+import fontBoxicons from '../../../assets/vendor/boxicons/fonts/boxicons.woff2?url';
 
 /** Font files to embed as base64 for html-to-image capture */
 const FONT_FILES = [
-    { path: '/src/assets/font/poppins/Poppins-Light.woff2',    family: 'Poppins', weight: 300,  format: 'woff2' },
-    { path: '/src/assets/font/poppins/Poppins-Regular.woff2',  family: 'Poppins', weight: 400,  format: 'woff2' },
-    { path: '/src/assets/font/poppins/Poppins-Medium.woff2',   family: 'Poppins', weight: 500,  format: 'woff2' },
-    { path: '/src/assets/font/poppins/Poppins-SemiBold.woff2', family: 'Poppins', weight: 600,  format: 'woff2' },
-    { path: '/src/assets/font/poppins/Poppins-Bold.woff2',     family: 'Poppins', weight: 700,  format: 'woff2' },
-    { path: '/src/assets/font/amiri/Amiri-Regular.woff2',      family: 'Amiri',   weight: 400,  format: 'woff2' },
-    { path: '/src/assets/font/amiri/Amiri-Bold.woff2',         family: 'Amiri',   weight: 700,  format: 'woff2' },
-    { path: '/src/assets/vendor/boxicons/fonts/boxicons.woff2', family: 'boxicons', weight: 400, format: 'woff2' },
+    { path: fontPoppinsLight,    family: 'Poppins', weight: 300,  format: 'woff2' },
+    { path: fontPoppinsRegular,  family: 'Poppins', weight: 400,  format: 'woff2' },
+    { path: fontPoppinsMedium,   family: 'Poppins', weight: 500,  format: 'woff2' },
+    { path: fontPoppinsSemiBold, family: 'Poppins', weight: 600,  format: 'woff2' },
+    { path: fontPoppinsBold,     family: 'Poppins', weight: 700,  format: 'woff2' },
+    { path: fontAmiriRegular,    family: 'Amiri',   weight: 400,  format: 'woff2' },
+    { path: fontAmiriBold,       family: 'Amiri',   weight: 700,  format: 'woff2' },
+    { path: fontBoxicons,        family: 'boxicons', weight: 400, format: 'woff2' },
 ];
 
 /**
