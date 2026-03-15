@@ -1,5 +1,4 @@
-/* Bottom Navigation Bar */
-
+/* Bottom Navigation Bar Container */
 .bottom-nav {
    position: fixed;
    bottom: 0;
@@ -8,51 +7,54 @@
    width: 100%;
    max-width: 430px;
    padding-bottom: env(safe-area-inset-bottom);
-   z-index: 100;
+   z-index: var(--z-sticky);
 }
 
-/* Background oval — tampil setengah di bawah dock utama */
+/* Background layer */
 .nav-background-oval {
    position: absolute;
    bottom: -30px;
    left: -5%;
    width: 110%;
-   height: 60px;
+   height: var(--nav-height);
    background: var(--clr-bg-card-solid);
    border: 1px solid var(--clr-white-a10);
-   border-radius: 30px;
+   border-radius: var(--radius-pill);
    z-index: 1;
 }
 
-/* Dock navigasi utama */
+/* Main Navigation Dock */
 .nav-list {
    position: relative;
    display: grid;
-   grid-template-columns: repeat(4, 1fr);
+   grid-template-columns: repeat(5, 1fr);
    align-items: center;
-   width: 20em;
-   height: 60px;
-   margin: 0 auto 10px;
+   width: 90%;
+   max-width: 360px;
+   height: var(--nav-height-list-container-xl);
+   margin: 0 auto var(--spacing-sm);
    background: var(--clr-bg-card-solid);
    border: 1px solid var(--clr-white-a10);
-   border-radius: 30px;
-   padding: 1px 12px 0;
+   border-radius: var(--radius-full);
+   padding: 0 12px;
    z-index: 2;
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+   box-shadow: var(--shadow-lg);
+   line-height: 0;
 }
 
-/* Sliding indicator */
+/* Sliding active indicator */
 .nav-slider {
    position: absolute;
    top: 50%;
-   height: 48px;
-   width: 76px;
+   height: var(--nav-slider-size-xl);
+   width: 64px;
    background: var(--clr-accent-500);
-   border-radius: 24px;
+   border-radius: var(--radius-pill);
    transform: translate(-50%, -50%);
-   transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+   transition: left var(--nav-indicator-transition);
    z-index: 1;
    pointer-events: none;
+   will-change: left;
 }
 
 .nav-item {
@@ -62,7 +64,6 @@
    justify-content: center;
    width: 100%;
    height: 100%;
-   border-radius: var(--radius-pill);
    background: transparent;
    border: none;
    color: var(--clr-accent-500);
@@ -75,14 +76,15 @@
    outline: none;
 }
 
+/* Active focus ring */
 .nav-item:focus-visible::after {
    content: '';
    position: absolute;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
-   width: 76px;
-   height: 48px;
+   width: var(--nav-height-list-container-xl);
+   height: var(--nav-slider-size-xl);
    border-radius: var(--radius-pill);
    border: 2px solid var(--clr-accent-500);
    pointer-events: none;
@@ -94,4 +96,60 @@
 
 .nav-item i {
    font-size: var(--icon-lg);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 1em;
+   height: 1em;
+   transform: translateY(1px);
+}
+
+/* Responsive refinements via variable overrides only */
+@media screen and (min-width: 480px) {
+   .nav-list {
+      max-width: 420px;
+      padding: 0 12px;
+   }
+
+   .nav-slider,
+   .nav-item:focus-visible::after {
+      width: 72px;
+      height: var(--nav-slider-size-lg);
+   }
+}
+
+@media screen and (max-width: 360px) {
+   .nav-list {
+      width: 95%;
+      padding: 0 10px;
+   }
+
+   .nav-slider,
+   .nav-item:focus-visible::after {
+      width: 52px;
+      height: var(--nav-slider-size-sm);
+   }
+
+   .nav-item i {
+      font-size: var(--icon-md);
+   }
+}
+
+@media screen and (max-width: 320px) {
+
+   .nav-list {
+      padding: 0 8px;
+      height: var(--nav-height-list-container-md);
+   }
+
+   .nav-slider,
+   .nav-item:focus-visible::after {
+      width: 40px !important;
+      border-radius: 50% !important;
+      height: var(--nav-slider-size-sm);
+   }
+
+   .nav-item i {
+      font-size: 1.25rem;
+   }
 }

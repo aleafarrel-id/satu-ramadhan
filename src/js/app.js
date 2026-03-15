@@ -23,6 +23,7 @@ import * as navBar from './components/ui/nav-bar.js';
 import * as homePage from './pages/home-page.js';
 import * as schedulePage from './pages/schedule-page.js';
 import * as compassPage from './pages/compass-page.js';
+import * as quranPage from './pages/quran-page.js';
 import * as settingsPage from './pages/settings-page.js';
 import * as router from './router.js';
 
@@ -98,6 +99,7 @@ export async function initApp() {
     router.register('home', homePage);
     router.register('schedule', schedulePage);
     router.register('compass', compassPage);
+    router.register('quran', quranPage);
     router.register('settings', settingsPage);
 
     // Navigate to home

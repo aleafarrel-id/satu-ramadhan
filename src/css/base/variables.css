@@ -184,6 +184,21 @@
    --z-sticky: 200;
    --z-modal: 300;
 
+   /* === Navigation === */
+   --nav-height-list-container-xl: 64px;
+   --nav-height-list-container-lg: 60px;
+   --nav-height-list-container-md: 56px;
+   --nav-height-list-container-sm: 48px;
+   --nav-height-list-container-xs: 40px;
+
+   --nav-slider-size-xl: 46px;
+   --nav-slider-size-lg: 44px;
+   --nav-slider-size-md: 42px;
+   --nav-slider-size-sm: 40px;
+
+   --nav-height: 58px;
+   --nav-indicator-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
    /* === Map Card === */
    --clr-map-fallback: var(--clr-bg-card-solid);
    --clr-map-route: var(--clr-primary-400);

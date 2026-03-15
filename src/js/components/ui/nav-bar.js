@@ -7,6 +7,7 @@ const TABS = [
     { id: 'home', icon: 'bx-home-alt', label: 'Home' },
     { id: 'schedule', icon: 'bx-calendar', label: 'Jadwal' },
     { id: 'compass', icon: 'bx-compass', label: 'Kompas' },
+    { id: 'quran', icon: 'bx-book-reader', label: 'Al-Quran' },
     { id: 'settings', icon: 'bx-cog', label: 'Setelan' },
 ];
 
@@ -83,15 +84,28 @@ export function setActive(tabId) {
     // Move the slider to the active tab position
     if (_slider && items.length > 0) {
         const activeItem = items[activeIndex];
-        const list = _slider.parentElement;
-        if (activeItem && list) {
-            const listRect = list.getBoundingClientRect();
-            const itemRect = activeItem.getBoundingClientRect();
-            const offsetX = itemRect.left - listRect.left + (itemRect.width / 2);
-            _slider.style.left = `${offsetX}px`;
+        if (activeItem) {
+            // Using offsetLeft provides precise position relative to parent padding-box
+            const centerX = activeItem.offsetLeft + (activeItem.offsetWidth / 2);
+            _slider.style.left = `${centerX}px`;
         }
     }
 }
+
+/**
+ * Handle window resize to reposition active indicator
+ */
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        const activeItem = _container?.querySelector('.nav-item.active');
+        if (activeItem && _slider) {
+            const centerX = activeItem.offsetLeft + (activeItem.offsetWidth / 2);
+            _slider.style.left = `${centerX}px`;
+        }
+    }, 100);
+});
 
 /**
  * Cleanup
