@@ -17,7 +17,7 @@ Fokus pada pembuatan kerangka halaman yang terisolasi dari navigasi global aplik
     *   `<i class='bx bxs-book-bookmark'></i>` (Bookmark)
     *   `<i class='bx bx-cog'></i>` (Pengaturan)
 3.  **Header Khusus (Atas):** Membangun *header* *compact* dengan tombol kembali (`<i class='bx bx-chevron-left'></i>`) dan judul "Al-Qur'an".
-4.  **Tema & Identitas:** Menggunakan warna dasar putih tulang/terang untuk area baca, namun tetap menyuntikkan aksen "Teal and Gold" pada navigasi, ikon aktif, dan elemen interaktif lainnya untuk mempertahankan identitas aplikasi.
+4.  **Tema & Identitas:** Menggunakan warna dasar putih tulang/terang untuk keseluruhan halaman Al-Quran, namun tetap menyuntikkan aksen "Teal" saja pada bagian kecil seperti tombol navigasi di dock, ikon aktif, dan elemen interaktif lainnya guna menjaga integrasi tema dengan seluruh aplikasi.
 
 ### Komponen yang Terlibat:
 *   `src/js/router.js` (Logika hide/show global nav).
@@ -32,7 +32,7 @@ Fokus pada me-render data statis dari JSON menjadi daftar UI (List/Cards) yang e
 ### Tujuan Utama:
 1.  **Data Fetching Basic:** Membaca data dari `public/quran/surah.json`.
 2.  **Surah Card UI:** Membuat desain *list item* per surah yang memuat:
-    *   Nomor surah dengan ornamen/border Teal/Gold.
+    *   Nomor surah dengan ornamen/border Teal.
     *   Judul surah (Latin) & Detail (Makkiyah/Madaniyah, Jumlah Ayat).
     *   Judul surah (Arab) menggunakan font kaligrafi dekoratif `DecoType-Thuluth-II-Regular.ttf`.
 3.  **Clean Code / DRY:** Memastikan fungsi *render* di-loop dengan efisien menggunakan template literal, dan class CSS dapat digunakan berulang (reusable).
