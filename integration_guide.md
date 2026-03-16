@@ -7,16 +7,16 @@ Kode harus mematuhi prinsip **DRY (Don't Repeat Yourself)**, **Clean Code**, dan
 ---
 
 ## Fase 1: Fondasi UI & Navigasi (Aktif)
-Fokus pada pembuatan kerangka halaman yang terisolasi dari navigasi global aplikasi. Halaman Al-Quran harus terasa "immersive" dan bebas distraksi.
+Fokus pada pembuatan kerangka halaman yang terisolasi dari navigasi global aplikasi. Halaman Al-Quran harus terasa "immersive" dan bebas distraksi. Mempertahankan pendekatan **Mobile First**, lebar halaman Al-Quran akan tetap mengikuti layout (max-width) aplikasi saat ini, tidak melebar penuh.
 
 ### Tujuan Utama:
-1.  **Navigasi Global Tersembunyi:** Saat masuk ke *route* `/quran`, `#app-header` dan `#bottom-nav` utama harus disembunyikan.
+1.  **Navigasi Global Tersembunyi (Animasi Transisi):** Saat masuk ke *route* `/quran`, `#app-header` utama harus disembunyikan. Untuk navigasi bawah, `#bottom-nav` utama harus disembunyikan dengan animasi *slide down*, sedangkan dock Al-Quran muncul dengan animasi *slide up*.
 2.  **Navigation Dock Khusus (Bawah):** Membangun *bottom nav* baru khusus Al-Quran dengan 4 tombol:
     *   `<i class='bx bx-book-content'></i>` (Daftar Surah)
     *   `<i class='bx bx-book-open'></i>` (Mode Baca/Ayat)
     *   `<i class='bx bxs-book-bookmark'></i>` (Bookmark)
     *   `<i class='bx bx-cog'></i>` (Pengaturan)
-3.  **Header Khusus (Atas):** Membangun *header* *compact* dengan tombol kembali (`<i class='bx bx-chevron-left'></i>`) dan judul "Al-Qur'an".
+3.  **Header Khusus (Atas):** Membangun *header* *compact* dengan tombol kembali (`<i class='bx bx-chevron-left'></i>`) dan judul "Al-Qur'an". **Smart History Back:** Tombol kembali akan membawa user ke halaman sebelumnya yang mereka buka (menggunakan riwayat internal router).
 4.  **Tema & Identitas:** Menggunakan warna dasar putih tulang/terang untuk keseluruhan halaman Al-Quran, namun tetap menyuntikkan aksen "Teal" saja pada bagian kecil seperti tombol navigasi di dock, ikon aktif, dan elemen interaktif lainnya guna menjaga integrasi tema dengan seluruh aplikasi.
 
 ### Komponen yang Terlibat:

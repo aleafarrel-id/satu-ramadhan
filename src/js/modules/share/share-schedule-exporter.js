@@ -164,11 +164,16 @@ export async function shareScheduleImage(canvas) {
                     }
                 }
             } catch (err) {
-                console.warn('[share-schedule-exporter] Web Share failed, falling back to download:', err);
+                if (err.name === 'AbortError' || (err.message && err.message.toLowerCase().includes('cancel'))) {
+                    return;
+                }
+                console.warn('[share-schedule-exporter] Web Share failed:', err);
+                notifyError('Gagal membagikan jadwal', 3500);
+                return;
             }
 
-            // Web fallback if canShare is false or user cancels/fails
-            await downloadScheduleImage(canvas);
+            // If browser does not support sharing files via Web Share API
+            notifyError('Silakan gunakan tombol Unduh.', 3500);
             return;
         }
 
@@ -201,7 +206,10 @@ export async function shareScheduleImage(canvas) {
         }).catch(() => { /* cleanup failure is non-critical */ });
 
     } catch (err) {
-        console.warn('[share-schedule-exporter] Capacitor Share unavailable, falling back to download', err);
-        await downloadScheduleImage(canvas);
+        if (err.name === 'AbortError' || (err.message && err.message.toLowerCase().includes('cancel'))) {
+            return;
+        }
+        console.warn('[share-schedule-exporter] Capacitor Share failed:', err);
+        notifyError('Gagal membagikan jadwal', 3500);
     }
 }
