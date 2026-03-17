@@ -129,60 +129,55 @@ function renderSkeleton(location) {
  * countdown timer, and dynamic tall-tubes for daily schedule tracking.
  */
 async function renderContent() {
-    if (!_timings && !_location) {
-        _container.innerHTML = `
-            ${renderLocationCardShared(_location)}
-            ${renderEmptyState({
+    let contentHtml = '';
+
+    if (!_timings) {
+        const emptyStateProps = !_location ? {
             icon: 'bx-map-pin',
             title: 'Atur Lokasi Anda',
             description: 'Jadwal sholat akan ditampilkan setelah lokasi diatur melalui Pengaturan.',
             compact: true,
-        })}
-        `;
-        bindLocationCardEvents(showLocationModalForHome, _container);
-        return;
-    }
-
-    if (!_timings && _location) {
-        _container.innerHTML = `
-            ${renderLocationCardShared(_location)}
-            ${renderEmptyState({
+        } : {
             icon: 'bx-wifi-off',
             iconVariant: 'warning',
             title: 'Gagal Memuat Jadwal',
-            description: 'Tidak dapat memuat jadwal. Periksa koneksi internet Anda dan coba lagi.',
+            description: 'Periksa koneksi internet Anda dan coba lagi.',
             action: {
                 label: 'Coba Lagi',
                 icon: 'bx-refresh',
                 onclick: 'location.reload()',
             },
-        })}
-        `;
-        bindLocationCardEvents(showLocationModalForHome, _container);
-        return;
-    }
+            compact: true,
+        };
 
-    const prayerState = getCurrentPrayer(_timings);
-    const orgName = await getOrgDisplayNameAsync();
+        contentHtml = renderEmptyState(emptyStateProps);
+    } else {
+        const prayerState = getCurrentPrayer(_timings);
+        const orgName = await getOrgDisplayNameAsync();
+
+        contentHtml = `
+            ${renderCountdownCard(prayerState)}
+            <div class="schedule-title">Jadwal Hari Ini</div>
+            <div class="card card--container">
+                ${renderPrayerCard(_timings, orgName, prayerState)}
+            </div>
+        `;
+
+        _lastPrayerIndex = prayerState.currentIndex;
+    }
 
     _container.innerHTML = `
         ${renderLocationCardShared(_location)}
-        ${renderCountdownCard(prayerState)}
-
-        <div class="schedule-title">Jadwal Hari Ini</div>
-        <div class="card card--container">
-            ${renderPrayerCard(_timings, orgName, prayerState)}
-        </div>
+        ${contentHtml}
     `;
 
     document.getElementById('org-toggle')?.addEventListener('click', handleOrgToggle);
     bindLocationCardEvents(showLocationModalForHome, _container);
 
-    _lastPrayerIndex = prayerState.currentIndex;
-
-    startCountdownTimer();
-
-    updateWatcher(_timings);
+    if (_timings) {
+        startCountdownTimer();
+        updateWatcher(_timings);
+    }
 }
 
 /* --- EVENT HANDLERS --- */

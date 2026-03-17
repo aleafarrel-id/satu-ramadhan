@@ -204,7 +204,7 @@ function renderError(hasLocation) {
 
     const icon = 'bx-wifi-off';
     const title = 'Gagal Memuat Jadwal';
-    const desc = 'Tidak dapat memuat jadwal lengkap. Periksa koneksi internet Anda dan coba lagi.';
+    const desc = 'Periksa koneksi internet Anda dan coba lagi.';
 
     _container.innerHTML = `
         <div class="schedule-page">
@@ -218,6 +218,7 @@ function renderError(hasLocation) {
             icon: 'bx-refresh',
             onclick: 'location.reload()',
         },
+        compact: true,
     })}
         </div>
     `;
@@ -273,7 +274,7 @@ async function handleShareSchedule() {
     if (!_scheduleData) return;
 
     const location = await getSavedLocation();
-    const orgName  = await getOrgDisplayNameAsync();
+    const orgName = await getOrgDisplayNameAsync();
     const qiblaAngle = location
         ? await getQiblaDirection(location.latitude, location.longitude)
         : null;
@@ -281,7 +282,7 @@ async function handleShareSchedule() {
     // Extract Hijri metadata from the first schedule entry
     const firstEntry = _scheduleData[0];
     const hijriMonthName = firstEntry?.hijriMonthName || '—';
-    const hijriYear      = firstEntry?.hijriYear || 0;
+    const hijriYear = firstEntry?.hijriYear || 0;
 
     const payload = {
         location,
@@ -294,7 +295,7 @@ async function handleShareSchedule() {
 
     showShareScheduleModal({
         payload,
-        onShare:    async (canvas) => shareScheduleImage(canvas),
+        onShare: async (canvas) => shareScheduleImage(canvas),
         onDownload: async (canvas) => downloadScheduleImage(canvas),
     });
 }

@@ -149,15 +149,15 @@ function transformTimings(apiData, dateStr) {
     const timings = apiData.data.timings;
 
     // Ihtiyat (Kemenag RI): +2 min precaution for all prayer times except Sunrise
-    const subuh  = adjustTimeStr(timings.Fajr, 2);
+    const subuh = adjustTimeStr(timings.Fajr, 2);
     const terbit = cleanTimeStr(timings.Sunrise);  // Pure astronomical, no Ihtiyat
     const dzuhur = adjustTimeStr(timings.Dhuhr, 2);
-    const ashar  = adjustTimeStr(timings.Asr, 2);
+    const ashar = adjustTimeStr(timings.Asr, 2);
     const magrib = adjustTimeStr(timings.Maghrib, 2);
-    const isya   = adjustTimeStr(timings.Isha, 2);
+    const isya = adjustTimeStr(timings.Isha, 2);
 
     // Imsak = adjusted Fajr − 10 minutes
-    const imsak  = adjustTimeStr(subuh, -10);
+    const imsak = adjustTimeStr(subuh, -10);
 
     return {
         imsak,
@@ -315,13 +315,13 @@ function transformMonthlyData(apiDays) {
         const t = day.timings;
 
         // Ihtiyat (Kemenag RI): +2 min for all prayers except Sunrise
-        const subuh  = adjustTimeStr(t.Fajr, 2);
+        const subuh = adjustTimeStr(t.Fajr, 2);
         const terbit = cleanTimeStr(t.Sunrise);
         const dzuhur = adjustTimeStr(t.Dhuhr, 2);
-        const ashar  = adjustTimeStr(t.Asr, 2);
+        const ashar = adjustTimeStr(t.Asr, 2);
         const magrib = adjustTimeStr(t.Maghrib, 2);
-        const isya   = adjustTimeStr(t.Isha, 2);
-        const imsak  = adjustTimeStr(subuh, -10);
+        const isya = adjustTimeStr(t.Isha, 2);
+        const imsak = adjustTimeStr(subuh, -10);
 
         return {
             imsak,

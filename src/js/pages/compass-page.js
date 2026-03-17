@@ -107,7 +107,7 @@ function renderContent() {
             icon: 'bx-compass',
             iconVariant: 'warning',
             title: 'Kompas Tidak Tersedia',
-            description: 'Arah kiblat tidak dapat dihitung atau sensor kompas tidak tersedia di perangkat Anda.',
+            description: 'Arah kiblat tidak dapat dihitung atau sensor gyroscope tidak tersedia.',
             compact: true,
         })}
             <div class="compass-skeleton-placeholder">

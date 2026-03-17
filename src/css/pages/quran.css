@@ -181,3 +181,121 @@
       outline-offset: 2px;
    }
 }
+
+/* ── Quran Search Overlay ── */
+
+.quran-search-overlay {
+   position: absolute;
+   inset: 0;
+   z-index: 100;
+   background: var(--clr-quran-bg);
+   display: flex;
+   flex-direction: column;
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(10px);
+   transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0.25s;
+   pointer-events: none;
+   will-change: opacity, transform;
+}
+
+.quran-search-overlay.active {
+   opacity: 1;
+   visibility: visible;
+   transform: translateY(0);
+   pointer-events: all;
+}
+
+/* Optimization: Hide main content when search is active to reduce rendering weight */
+.is-searching .quran-content {
+   opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
+}
+
+.quran-search-header {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-2);
+   padding: var(--sp-4);
+   padding-top: max(var(--sp-4), env(safe-area-inset-top));
+   background: var(--clr-quran-card-bg);
+   border-bottom: 1px solid var(--clr-quran-border);
+}
+
+.quran-search-input-wrapper {
+   position: relative;
+   flex: 1;
+}
+
+.quran-search-icon {
+   position: absolute;
+   left: 12px;
+   top: 50%;
+   transform: translateY(-50%);
+   color: var(--clr-quran-text-secondary);
+   font-size: var(--icon-md);
+   pointer-events: none;
+}
+
+.quran-search-input {
+   width: 100%;
+   background: var(--clr-quran-bg-secondary);
+   border: 1px solid var(--clr-quran-border);
+   color: var(--clr-quran-text);
+   font-size: var(--fs-sm);
+   padding: 10px 12px 10px 40px;
+   border-radius: var(--radius-lg);
+   outline: none !important;
+   box-shadow: none !important;
+   transition: border-color var(--transition-fast);
+   -webkit-appearance: none;
+   appearance: none;
+}
+
+.quran-search-input:focus {
+   border-color: var(--clr-quran-accent);
+   outline: none !important;
+   box-shadow: none !important;
+}
+
+.quran-search-input::placeholder {
+   color: var(--clr-quran-text-secondary);
+   opacity: 0.6;
+}
+
+.quran-search-results {
+   flex: 1;
+   overflow-y: auto;
+   padding: var(--sp-4);
+   padding-bottom: calc(var(--nav-height-list-container-xl) + var(--sp-8) + env(safe-area-inset-bottom));
+}
+
+.quran-search-results::-webkit-scrollbar {
+   display: none;
+}
+
+.quran-search-placeholder {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: var(--spacing-md);
+   text-align: center;
+   color: var(--clr-quran-text-secondary);
+   font-size: var(--fs-sm);
+   padding: var(--spacing-xl) 0;
+   margin-top: var(--sp-12);
+}
+
+.quran-search-placeholder-icon {
+   font-size: var(--icon-xl, 32px);
+   opacity: 0.3;
+   color: var(--clr-quran-text-secondary);
+}
+
+@media screen and (max-width: 360px) {
+   .quran-search-header {
+      padding: var(--sp-3);
+      padding-top: max(var(--sp-3), env(safe-area-inset-top));
+   }
+}

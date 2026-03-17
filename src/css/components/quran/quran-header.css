@@ -1,34 +1,39 @@
 /* Al-Quran Inline Header Styles */
 
 .quran-inline-header {
+   --header-padding: var(--sp-4);
+   --header-btn-size: 40px;
+   --header-icon-size: var(--icon-lg);
+   --header-title-size: var(--fs-md);
+
    display: flex;
    align-items: center;
    justify-content: space-between;
-   padding: var(--sp-4);
-   padding-top: max(var(--sp-4), env(safe-area-inset-top));
+   padding: var(--header-padding);
+   padding-top: max(var(--header-padding), env(safe-area-inset-top));
    background: var(--clr-quran-card-bg);
    border-bottom: 1px solid var(--clr-quran-border);
    flex-shrink: 0;
    position: relative;
+   transition: padding var(--transition-fast);
 }
 
 .quran-icon-btn {
    display: flex;
    align-items: center;
    justify-content: center;
-   width: 40px;
-   height: 40px;
+   width: var(--header-btn-size);
+   height: var(--header-btn-size);
    background: transparent;
    border: none;
    color: var(--clr-quran-text);
    cursor: pointer;
-   transition: color var(--transition-fast), transform var(--transition-fast);
+   transition: color var(--transition-fast), transform var(--transition-fast), width var(--transition-fast), height var(--transition-fast);
    -webkit-tap-highlight-color: transparent;
    flex-shrink: 0;
    z-index: 2;
    border-radius: 50%;
 }
-
 
 .quran-icon-btn:active {
    transform: scale(0.92);
@@ -41,19 +46,20 @@
 }
 
 .quran-icon-btn i {
-   font-size: var(--icon-lg);
+   font-size: var(--header-icon-size);
    display: flex;
    align-items: center;
    justify-content: center;
    width: 1em;
    height: 1em;
+   transition: font-size var(--transition-fast);
 }
 
 .quran-header-title {
    position: absolute;
    left: 50%;
    transform: translateX(-50%);
-   font-size: var(--fs-md);
+   font-size: var(--header-title-size);
    font-weight: var(--fw-semibold);
    color: var(--clr-quran-text);
    text-align: center;
@@ -62,7 +68,12 @@
    margin: 0;
    pointer-events: none;
    width: 50%;
+   transition: font-size var(--transition-fast);
 }
+
+/* =============================================
+   Responsive Scaling
+   ============================================= */
 
 @media (pointer: fine) {
    .quran-icon-btn:hover {
@@ -72,31 +83,15 @@
 
 @media screen and (max-width: 360px) {
    .quran-inline-header {
-      padding: var(--sp-3);
-      padding-top: max(var(--sp-3), env(safe-area-inset-top));
-   }
-
-   .quran-icon-btn {
-      width: 36px;
-      height: 36px;
-   }
-
-   .quran-icon-btn i {
-      font-size: var(--icon-md);
-   }
-
-   .quran-header-title {
-      font-size: var(--fs-sm);
+      --header-padding: var(--sp-3);
+      --header-btn-size: 36px;
+      --header-icon-size: var(--icon-md);
+      --header-title-size: var(--fs-sm);
    }
 }
 
 @media screen and (max-width: 320px) {
    .quran-inline-header {
-      padding: var(--sp-2);
-      padding-top: max(var(--sp-2), env(safe-area-inset-top));
-   }
-
-   .quran-header-title {
-      font-size: var(--fs-sm);
+      --header-padding: var(--sp-2);
    }
 }

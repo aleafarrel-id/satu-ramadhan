@@ -82,20 +82,24 @@ export function setActive(itemId) {
    _currentItem = itemId;
 
    const items = _dockEl.querySelectorAll('.quran-dock-item');
-   let activeIndex = 0;
+   let activeItem = null;
 
-   items.forEach((item, i) => {
+   items.forEach((item) => {
       const isActive = item.dataset.item === itemId;
       item.classList.toggle('active', isActive);
-      if (isActive) activeIndex = i;
+      if (isActive) activeItem = item;
    });
 
-   if (_slider && items.length > 0) {
-      const activeItem = items[activeIndex];
-      if (activeItem) {
-         const centerX = activeItem.offsetLeft + (activeItem.offsetWidth / 2);
-         _slider.style.left = `${centerX}px`;
-      }
+   updateSliderPosition(activeItem);
+}
+
+/**
+ * Update slider position helper
+ */
+function updateSliderPosition(activeItem) {
+   if (_slider && activeItem) {
+      const centerX = activeItem.offsetLeft + (activeItem.offsetWidth / 2);
+      _slider.style.left = `${centerX}px`;
    }
 }
 
@@ -147,9 +151,6 @@ window.addEventListener('resize', () => {
    clearTimeout(_resizeTimer);
    _resizeTimer = setTimeout(() => {
       const activeItem = _dockEl?.querySelector('.quran-dock-item.active');
-      if (activeItem && _slider) {
-         const centerX = activeItem.offsetLeft + (activeItem.offsetWidth / 2);
-         _slider.style.left = `${centerX}px`;
-      }
+      updateSliderPosition(activeItem);
    }, 100);
 });

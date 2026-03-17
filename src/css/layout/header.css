@@ -3,11 +3,16 @@
    ============================================= */
 
 .app-header {
+   --header-padding: var(--spacing-md);
+   --header-logo-size: var(--size-logo);
+   --header-clock-size: var(--fs-xl);
+   --header-date-size: var(--fs-xs);
+
    display: flex;
    align-items: center;
    justify-content: space-between;
-   padding: var(--spacing-md);
-   padding-top: max(var(--spacing-md), env(safe-area-inset-top));
+   padding: var(--header-padding);
+   padding-top: max(var(--header-padding), env(safe-area-inset-top));
    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
    will-change: transform, opacity;
@@ -23,9 +28,10 @@
 }
 
 .header-logo {
-   width: var(--size-logo);
-   height: var(--size-logo);
+   width: var(--header-logo-size);
+   height: var(--header-logo-size);
    object-fit: contain;
+   transition: width var(--transition-fast), height var(--transition-fast);
 }
 
 .header-right {
@@ -34,18 +40,41 @@
 
 .header-clock {
    font-family: var(--ff-primary);
-   font-size: var(--fs-xl);
+   font-size: var(--header-clock-size);
    font-weight: var(--fw-bold);
    color: var(--clr-accent-500);
    line-height: var(--lh-none);
    letter-spacing: var(--ls-tight);
    font-variant-numeric: tabular-nums;
+   transition: font-size var(--transition-fast);
 }
 
 .header-date {
-   font-size: var(--fs-xs);
+   font-size: var(--header-date-size);
    font-weight: var(--fw-regular);
    color: var(--clr-text-secondary);
    margin-top: var(--spacing-xs);
    line-height: var(--lh-relaxed);
+   transition: font-size var(--transition-fast);
+}
+
+/* =============================================
+   Responsive Scaling
+   ============================================= */
+
+@media screen and (max-width: 360px) {
+   .app-header {
+      --header-padding: var(--spacing-sm);
+      --header-logo-size: 44px;
+      --header-clock-size: var(--fs-lg);
+   }
+}
+
+@media screen and (max-width: 320px) {
+   .app-header {
+      --header-padding: var(--sp-3);
+      --header-logo-size: 38px;
+      --header-clock-size: var(--fs-md);
+      --header-date-size: var(--fs-2xs);
+   }
 }
