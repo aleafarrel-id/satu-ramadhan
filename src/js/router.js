@@ -6,6 +6,7 @@
 const _routes = {};
 let _currentPage = null;
 const _history = [];
+let _onNavigateCallback = null;
 
 /**
  * Register a route
@@ -35,7 +36,7 @@ export async function navigate(path, { pushHistory = true } = {}) {
 
     // Destroy current page
     if (_currentPage && _routes[_currentPage]?.destroy) {
-        _routes[_currentPage].destroy();
+        await _routes[_currentPage].destroy();
     }
 
     // Hide all pages
@@ -53,6 +54,11 @@ export async function navigate(path, { pushHistory = true } = {}) {
     }
 
     _currentPage = path;
+
+    // Notify listeners of navigation change
+    if (_onNavigateCallback) {
+        _onNavigateCallback(path);
+    }
 }
 
 /**
@@ -79,4 +85,12 @@ export function canGoBack() {
  */
 export function getCurrentPage() {
     return _currentPage;
+}
+
+/**
+ * Register a callback fired on every navigation (including goBack)
+ * @param {Function} callback - receives the target page path
+ */
+export function onNavigate(callback) {
+    _onNavigateCallback = callback;
 }

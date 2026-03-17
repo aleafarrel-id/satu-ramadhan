@@ -102,6 +102,9 @@ export async function initApp() {
     router.register('quran', quranPage);
     router.register('settings', settingsPage);
 
+    // Sync nav-bar on every navigation (including goBack)
+    router.onNavigate((page) => navBar.setActive(page));
+
     // Navigate to home
     await router.navigate('home');
 
@@ -126,7 +129,6 @@ export async function initApp() {
  */
 function handleNavigation(tabId) {
     router.navigate(tabId);
-    navBar.setActive(tabId);
 }
 
 /**

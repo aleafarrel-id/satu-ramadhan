@@ -67,6 +67,33 @@
    font-display: swap;
 }
 
+/* DecoType Thuluth (Arabic Calligraphy for Quran) */
+@font-face {
+   font-family: 'DecoType-Thuluth-II-Regular';
+   src: url('../../assets/font/quran/DecoType-Thuluth-II-Regular.ttf') format('truetype');
+   font-weight: 400;
+   font-style: normal;
+   font-display: swap;
+}
+
+/* LPMQ Isep Misbah (Quran Text) */
+@font-face {
+   font-family: 'LPMQ-IsepMisbah';
+   src: url('../../assets/font/quran/LPMQ-IsepMisbah.ttf') format('truetype');
+   font-weight: 400;
+   font-style: normal;
+   font-display: swap;
+}
+
+@font-face {
+   font-family: 'Amiri';
+   src: url('../../assets/font/amiri/Amiri-Bold.woff2') format('woff2'),
+      url('../../assets/font/amiri/Amiri-Bold.ttf') format('truetype');
+   font-weight: 700;
+   font-style: normal;
+   font-display: swap;
+}
+
 /* Global typography */
 body {
    font-family: var(--ff-primary);

@@ -1,5 +1,6 @@
-/* Bottom Navigation Bar Container */
-.bottom-nav {
+/* Al-Quran Dock Component Styles */
+
+.quran-dock {
    position: fixed;
    bottom: 0;
    left: 50%;
@@ -7,60 +8,55 @@
    width: 100%;
    max-width: 430px;
    padding-bottom: env(safe-area-inset-bottom);
-   z-index: calc(var(--z-modal) + 10); /* Higher than quran modal (300) to allow sliding under */
-   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-               opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-   will-change: transform, opacity;
-   -webkit-backface-visibility: hidden;
-   backface-visibility: hidden;
-}
-
-/* Hidden state — used when entering Quran mode */
-.bottom-nav.nav-hidden {
-   transform: translateX(-50%) translateY(100%);
+   z-index: calc(var(--z-modal) + 1);
    opacity: 0;
-   pointer-events: none;
+   transition: opacity var(--transition-normal);
 }
 
-/* Background layer */
-.nav-background-oval {
+.quran-dock.show {
+   opacity: 1;
+}
+
+.quran-dock.hide {
+   opacity: 0;
+}
+
+.quran-dock-bg-oval {
    position: absolute;
    bottom: -30px;
    left: -5%;
    width: 110%;
    height: var(--nav-height);
-   background: var(--clr-bg-card-solid);
-   border: 1px solid var(--clr-white-a10);
+   background: var(--clr-quran-card-bg);
+   border: 1px solid var(--clr-quran-border);
    border-radius: var(--radius-pill);
    z-index: 1;
 }
 
-/* Main Navigation Dock */
-.nav-list {
+.quran-dock-list {
    position: relative;
    display: grid;
-   grid-template-columns: repeat(5, 1fr);
+   grid-template-columns: repeat(4, 1fr);
    align-items: center;
    width: 90%;
-   max-width: 360px;
+   max-width: 320px;
    height: var(--nav-height-list-container-xl);
    margin: 0 auto var(--spacing-sm);
-   background: var(--clr-bg-card-solid);
-   border: 1px solid var(--clr-white-a10);
+   background: var(--clr-quran-card-bg);
+   border: 1px solid var(--clr-quran-border);
    border-radius: var(--radius-full);
-   padding: 0 12px;
+   padding: 0 var(--sp-3);
    z-index: 2;
-   box-shadow: var(--shadow-lg);
+   box-shadow: 0 -4px 16px var(--clr-quran-card-shadow);
    line-height: 0;
 }
 
-/* Sliding active indicator */
-.nav-slider {
+.quran-dock-slider {
    position: absolute;
    top: 50%;
    height: var(--nav-slider-size-xl);
    width: 64px;
-   background: var(--clr-accent-500);
+   background: var(--clr-quran-accent);
    border-radius: var(--radius-pill);
    transform: translate(-50%, -50%);
    transition: left var(--nav-indicator-transition);
@@ -69,7 +65,7 @@
    will-change: left;
 }
 
-.nav-item {
+.quran-dock-item {
    position: relative;
    display: flex;
    align-items: center;
@@ -78,18 +74,18 @@
    height: 100%;
    background: transparent;
    border: none;
-   color: var(--clr-accent-500);
+   color: var(--clr-quran-accent);
    cursor: pointer;
    z-index: 3;
    transition: color var(--transition-normal);
+   -webkit-tap-highlight-color: transparent;
 }
 
-.nav-item:focus-visible {
+.quran-dock-item:focus-visible {
    outline: none;
 }
 
-/* Active focus ring */
-.nav-item:focus-visible::after {
+.quran-dock-item:focus-visible::after {
    content: '';
    position: absolute;
    top: 50%;
@@ -98,70 +94,70 @@
    width: var(--nav-height-list-container-xl);
    height: var(--nav-slider-size-xl);
    border-radius: var(--radius-pill);
-   border: 2px solid var(--clr-accent-500);
+   border: 2px solid var(--clr-quran-accent);
    pointer-events: none;
 }
 
-.nav-item.active {
-   color: var(--clr-bg-card-solid);
+.quran-dock-item.active {
+   color: var(--clr-quran-card-bg);
 }
 
-.nav-item i {
+.quran-dock-item i {
    font-size: var(--icon-lg);
    display: flex;
    align-items: center;
    justify-content: center;
    width: 1em;
    height: 1em;
-   transform: translateY(1px);
 }
 
-/* Responsive refinements via variable overrides only */
+/* Responsive */
+
 @media screen and (min-width: 480px) {
-   .nav-list {
-      max-width: 420px;
-      padding: 0 12px;
+   .quran-dock-list {
+      max-width: 360px;
+      padding: 0 var(--sp-3);
    }
 
-   .nav-slider,
-   .nav-item:focus-visible::after {
+   .quran-dock-slider,
+   .quran-dock-item:focus-visible::after {
       width: 72px;
       height: var(--nav-slider-size-lg);
    }
 }
 
 @media screen and (max-width: 360px) {
-   .nav-list {
+   .quran-dock-list {
       width: 95%;
       padding: 0 10px;
    }
 
-   .nav-slider,
-   .nav-item:focus-visible::after {
+   .quran-dock-slider,
+   .quran-dock-item:focus-visible::after {
       width: 52px;
       height: var(--nav-slider-size-sm);
    }
 
-   .nav-item i {
+   .quran-dock-item i {
       font-size: var(--icon-md);
    }
 }
 
 @media screen and (max-width: 320px) {
-
-   .nav-list {
+   .quran-dock-list {
       padding: 0 8px;
       height: var(--nav-height-list-container-md);
+      width: 90%;
    }
 
-   .nav-slider,
-   .nav-item:focus-visible::after {
+   .quran-dock-slider,
+   .quran-dock-item:focus-visible::after {
       width: 40px !important;
-      border-radius: 50% !important;
       height: var(--nav-slider-size-sm);
+      border-radius: 50% !important;
    }
 
-   .nav-item i {
+   .quran-dock-item i {
       font-size: 1.25rem;
    }
 }

@@ -33,12 +33,14 @@
 
 /* Main app container (behind splash) */
 .app-container {
+   position: relative;
    display: flex;
    flex-direction: column;
    height: 100%;
    width: 100%;
    max-width: 430px;
    margin: 0 auto;
+   z-index: 2; /* In front of quran-backdrop */
 }
 
 /* Scrollable content area between header and nav */
@@ -49,6 +51,11 @@
    padding: var(--spacing-md);
    padding-bottom: calc(80px + env(safe-area-inset-bottom));
    -webkit-overflow-scrolling: touch;
+}
+
+/* Modifier to remove padding for full-bleed pages like Quran */
+.app-content.no-padding {
+   padding: 0;
 }
 
 /* Hide scrollbar but keep functionality */
@@ -69,6 +76,11 @@
 
 .page.active {
    display: block;
+}
+
+/* Disable default animation for Quran page since it uses custom slide-up transition */
+#page-quran.page.active {
+   animation: none;
 }
 
 @keyframes pageIn {

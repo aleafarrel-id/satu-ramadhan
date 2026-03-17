@@ -1,0 +1,223 @@
+/* Al-Quran Surah Card Component Styles */
+
+/* Surah List Container */
+.surah-list {
+   display: flex;
+   flex-direction: column;
+   gap: var(--sp-3);
+   padding: var(--sp-2) var(--sp-1);
+}
+
+.surah-card {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-3);
+   background: var(--clr-quran-card-bg);
+   border-radius: var(--radius-xl);
+   padding: var(--sp-4) var(--sp-5);
+   min-height: 80px;
+   cursor: pointer;
+   transition: background var(--transition-fast), transform var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+   contain-intrinsic-size: 1px 80px;
+   opacity: 1;
+   transform: translateY(0);
+   animation-name: cardIn;
+   animation-duration: 0.4s;
+   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+   animation-fill-mode: backwards;
+}
+
+@keyframes cardIn {
+   from {
+      opacity: 0;
+      transform: translateY(12px);
+   }
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}
+
+
+.surah-card:active {
+   transform: scale(0.98);
+}
+
+/* Surah Number */
+.surah-number-wrapper {
+   position: relative;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 40px;
+   height: 40px;
+   flex-shrink: 0;
+}
+
+.surah-number-ornament {
+   position: absolute;
+   inset: 2px;
+   border: 1.5px solid var(--clr-quran-ornament);
+   border-radius: var(--radius-md);
+   transform: rotate(45deg);
+   opacity: 0.7;
+}
+
+.surah-number-text {
+   position: relative;
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-quran-text);
+   font-family: var(--ff-primary);
+   z-index: 1;
+   line-height: 1;
+}
+
+/* Surah Info */
+.surah-info {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+   min-width: 0;
+}
+
+/* Surah Title (Latin) */
+.surah-title-latin {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-quran-text);
+   line-height: var(--lh-tight);
+   font-family: var(--ff-primary);
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.surah-details {
+   margin-top: 4px;
+   display: flex;
+   align-items: center;
+   gap: 0;
+   font-size: var(--fs-xs);
+   color: var(--clr-quran-text-secondary);
+   line-height: var(--lh-relaxed);
+   font-family: var(--ff-primary);
+}
+
+.surah-type {
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-medium);
+   color: var(--clr-quran-text-secondary);
+}
+
+.surah-type-pill {
+   background: var(--clr-quran-bg-alt);
+   color: var(--clr-quran-text-secondary);
+   padding: 2px 8px;
+   border-radius: var(--radius-pill);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-medium);
+   line-height: var(--lh-relaxed);
+   white-space: nowrap;
+}
+
+/* Dot separator */
+.surah-detail-dot {
+   width: 3px;
+   height: 3px;
+   background: var(--clr-quran-text-secondary);
+   border-radius: var(--radius-full);
+   margin: 0 6px;
+   flex-shrink: 0;
+   opacity: 0.6;
+}
+
+.surah-verse-count {
+   font-size: var(--fs-2xs);
+   color: var(--clr-quran-text-secondary);
+}
+
+/* Surah Title (Arabic) */
+.surah-title-arabic {
+   font-family: 'DecoType-Thuluth-II-Regular', serif;
+   font-size: var(--fs-2xl);
+   color: var(--clr-quran-text);
+   text-align: right;
+   line-height: var(--lh-tight);
+   flex-shrink: 0;
+}
+
+/* Skeleton Loading */
+.surah-card.skeleton {
+   background: linear-gradient(90deg,
+         var(--clr-quran-bg-alt) 25%,
+         #f0f0f0 50%,
+         var(--clr-quran-bg-alt) 75%);
+   background-size: 200% 100%;
+   animation: shimmer 1.5s infinite;
+}
+
+.surah-card.skeleton .surah-number-wrapper,
+.surah-card.skeleton .surah-title-latin,
+.surah-card.skeleton .surah-details,
+.surah-card.skeleton .surah-title-arabic {
+   background: var(--clr-quran-border);
+   border-radius: var(--radius-sm);
+   color: transparent;
+}
+
+@media (pointer: fine) {
+   .surah-card:hover {
+      background: var(--clr-quran-card-hover);
+   }
+}
+
+/* Responsive */
+@media screen and (max-width: 360px) {
+   .surah-card {
+      padding: var(--sp-3) var(--sp-4);
+      gap: var(--sp-3);
+      min-height: 72px;
+   }
+
+   .surah-number-wrapper {
+      width: 36px;
+      height: 36px;
+   }
+
+   .surah-number-text {
+      font-size: var(--fs-xs);
+   }
+
+   .surah-title-latin {
+      font-size: var(--fs-xs);
+   }
+
+   .surah-title-arabic {
+      font-size: var(--fs-md);
+   }
+}
+
+@media screen and (max-width: 320px) {
+   .surah-card {
+      padding: var(--sp-2) var(--sp-3);
+      gap: var(--sp-2);
+      min-height: 56px;
+   }
+
+   .surah-number-wrapper {
+      width: 28px;
+      height: 28px;
+   }
+
+   .surah-number-ornament {
+      inset: 1px;
+      border-width: 1px;
+   }
+
+   .surah-title-arabic {
+      font-size: var(--fs-base);
+   }
+}

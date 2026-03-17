@@ -18,6 +18,7 @@
 
 /* UI */
 @import './components/ui/splash-screen.css';
+@import './components/ui/quran-backdrop.css';
 @import './components/ui/button.css';
 @import './components/ui/toggle.css';
 @import './components/ui/empty-state.css';
@@ -59,3 +60,9 @@
 @import './pages/schedule.css';
 @import './pages/compass.css';
 @import './pages/settings.css';
+@import './pages/quran.css';
+
+/* Al-Quran Components */
+@import './components/quran/quran-header.css';
+@import './components/quran/quran-dock.css';
+@import './components/quran/quran-card.css';

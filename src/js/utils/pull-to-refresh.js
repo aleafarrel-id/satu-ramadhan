@@ -41,8 +41,8 @@ export function initPullToRefresh(options) {
     scroller.addEventListener('touchstart', (e) => {
         if (scroller.scrollTop > 0 || isRefreshing) return;
         
-        // Prevent pull-to-refresh when interacting with map card
-        if (e.target.closest('.qibla-map-card') || e.target.closest('.leaflet-container')) {
+        // Prevent pull-to-refresh when interacting with map card or active Quran modal
+        if (e.target.closest('.qibla-map-card') || e.target.closest('.leaflet-container') || document.querySelector('#quran-page-modal.quran-modal-active')) {
             return;
         }
 

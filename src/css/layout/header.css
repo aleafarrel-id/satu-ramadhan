@@ -8,6 +8,18 @@
    justify-content: space-between;
    padding: var(--spacing-md);
    padding-top: max(var(--spacing-md), env(safe-area-inset-top));
+   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+               opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+   will-change: transform, opacity;
+   -webkit-backface-visibility: hidden;
+   backface-visibility: hidden;
+}
+
+/* Hidden state — used when entering Quran mode */
+.app-header.header-hidden {
+   transform: translateY(-100%);
+   opacity: 0;
+   pointer-events: none;
 }
 
 .header-logo {
