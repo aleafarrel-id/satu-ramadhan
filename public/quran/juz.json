@@ -4,12 +4,12 @@
         "start": {
             "index": "001",
             "verse": "verse_1",
-            "name": "Al-Fatiha"
+            "name": "Al-Fatihah"
         },
         "end": {
             "index": "002",
             "verse": "verse_141",
-            "name": "Al-Baqara"
+            "name": "Al-Baqarah"
         }
     },
     {
@@ -17,12 +17,12 @@
         "start": {
             "index": "002",
             "verse": "verse_142",
-            "name": "Al-Baqara"
+            "name": "Al-Baqarah"
         },
         "end": {
             "index": "002",
             "verse": "verse_252",
-            "name": "Al-Baqara"
+            "name": "Al-Baqarah"
         }
     },
     {
@@ -30,12 +30,12 @@
         "start": {
             "index": "002",
             "verse": "verse_253",
-            "name": "Al-Baqara"
+            "name": "Al-Baqarah"
         },
         "end": {
             "index": "003",
             "verse": "verse_92",
-            "name": "Aal-Imran"
+            "name": "Ali 'Imran"
         }
     },
     {
@@ -43,12 +43,12 @@
         "start": {
             "index": "003",
             "verse": "verse_93",
-            "name": "Aal-Imran"
+            "name": "Ali 'Imran"
         },
         "end": {
             "index": "004",
             "verse": "verse_23",
-            "name": "An-Nisaa'"
+            "name": "An-Nisa'"
         }
     },
     {
@@ -56,12 +56,12 @@
         "start": {
             "index": "004",
             "verse": "verse_24",
-            "name": "An-Nisaa'"
+            "name": "An-Nisa'"
         },
         "end": {
             "index": "004",
             "verse": "verse_147",
-            "name": "An-Nisaa'"
+            "name": "An-Nisa'"
         }
     },
     {
@@ -69,12 +69,12 @@
         "start": {
             "index": "004",
             "verse": "verse_148",
-            "name": "An-Nisaa'"
+            "name": "An-Nisa'"
         },
         "end": {
             "index": "005",
             "verse": "verse_81",
-            "name": "Al-Ma'ida"
+            "name": "Al-Ma'idah"
         }
     },
     {
@@ -82,7 +82,7 @@
         "start": {
             "index": "005",
             "verse": "verse_82",
-            "name": "Al-Ma'ida"
+            "name": "Al-Ma'idah"
         },
         "end": {
             "index": "006",
@@ -126,7 +126,7 @@
         "end": {
             "index": "009",
             "verse": "verse_92",
-            "name": "Al-Tawba"
+            "name": "At-Taubah"
         }
     },
     {
@@ -134,7 +134,7 @@
         "start": {
             "index": "009",
             "verse": "verse_93",
-            "name": "Al-Tawba"
+            "name": "At-Taubah"
         },
         "end": {
             "index": "011",
@@ -186,7 +186,7 @@
         "start": {
             "index": "017",
             "verse": "verse_1",
-            "name": "Al-Israa"
+            "name": "Al-Isra'"
         },
         "end": {
             "index": "018",
@@ -204,7 +204,7 @@
         "end": {
             "index": "020",
             "verse": "verse_135",
-            "name": "Ta-Ha"
+            "name": "Thaha"
         }
     },
     {
@@ -212,7 +212,7 @@
         "start": {
             "index": "021",
             "verse": "verse_1",
-            "name": "Al-Anbiya"
+            "name": "Al-Anbiya'"
         },
         "end": {
             "index": "022",
@@ -225,7 +225,7 @@
         "start": {
             "index": "023",
             "verse": "verse_1",
-            "name": "Al-Muminun"
+            "name": "Al-Mu'minun"
         },
         "end": {
             "index": "025",
@@ -256,7 +256,7 @@
         "end": {
             "index": "029",
             "verse": "verse_45",
-            "name": "Al-Ankabut"
+            "name": "Al-'Ankabut"
         }
     },
     {
@@ -264,7 +264,7 @@
         "start": {
             "index": "029",
             "verse": "verse_46",
-            "name": "Al-Ankabut"
+            "name": "Al-'Ankabut"
         },
         "end": {
             "index": "033",
@@ -308,7 +308,7 @@
         "end": {
             "index": "041",
             "verse": "verse_46",
-            "name": "Fussilat"
+            "name": "Fushshilat"
         }
     },
     {
@@ -316,12 +316,12 @@
         "start": {
             "index": "041",
             "verse": "verse_47",
-            "name": "Fussilat"
+            "name": "Fushshilat"
         },
         "end": {
             "index": "045",
             "verse": "verse_37",
-            "name": "Al-Jathiya"
+            "name": "Al-Jatsiyah"
         }
     },
     {
@@ -334,7 +334,7 @@
         "end": {
             "index": "051",
             "verse": "verse_30",
-            "name": "Az-Zariyat"
+            "name": "Adz-Dzariyat"
         }
     },
     {
@@ -342,7 +342,7 @@
         "start": {
             "index": "051",
             "verse": "verse_31",
-            "name": "Az-Zariyat"
+            "name": "Adz-Dzariyat"
         },
         "end": {
             "index": "057",
@@ -355,7 +355,7 @@
         "start": {
             "index": "058",
             "verse": "verse_1",
-            "name": "Al-Mujadilah"
+            "name": "Al-Mujadalah"
         },
         "end": {
             "index": "066",
@@ -381,7 +381,7 @@
         "start": {
             "index": "078",
             "verse": "verse_1",
-            "name": "An-Naba"
+            "name": "An-Naba'"
         },
         "end": {
             "index": "114",
