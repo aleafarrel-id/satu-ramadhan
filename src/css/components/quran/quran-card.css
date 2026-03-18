@@ -106,6 +106,11 @@
    font-family: var(--ff-primary);
 }
 
+.juz-surah-details {
+   flex-wrap: nowrap;
+   width: 100%;
+}
+
 .surah-type {
    font-size: var(--fs-2xs);
    font-weight: var(--fw-medium);
@@ -121,6 +126,10 @@
    font-weight: var(--fw-medium);
    line-height: var(--lh-relaxed);
    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   flex-shrink: 1;
+   min-width: 0;
 }
 
 /* Dot separator */
@@ -132,6 +141,14 @@
    margin: 0 6px;
    flex-shrink: 0;
    opacity: 0.6;
+}
+
+/* Range separator for Juz */
+.surah-range-dash {
+   color: var(--clr-quran-text-secondary);
+   opacity: 0.6;
+   font-size: var(--fs-2xs);
+   margin: 0 var(--sp-1);
 }
 
 .surah-verse-count {
@@ -174,8 +191,7 @@
    }
 }
 
-/* Responsive */
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 390px) {
    .surah-card {
       padding: var(--sp-3) var(--sp-4);
       gap: var(--sp-3);
@@ -193,6 +209,15 @@
 
    .surah-title-latin {
       font-size: var(--fs-xs);
+   }
+
+   .surah-type-pill {
+      padding: 2px 5px;
+      font-size: 9px;
+   }
+
+   .surah-range-dash {
+      margin: 0 2px;
    }
 
    .surah-title-arabic {
@@ -217,7 +242,16 @@
       border-width: 1px;
    }
 
+   .surah-type-pill {
+      padding: 2px 4px;
+      font-size: 8px;
+   }
+
+   .surah-range-dash {
+      margin: 0 1px;
+   }
+
    .surah-title-arabic {
-      font-size: var(--fs-base);
+      font-size: var(--fs-md);
    }
 }

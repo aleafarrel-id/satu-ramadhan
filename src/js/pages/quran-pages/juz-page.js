@@ -1,18 +1,18 @@
 /**
- * Al-Quran Surah Subpage Component
+ * Al-Quran Juz Subpage Component
  */
 
 import * as QuranCard from '../../components/quran/quran-card.js';
 
-const SURAH_API_PATH = '/quran/surah.json';
+const JUZ_API_PATH = '/quran/juz.json';
 
 let _container = null;
-let _surahData = null;
+let _juzData = null;
 let _callbacks = null;
 let _currentRenderCounter = 0;
 
 /**
- * Render subpage surah
+ * Render subpage juz
  */
 export async function render(container, callbacks = {}) {
    _container = container;
@@ -23,12 +23,12 @@ export async function render(container, callbacks = {}) {
    QuranCard.renderLoadingState(_container);
 
    try {
-      await loadSurahData();
+      await loadJuzData();
       if (_container && currentRenderId === _currentRenderCounter) {
-         await renderSurahListBatched(currentRenderId);
+         await renderJuzListBatched(currentRenderId);
       }
    } catch (error) {
-      console.error('Error loading Surah data:', error);
+      console.error('Error loading Juz data:', error);
       if (_container && currentRenderId === _currentRenderCounter) {
          QuranCard.renderErrorState(_container);
       }
@@ -36,15 +36,15 @@ export async function render(container, callbacks = {}) {
 }
 
 /**
- * Fetch data surah
+ * Fetch data juz
  */
-async function loadSurahData() {
-   if (_surahData) return;
-   const response = await fetch(SURAH_API_PATH);
+async function loadJuzData() {
+   if (_juzData) return;
+   const response = await fetch(JUZ_API_PATH);
    if (!response.ok) {
-      throw new Error('Failed to load surah data');
+      throw new Error('Failed to load juz data');
    }
-   _surahData = await response.json();
+   _juzData = await response.json();
 }
 
 /**
@@ -53,17 +53,17 @@ async function loadSurahData() {
 const _shouldCancelRender = (renderId) => renderId !== _currentRenderCounter || !_container;
 
 /**
- * Render surah list batched
+ * Render juz list batched
  */
-async function renderSurahListBatched(renderId) {
-   if (!_surahData || !_container) return;
+async function renderJuzListBatched(renderId) {
+   if (!_juzData || !_container) return;
 
    await _renderBatchedList({
-      data: _surahData,
+      data: _juzData,
       container: _container,
       onCheckCancel: () => _shouldCancelRender(renderId),
-      createItemFn: (surah, absoluteIndex, isInitialBatch) => {
-         const card = QuranCard.createSurahCard(surah, handleSurahClick);
+      createItemFn: (juz, absoluteIndex, isInitialBatch) => {
+         const card = QuranCard.createJuzCard(juz, handleJuzClick);
          if (isInitialBatch) {
             card.style.animationDelay = `${absoluteIndex * 0.03}s`;
          } else {
@@ -86,7 +86,7 @@ async function _renderBatchedList({ data, container, createItemFn, onCheckCancel
    const existingPlaceholder = container.querySelector('.quran-search-placeholder');
    if (existingPlaceholder) existingPlaceholder.remove();
 
-   const listContainer = QuranCard.createSurahList();
+   const listContainer = QuranCard.createJuzList();
    container.appendChild(listContainer);
 
    const total = data.length;
@@ -118,8 +118,8 @@ async function _renderBatchedList({ data, container, createItemFn, onCheckCancel
 /**
  * Card click handler
  */
-function handleSurahClick(surah) {
-   console.log('Surah clicked:', surah.title, surah.index);
+function handleJuzClick(juz) {
+   console.log('Juz clicked:', juz.index);
 }
 
 /**
@@ -134,27 +134,24 @@ export async function onSearch(query, resultsContainer, searchCallbacks = {}) {
    _currentRenderCounter++;
    const searchId = _currentRenderCounter;
 
-   if (!_surahData) return;
+   if (!_juzData) return;
 
    const normalizedQuery = _normalizeSearchText(query);
    const queryLower = query.toLowerCase();
 
-   const filtered = _surahData.filter(s => {
-      const sIndexNum = parseInt(s.index).toString();
-      const sCountStr = s.count.toString();
-      const lowerType = s.type.toLowerCase();
-      const normalizedTitle = _normalizeSearchText(s.title);
+   const filtered = _juzData.filter(j => {
+      const jIndexNum = parseInt(j.index).toString();
+      const startNameNormal = _normalizeSearchText(j.start.name);
+      const endNameNormal = _normalizeSearchText(j.end.name);
+      
+      const isMatchIndex = jIndexNum === query || `juz${jIndexNum}` === normalizedQuery;
 
-      return (normalizedQuery.length > 0 && normalizedTitle.includes(normalizedQuery)) ||
-         s.titleAr.includes(query) ||
-         lowerType.includes(queryLower) ||
-         sIndexNum === query ||
-         sCountStr === query;
+      return (normalizedQuery.length > 0 && (startNameNormal.includes(normalizedQuery) || endNameNormal.includes(normalizedQuery))) || isMatchIndex;
    });
 
    if (filtered.length === 0) {
       if (searchCallbacks.renderPlaceholder) {
-         searchCallbacks.renderPlaceholder(resultsContainer, `Tidak ada surah "${query}"`, "bx-info-circle");
+         searchCallbacks.renderPlaceholder(resultsContainer, `Tidak ada juz "${query}"`, "bx-info-circle");
       }
       return;
    }
@@ -164,10 +161,10 @@ export async function onSearch(query, resultsContainer, searchCallbacks = {}) {
       container: resultsContainer,
       batchSize: 10,
       onCheckCancel: () => _shouldCancelRender(searchId),
-      createItemFn: (surah) => {
-         const card = QuranCard.createSurahCard(surah, (s) => {
+      createItemFn: (juz) => {
+         const card = QuranCard.createJuzCard(juz, (j) => {
             if (searchCallbacks.onItemSelected) searchCallbacks.onItemSelected();
-            handleSurahClick(s);
+            handleJuzClick(j);
          });
          card.style.opacity = '1';
          card.style.animation = 'none';

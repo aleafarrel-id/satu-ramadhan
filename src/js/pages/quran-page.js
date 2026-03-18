@@ -52,7 +52,9 @@ export async function render(container) {
    _quranContent = container.querySelector('#quran-content');
    QuranNav.init();
 
-   const transitionPromise = QuranNav.enterQuranMode();
+   const transitionPromise = QuranNav.enterQuranMode({
+      onNavigate: (pageId) => loadSubPage(pageId)
+   });
 
    await loadSubPage('surah');
 
@@ -70,6 +72,14 @@ async function loadSubPage(pageId) {
 
    _activePageId = pageId;
    _activePage = null;
+
+   if (_quranContent) {
+      _quranContent.style.scrollBehavior = 'auto';
+      _quranContent.scrollTop = 0;
+      setTimeout(() => {
+         if (_quranContent) _quranContent.style.scrollBehavior = '';
+      }, 50);
+   }
 
    try {
       _activePage = await import(`./quran-pages/${pageId}-page.js`);

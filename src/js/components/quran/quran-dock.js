@@ -4,7 +4,7 @@
 
 const DOCK_ITEMS = [
    { id: 'surah', icon: 'bx-book-content', label: 'Surah' },
-   { id: 'read', icon: 'bx-book-open', label: 'Juz' },
+   { id: 'juz', icon: 'bx-book-open', label: 'Juz' },
    { id: 'bookmark', icon: 'bxs-book-bookmark', label: 'Bookmark' },
    { id: 'settings', icon: 'bx-cog', label: 'Setelan' }
 ];

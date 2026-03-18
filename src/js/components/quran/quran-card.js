@@ -38,6 +38,60 @@ export function createSurahCard(surah, onClick) {
 }
 
 /**
+ * Helper to convert western numerals to arabic numerals
+ */
+const _toArabicNumeral = (num) => String(num).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+
+/**
+ * Render single juz card
+ */
+export function createJuzCard(juz, onClick) {
+   const card = document.createElement('div');
+   card.className = 'surah-card';
+   card.dataset.juzId = juz.index;
+   card.setAttribute('data-focus-item', '');
+
+   const juzIndex = parseInt(juz.index);
+   const verseStart = juz.start.verse.replace('verse_', '');
+   const verseEnd = juz.end.verse.replace('verse_', '');
+
+   const isSameSurah = juz.start.name === juz.end.name;
+
+   let detailsHtml = '';
+   if (isSameSurah) {
+      detailsHtml = `
+         <span class="surah-type surah-type-pill">${juz.start.name} : ${verseStart} - ${verseEnd}</span>
+      `;
+   } else {
+      detailsHtml = `
+         <span class="surah-type surah-type-pill">${juz.start.name} : ${verseStart}</span>
+         <span class="surah-range-dash">-</span>
+         <span class="surah-type surah-type-pill">${juz.end.name} : ${verseEnd}</span>
+      `;
+   }
+
+   card.innerHTML = `
+      <div class="surah-number-wrapper">
+         <div class="surah-number-ornament"></div>
+         <span class="surah-number-text">${juzIndex}</span>
+      </div>
+      <div class="surah-info">
+         <div class="surah-title-latin">Juz ${juzIndex}</div>
+         <div class="surah-details juz-surah-details">
+            ${detailsHtml}
+         </div>
+      </div>
+      <div class="surah-title-arabic">الجزء ${_toArabicNumeral(parseInt(juz.index))}</div>
+   `;
+
+   if (onClick) {
+      makeAccessibleBtn(card, () => onClick(juz));
+   }
+
+   return card;
+}
+
+/**
  * Render skeleton loading card
  */
 export function createSkeletonCard() {
@@ -63,6 +117,17 @@ export function createSurahList() {
    const list = document.createElement('div');
    list.className = 'surah-list';
    list.setAttribute('data-focus-group', 'quran-surah-list');
+   list.setAttribute('data-focus-direction', 'vertical');
+   return list;
+}
+
+/**
+ * Render juz list container
+ */
+export function createJuzList() {
+   const list = document.createElement('div');
+   list.className = 'surah-list';
+   list.setAttribute('data-focus-group', 'quran-juz-list');
    list.setAttribute('data-focus-direction', 'vertical');
    return list;
 }

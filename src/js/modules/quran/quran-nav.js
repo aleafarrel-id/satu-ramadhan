@@ -7,6 +7,7 @@ import * as QuranDock from '../../components/quran/quran-dock.js';
 import * as Router from '../../router.js';
 
 let _quranMode = false;
+let _navOptions = {};
 
 /**
  * Initialize Quran navigation manager
@@ -17,9 +18,10 @@ export function init() {
 /**
  * Enter Quran mode
  */
-export async function enterQuranMode() {
+export async function enterQuranMode(options = {}) {
    if (_quranMode) return;
    _quranMode = true;
+   _navOptions = options;
 
    const mainNav = document.getElementById('bottom-nav');
    const appHeader = document.getElementById('app-header');
@@ -121,9 +123,9 @@ function handleQuranBack() {
  * Handle navigation in Quran dock
  */
 function handleQuranNav(itemId) {
-   console.log('Quran nav item clicked:', itemId);
-
-
+   if (_navOptions.onNavigate) {
+      _navOptions.onNavigate(itemId);
+   }
 }
 
 /**
