@@ -77,7 +77,13 @@ async function renderSurahListBatched(renderId) {
  * Generic batched rendering to avoid UI blocking
  */
 async function _renderBatchedList({ data, container, createItemFn, onCheckCancel, batchSize = 25 }) {
-   container.innerHTML = '';
+   const existingList = container.querySelector('.surah-list');
+   if (existingList) existingList.remove();
+   const existingEmpty = container.querySelector('.quran-empty');
+   if (existingEmpty) existingEmpty.remove();
+   const existingPlaceholder = container.querySelector('.quran-search-placeholder');
+   if (existingPlaceholder) existingPlaceholder.remove();
+
    const listContainer = QuranCard.createSurahList();
    container.appendChild(listContainer);
 
