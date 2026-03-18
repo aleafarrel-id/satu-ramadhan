@@ -214,13 +214,15 @@
 }
 
 .quran-search-header {
+   --header-padding: var(--sp-4);
    display: flex;
    align-items: center;
    gap: var(--sp-2);
-   padding: var(--sp-4);
-   padding-top: max(var(--sp-4), env(safe-area-inset-top));
+   padding: var(--header-padding);
+   padding-top: max(var(--header-padding), env(safe-area-inset-top));
    background: var(--clr-quran-card-bg);
    border-bottom: 1px solid var(--clr-quran-border);
+   transition: padding var(--transition-fast);
 }
 
 .quran-search-input-wrapper {
@@ -295,7 +297,12 @@
 
 @media screen and (max-width: 360px) {
    .quran-search-header {
-      padding: var(--sp-3);
-      padding-top: max(var(--sp-3), env(safe-area-inset-top));
+      --header-padding: var(--sp-3);
+   }
+}
+
+@media screen and (max-width: 320px) {
+   .quran-search-header {
+      --header-padding: var(--sp-2);
    }
 }
