@@ -1,12 +1,12 @@
 /**
- * Al-Quran Utility Module
- * Common utilities for Al-Quran subpages.
+ * Utility Module
+ * Shared tools for Quran features.
  */
 
 import * as QuranCard from '../../components/quran/quran-card.js';
 
 /**
- * Generic batched rendering to avoid UI blocking
+ * Renders items in batches to prevent UI blocking.
  */
 export async function renderBatchedList({ data, container, createItemFn, onCheckCancel, batchSize = 25, listCreatorFn }) {
    if (!data || !container) return;
@@ -48,12 +48,12 @@ export async function renderBatchedList({ data, container, createItemFn, onCheck
 }
 
 /**
- * Helper to normalize string for robust searching
+ * Normalizes text for search indexing.
  */
 export const normalizeSearchText = (text) => text.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 /**
- * Create a simple render context to track current render cycles and cancel stale ones
+ * Creates a render context to handle stale cycles.
  */
 export function createRenderContext() {
    let currentRenderCounter = 0;
@@ -76,10 +76,10 @@ export function createRenderContext() {
 }
 
 /**
- * Factory to create a standard Quran subpage
+ * Factory function for generic Quran subpages.
  */
 export function createQuranSubpage({
-   apiPath,
+   fetchDataFn,
    listCreatorFn,
    itemCardCreatorFn,
    filterFn,
@@ -94,11 +94,7 @@ export function createQuranSubpage({
    async function loadData() {
       if (_data) return;
       if (!_dataPromise) {
-         _dataPromise = fetch(apiPath)
-            .then(res => {
-               if (!res.ok) throw new Error(`Failed to load data from ${apiPath}`);
-               return res.json();
-            })
+         _dataPromise = fetchDataFn()
             .then(data => {
                _data = data;
                _dataPromise = null;

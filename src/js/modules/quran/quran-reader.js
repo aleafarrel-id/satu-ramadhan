@@ -1,6 +1,7 @@
 /**
- * Al-Quran Reader Module
- * Handles the surah reading overlay with Arabic text + Indonesian translation.
+ * Reader Module
+ * Manages the overlay for reading Arabic text and translation.
+ * Supports reading per Surah and per Juz.
  */
 
 import * as QuranDock from '../../components/quran/quran-dock.js';
@@ -8,30 +9,34 @@ import * as QuranCard from '../../components/quran/quran-card.js';
 import { renderBatchedList, createRenderContext } from './quran-utility.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
-import { fetchTajweedData, buildTajweedFragment, getVerseRules, initTajweedTooltip, dismissTajweedTooltip } from './quran-tajweed.js';
+import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
+import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
+import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
 
-/* ── State ── */
+/* Internal State */
 
 let _isOpen = false;
 let _isPickerOpen = false;
-let _currentSurah = null;
+let _currentItem = null;
+let _currentType = 'surah';
 let _overlay = null;
 let _pickerOverlay = null;
 let _scrollContainer = null;
 let _quranPage = null;
-let _surahListCache = null;
 const _renderCtx = createRenderContext();
 
-/* ── Public API ── */
+/* Public Interface */
 
 /**
- * Open the reader overlay for a specific surah.
- * @param {Object} surah — Surah metadata from surah.json (has index, title, titleAr, count, type)
+ * Opens the reader overlay for a given item (surah or juz).
+ * @param {Object} item - Data object of the surah or juz
+ * @param {string} type - 'surah' | 'juz'
  */
-export async function open(surah) {
+export async function open(item, type = 'surah') {
    if (_isOpen) return;
    _isOpen = true;
-   _currentSurah = surah;
+   _currentItem = item;
+   _currentType = type;
 
    _quranPage = document.querySelector('.quran-page');
    if (!_quranPage) return;
@@ -40,21 +45,16 @@ export async function open(surah) {
    QuranDock.hide();
 
    // Build & mount overlay
-   _buildOverlay(surah);
+   _buildOverlay(item);
 
    // Register back handler
    registerModalDismiss(close);
 
-   // Pre-fetch surah list for dropdown if not cached
-   if (!_surahListCache) {
-      try {
-         const res = await fetch('/quran/surah.json');
-         if (res.ok) {
-            _surahListCache = await res.json();
-         }
-      } catch (err) {
-         console.warn('[QuranReader] Failed to load surah list for dropdown', err);
-      }
+   // Pre-fetch list for dropdown natively handled by API
+   if (type === 'juz') {
+      getJuzList().catch(err => console.warn('[QuranReader] Failed to load juz list', err));
+   } else {
+      getSurahList().catch(err => console.warn('[QuranReader] Failed to load surah list', err));
    }
 
    // Animate in
@@ -64,16 +64,16 @@ export async function open(surah) {
          // Add class to hide main quran content behind
          _quranPage.classList.add('is-reading');
          // Initialize tooltip delegation for mobile tap support
-         initTajweedTooltip(_scrollContainer);
+         initTooltip(_scrollContainer, '.tj');
       });
    });
 
    // Fetch and render data
-   await _fetchAndRender(surah);
+   await _fetchAndRender(item);
 }
 
 /**
- * Close the reader overlay, restoring dock and header.
+ * Closes the reader overlay and restores UI.
  */
 export function close() {
    if (!_isOpen) return;
@@ -85,7 +85,7 @@ export function close() {
    _renderCtx.incrementAndGet();
 
    _closeSurahPicker();
-   dismissTajweedTooltip();
+   dismissTooltip();
 
    if (_overlay) {
       _overlay.classList.remove('active');
@@ -109,12 +109,13 @@ export function close() {
       _overlay = null;
       _pickerOverlay = null;
       _scrollContainer = null;
-      _currentSurah = null;
+      _currentItem = null;
+      _currentType = 'surah';
    }, 400);
 }
 
 /**
- * Cleanup — called when quran-page.js is destroyed.
+ * Cleans up on module destruction.
  */
 export function destroy() {
    if (_isOpen) {
@@ -124,7 +125,7 @@ export function destroy() {
       _renderCtx.incrementAndGet();
       unregisterModalDismiss(close);
       unregisterModalDismiss(_closeSurahPicker);
-      dismissTajweedTooltip();
+      dismissTooltip();
       if (_overlay && _overlay.parentNode) {
          _overlay.parentNode.removeChild(_overlay);
       }
@@ -137,23 +138,22 @@ export function destroy() {
       _overlay = null;
       _pickerOverlay = null;
       _scrollContainer = null;
-      _currentSurah = null;
+      _currentItem = null;
+      _currentType = 'surah';
       _quranPage = null;
    }
 }
 
 /**
- * Check if reader is currently open.
+ * Returns true if the reader is open.
  */
 export function isOpen() {
    return _isOpen;
 }
 
-/* ── Private: Build Overlay DOM ── */
+/* DOM Construction */
 
-function _buildOverlay(surah) {
-   const surahNum = parseInt(surah.index);
-
+function _buildOverlay(item) {
    _overlay = document.createElement('div');
    _overlay.className = 'quran-reader-overlay';
    _overlay.id = 'quran-reader-overlay';
@@ -174,11 +174,17 @@ function _buildOverlay(surah) {
    titleWrapper.className = 'quran-reader-title-wrapper';
    titleWrapper.setAttribute('role', 'button');
    titleWrapper.setAttribute('tabindex', '0');
-   titleWrapper.setAttribute('aria-label', `Pilih Surah (Saat ini Surah ${surah.title})`);
 
    const titleText = document.createElement('span');
    titleText.className = 'quran-reader-title';
-   titleText.textContent = `${surahNum}. ${surah.title}`;
+
+   if (_currentType === 'juz') {
+      titleText.textContent = `Juz ${parseInt(item.index)}`;
+      titleWrapper.setAttribute('aria-label', `Pilih Juz (Saat ini Juz ${parseInt(item.index)})`);
+   } else {
+      titleText.textContent = `${parseInt(item.index)}. ${item.title}`;
+      titleWrapper.setAttribute('aria-label', `Pilih Surah (Saat ini Surah ${item.title})`);
+   }
 
    const titleChevron = document.createElement('i');
    titleChevron.className = 'bx bx-chevron-down quran-reader-title-chevron';
@@ -201,12 +207,7 @@ function _buildOverlay(surah) {
    _scrollContainer.className = 'quran-reader-scroll';
 
    // Loading state
-   _scrollContainer.innerHTML = `
-      <div class="quran-reader-loading">
-         <i class='bx bx-book-reader'></i>
-         <p>Memuat</p>
-      </div>
-   `;
+   QuranCard.renderLoadingState(_scrollContainer);
 
    _overlay.appendChild(header);
    _overlay.appendChild(_scrollContainer);
@@ -215,7 +216,7 @@ function _buildOverlay(surah) {
    _quranPage.appendChild(_overlay);
 }
 
-/* ── Private: Surah Picker Overlay ── */
+/* Picker Logic */
 
 function _openSurahPicker() {
    if (_isPickerOpen) return;
@@ -227,20 +228,20 @@ function _openSurahPicker() {
 
       const header = document.createElement('div');
       header.className = 'quran-reader-picker-header';
-      
+
       const backBtn = document.createElement('button');
       backBtn.className = 'quran-reader-back';
-      backBtn.setAttribute('aria-label', 'Tutup daftar surah');
+      backBtn.setAttribute('aria-label', 'Tutup daftar');
       backBtn.innerHTML = `<i class='bx bx-x'></i>`;
       makeAccessibleBtn(backBtn, _closeSurahPicker);
-      
+
       const title = document.createElement('div');
       title.className = 'quran-reader-picker-title';
-      title.textContent = 'Pilih Surah';
-      
+      title.textContent = _currentType === 'juz' ? 'Pilih Juz' : 'Pilih Surah';
+
       const spacer = document.createElement('div');
       spacer.className = 'quran-reader-header-spacer';
-      
+
       header.appendChild(backBtn);
       header.appendChild(title);
       header.appendChild(spacer);
@@ -248,39 +249,32 @@ function _openSurahPicker() {
       const content = document.createElement('div');
       content.className = 'quran-reader-picker-content';
 
-      const surahList = document.createElement('div');
-      surahList.className = 'surah-list'; // Reusing front page styles
+      const listContainer = document.createElement('div');
+      listContainer.className = 'surah-list'; // Reusing front page styles
 
       _pickerOverlay.appendChild(header);
       _pickerOverlay.appendChild(content);
-      content.appendChild(surahList);
-      
+      content.appendChild(listContainer);
+
       _quranPage.appendChild(_pickerOverlay);
-      
+
       // Populate list
-      if (_surahListCache) {
-         _renderPickerList(surahList);
-      } else {
-         QuranCard.renderLoadingState(content);
-         fetch('/quran/surah.json').then(res => res.json()).then(data => {
-            _surahListCache = data;
-            content.innerHTML = '';
-            content.appendChild(surahList);
-            _renderPickerList(surahList);
-         }).catch(err => {
-            QuranCard.renderErrorState(content, "Gagal memuat daftar surah");
-         });
-      }
+      const fetchPromise = _currentType === 'juz' ? getJuzList() : getSurahList();
+      fetchPromise.then(data => {
+         _renderPickerList(listContainer, data);
+      }).catch(err => {
+         QuranCard.renderErrorState(content, "Gagal memuat daftar");
+      });
    }
 
    registerModalDismiss(_closeSurahPicker);
-   
+
    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
          if (_pickerOverlay) _pickerOverlay.classList.add('active');
-         
-         // Scroll to active surah if necessary
-         const activeCard = _pickerOverlay.querySelector('.surah-card.active-surah');
+
+         // Scroll to active card if necessary
+         const activeCard = _pickerOverlay.querySelector('.active-surah, .active-juz');
          if (activeCard) {
             activeCard.scrollIntoView({ behavior: 'auto', block: 'center' });
          }
@@ -288,23 +282,24 @@ function _openSurahPicker() {
    });
 }
 
-function _renderPickerList(container) {
+function _renderPickerList(container, listData) {
    container.innerHTML = '';
-   _surahListCache.forEach(surah => {
-      const card = QuranCard.createSurahCard(surah, (selectedSurah) => {
-         if (selectedSurah.index !== _currentSurah.index) {
-            _changeSurah(selectedSurah);
-            
+   listData.forEach(item => {
+      const createFn = _currentType === 'juz' ? QuranCard.createJuzCard : QuranCard.createSurahCard;
+      const card = createFn(item, (selectedItem) => {
+         if (selectedItem.index !== _currentItem.index) {
+            _changeItem(selectedItem);
+
             // Update active state in picker
-            const allCards = _pickerOverlay.querySelectorAll('.surah-card');
-            allCards.forEach(c => c.classList.remove('active-surah'));
-            card.classList.add('active-surah');
+            const allCards = _pickerOverlay.querySelectorAll('.surah-card, .juz-card');
+            allCards.forEach(c => c.classList.remove('active-surah', 'active-juz'));
+            card.classList.add(_currentType === 'juz' ? 'active-juz' : 'active-surah');
          }
          _closeSurahPicker();
       });
-      
-      if (surah.index === _currentSurah.index) {
-         card.classList.add('active-surah');
+
+      if (item.index === _currentItem.index) {
+         card.classList.add(_currentType === 'juz' ? 'active-juz' : 'active-surah');
       }
       container.appendChild(card);
    });
@@ -320,72 +315,94 @@ function _closeSurahPicker() {
    }
 }
 
-function _changeSurah(newSurah) {
-   _currentSurah = newSurah;
+function _changeItem(newItem) {
+   _currentItem = newItem;
 
    // Update title
    if (_overlay) {
       const titleText = _overlay.querySelector('.quran-reader-title');
       if (titleText) {
-         titleText.textContent = `${parseInt(newSurah.index, 10)}. ${newSurah.title}`;
+         if (_currentType === 'juz') {
+            titleText.textContent = `Juz ${parseInt(newItem.index)}`;
+         } else {
+            titleText.textContent = `${parseInt(newItem.index, 10)}. ${newItem.title}`;
+         }
       }
    }
 
    // Reset scroll container to loading state
    if (_scrollContainer) {
-      // Unmount old chunks by resetting HTML 
-      _scrollContainer.innerHTML = `
-         <div class="quran-reader-loading">
-            <i class='bx bx-book-reader'></i>
-            <p>Memuat</p>
-         </div>
-      `;
+      QuranCard.renderLoadingState(_scrollContainer);
       _scrollContainer.scrollTop = 0;
    }
 
    // Cancel any in-flight renders and fetch new data
    _renderCtx.incrementAndGet();
-   _fetchAndRender(newSurah);
+   _fetchAndRender(newItem);
 }
 
-/* ── Private: Fetch Data & Render ── */
+/* Data Fetching and Rendering */
 
-async function _fetchAndRender(surah) {
-   const surahIndex = parseInt(surah.index);
+async function _fetchAndRender(item) {
    _renderCtx.setContainer(_scrollContainer);
    const renderId = _renderCtx.incrementAndGet();
 
    try {
-      // Fetch Arabic text, Indonesian translation, and Tajweed data in parallel
-      const [surahData, translationData, tajweedData] = await Promise.all([
-         fetch(`/quran/surah/surah_${surahIndex}.json`).then(r => {
-            if (!r.ok) throw new Error(`Failed to fetch surah ${surahIndex}`);
-            return r.json();
-         }),
-         fetch(`/quran/translation/id/id_translation_${surahIndex}.json`).then(r => {
-            if (!r.ok) throw new Error(`Failed to fetch translation ${surahIndex}`);
-            return r.json();
-         }),
-         fetchTajweedData(surahIndex)
-      ]);
+      const itemsToRender = [];
 
-      // Check if render was cancelled
-      if (_renderCtx.shouldCancelRender(renderId)) return;
+      if (_currentType === 'juz') {
+         const surahList = await getSurahList();
+         const startSurahIndex = parseInt(item.start.index, 10);
+         const endSurahIndex = parseInt(item.end.index, 10);
+         const startVerseNum = parseInt(item.start.verse.replace('verse_', ''), 10);
+         const endVerseNum = parseInt(item.end.verse.replace('verse_', ''), 10);
 
-      // Build merged ayah array
-      const ayahList = _buildAyahList(surahData, translationData, tajweedData, surah);
+         // Fetch all surahs spanned by this juz in parallel chunks
+         const fetchPromises = [];
+         for (let i = startSurahIndex; i <= endSurahIndex; i++) {
+            fetchPromises.push(getFullSurahPayload(i));
+         }
+         const allPayloads = await Promise.all(fetchPromises);
+
+         if (_renderCtx.shouldCancelRender(renderId)) return;
+
+         for (let i = 0; i < allPayloads.length; i++) {
+            const surahIndex = startSurahIndex + i;
+            const surahMeta = surahList.find(s => parseInt(s.index, 10) === surahIndex);
+            const [surahData, transData, tajData] = allPayloads[i];
+
+            itemsToRender.push({ type: 'banner', surah: surahMeta });
+
+            let verses = _buildAyahList(surahData, transData, tajData, surahMeta);
+
+            if (surahIndex === startSurahIndex) {
+               verses = verses.filter(v => v.number === 0 || v.number >= startVerseNum);
+            }
+            if (surahIndex === endSurahIndex) {
+               verses = verses.filter(v => v.number === 0 || v.number <= endVerseNum);
+            }
+
+            verses.forEach(v => itemsToRender.push({ type: 'ayah', data: v }));
+         }
+      } else {
+         // Standard Surah render mode
+         const [surahData, transData, tajData] = await getFullSurahPayload(parseInt(item.index));
+         
+         if (_renderCtx.shouldCancelRender(renderId)) return;
+
+         itemsToRender.push({ type: 'banner', surah: item });
+         const verses = _buildAyahList(surahData, transData, tajData, item);
+         verses.forEach(v => itemsToRender.push({ type: 'ayah', data: v }));
+      }
 
       // Clear loading state
       if (_scrollContainer) {
          _scrollContainer.innerHTML = '';
       }
 
-      // Render surah info banner
-      _renderSurahBanner(surah);
-
-      // Render ayahs with batched rendering
+      // Render items with batched mechanism
       await renderBatchedList({
-         data: ayahList,
+         data: itemsToRender,
          container: _scrollContainer,
          listCreatorFn: () => {
             const list = document.createElement('div');
@@ -394,8 +411,8 @@ async function _fetchAndRender(surah) {
          },
          onCheckCancel: () => _renderCtx.shouldCancelRender(renderId),
          batchSize: 20,
-         createItemFn: (ayah, index, isInitialBatch) => {
-            const el = _createAyahElement(ayah);
+         createItemFn: (itemDesc, index, isInitialBatch) => {
+            const el = itemDesc.type === 'banner' ? _createSurahBannerElement(itemDesc.surah) : _createAyahElement(itemDesc.data);
             if (isInitialBatch) {
                el.style.animationDelay = `${index * 0.04}s`;
             } else {
@@ -407,19 +424,14 @@ async function _fetchAndRender(surah) {
       });
 
    } catch (error) {
-      console.error('[QuranReader] Error loading surah:', error);
+      console.error('[QuranReader] Error loading data:', error);
       if (!_renderCtx.shouldCancelRender(renderId) && _scrollContainer) {
-         _scrollContainer.innerHTML = `
-            <div class="quran-reader-error">
-               <i class='bx bx-error-circle'></i>
-               <p>Gagal Memuat Surah</p>
-            </div>
-         `;
+         QuranCard.renderErrorState(_scrollContainer, "Gagal Memuat Data");
       }
    }
 }
 
-/* ── Private: Build Ayah Data ── */
+/* Ayah Data Processing */
 
 function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
    const verseObj = surahData.verse || {};
@@ -436,11 +448,14 @@ function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
 
    verseKeys.forEach(key => {
       const verseNum = parseInt(key.replace('verse_', ''));
+      const rawArabic = verseObj[key] || '';
+      const cleanArabic = rawArabic.replace(/^[\uFEFF\u200B]+/, '');
+
       ayahList.push({
          key,
          number: verseNum,
          isBismillah: verseNum === 0,
-         arabic: verseObj[key],
+         arabic: cleanArabic,
          translation: transObj[key] || '',
          tajweedRules: getVerseRules(tajweedData, key),
          surahIndex: parseInt(surahMeta.index),
@@ -451,16 +466,17 @@ function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
    return ayahList;
 }
 
-/* ── Private: Render Surah Info Banner ── */
+/* Surah Banner Creation */
 
-function _renderSurahBanner(surah) {
-   if (!_scrollContainer) return;
-
+function _createSurahBannerElement(surah) {
    const surahNum = parseInt(surah.index);
    const typeText = surah.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
 
    const banner = document.createElement('div');
    banner.className = 'quran-reader-surah-info';
+   // Additional margin to space out multiple banners inside Juz mode
+   banner.style.marginTop = '2rem';
+   banner.style.marginBottom = '1.5rem';
    banner.innerHTML = `
       <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
       <div class="quran-reader-surah-meta">
@@ -471,10 +487,10 @@ function _renderSurahBanner(surah) {
       <div class="quran-reader-divider"></div>
    `;
 
-   _scrollContainer.appendChild(banner);
+   return banner;
 }
 
-/* ── Private: Create Ayah DOM Element ── */
+/* Ayah DOM Creation */
 
 function _createAyahElement(ayah) {
    if (ayah.isBismillah) {
@@ -541,7 +557,7 @@ function _createRegularAyahElement(ayah) {
    // Arabic text
    const arabicEl = document.createElement('div');
    arabicEl.className = 'quran-ayah-arabic';
-   
+
    if (ayah.tajweedRules?.length) {
       arabicEl.appendChild(buildTajweedFragment(ayah.arabic, ayah.tajweedRules));
    } else {
@@ -560,7 +576,7 @@ function _createRegularAyahElement(ayah) {
    return card;
 }
 
-/* ── Private: Copy Ayah to Clipboard ── */
+/* Clipboard Logic */
 
 function _handleCopyAyah(ayah, btnEl) {
    const text = `${ayah.arabic}\n\n${ayah.translation}\n\n— QS. ${ayah.surahName}: ${ayah.number}`;

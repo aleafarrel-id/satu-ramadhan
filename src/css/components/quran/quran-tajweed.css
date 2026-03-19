@@ -1,8 +1,6 @@
-/* =============================================
-   Al-Quran Tajweed Coloring Styles
-   ============================================= */
+/* Tajweed Coloring Styles */
 
-/* ── Base Tajweed Span ── */
+/* Base Span */
 
 .tj {
    position: relative;
@@ -13,6 +11,9 @@
    /* Prevent layout shifts from inline spans */
    display: inline;
    line-height: inherit;
+
+   /* Dynamic Tooltip Alignment (controlled via JS) */
+   --tooltip-offset-x: -50%;
 }
 
 /* Subtle underline indicator */
@@ -29,14 +30,14 @@
    pointer-events: none;
 }
 
-/* ── Tooltip (via ::after pseudo-element) ── */
+/* Tooltip Element */
 
 .tj::after {
    content: attr(data-label);
    position: absolute;
    bottom: calc(100% + 6px);
    left: 50%;
-   transform: translateX(-50%) translateY(4px);
+   transform: translateX(var(--tooltip-offset-x)) translateY(4px);
    white-space: nowrap;
 
    /* Appearance */
@@ -58,7 +59,7 @@
    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
 }
 
-/* ── Tooltip Visibility ── */
+/* Tooltip Visibility States */
 
 /* Desktop hover */
 @media (pointer: fine) {
@@ -69,64 +70,64 @@
    .tj:hover::after {
       opacity: 1;
       visibility: visible;
-      transform: translateX(-50%) translateY(0);
+      transform: translateX(var(--tooltip-offset-x)) translateY(0);
    }
 }
 
-/* Mobile tap — activated via JS .active class */
+/* Mobile Active State */
 .tj.active::after {
    opacity: 1;
    visibility: visible;
-   transform: translateX(-50%) translateY(0);
+   transform: translateX(var(--tooltip-offset-x)) translateY(0);
 }
 
 .tj.active {
    opacity: 0.85;
 }
 
-/* ── Rule Color Classes ── */
+/* Rule Colors */
 
-/* Ghunnah — dengung (hijau) */
+/* Ghunnah (Nasalization) */
 .tj-ghunnah {
    color: var(--clr-tajweed-ghunnah);
 }
 
-/* Idgham variants — peleburan (cyan) */
+/* Idgham Variants (Assimilation) */
 .tj-idgham {
    color: var(--clr-tajweed-idgham);
 }
 
-/* Ikhfa variants — samar (oranye) */
+/* Ikhfa Variants (Concealment) */
 .tj-ikhfa {
    color: var(--clr-tajweed-ikhfa);
 }
 
-/* Iqlab — penukaran (ungu) */
+/* Iqlab (Conversion) */
 .tj-iqlab {
    color: var(--clr-tajweed-iqlab);
 }
 
-/* Qalqalah — pantulan (merah) */
+/* Qalqalah (Echo) */
 .tj-qalqalah {
    color: var(--clr-tajweed-qalqalah);
 }
 
-/* Madd variants — panjang (biru) */
+/* Madd Variants (Prolongation) */
 .tj-madd {
    color: var(--clr-tajweed-madd);
 }
 
-/* Lam Shamsiyyah (cokelat) */
+/* Lam Shamsiyyah */
 .tj-lam-shams {
    color: var(--clr-tajweed-lam-shams);
 }
 
-/* Hamzat Wasl (abu-abu) */
+/* Hamzat Wasl */
 .tj-hamza-wasl {
    color: var(--clr-tajweed-hamza-wasl);
 }
 
-/* Silent — huruf tidak dibaca (abu terang) */
+/* Silent Letters */
 .tj-silent {
    color: var(--clr-tajweed-silent);
 }
@@ -136,18 +137,11 @@
    color: var(--clr-quran-text);
 }
 
-/* ── Tooltip Edge Clamping ── */
-
-/*
- * When a tajweed span is near the edge of the container,
- * the tooltip might overflow. We handle this via direction
- * on the parent container's text alignment (RTL).
- * The tooltip is always centered on the span by default.
- * For extreme edge cases, we rely on the scroll container
- * having overflow: hidden on the x axis (already set).
+/* Tooltip Edge Handling
+ * RTL direction ensures centering, with JS layout adjustments if needed.
  */
 
-/* ── Responsive Scaling ── */
+/* Media Queries */
 
 @media screen and (max-width: 390px) {
    .tj::after {

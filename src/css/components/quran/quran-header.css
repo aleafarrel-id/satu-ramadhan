@@ -1,4 +1,4 @@
-/* Al-Quran Inline Header Styles */
+/* Inline Header Component */
 
 .quran-inline-header {
    --header-padding: var(--sp-4);
@@ -71,9 +71,7 @@
    transition: font-size var(--transition-fast);
 }
 
-/* =============================================
-   Responsive Scaling
-   ============================================= */
+/* Media Queries */
 
 @media (pointer: fine) {
    .quran-icon-btn:hover {

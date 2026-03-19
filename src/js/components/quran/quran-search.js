@@ -1,5 +1,5 @@
 /**
- * Al-Quran Search UI Component
+ * Search UI Component
  */
 
 import { makeAccessibleBtn } from '../../utils/a11y.js';
@@ -10,7 +10,7 @@ let _results = null;
 let _callbacks = null;
 
 /**
- * Render search overlay HTML markup
+ * Returns the search overlay HTML.
  */
 export function renderHTML() {
    return `
@@ -31,7 +31,7 @@ export function renderHTML() {
 }
 
 /**
- * Initialize search component event listeners
+ * Initializes the search component and listeners.
  */
 export function init(container, callbacks = {}) {
    _callbacks = callbacks;
@@ -41,7 +41,7 @@ export function init(container, callbacks = {}) {
    _input = _overlay.querySelector('.quran-search-input');
    _results = _overlay.querySelector('#quran-search-results');
    
-   // Initialize Placeholder Default
+   // Initial placeholder state
    renderSearchPlaceholder(_results);
    
    const closeBtn = _overlay.querySelector('.quran-search-close');
@@ -61,7 +61,7 @@ export function init(container, callbacks = {}) {
 }
 
 /**
- * Show search overlay
+ * Displays the search overlay.
  */
 export function show() {
    if (!_overlay) return;
@@ -72,7 +72,7 @@ export function show() {
 }
 
 /**
- * Hide search overlay
+ * Hides the search overlay.
  */
 export function hide() {
    if (!_overlay) return;
@@ -82,7 +82,7 @@ export function hide() {
 }
 
 /**
- * Render visual placeholder for search states
+ * Renders a visual placeholder in the results area.
  */
 export function renderSearchPlaceholder(container, message = "Mulai ketik pencarian...", icon = "bx-search") {
    if (!container) return;
@@ -95,7 +95,7 @@ export function renderSearchPlaceholder(container, message = "Mulai ketik pencar
 }
 
 /**
- * Destroy component and listeners
+ * Cleans up DOM references and callbacks.
  */
 export function destroy() {
    _overlay = null;

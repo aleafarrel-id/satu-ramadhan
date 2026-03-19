@@ -1,5 +1,5 @@
 /**
- * Al-Quran Page Skeleton Component
+ * Page Skeleton Component
  */
 
 import * as QuranNav from '../modules/quran/quran-nav.js';
@@ -18,7 +18,7 @@ let _isSearchActive = false;
 const _dismissSearchAction = () => toggleSearchMode(false);
 
 /**
- * Render main Al-Quran page skeleton
+ * Renders the main Quran page skeleton.
  */
 export async function render(container) {
    _container = container;
@@ -64,7 +64,7 @@ export async function render(container) {
 }
 
 /**
- * Load subpage into skeleton
+ * Loads a subpage into the skeleton.
  */
 async function loadSubPage(pageId) {
    if (_activePage && _activePage.destroy) {
@@ -101,7 +101,7 @@ async function loadSubPage(pageId) {
 }
 
 /**
- * Toggle search overlay mode
+ * Toggles the search overlay mode.
  */
 function toggleSearchMode(active) {
    if (_isSearchActive === active) return;
@@ -122,7 +122,7 @@ function toggleSearchMode(active) {
 }
 
 /**
- * Handle search input string change
+ * Handles search input changes.
  */
 function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
    if (_debounceTimer) clearTimeout(_debounceTimer);
@@ -147,7 +147,7 @@ function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
 }
 
 /**
- * Cleanup on exit skeleton
+ * Cleans up when exiting the page.
  */
 export async function destroy() {
    if (_debounceTimer) clearTimeout(_debounceTimer);

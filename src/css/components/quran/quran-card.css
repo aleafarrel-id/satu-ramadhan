@@ -1,6 +1,6 @@
-/* Al-Quran Surah Card Component Styles */
+/* Surah Card Component */
 
-/* Surah List Container */
+/* Container: Surah List */
 .surah-list {
    display: flex;
    flex-direction: column;
@@ -44,7 +44,7 @@
    transform: scale(0.98);
 }
 
-/* Surah Number */
+/* Number Indicator */
 .surah-number-wrapper {
    position: relative;
    display: flex;
@@ -74,7 +74,7 @@
    line-height: 1;
 }
 
-/* Surah Info */
+/* Info Wrap */
 .surah-info {
    flex: 1;
    display: flex;
@@ -83,7 +83,7 @@
    min-width: 0;
 }
 
-/* Surah Title (Latin) */
+/* Title: Latin */
 .surah-title-latin {
    font-size: var(--fs-sm);
    font-weight: var(--fw-semibold);
@@ -132,7 +132,7 @@
    min-width: 0;
 }
 
-/* Dot separator */
+/* Separator: Dot */
 .surah-detail-dot {
    width: 3px;
    height: 3px;
@@ -143,7 +143,7 @@
    opacity: 0.6;
 }
 
-/* Range separator for Juz */
+/* Separator: Juz Range */
 .surah-range-dash {
    color: var(--clr-quran-text-secondary);
    opacity: 0.6;
@@ -156,7 +156,7 @@
    color: var(--clr-quran-text-secondary);
 }
 
-/* Surah Title (Arabic) */
+/* Title: Arabic */
 .surah-title-arabic {
    font-family: 'DecoType-Thuluth-II-Regular', serif;
    font-size: var(--fs-2xl);
@@ -166,7 +166,7 @@
    flex-shrink: 0;
 }
 
-/* Skeleton Loading */
+/* State: Skeleton Loading */
 .surah-card.skeleton {
    background: linear-gradient(90deg,
          var(--clr-quran-bg-alt) 25%,

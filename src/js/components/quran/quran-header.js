@@ -1,5 +1,5 @@
 /**
- * Al-Quran Header Component
+ * Inline Header Component
  */
 
 import { makeAccessibleBtn } from '../../utils/a11y.js';
@@ -8,9 +8,9 @@ let _backBtn = null;
 let _onBack = null;
 
 /**
- * Initialize header event listeners on the inline header
- * @param {HTMLElement} headerEl - The inline header element already in DOM
- * @param {Function} onBack - Callback when back button is clicked
+ * Initializes header listeners.
+ * @param {HTMLElement} headerEl - The inline header element.
+ * @param {Function} onBack - Back button callback.
  */
 export function init(headerEl, onBack) {
    _onBack = onBack;
@@ -25,7 +25,7 @@ export function init(headerEl, onBack) {
 }
 
 /**
- * Handle back button click
+ * Handles back navigation.
  */
 function handleBack() {
    if (_onBack) {
@@ -34,7 +34,7 @@ function handleBack() {
 }
 
 /**
- * Update header title
+ * Updates the header title text.
  */
 export function setTitle(title) {
    const titleEl = document.querySelector('.quran-header-title');
@@ -44,7 +44,7 @@ export function setTitle(title) {
 }
 
 /**
- * Cleanup
+ * Cleans up listeners and references.
  */
 export function destroy() {
    if (_backBtn) {

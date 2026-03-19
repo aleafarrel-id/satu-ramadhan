@@ -260,14 +260,23 @@
    --clr-quran-card-hover: #F8F3E5;
    --clr-quran-ornament: #d4af37;
 
-   /* Tajweed Colors — konsisten di seluruh app */
-   --clr-tajweed-ghunnah:        #66BB6A;   /* hijau: ghunnah (dengung) */
-   --clr-tajweed-idgham:         #26C6DA;   /* cyan: idgham variants (peleburan) */
-   --clr-tajweed-ikhfa:          #FFA726;   /* oranye: ikhfa variants (samar) */
-   --clr-tajweed-iqlab:          #AB47BC;   /* ungu: iqlab (penukaran) */
-   --clr-tajweed-qalqalah:       #EF5350;   /* merah: qalqalah (pantulan) */
-   --clr-tajweed-madd:           #42A5F5;   /* biru: madd variants (panjang) */
-   --clr-tajweed-lam-shams:      #8D6E63;   /* cokelat: lam shamsiyyah */
-   --clr-tajweed-hamza-wasl:     #78909C;   /* abu-abu: hamzat wasl */
-   --clr-tajweed-silent:         #B0BEC5;   /* abu terang: huruf tidak dibaca */
+   /* Tajweed Colors */
+   --clr-tajweed-ghunnah: #66BB6A;
+   /* ghunnah*/
+   --clr-tajweed-idgham: #26C6DA;
+   /* idgham variants */
+   --clr-tajweed-ikhfa: #FFA726;
+   /* ikhfa variants */
+   --clr-tajweed-iqlab: #AB47BC;
+   /* iqlab */
+   --clr-tajweed-qalqalah: #EF5350;
+   /* qalqalah */
+   --clr-tajweed-madd: #42A5F5;
+   /* madd variants */
+   --clr-tajweed-lam-shams: #8D6E63;
+   /* lam shamsiyyah */
+   --clr-tajweed-hamza-wasl: #78909C;
+   /* hamzat wasl */
+   --clr-tajweed-silent: #B0BEC5;
+   /* silent */
 }

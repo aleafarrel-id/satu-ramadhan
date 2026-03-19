@@ -1,11 +1,11 @@
 /**
- * Al-Quran Surah Card Component
+ * Surah Card Component
  */
 
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 
 /**
- * Render single surah card
+ * Renders a single Surah card.
  */
 export function createSurahCard(surah, onClick) {
    const card = document.createElement('div');
@@ -38,12 +38,12 @@ export function createSurahCard(surah, onClick) {
 }
 
 /**
- * Helper to convert western numerals to arabic numerals
+ * Converts Western numerals to Arabic numerals.
  */
 const _toArabicNumeral = (num) => String(num).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 
 /**
- * Render single juz card
+ * Renders a single Juz card.
  */
 export function createJuzCard(juz, onClick) {
    const card = document.createElement('div');
@@ -92,7 +92,7 @@ export function createJuzCard(juz, onClick) {
 }
 
 /**
- * Render skeleton loading card
+ * Renders a skeleton loading state.
  */
 export function createSkeletonCard() {
    const card = document.createElement('div');
@@ -111,7 +111,7 @@ export function createSkeletonCard() {
 }
 
 /**
- * Render surah list container
+ * Creates the Surah list container.
  */
 export function createSurahList() {
    const list = document.createElement('div');
@@ -122,7 +122,7 @@ export function createSurahList() {
 }
 
 /**
- * Render juz list container
+ * Creates the Juz list container.
  */
 export function createJuzList() {
    const list = document.createElement('div');
@@ -133,7 +133,7 @@ export function createJuzList() {
 }
 
 /**
- * Render loading state
+ * Renders the loading indicator.
  */
 export function renderLoadingState(container) {
    container.innerHTML = `
@@ -145,7 +145,7 @@ export function renderLoadingState(container) {
 }
 
 /**
- * Render empty state
+ * Renders the empty state.
  */
 export function renderEmptyState(container) {
    container.innerHTML = `
@@ -157,7 +157,7 @@ export function renderEmptyState(container) {
 }
 
 /**
- * Render error state
+ * Renders the error state.
  */
 export function renderErrorState(container, message = "Gagal Memuat Al-Qur'an") {
    container.innerHTML = `

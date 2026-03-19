@@ -1,5 +1,5 @@
 /**
- * Al-Quran Dock Component
+ * Dock Navigation Component
  */
 
 const DOCK_ITEMS = [
@@ -16,7 +16,7 @@ let _onNavigate = null;
 let _currentItem = 'surah';
 
 /**
- * Render Quran dock
+ * Initializes and renders the dock.
  */
 export function render(container, onNavigate) {
    _container = container;
@@ -64,7 +64,7 @@ export function render(container, onNavigate) {
 }
 
 /**
- * Handle dock item click
+ * Handles dock item clicks.
  */
 function handleItemClick(itemId) {
    setActive(itemId);
@@ -74,7 +74,7 @@ function handleItemClick(itemId) {
 }
 
 /**
- * Set active dock item
+ * Sets the active dock item.
  */
 export function setActive(itemId) {
    if (!_dockEl) return;
@@ -94,7 +94,7 @@ export function setActive(itemId) {
 }
 
 /**
- * Update slider position helper
+ * Updates the active indicator slider position.
  */
 function updateSliderPosition(activeItem) {
    if (_slider && activeItem) {
@@ -104,14 +104,14 @@ function updateSliderPosition(activeItem) {
 }
 
 /**
- * Get current active item
+ * Returns the currently active item ID.
  */
 export function getActive() {
    return _currentItem;
 }
 
 /**
- * Show dock
+ * Shows the dock.
  */
 export function show() {
    if (!_dockEl) return;
@@ -120,7 +120,7 @@ export function show() {
 }
 
 /**
- * Hide dock
+ * Hides the dock.
  */
 export function hide() {
    if (!_dockEl) return;
@@ -129,7 +129,7 @@ export function hide() {
 }
 
 /**
- * Cleanup
+ * Destroys the dock and cleans up DOM.
  */
 export function destroy() {
    if (_dockEl && _dockEl.parentNode) {
@@ -144,7 +144,7 @@ export function destroy() {
 }
 
 /**
- * Reposition active indicator on resize
+ * Refreshes slider position on window resize.
  */
 let _resizeTimer;
 window.addEventListener('resize', () => {

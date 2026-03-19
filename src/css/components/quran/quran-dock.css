@@ -1,4 +1,4 @@
-/* Al-Quran Dock Component Styles */
+/* Dock Component */
 
 .quran-dock {
    position: fixed;
@@ -111,7 +111,7 @@
    height: 1em;
 }
 
-/* Responsive */
+/* Media Queries */
 
 @media screen and (min-width: 480px) {
    .quran-dock-list {

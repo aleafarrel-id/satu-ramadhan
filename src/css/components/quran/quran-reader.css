@@ -1,8 +1,6 @@
-/* =============================================
-   Al-Quran Reader Overlay Styles
-   ============================================= */
+/* Reader Overlay Component */
 
-/* ── Reader Overlay Container ── */
+/* Container: Overlay */
 
 .quran-reader-overlay {
    position: absolute;
@@ -28,14 +26,14 @@
    pointer-events: all;
 }
 
-/* Hide main content when reader is active */
+/* State: Hide main content when reading */
 .is-reading .quran-content {
    opacity: 0;
    visibility: hidden;
    pointer-events: none;
 }
 
-/* ── Reader Header ── */
+/* Header */
 
 .quran-reader-header {
    --rh-padding: var(--sp-4);
@@ -130,13 +128,13 @@
    appearance: none;
 }
 
-/* Spacer for right side symmetry with back button */
+/* Layout: Right symmetry spacer */
 .quran-reader-header-spacer {
    width: 40px;
    flex-shrink: 0;
 }
 
-/* ── Reader Scroll Content ── */
+/* Scroll Area */
 
 .quran-reader-scroll {
    position: relative;
@@ -157,7 +155,7 @@
    scrollbar-width: none;
 }
 
-/* ── Surah Info Banner ── */
+/* Surah Banner Info */
 
 .quran-reader-surah-info {
    display: flex;
@@ -205,7 +203,7 @@
    opacity: 0.4;
 }
 
-/* ── Ayah List ── */
+/* Ayah List Container */
 
 .quran-reader-ayah-list {
    display: flex;
@@ -213,7 +211,7 @@
    padding: 0 var(--sp-4) var(--sp-8);
 }
 
-/* ── Bismillah (verse_0) ── */
+/* Header: Bismillah */
 
 .quran-ayah-bismillah {
    display: flex;
@@ -232,7 +230,7 @@
    word-spacing: 6px;
 }
 
-/* ── Ayah Card ── */
+/* Container: Ayah Card */
 
 .quran-ayah-card {
    display: flex;
@@ -259,7 +257,7 @@
    }
 }
 
-/* Ayah number header strip */
+/* Ayah Card Header */
 .quran-ayah-header {
    display: flex;
    align-items: center;
@@ -292,7 +290,7 @@
    font-family: var(--ff-primary);
 }
 
-/* Ayah action buttons (copy, bookmark) */
+/* Ayah Actions Shell */
 .quran-ayah-actions {
    display: flex;
    align-items: center;
@@ -326,7 +324,7 @@
    display: flex;
    align-items: center;
    justify-content: center;
-   /* Prevent icon squishing */
+   /* Maintain aspect ratio */
    flex-shrink: 0;
 }
 
@@ -339,7 +337,7 @@
    color: var(--clr-quran-accent);
 }
 
-/* Arabic text */
+/* Base: Arabic Glyph */
 .quran-ayah-arabic {
    font-family: 'LPMQ-IsepMisbah', serif;
    font-size: 1.65rem;
@@ -354,7 +352,7 @@
    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Translation text */
+/* Base: Translation String */
 .quran-ayah-translation {
    font-family: var(--ff-primary);
    font-size: 0.85rem;
@@ -365,7 +363,7 @@
    padding: 0 var(--sp-1);
 }
 
-/* ── Loading State ── */
+/* State: Loading Indicator */
 
 .quran-reader-loading {
    position: absolute;
@@ -393,7 +391,7 @@
    margin: 0;
 }
 
-/* ── Error State ── */
+/* State: Error Feedback */
 
 .quran-reader-error {
    display: flex;
@@ -483,9 +481,7 @@
    background: var(--clr-quran-bg-alt);
 }
 
-/* =============================================
-   Responsive Scaling
-   ============================================= */
+/* Media Queries */
 
 @media (pointer: fine) {
    .quran-reader-back:hover {
@@ -536,7 +532,7 @@
 
    .quran-ayah-translation {
       font-size: 0.75rem;
-      /* Diperkecil lagi untuk mobile */
+      /* Scale down for mobile bounds */
    }
 
    .quran-ayah-number {

@@ -1,13 +1,15 @@
 /**
- * Al-Quran Surah Subpage Component
+ * Surah Subpage Component
  */
 
 import * as QuranCard from '../../components/quran/quran-card.js';
 import { normalizeSearchText, createQuranSubpage } from '../../modules/quran/quran-utility.js';
 import * as QuranReader from '../../modules/quran/quran-reader.js';
 
+import { getSurahList } from '../../modules/quran/quran-api.js';
+
 const subpage = createQuranSubpage({
-   apiPath: '/quran/surah.json',
+   fetchDataFn: getSurahList,
    listCreatorFn: QuranCard.createSurahList,
    itemCardCreatorFn: QuranCard.createSurahCard,
    filterFn: (data, query) => {

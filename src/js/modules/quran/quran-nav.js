@@ -1,5 +1,5 @@
 /**
- * Al-Quran Navigation Manager
+ * Navigation Manager
  */
 
 import * as QuranHeader from '../../components/quran/quran-header.js';
@@ -10,13 +10,13 @@ let _quranMode = false;
 let _navOptions = {};
 
 /**
- * Initialize Quran navigation manager
+ * Initializes the navigation manager.
  */
 export function init() {
 }
 
 /**
- * Enter Quran mode
+ * Activates Quran mode and transitions UI.
  */
 export async function enterQuranMode(options = {}) {
    if (_quranMode) return;
@@ -72,7 +72,7 @@ export async function enterQuranMode(options = {}) {
 }
 
 /**
- * Exit Quran mode
+ * Deactivates Quran mode and restores UI.
  */
 export async function exitQuranMode() {
    if (!_quranMode) return;
@@ -113,14 +113,14 @@ export async function exitQuranMode() {
 }
 
 /**
- * Handle back button in Quran mode
+ * Handles the back button action.
  */
 function handleQuranBack() {
    Router.goBack();
 }
 
 /**
- * Handle navigation in Quran dock
+ * Handles dock navigation events.
  */
 function handleQuranNav(itemId) {
    if (_navOptions.onNavigate) {
@@ -129,7 +129,7 @@ function handleQuranNav(itemId) {
 }
 
 /**
- * Check if currently in Quran mode
+ * Returns true if Quran mode is active.
  */
 export function isQuranMode() {
    return _quranMode;
