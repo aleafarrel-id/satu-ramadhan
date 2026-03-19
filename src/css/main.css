@@ -66,3 +66,5 @@
 @import './components/quran/quran-header.css';
 @import './components/quran/quran-dock.css';
 @import './components/quran/quran-card.css';
+@import './components/quran/quran-reader.css';
+@import './components/quran/quran-tajweed.css';

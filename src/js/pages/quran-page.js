@@ -4,6 +4,7 @@
 
 import * as QuranNav from '../modules/quran/quran-nav.js';
 import * as QuranSearch from '../components/quran/quran-search.js';
+import * as QuranReader from '../modules/quran/quran-reader.js';
 import { makeAccessibleBtn } from '../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
 
@@ -82,7 +83,11 @@ async function loadSubPage(pageId) {
    }
 
    try {
-      _activePage = await import(`./quran-pages/${pageId}-page.js`);
+      const pageModule = await import(`./quran-pages/${pageId}-page.js`);
+
+      if (_activePageId !== pageId) return;
+
+      _activePage = pageModule;
 
       if (_activePage && _activePage.render) {
          await _activePage.render(_quranContent, {
@@ -147,6 +152,8 @@ function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
 export async function destroy() {
    if (_debounceTimer) clearTimeout(_debounceTimer);
    unregisterModalDismiss(_dismissSearchAction);
+
+   QuranReader.destroy();
 
    if (_activePage && _activePage.destroy) {
       await _activePage.destroy();

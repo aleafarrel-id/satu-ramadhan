@@ -76,7 +76,15 @@
    font-display: swap;
 }
 
-/* LPMQ Isep Misbah (Quran Text) */
+@font-face {
+   font-family: 'DecoType-Thuluth-Regular';
+   src: url('../../assets/font/quran/DecoType-Thuluth-Regular.ttf') format('truetype');
+   font-weight: 400;
+   font-style: normal;
+   font-display: swap;
+}
+
+/* LPMQ Isep Misbah (Quran Arabic Text) */
 @font-face {
    font-family: 'LPMQ-IsepMisbah';
    src: url('../../assets/font/quran/LPMQ-IsepMisbah.ttf') format('truetype');
