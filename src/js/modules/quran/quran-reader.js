@@ -12,6 +12,8 @@ import { registerModalDismiss, unregisterModalDismiss } from '../system/back-han
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
 import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
+import * as BookmarkManager from './bookmark-manager.js';
+import * as Notification from '../notification/notification.js';
 
 /* Internal State */
 
@@ -25,18 +27,27 @@ let _scrollContainer = null;
 let _quranPage = null;
 const _renderCtx = createRenderContext();
 
+/* Verse Search State */
+
+let _isReaderSearchActive = false;
+let _currentReaderData = [];
+let _searchDebounceTimer = null;
+let _targetVerseNumber = null;
+
 /* Public Interface */
 
 /**
  * Opens the reader overlay for a given item (surah or juz).
  * @param {Object} item - Data object of the surah or juz
  * @param {string} type - 'surah' | 'juz'
+ * @param {number|null} targetVerseNumber - Verse to scroll to on open (for bookmarks)
  */
-export async function open(item, type = 'surah') {
+export async function open(item, type = 'surah', targetVerseNumber = null) {
    if (_isOpen) return;
    _isOpen = true;
    _currentItem = item;
    _currentType = type;
+   _targetVerseNumber = targetVerseNumber;
 
    _quranPage = document.querySelector('.quran-page');
    if (!_quranPage) return;
@@ -84,6 +95,7 @@ export function close() {
    // Cancel any in-flight renders
    _renderCtx.incrementAndGet();
 
+   _exitReaderSearch();
    _closeSurahPicker();
    dismissTooltip();
 
@@ -111,6 +123,7 @@ export function close() {
       _scrollContainer = null;
       _currentItem = null;
       _currentType = 'surah';
+      _currentReaderData = [];
    }, 400);
 }
 
@@ -122,9 +135,12 @@ export function destroy() {
       // Fast close without animation
       _isOpen = false;
       _isPickerOpen = false;
+      _isReaderSearchActive = false;
+      if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
       _renderCtx.incrementAndGet();
       unregisterModalDismiss(close);
       unregisterModalDismiss(_closeSurahPicker);
+      unregisterModalDismiss(_exitReaderSearch);
       dismissTooltip();
       if (_overlay && _overlay.parentNode) {
          _overlay.parentNode.removeChild(_overlay);
@@ -140,6 +156,7 @@ export function destroy() {
       _scrollContainer = null;
       _currentItem = null;
       _currentType = 'surah';
+      _currentReaderData = [];
       _quranPage = null;
    }
 }
@@ -194,13 +211,26 @@ function _buildOverlay(item) {
    titleWrapper.appendChild(titleText);
    titleWrapper.appendChild(titleChevron);
 
-   // Right spacer for symmetry
-   const spacer = document.createElement('div');
-   spacer.className = 'quran-reader-header-spacer';
+   // Search button (replaces right spacer for symmetry)
+   const searchBtn = document.createElement('button');
+   searchBtn.className = 'quran-reader-search-btn';
+   searchBtn.setAttribute('aria-label', 'Cari ayat');
+   searchBtn.innerHTML = `<i class='bx bx-search'></i>`;
+   makeAccessibleBtn(searchBtn, _toggleReaderSearch);
+
+   // Search input (hidden by default, shown inline when search is active)
+   const searchInput = document.createElement('input');
+   searchInput.className = 'quran-reader-search-input';
+   searchInput.type = 'number';
+   searchInput.inputMode = 'numeric';
+   searchInput.placeholder = 'Nomor ayat...';
+   searchInput.autocomplete = 'off';
+   searchInput.addEventListener('input', _onSearchInput);
 
    header.appendChild(backBtn);
    header.appendChild(titleWrapper);
-   header.appendChild(spacer);
+   header.appendChild(searchInput);
+   header.appendChild(searchBtn);
 
    // Scroll content area
    _scrollContainer = document.createElement('div');
@@ -387,7 +417,7 @@ async function _fetchAndRender(item) {
       } else {
          // Standard Surah render mode
          const [surahData, transData, tajData] = await getFullSurahPayload(parseInt(item.index));
-         
+
          if (_renderCtx.shouldCancelRender(renderId)) return;
 
          itemsToRender.push({ type: 'banner', surah: item });
@@ -395,33 +425,34 @@ async function _fetchAndRender(item) {
          verses.forEach(v => itemsToRender.push({ type: 'ayah', data: v }));
       }
 
-      // Clear loading state
-      if (_scrollContainer) {
-         _scrollContainer.innerHTML = '';
-      }
+      // Store processed data for search filtering
+      _currentReaderData = itemsToRender;
 
-      // Render items with batched mechanism
-      await renderBatchedList({
-         data: itemsToRender,
-         container: _scrollContainer,
-         listCreatorFn: () => {
-            const list = document.createElement('div');
-            list.className = 'quran-reader-ayah-list';
-            return list;
-         },
-         onCheckCancel: () => _renderCtx.shouldCancelRender(renderId),
-         batchSize: 20,
-         createItemFn: (itemDesc, index, isInitialBatch) => {
-            const el = itemDesc.type === 'banner' ? _createSurahBannerElement(itemDesc.surah) : _createAyahElement(itemDesc.data);
-            if (isInitialBatch) {
-               el.style.animationDelay = `${index * 0.04}s`;
-            } else {
-               el.style.animation = 'none';
-               el.style.opacity = '1';
-            }
-            return el;
-         }
-      });
+      // Render to DOM
+      await _renderItems(itemsToRender, renderId, true);
+
+      // Deep-link: scroll to target verse if requested
+      if (_targetVerseNumber && _scrollContainer) {
+         const targetNum = _targetVerseNumber;
+         _targetVerseNumber = null;
+         requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+               const targetCard = _scrollContainer.querySelector(
+                  `.quran-ayah-card[data-ayah-number="${targetNum}"]`
+               );
+               if (targetCard) {
+                  const header = _overlay?.querySelector('.quran-reader-header');
+                  const headerHeight = header ? header.offsetHeight : 0;
+                  const scrollTarget = targetCard.offsetTop - headerHeight - 12;
+
+                  _scrollContainer.scrollTo({
+                     top: Math.max(0, scrollTarget),
+                     behavior: 'smooth'
+                  });
+               }
+            });
+         });
+      }
 
    } catch (error) {
       console.error('[QuranReader] Error loading data:', error);
@@ -459,7 +490,9 @@ function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
          translation: transObj[key] || '',
          tajweedRules: getVerseRules(tajweedData, key),
          surahIndex: parseInt(surahMeta.index),
-         surahName: surahMeta.title
+         surahName: surahMeta.title,
+         surahTitleAr: surahMeta.titleAr || '',
+         surahType: surahMeta.type || ''
       });
    });
 
@@ -542,10 +575,17 @@ function _createRegularAyahElement(ayah) {
    const bookmarkBtn = document.createElement('button');
    bookmarkBtn.className = 'quran-ayah-action-btn';
    bookmarkBtn.setAttribute('aria-label', 'Tandai ayat');
-   bookmarkBtn.innerHTML = `<i class='bx bx-bookmark-alt'></i>`;
+
+   // Set initial bookmark icon state
+   const isMarked = BookmarkManager.isBookmarkedSync(ayah.surahIndex, ayah.number);
+   bookmarkBtn.innerHTML = isMarked
+      ? `<i class='bx bxs-bookmark-alt'></i>`
+      : `<i class='bx bx-bookmark-alt'></i>`;
+   if (isMarked) bookmarkBtn.classList.add('bookmarked');
+
    bookmarkBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      // Placeholder for bookmark functionality
+      _handleToggleBookmark(ayah, bookmarkBtn);
    });
 
    actions.appendChild(copyBtn);
@@ -576,6 +616,156 @@ function _createRegularAyahElement(ayah) {
    return card;
 }
 
+/* Shared Render Helper */
+
+async function _renderItems(data, renderId, isInitialLoad = false) {
+   if (_scrollContainer) {
+      _scrollContainer.innerHTML = '';
+   }
+
+   if (!data.length) {
+      _renderNoResults();
+      return;
+   }
+
+   await renderBatchedList({
+      data,
+      container: _scrollContainer,
+      listCreatorFn: () => {
+         const list = document.createElement('div');
+         list.className = 'quran-reader-ayah-list';
+         return list;
+      },
+      onCheckCancel: () => _renderCtx.shouldCancelRender(renderId),
+      batchSize: 20,
+      createItemFn: (itemDesc, index, isInitialBatch) => {
+         const el = itemDesc.type === 'banner'
+            ? _createSurahBannerElement(itemDesc.surah)
+            : _createAyahElement(itemDesc.data);
+         if (isInitialLoad && isInitialBatch) {
+            el.style.animationDelay = `${index * 0.04}s`;
+         } else {
+            el.style.animation = 'none';
+            el.style.opacity = '1';
+         }
+         return el;
+      }
+   });
+}
+
+function _renderNoResults() {
+   if (!_scrollContainer) return;
+   _scrollContainer.innerHTML = `
+      <div class="quran-reader-no-results">
+         <i class='bx bx-search-alt'></i>
+         <p>Ayat tidak ditemukan</p>
+      </div>
+   `;
+}
+
+/* Verse Search Logic */
+
+function _toggleReaderSearch() {
+   if (_isReaderSearchActive) {
+      _exitReaderSearch();
+   } else {
+      _enterReaderSearch();
+   }
+}
+
+function _enterReaderSearch() {
+   if (_isReaderSearchActive) return;
+   _isReaderSearchActive = true;
+
+   const header = _overlay?.querySelector('.quran-reader-header');
+   if (header) header.classList.add('is-searching');
+
+   // Swap icon to close (X)
+   const icon = _overlay?.querySelector('.quran-reader-search-btn i');
+   if (icon) icon.className = 'bx bx-x';
+
+   // Focus input
+   const input = _overlay?.querySelector('.quran-reader-search-input');
+   if (input) setTimeout(() => input.focus(), 300);
+
+   registerModalDismiss(_exitReaderSearch);
+}
+
+function _exitReaderSearch() {
+   if (!_isReaderSearchActive) return;
+   _isReaderSearchActive = false;
+
+   if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
+   unregisterModalDismiss(_exitReaderSearch);
+
+   const header = _overlay?.querySelector('.quran-reader-header');
+   if (header) header.classList.remove('is-searching');
+
+   // Restore icon to search
+   const icon = _overlay?.querySelector('.quran-reader-search-btn i');
+   if (icon) icon.className = 'bx bx-search';
+
+   // Clear input
+   const input = _overlay?.querySelector('.quran-reader-search-input');
+   if (input) input.value = '';
+
+   // Re-render full data
+   if (_currentReaderData.length) {
+      const renderId = _renderCtx.incrementAndGet();
+      _renderItems(_currentReaderData, renderId);
+   }
+}
+
+function _onSearchInput(e) {
+   if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
+   const query = e.target.value.trim();
+
+   _searchDebounceTimer = setTimeout(() => {
+      _filterVerses(query);
+   }, 250);
+}
+
+function _filterVerses(query) {
+   const renderId = _renderCtx.incrementAndGet();
+
+   if (!query) {
+      // Show all
+      _renderItems(_currentReaderData, renderId);
+      return;
+   }
+
+   // Filter ayahs matching the verse number
+   const matchedAyahs = _currentReaderData.filter(
+      item => item.type === 'ayah' && !item.data.isBismillah && item.data.number.toString() === query
+   );
+
+   if (!matchedAyahs.length) {
+      _renderItems([], renderId);
+      return;
+   }
+
+   // Build result list with contextual surah banners
+   const results = [];
+   let lastSurahIndex = null;
+
+   matchedAyahs.forEach(ayahItem => {
+      const surahIdx = ayahItem.data.surahIndex;
+
+      // Insert banner if surah changed (important for Juz mode with multi-surah)
+      if (surahIdx !== lastSurahIndex) {
+         const banner = _currentReaderData.find(
+            b => b.type === 'banner' && parseInt(b.surah.index) === surahIdx
+         );
+         if (banner) results.push(banner);
+         lastSurahIndex = surahIdx;
+      }
+
+      results.push(ayahItem);
+   });
+
+   _renderItems(results, renderId);
+}
+
 /* Clipboard Logic */
 
 function _handleCopyAyah(ayah, btnEl) {
@@ -594,4 +784,28 @@ function _handleCopyAyah(ayah, btnEl) {
    }).catch(err => {
       console.warn('[QuranReader] Failed to copy:', err);
    });
+}
+
+/* Bookmark Logic */
+
+async function _handleToggleBookmark(ayah, btnEl) {
+   const isNowBookmarked = await BookmarkManager.toggle({
+      surahIndex: ayah.surahIndex,
+      surahName: ayah.surahName,
+      surahTitleAr: ayah.surahTitleAr,
+      verseNumber: ayah.number,
+      type: ayah.surahType
+   });
+
+   const icon = btnEl.querySelector('i');
+
+   if (isNowBookmarked) {
+      btnEl.classList.add('bookmarked');
+      if (icon) icon.className = 'bx bxs-bookmark-alt';
+      Notification.success(`QS. ${ayah.surahName}: ${ayah.number} ditandai`);
+   } else {
+      btnEl.classList.remove('bookmarked');
+      if (icon) icon.className = 'bx bx-bookmark-alt';
+      Notification.info(`Tanda dihapus`);
+   }
 }

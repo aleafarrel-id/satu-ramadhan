@@ -29,6 +29,7 @@ import * as router from './router.js';
 
 import { initPullToRefresh } from './utils/pull-to-refresh.js';
 import { initGlobalFocusManager } from './utils/focus-manager.js';
+import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
 
 const SPLASH_MIN_DURATION = 1500;
 
@@ -64,6 +65,9 @@ export async function initApp() {
 
     // Fire-and-forget: 30-day rolling notification sync on startup
     syncNotifications();
+
+    // Preload bookmark cache for instant UI
+    preloadBookmarks();
 
     // Listen for app resume → re-sync 30-day notifications
     initAppResumeListener();

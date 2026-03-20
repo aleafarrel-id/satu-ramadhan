@@ -3,6 +3,8 @@
  * Handles data fetching and caching for all Quran-related features.
  */
 
+const MAX_CACHE_SIZE = 5;
+
 const _cache = {
    surahList: null,
    juzList: null,
@@ -12,18 +14,45 @@ const _cache = {
 };
 
 /**
+ * Ensures cache behaves like LRU by refreshing key order on access.
+ */
+function _getFromCache(map, key) {
+   if (map.has(key)) {
+      const val = map.get(key);
+      map.delete(key);
+      map.set(key, val);
+      return val;
+   }
+   return undefined;
+}
+
+/**
+ * Enforces a maximum size on a Map cache.
+ */
+function _enforceCacheLimit(map, limit = MAX_CACHE_SIZE) {
+   if (map.size > limit) {
+      const oldestKey = map.keys().next().value;
+      if (oldestKey !== undefined) map.delete(oldestKey);
+   }
+}
+
+/**
+ * Generic JSON fetcher.
+ */
+async function _fetchJson(url, errorMessage) {
+   const res = await fetch(url);
+   if (!res.ok) throw new Error(errorMessage);
+   return await res.json();
+}
+
+/**
  * Fetches the list of all Surahs.
  * @returns {Promise<Array>}
  */
 export async function getSurahList() {
    if (_cache.surahList) return _cache.surahList;
-   
-   const res = await fetch('/quran/surah.json');
-   if (!res.ok) throw new Error('Gagal memuat daftar surah');
-   
-   const data = await res.json();
-   _cache.surahList = data;
-   return data;
+   _cache.surahList = await _fetchJson('/quran/surah.json', 'Gagal memuat daftar surah');
+   return _cache.surahList;
 }
 
 /**
@@ -32,13 +61,8 @@ export async function getSurahList() {
  */
 export async function getJuzList() {
    if (_cache.juzList) return _cache.juzList;
-
-   const res = await fetch('/quran/juz.json');
-   if (!res.ok) throw new Error('Gagal memuat daftar juz');
-
-   const data = await res.json();
-   _cache.juzList = data;
-   return data;
+   _cache.juzList = await _fetchJson('/quran/juz.json', 'Gagal memuat daftar juz');
+   return _cache.juzList;
 }
 
 /**
@@ -48,13 +72,12 @@ export async function getJuzList() {
  */
 export async function getSurahData(index) {
    const key = parseInt(index, 10);
-   if (_cache.surahs.has(key)) return _cache.surahs.get(key);
+   const cached = _getFromCache(_cache.surahs, key);
+   if (cached !== undefined) return cached;
    
-   const res = await fetch(`/quran/surah/surah_${key}.json`);
-   if (!res.ok) throw new Error(`Gagal memuat surah ${key}`);
-   
-   const data = await res.json();
+   const data = await _fetchJson(`/quran/surah/surah_${key}.json`, `Gagal memuat surah ${key}`);
    _cache.surahs.set(key, data);
+   _enforceCacheLimit(_cache.surahs);
    return data;
 }
 
@@ -65,13 +88,12 @@ export async function getSurahData(index) {
  */
 export async function getTranslationData(index) {
    const key = parseInt(index, 10);
-   if (_cache.translations.has(key)) return _cache.translations.get(key);
+   const cached = _getFromCache(_cache.translations, key);
+   if (cached !== undefined) return cached;
    
-   const res = await fetch(`/quran/translation/id/id_translation_${key}.json`);
-   if (!res.ok) throw new Error(`Gagal memuat terjemahan surah ${key}`);
-   
-   const data = await res.json();
+   const data = await _fetchJson(`/quran/translation/id/id_translation_${key}.json`, `Gagal memuat terjemahan surah ${key}`);
    _cache.translations.set(key, data);
+   _enforceCacheLimit(_cache.translations);
    return data;
 }
 
@@ -82,12 +104,14 @@ export async function getTranslationData(index) {
  */
 export async function getTajweedData(index) {
    const key = parseInt(index, 10);
-   if (_cache.tajweed.has(key)) return _cache.tajweed.get(key);
+   const cached = _getFromCache(_cache.tajweed, key);
+   if (cached !== undefined) return cached;
    
    try {
       const res = await fetch(`/quran/tajweed/surah_${key}.json`);
       if (!res.ok) {
-          _cache.tajweed.set(key, null); // Cache failures to avoid retries
+          _cache.tajweed.set(key, null);
+          _enforceCacheLimit(_cache.tajweed);
           return null;
       }
       
@@ -96,10 +120,12 @@ export async function getTajweedData(index) {
       const data = JSON.parse(cleanText);
       
       _cache.tajweed.set(key, data);
+      _enforceCacheLimit(_cache.tajweed);
       return data;
    } catch (err) {
       console.warn(`[QuranAPI] Failed to load tajweed for surah ${key}:`, err);
       _cache.tajweed.set(key, null);
+      _enforceCacheLimit(_cache.tajweed);
       return null;
    }
 }

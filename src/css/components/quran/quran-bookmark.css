@@ -1,0 +1,97 @@
+/* Bookmark Card Styles */
+
+/* Badge: Verse number indicator */
+.bookmark-verse-badge {
+   display: inline-flex;
+   align-items: center;
+   gap: var(--sp-1);
+   padding: var(--sp-1) var(--sp-2);
+   background: var(--clr-quran-accent);
+   color: var(--clr-quran-bg);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-semibold);
+   border-radius: var(--radius-full);
+   line-height: var(--lh-none);
+   white-space: nowrap;
+}
+
+.bookmark-verse-badge i {
+   font-size: 10px;
+}
+
+/* Bookmark card: position context for delete button */
+.bookmark-card {
+   position: relative;
+}
+
+/* Delete button: positioned at right side of card */
+.bookmark-delete-btn {
+   position: absolute;
+   top: 50%;
+   right: var(--sp-2);
+   transform: translateY(-50%);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 32px;
+   height: 32px;
+   background: transparent;
+   border: none;
+   color: var(--clr-quran-text-secondary);
+   opacity: 0.5;
+   cursor: pointer;
+   border-radius: 50%;
+   transition: opacity var(--transition-fast), color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+   z-index: 2;
+}
+
+.bookmark-delete-btn:active {
+   transform: translateY(-50%) scale(0.88);
+}
+
+.bookmark-delete-btn i {
+   font-size: var(--icon-md);
+}
+
+/* Hide Arabic title on bookmark cards to make room for delete */
+.bookmark-card .surah-title-arabic {
+   visibility: hidden;
+}
+
+/* Card exit animation on delete */
+.bookmark-card-exit {
+   animation: bookmarkCardExit 0.3s ease-out forwards;
+   pointer-events: none;
+}
+
+@keyframes bookmarkCardExit {
+   to {
+      opacity: 0;
+      transform: translateX(30px);
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      overflow: hidden;
+   }
+}
+
+/* Bookmarked ayah action button state */
+.quran-ayah-action-btn.bookmarked {
+   opacity: 1;
+   color: var(--clr-quran-accent);
+}
+
+
+
+/* Pointer-fine devices: hover state for delete button */
+@media (pointer: fine) {
+   .bookmark-delete-btn:hover {
+      opacity: 1;
+      color: var(--clr-danger);
+      background: var(--clr-quran-bg-alt);
+   }
+}

@@ -167,3 +167,71 @@ export function renderErrorState(container, message = "Gagal Memuat Al-Qur'an") 
       </div>
    `;
 }
+
+/**
+ * Renders a single Bookmark card.
+ * @param {Object} bookmark - Bookmark data
+ * @param {Object} surah - Surah metadata
+ * @param {Function} onClick - Handler for opening the bookmarked verse
+ * @param {Function} [onDelete] - Handler for removing the bookmark
+ */
+export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
+   const card = document.createElement('div');
+   card.className = 'surah-card bookmark-card';
+   card.setAttribute('data-focus-item', '');
+   card.dataset.bookmarkKey = bookmark.key;
+
+   const typeText = bookmark.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
+   const titleLatin = surah ? surah.title : bookmark.surahTitle;
+   const titleAr = surah ? surah.titleAr : bookmark.surahTitleAr;
+   const surahNum = bookmark.surahIndex;
+
+   card.innerHTML = `
+      <div class="surah-number-wrapper">
+         <div class="surah-number-ornament"></div>
+         <span class="surah-number-text">${surahNum}</span>
+      </div>
+      <div class="surah-info">
+         <div class="surah-title-latin">${titleLatin}</div>
+         <div class="surah-details">
+            <span class="surah-type surah-type-pill">${typeText}</span>
+            <span class="surah-detail-dot"></span>
+            <span class="bookmark-verse-badge">
+               <i class='bx bxs-bookmark-alt'></i>
+               Ayat ${bookmark.verseNumber}
+            </span>
+         </div>
+      </div>
+      <div class="surah-title-arabic">${titleAr}</div>
+   `;
+
+   if (onClick) {
+      makeAccessibleBtn(card, () => onClick(bookmark, surah));
+   }
+
+   // Delete button (overlays the Arabic title area)
+   if (onDelete) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'bookmark-delete-btn';
+      deleteBtn.setAttribute('aria-label', 'Hapus bookmark');
+      deleteBtn.innerHTML = `<i class='bx bx-trash'></i>`;
+      deleteBtn.addEventListener('click', (e) => {
+         e.stopPropagation();
+         onDelete(bookmark, card);
+      });
+      card.appendChild(deleteBtn);
+   }
+
+   return card;
+}
+
+/**
+ * Creates the Bookmark list container.
+ */
+export function createBookmarkList() {
+   const list = document.createElement('div');
+   list.className = 'surah-list';
+   list.setAttribute('data-focus-group', 'quran-bookmark-list');
+   list.setAttribute('data-focus-direction', 'vertical');
+   return list;
+}
