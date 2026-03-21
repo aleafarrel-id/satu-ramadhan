@@ -79,10 +79,11 @@ function _buildTextLine(line) {
       return el;
    }
 
-   for (const w of line.words) {
+   for (let i = 0, len = line.words.length; i < len; i++) {
+      const w = line.words[i];
       const wordEl = document.createElement('span');
       wordEl.className = 'mushaf-word';
-      wordEl.dataset.location = w.location || '';
+      if (w.location) wordEl.dataset.location = w.location;
       wordEl.textContent = w.word || w.text || '';
       el.appendChild(wordEl);
    }

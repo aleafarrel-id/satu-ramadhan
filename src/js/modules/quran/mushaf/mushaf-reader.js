@@ -19,9 +19,9 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-
 /* ─── Constants ─── */
 
 const TOTAL_PAGES = MushafApi.getTotalPages();
-const INITIAL_WINDOW = 10;
-const EXPAND_MARGIN = 3;
-const EXPAND_SIZE = 10;
+const INITIAL_WINDOW = 6;
+const EXPAND_MARGIN = 2;
+const EXPAND_SIZE = 6;
 
 /* ─── State ─── */
 
@@ -354,10 +354,12 @@ function _getPageFlipConfig() {
       height: ph,
       size: 'fixed',
       usePortrait: false,
-      drawShadow: true,
-      maxShadowOpacity: 0.25,
-      flippingTime: 900,
+      drawShadow: false,
+      maxShadowOpacity: 0,
+      flippingTime: 600,
       mobileScrollSupport: false,
+      swipeDistance: 30, // Make swipe more sensitive
+      showCover: false,
    };
 }
 
