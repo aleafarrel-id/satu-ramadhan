@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" preserveAspectRatio="none">
+<defs>
+<g id="f">
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(45)"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(90)"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(135)"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(180)"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(225)"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(270)"/>
+<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(315)"/>
+<circle cx="0" cy="0" r="10" fill="#cba557"/>
+<circle cx="0" cy="0" r="5" fill="#ffffff"/>
+<circle cx="0" cy="0" r="2.5" fill="#245e45"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(45)"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(90)"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(135)"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(180)"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(225)"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(270)"/>
+<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(315)"/>
+</g>
+<g id="p">
+<path d="M 15,15 L 250,15 L 220,60 L 250,105 L 15,105 Z" fill="#e6ebd6"/>
+<path d="M 250,15 L 220,60 L 250,105" fill="none" stroke="#cba557" stroke-width="4"/>
+<path d="M 245,15 L 215,60 L 245,105" fill="none" stroke="#245e45" stroke-width="2"/>
+<path d="M 15,15 L 60,15 C 60,35 45,50 15,50 Z" fill="#245e45"/>
+<path d="M 15,105 L 60,105 C 60,85 45,70 15,70 Z" fill="#245e45"/>
+<path d="M 15,22 L 40,22 C 40,32 30,37 15,37 Z" fill="#ffffff"/>
+<path d="M 15,98 L 40,98 C 40,88 30,83 15,83 Z" fill="#ffffff"/>
+<path d="M 75,60 C 75,30 115,30 115,45 C 115,55 95,60 95,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
+<path d="M 75,60 C 75,90 115,90 115,75 C 115,65 95,60 95,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
+<path d="M 95,60 C 95,45 125,35 125,55" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
+<path d="M 95,60 C 95,75 125,85 125,65" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
+<path d="M 195,60 C 195,30 155,30 155,45 C 155,55 175,60 175,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
+<path d="M 195,60 C 195,90 155,90 155,75 C 155,65 175,60 175,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
+<path d="M 175,60 C 175,45 145,35 145,55" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
+<path d="M 175,60 C 175,75 145,85 145,65" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
+<path d="M 25,60 C 45,35 70,55 70,60 C 70,65 45,85 25,60 Z" fill="#ffffff" stroke="#245e45" stroke-width="2"/>
+<circle cx="45" cy="60" r="4" fill="#245e45"/>
+<circle cx="55" cy="60" r="2.5" fill="#cba557"/>
+<path d="M 235,60 C 215,35 190,55 190,60 C 190,65 215,85 235,60 Z" fill="#ffffff" stroke="#245e45" stroke-width="2"/>
+<circle cx="215" cy="60" r="4" fill="#245e45"/>
+<circle cx="205" cy="60" r="2.5" fill="#cba557"/>
+<path d="M 135,15 C 115,25 155,25 135,15 Z" fill="#d2a945"/>
+<path d="M 135,105 C 115,95 155,95 135,105 Z" fill="#d2a945"/>
+<circle cx="230" cy="35" r="4" fill="#245e45"/>
+<circle cx="230" cy="85" r="4" fill="#245e45"/>
+<circle cx="240" cy="50" r="3" fill="#d2a945"/>
+<circle cx="240" cy="70" r="3" fill="#d2a945"/>
+<circle cx="100" cy="30" r="2.5" fill="#245e45"/>
+<circle cx="100" cy="90" r="2.5" fill="#245e45"/>
+<circle cx="170" cy="30" r="2.5" fill="#245e45"/>
+<circle cx="170" cy="90" r="2.5" fill="#245e45"/>
+<use href="#f" x="135" y="60"/>
+</g>
+</defs>
+<rect x="10" y="10" width="780" height="100" fill="#ffffff" stroke="#cba557" stroke-width="4"/>
+<rect x="15" y="15" width="770" height="90" fill="none" stroke="#cba557" stroke-width="1.5"/>
+<use href="#p" x="0" y="0"/>
+<use href="#p" transform="translate(800, 0) scale(-1, 1)"/>
+<path d="M 350,15 L 400,22 L 450,15" fill="none" stroke="#cba557" stroke-width="1.5"/>
+<path d="M 350,105 L 400,98 L 450,105" fill="none" stroke="#cba557" stroke-width="1.5"/>
+<circle cx="400" cy="22" r="3" fill="#cba557"/>
+<circle cx="400" cy="98" r="3" fill="#cba557"/>
+</svg>

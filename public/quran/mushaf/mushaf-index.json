@@ -1,0 +1,1028 @@
+[
+  {
+    "index": "001",
+    "surah": 1,
+    "title": "Al-Fatihah",
+    "titleAr": "الفاتحة",
+    "type": "Makkiyah",
+    "count": 7,
+    "startPage": 1
+  },
+  {
+    "index": "002",
+    "surah": 2,
+    "title": "Al-Baqarah",
+    "titleAr": "البقرة",
+    "type": "Madaniyah",
+    "count": 286,
+    "startPage": 2
+  },
+  {
+    "index": "003",
+    "surah": 3,
+    "title": "Ali 'Imran",
+    "titleAr": "آل عمران",
+    "type": "Madaniyah",
+    "count": 200,
+    "startPage": 50
+  },
+  {
+    "index": "004",
+    "surah": 4,
+    "title": "An-Nisa'",
+    "titleAr": "النساء",
+    "type": "Madaniyah",
+    "count": 176,
+    "startPage": 77
+  },
+  {
+    "index": "005",
+    "surah": 5,
+    "title": "Al-Ma'idah",
+    "titleAr": "المائدة",
+    "type": "Madaniyah",
+    "count": 120,
+    "startPage": 106
+  },
+  {
+    "index": "006",
+    "surah": 6,
+    "title": "Al-An'am",
+    "titleAr": "الأنعام",
+    "type": "Makkiyah",
+    "count": 165,
+    "startPage": 128
+  },
+  {
+    "index": "007",
+    "surah": 7,
+    "title": "Al-A'raf",
+    "titleAr": "الأعراف",
+    "type": "Makkiyah",
+    "count": 206,
+    "startPage": 151
+  },
+  {
+    "index": "008",
+    "surah": 8,
+    "title": "Al-Anfal",
+    "titleAr": "الأنفال",
+    "type": "Madaniyah",
+    "count": 75,
+    "startPage": 177
+  },
+  {
+    "index": "009",
+    "surah": 9,
+    "title": "At-Taubah",
+    "titleAr": "التوبة",
+    "type": "Madaniyah",
+    "count": 129,
+    "startPage": 187
+  },
+  {
+    "index": "010",
+    "surah": 10,
+    "title": "Yunus",
+    "titleAr": "يونس",
+    "type": "Makkiyah",
+    "count": 109,
+    "startPage": 208
+  },
+  {
+    "index": "011",
+    "surah": 11,
+    "title": "Hud",
+    "titleAr": "هود",
+    "type": "Makkiyah",
+    "count": 123,
+    "startPage": 221
+  },
+  {
+    "index": "012",
+    "surah": 12,
+    "title": "Yusuf",
+    "titleAr": "يوسف",
+    "type": "Makkiyah",
+    "count": 111,
+    "startPage": 235
+  },
+  {
+    "index": "013",
+    "surah": 13,
+    "title": "Ar-Ra'd",
+    "titleAr": "الرعد",
+    "type": "Madaniyah",
+    "count": 43,
+    "startPage": 249
+  },
+  {
+    "index": "014",
+    "surah": 14,
+    "title": "Ibrahim",
+    "titleAr": "إبراهيم",
+    "type": "Makkiyah",
+    "count": 52,
+    "startPage": 255
+  },
+  {
+    "index": "015",
+    "surah": 15,
+    "title": "Al-Hijr",
+    "titleAr": "الحجر",
+    "type": "Makkiyah",
+    "count": 99,
+    "startPage": 262
+  },
+  {
+    "index": "016",
+    "surah": 16,
+    "title": "An-Nahl",
+    "titleAr": "النحل",
+    "type": "Makkiyah",
+    "count": 128,
+    "startPage": 267
+  },
+  {
+    "index": "017",
+    "surah": 17,
+    "title": "Al-Isra'",
+    "titleAr": "الإسراء",
+    "type": "Makkiyah",
+    "count": 111,
+    "startPage": 282
+  },
+  {
+    "index": "018",
+    "surah": 18,
+    "title": "Al-Kahf",
+    "titleAr": "الكهف",
+    "type": "Makkiyah",
+    "count": 110,
+    "startPage": 293
+  },
+  {
+    "index": "019",
+    "surah": 19,
+    "title": "Maryam",
+    "titleAr": "مريم",
+    "type": "Makkiyah",
+    "count": 98,
+    "startPage": 305
+  },
+  {
+    "index": "020",
+    "surah": 20,
+    "title": "Thaha",
+    "titleAr": "طه",
+    "type": "Makkiyah",
+    "count": 135,
+    "startPage": 312
+  },
+  {
+    "index": "021",
+    "surah": 21,
+    "title": "Al-Anbiya'",
+    "titleAr": "الأنبياء",
+    "type": "Makkiyah",
+    "count": 112,
+    "startPage": 322
+  },
+  {
+    "index": "022",
+    "surah": 22,
+    "title": "Al-Hajj",
+    "titleAr": "الحج",
+    "type": "Madaniyah",
+    "count": 78,
+    "startPage": 341
+  },
+  {
+    "index": "023",
+    "surah": 23,
+    "title": "Al-Mu'minun",
+    "titleAr": "المؤمنون",
+    "type": "Makkiyah",
+    "count": 118,
+    "startPage": 349
+  },
+  {
+    "index": "024",
+    "surah": 24,
+    "title": "An-Nur",
+    "titleAr": "النور",
+    "type": "Madaniyah",
+    "count": 64,
+    "startPage": 350
+  },
+  {
+    "index": "025",
+    "surah": 25,
+    "title": "Al-Furqan",
+    "titleAr": "الفرقان",
+    "type": "Makkiyah",
+    "count": 77,
+    "startPage": 359
+  },
+  {
+    "index": "026",
+    "surah": 26,
+    "title": "Asy-Syu'ara'",
+    "titleAr": "الشعراء",
+    "type": "Makkiyah",
+    "count": 227,
+    "startPage": 376
+  },
+  {
+    "index": "027",
+    "surah": 27,
+    "title": "An-Naml",
+    "titleAr": "النمل",
+    "type": "Makkiyah",
+    "count": 93,
+    "startPage": 377
+  },
+  {
+    "index": "028",
+    "surah": 28,
+    "title": "Al-Qashash",
+    "titleAr": "القصص",
+    "type": "Makkiyah",
+    "count": 88,
+    "startPage": 385
+  },
+  {
+    "index": "029",
+    "surah": 29,
+    "title": "Al-'Ankabut",
+    "titleAr": "العنكبوت",
+    "type": "Makkiyah",
+    "count": 69,
+    "startPage": 396
+  },
+  {
+    "index": "030",
+    "surah": 30,
+    "title": "Ar-Rum",
+    "titleAr": "الروم",
+    "type": "Makkiyah",
+    "count": 60,
+    "startPage": 404
+  },
+  {
+    "index": "031",
+    "surah": 31,
+    "title": "Luqman",
+    "titleAr": "لقمان",
+    "type": "Makkiyah",
+    "count": 34,
+    "startPage": 411
+  },
+  {
+    "index": "032",
+    "surah": 32,
+    "title": "As-Sajdah",
+    "titleAr": "السجدة",
+    "type": "Makkiyah",
+    "count": 30,
+    "startPage": 417
+  },
+  {
+    "index": "033",
+    "surah": 33,
+    "title": "Al-Ahzab",
+    "titleAr": "الأحزاب",
+    "type": "Madaniyah",
+    "count": 73,
+    "startPage": 418
+  },
+  {
+    "index": "034",
+    "surah": 34,
+    "title": "Saba'",
+    "titleAr": "سبأ",
+    "type": "Makkiyah",
+    "count": 54,
+    "startPage": 428
+  },
+  {
+    "index": "035",
+    "surah": 35,
+    "title": "Fathir",
+    "titleAr": "فاطر",
+    "type": "Makkiyah",
+    "count": 45,
+    "startPage": 434
+  },
+  {
+    "index": "036",
+    "surah": 36,
+    "title": "Yasin",
+    "titleAr": "يس",
+    "type": "Makkiyah",
+    "count": 83,
+    "startPage": 440
+  },
+  {
+    "index": "037",
+    "surah": 37,
+    "title": "Ash-Shaffat",
+    "titleAr": "الصافات",
+    "type": "Makkiyah",
+    "count": 182,
+    "startPage": 452
+  },
+  {
+    "index": "038",
+    "surah": 38,
+    "title": "Shad",
+    "titleAr": "ص",
+    "type": "Makkiyah",
+    "count": 88,
+    "startPage": 453
+  },
+  {
+    "index": "039",
+    "surah": 39,
+    "title": "Az-Zumar",
+    "titleAr": "الزمر",
+    "type": "Makkiyah",
+    "count": 75,
+    "startPage": 458
+  },
+  {
+    "index": "040",
+    "surah": 40,
+    "title": "Ghafir",
+    "titleAr": "غافر",
+    "type": "Makkiyah",
+    "count": 85,
+    "startPage": 467
+  },
+  {
+    "index": "041",
+    "surah": 41,
+    "title": "Fushshilat",
+    "titleAr": "فصلت",
+    "type": "Makkiyah",
+    "count": 54,
+    "startPage": 477
+  },
+  {
+    "index": "042",
+    "surah": 42,
+    "title": "Asy-Syura",
+    "titleAr": "الشورى",
+    "type": "Makkiyah",
+    "count": 53,
+    "startPage": 483
+  },
+  {
+    "index": "043",
+    "surah": 43,
+    "title": "Az-Zukhruf",
+    "titleAr": "الزخرف",
+    "type": "Makkiyah",
+    "count": 89,
+    "startPage": 489
+  },
+  {
+    "index": "044",
+    "surah": 44,
+    "title": "Ad-Dukhan",
+    "titleAr": "الدخان",
+    "type": "Makkiyah",
+    "count": 59,
+    "startPage": 496
+  },
+  {
+    "index": "045",
+    "surah": 45,
+    "title": "Al-Jatsiyah",
+    "titleAr": "الجاثية",
+    "type": "Makkiyah",
+    "count": 37,
+    "startPage": 499
+  },
+  {
+    "index": "046",
+    "surah": 46,
+    "title": "Al-Ahqaf",
+    "titleAr": "الأحقاف",
+    "type": "Makkiyah",
+    "count": 35,
+    "startPage": 502
+  },
+  {
+    "index": "047",
+    "surah": 47,
+    "title": "Muhammad",
+    "titleAr": "محمد",
+    "type": "Madaniyah",
+    "count": 38,
+    "startPage": 507
+  },
+  {
+    "index": "048",
+    "surah": 48,
+    "title": "Al-Fath",
+    "titleAr": "الفتح",
+    "type": "Madaniyah",
+    "count": 29,
+    "startPage": 511
+  },
+  {
+    "index": "049",
+    "surah": 49,
+    "title": "Al-Hujurat",
+    "titleAr": "الحجرات",
+    "type": "Madaniyah",
+    "count": 18,
+    "startPage": 515
+  },
+  {
+    "index": "050",
+    "surah": 50,
+    "title": "Qaf",
+    "titleAr": "ق",
+    "type": "Makkiyah",
+    "count": 45,
+    "startPage": 518
+  },
+  {
+    "index": "051",
+    "surah": 51,
+    "title": "Adz-Dzariyat",
+    "titleAr": "الذاريات",
+    "type": "Makkiyah",
+    "count": 60,
+    "startPage": 520
+  },
+  {
+    "index": "052",
+    "surah": 52,
+    "title": "Ath-Thur",
+    "titleAr": "الطور",
+    "type": "Makkiyah",
+    "count": 49,
+    "startPage": 523
+  },
+  {
+    "index": "053",
+    "surah": 53,
+    "title": "An-Najm",
+    "titleAr": "النجم",
+    "type": "Makkiyah",
+    "count": 62,
+    "startPage": 526
+  },
+  {
+    "index": "054",
+    "surah": 54,
+    "title": "Al-Qamar",
+    "titleAr": "القمر",
+    "type": "Makkiyah",
+    "count": 55,
+    "startPage": 528
+  },
+  {
+    "index": "055",
+    "surah": 55,
+    "title": "Ar-Rahman",
+    "titleAr": "الرحمن",
+    "type": "Madaniyah",
+    "count": 78,
+    "startPage": 531
+  },
+  {
+    "index": "056",
+    "surah": 56,
+    "title": "Al-Waqi'ah",
+    "titleAr": "الواقعة",
+    "type": "Makkiyah",
+    "count": 96,
+    "startPage": 534
+  },
+  {
+    "index": "057",
+    "surah": 57,
+    "title": "Al-Hadid",
+    "titleAr": "الحديد",
+    "type": "Madaniyah",
+    "count": 29,
+    "startPage": 537
+  },
+  {
+    "index": "058",
+    "surah": 58,
+    "title": "Al-Mujadalah",
+    "titleAr": "المجادلة",
+    "type": "Madaniyah",
+    "count": 22,
+    "startPage": 542
+  },
+  {
+    "index": "059",
+    "surah": 59,
+    "title": "Al-Hasyr",
+    "titleAr": "الحشر",
+    "type": "Madaniyah",
+    "count": 24,
+    "startPage": 545
+  },
+  {
+    "index": "060",
+    "surah": 60,
+    "title": "Al-Mumtahanah",
+    "titleAr": "الممتحنة",
+    "type": "Madaniyah",
+    "count": 13,
+    "startPage": 549
+  },
+  {
+    "index": "061",
+    "surah": 61,
+    "title": "Ash-Shaff",
+    "titleAr": "الصف",
+    "type": "Madaniyah",
+    "count": 14,
+    "startPage": 551
+  },
+  {
+    "index": "062",
+    "surah": 62,
+    "title": "Al-Jumu'ah",
+    "titleAr": "الجمعة",
+    "type": "Madaniyah",
+    "count": 11,
+    "startPage": 553
+  },
+  {
+    "index": "063",
+    "surah": 63,
+    "title": "Al-Munafiqun",
+    "titleAr": "المنافقون",
+    "type": "Madaniyah",
+    "count": 11,
+    "startPage": 554
+  },
+  {
+    "index": "064",
+    "surah": 64,
+    "title": "At-Taghabun",
+    "titleAr": "التغابن",
+    "type": "Madaniyah",
+    "count": 18,
+    "startPage": 557
+  },
+  {
+    "index": "065",
+    "surah": 65,
+    "title": "Ath-Thalaq",
+    "titleAr": "الطلاق",
+    "type": "Madaniyah",
+    "count": 12,
+    "startPage": 558
+  },
+  {
+    "index": "066",
+    "surah": 66,
+    "title": "At-Tahrim",
+    "titleAr": "التحريم",
+    "type": "Madaniyah",
+    "count": 12,
+    "startPage": 560
+  },
+  {
+    "index": "067",
+    "surah": 67,
+    "title": "Al-Mulk",
+    "titleAr": "الملك",
+    "type": "Makkiyah",
+    "count": 30,
+    "startPage": 562
+  },
+  {
+    "index": "068",
+    "surah": 68,
+    "title": "Al-Qalam",
+    "titleAr": "القلم",
+    "type": "Makkiyah",
+    "count": 52,
+    "startPage": 564
+  },
+  {
+    "index": "069",
+    "surah": 69,
+    "title": "Al-Haqqah",
+    "titleAr": "الحاقة",
+    "type": "Makkiyah",
+    "count": 52,
+    "startPage": 566
+  },
+  {
+    "index": "070",
+    "surah": 70,
+    "title": "Al-Ma'arij",
+    "titleAr": "المعارج",
+    "type": "Makkiyah",
+    "count": 44,
+    "startPage": 568
+  },
+  {
+    "index": "071",
+    "surah": 71,
+    "title": "Nuh",
+    "titleAr": "نوح",
+    "type": "Makkiyah",
+    "count": 28,
+    "startPage": 570
+  },
+  {
+    "index": "072",
+    "surah": 72,
+    "title": "Al-Jinn",
+    "titleAr": "الجن",
+    "type": "Makkiyah",
+    "count": 28,
+    "startPage": 572
+  },
+  {
+    "index": "073",
+    "surah": 73,
+    "title": "Al-Muzzammil",
+    "titleAr": "المزمل",
+    "type": "Makkiyah",
+    "count": 20,
+    "startPage": 574
+  },
+  {
+    "index": "074",
+    "surah": 74,
+    "title": "Al-Muddatsir",
+    "titleAr": "المدثر",
+    "type": "Makkiyah",
+    "count": 56,
+    "startPage": 575
+  },
+  {
+    "index": "075",
+    "surah": 75,
+    "title": "Al-Qiyamah",
+    "titleAr": "القيامة",
+    "type": "Makkiyah",
+    "count": 40,
+    "startPage": 577
+  },
+  {
+    "index": "076",
+    "surah": 76,
+    "title": "Al-Insan",
+    "titleAr": "الإنسان",
+    "type": "Madaniyah",
+    "count": 31,
+    "startPage": 578
+  },
+  {
+    "index": "077",
+    "surah": 77,
+    "title": "Al-Mursalat",
+    "titleAr": "المرسلات",
+    "type": "Makkiyah",
+    "count": 50,
+    "startPage": 580
+  },
+  {
+    "index": "078",
+    "surah": 78,
+    "title": "An-Naba'",
+    "titleAr": "النبأ",
+    "type": "Makkiyah",
+    "count": 40,
+    "startPage": 582
+  },
+  {
+    "index": "079",
+    "surah": 79,
+    "title": "An-Nazi'at",
+    "titleAr": "النازعات",
+    "type": "Makkiyah",
+    "count": 46,
+    "startPage": 583
+  },
+  {
+    "index": "080",
+    "surah": 80,
+    "title": "'Abasa",
+    "titleAr": "عبس",
+    "type": "Makkiyah",
+    "count": 42,
+    "startPage": 585
+  },
+  {
+    "index": "081",
+    "surah": 81,
+    "title": "At-Takwir",
+    "titleAr": "التكوير",
+    "type": "Makkiyah",
+    "count": 29,
+    "startPage": 586
+  },
+  {
+    "index": "082",
+    "surah": 82,
+    "title": "Al-Infithar",
+    "titleAr": "الإنفطار",
+    "type": "Makkiyah",
+    "count": 19,
+    "startPage": 587
+  },
+  {
+    "index": "083",
+    "surah": 83,
+    "title": "Al-Muthaffifin",
+    "titleAr": "المطففين",
+    "type": "Makkiyah",
+    "count": 36,
+    "startPage": 587
+  },
+  {
+    "index": "084",
+    "surah": 84,
+    "title": "Al-Insyiqaq",
+    "titleAr": "الإنشقاق",
+    "type": "Makkiyah",
+    "count": 25,
+    "startPage": 589
+  },
+  {
+    "index": "085",
+    "surah": 85,
+    "title": "Al-Buruj",
+    "titleAr": "البروج",
+    "type": "Makkiyah",
+    "count": 22,
+    "startPage": 590
+  },
+  {
+    "index": "086",
+    "surah": 86,
+    "title": "Ath-Thariq",
+    "titleAr": "الطارق",
+    "type": "Makkiyah",
+    "count": 17,
+    "startPage": 591
+  },
+  {
+    "index": "087",
+    "surah": 87,
+    "title": "Al-A'la",
+    "titleAr": "الأعلى",
+    "type": "Makkiyah",
+    "count": 19,
+    "startPage": 591
+  },
+  {
+    "index": "088",
+    "surah": 88,
+    "title": "Al-Ghasyiyah",
+    "titleAr": "الغاشية",
+    "type": "Makkiyah",
+    "count": 26,
+    "startPage": 592
+  },
+  {
+    "index": "089",
+    "surah": 89,
+    "title": "Al-Fajr",
+    "titleAr": "الفجر",
+    "type": "Makkiyah",
+    "count": 30,
+    "startPage": 593
+  },
+  {
+    "index": "090",
+    "surah": 90,
+    "title": "Al-Balad",
+    "titleAr": "البلد",
+    "type": "Makkiyah",
+    "count": 20,
+    "startPage": 594
+  },
+  {
+    "index": "091",
+    "surah": 91,
+    "title": "Asy-Syams",
+    "titleAr": "الشمس",
+    "type": "Makkiyah",
+    "count": 15,
+    "startPage": 595
+  },
+  {
+    "index": "092",
+    "surah": 92,
+    "title": "Al-Lail",
+    "titleAr": "الليل",
+    "type": "Makkiyah",
+    "count": 21,
+    "startPage": 595
+  },
+  {
+    "index": "093",
+    "surah": 93,
+    "title": "Adh-Dhuha",
+    "titleAr": "الضحى",
+    "type": "Makkiyah",
+    "count": 11,
+    "startPage": 596
+  },
+  {
+    "index": "094",
+    "surah": 94,
+    "title": "Al-Insyirah",
+    "titleAr": "الإنشراح",
+    "type": "Makkiyah",
+    "count": 8,
+    "startPage": 596
+  },
+  {
+    "index": "095",
+    "surah": 95,
+    "title": "At-Tin",
+    "titleAr": "التين",
+    "type": "Makkiyah",
+    "count": 8,
+    "startPage": 597
+  },
+  {
+    "index": "096",
+    "surah": 96,
+    "title": "Al-'Alaq",
+    "titleAr": "العلق",
+    "type": "Makkiyah",
+    "count": 19,
+    "startPage": 597
+  },
+  {
+    "index": "097",
+    "surah": 97,
+    "title": "Al-Qadr",
+    "titleAr": "القدر",
+    "type": "Makkiyah",
+    "count": 5,
+    "startPage": 598
+  },
+  {
+    "index": "098",
+    "surah": 98,
+    "title": "Al-Bayyinah",
+    "titleAr": "البينة",
+    "type": "Madaniyah",
+    "count": 8,
+    "startPage": 598
+  },
+  {
+    "index": "099",
+    "surah": 99,
+    "title": "Az-Zalzalah",
+    "titleAr": "الزلزلة",
+    "type": "Madaniyah",
+    "count": 8,
+    "startPage": 599
+  },
+  {
+    "index": "100",
+    "surah": 100,
+    "title": "Al-'Adiyat",
+    "titleAr": "العاديات",
+    "type": "Makkiyah",
+    "count": 11,
+    "startPage": 599
+  },
+  {
+    "index": "101",
+    "surah": 101,
+    "title": "Al-Qari'ah",
+    "titleAr": "القارعة",
+    "type": "Makkiyah",
+    "count": 11,
+    "startPage": 600
+  },
+  {
+    "index": "102",
+    "surah": 102,
+    "title": "At-Takatsur",
+    "titleAr": "التكاثر",
+    "type": "Makkiyah",
+    "count": 8,
+    "startPage": 600
+  },
+  {
+    "index": "103",
+    "surah": 103,
+    "title": "Al-'Ashr",
+    "titleAr": "العصر",
+    "type": "Makkiyah",
+    "count": 3,
+    "startPage": 601
+  },
+  {
+    "index": "104",
+    "surah": 104,
+    "title": "Al-Humazah",
+    "titleAr": "الهمزة",
+    "type": "Makkiyah",
+    "count": 9,
+    "startPage": 601
+  },
+  {
+    "index": "105",
+    "surah": 105,
+    "title": "Al-Fil",
+    "titleAr": "الفيل",
+    "type": "Makkiyah",
+    "count": 5,
+    "startPage": 601
+  },
+  {
+    "index": "106",
+    "surah": 106,
+    "title": "Quraisy",
+    "titleAr": "قريش",
+    "type": "Makkiyah",
+    "count": 4,
+    "startPage": 602
+  },
+  {
+    "index": "107",
+    "surah": 107,
+    "title": "Al-Ma'un",
+    "titleAr": "الماعون",
+    "type": "Makkiyah",
+    "count": 7,
+    "startPage": 602
+  },
+  {
+    "index": "108",
+    "surah": 108,
+    "title": "Al-Kautsar",
+    "titleAr": "الكوثر",
+    "type": "Makkiyah",
+    "count": 3,
+    "startPage": 602
+  },
+  {
+    "index": "109",
+    "surah": 109,
+    "title": "Al-Kafirun",
+    "titleAr": "الكافرون",
+    "type": "Makkiyah",
+    "count": 6,
+    "startPage": 603
+  },
+  {
+    "index": "110",
+    "surah": 110,
+    "title": "An-Nashr",
+    "titleAr": "النصر",
+    "type": "Madaniyah",
+    "count": 3,
+    "startPage": 603
+  },
+  {
+    "index": "111",
+    "surah": 111,
+    "title": "Al-Lahab",
+    "titleAr": "اللهب",
+    "type": "Makkiyah",
+    "count": 5,
+    "startPage": 603
+  },
+  {
+    "index": "112",
+    "surah": 112,
+    "title": "Al-Ikhlash",
+    "titleAr": "الإخلاص",
+    "type": "Makkiyah",
+    "count": 4,
+    "startPage": 604
+  },
+  {
+    "index": "113",
+    "surah": 113,
+    "title": "Al-Falaq",
+    "titleAr": "الفلق",
+    "type": "Makkiyah",
+    "count": 5,
+    "startPage": 604
+  },
+  {
+    "index": "114",
+    "surah": 114,
+    "title": "An-Nas",
+    "titleAr": "الناس",
+    "type": "Makkiyah",
+    "count": 6,
+    "startPage": 604
+  }
+]

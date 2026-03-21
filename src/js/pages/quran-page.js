@@ -5,6 +5,7 @@
 import * as QuranNav from '../modules/quran/quran-nav.js';
 import * as QuranSearch from '../components/quran/quran-search.js';
 import * as QuranReader from '../modules/quran/quran-reader.js';
+import * as QuranDock from '../components/quran/quran-dock.js';
 import { makeAccessibleBtn } from '../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
 
@@ -12,6 +13,7 @@ let _container = null;
 let _quranContent = null;
 let _activePage = null;
 let _activePageId = null;
+let _lastSubPageId = 'surah';
 let _debounceTimer = null;
 let _isSearchActive = false;
 
@@ -67,8 +69,15 @@ export async function render(container) {
  * Loads a subpage into the skeleton.
  */
 async function loadSubPage(pageId) {
+   if (_activePageId === pageId) return;
+
    if (_activePage && _activePage.destroy) {
       await _activePage.destroy();
+   }
+
+   // Keep track of the last active page that wasn't 'mushaf'
+   if (_activePageId && _activePageId !== 'mushaf') {
+      _lastSubPageId = _activePageId;
    }
 
    _activePageId = pageId;
@@ -165,5 +174,15 @@ export async function destroy() {
    _container = null;
    _quranContent = null;
    _activePage = null;
+   _activePageId = null;
+   _lastSubPageId = 'surah';
    _isSearchActive = false;
+}
+
+/**
+ * Navigates back to the last active subpage after closing Mushaf.
+ */
+export function navigateBackFromMushaf() {
+   loadSubPage(_lastSubPageId);
+   QuranDock.setActive(_lastSubPageId);
 }

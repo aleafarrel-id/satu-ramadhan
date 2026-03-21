@@ -15,10 +15,13 @@
 
 .quran-dock.show {
    opacity: 1;
+   visibility: visible;
 }
 
 .quran-dock.hide {
    opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
 }
 
 .quran-dock-bg-oval {

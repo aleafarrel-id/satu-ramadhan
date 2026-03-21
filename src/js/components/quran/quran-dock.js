@@ -5,8 +5,8 @@
 const DOCK_ITEMS = [
    { id: 'surah', icon: 'bx-book-content', label: 'Surah' },
    { id: 'juz', icon: 'bx-book-open', label: 'Juz' },
-   { id: 'bookmark', icon: 'bxs-book-bookmark', label: 'Bookmark' },
-   { id: 'settings', icon: 'bx-cog', label: 'Setelan' }
+   { id: 'mushaf', icon: 'bx-book-reader', label: 'Mushaf' },
+   { id: 'bookmark', icon: 'bxs-book-bookmark', label: 'Bookmark' }
 ];
 
 let _container = null;
