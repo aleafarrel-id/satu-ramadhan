@@ -6,25 +6,26 @@
 
 import * as QuranDock from '../../components/quran/quran-dock.js';
 import * as QuranCard from '../../components/quran/quran-card.js';
+import * as QuranHeader from '../../components/quran/quran-header.js';
 import { renderBatchedList, createRenderContext } from './quran-utility.js';
-import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
 import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
+import { openPicker, closePicker, destroyPicker } from '../../components/quran/quran-picker.js';
 import * as BookmarkManager from './bookmark-manager.js';
 import * as Notification from '../notification/notification.js';
 
 /* Internal State */
 
 let _isOpen = false;
-let _isPickerOpen = false;
 let _currentItem = null;
 let _currentType = 'surah';
 let _overlay = null;
-let _pickerOverlay = null;
+let _readerHeaderInstance = null;
 let _scrollContainer = null;
 let _quranPage = null;
+let _onCloseCallback = null;
 const _renderCtx = createRenderContext();
 
 /* Verse Search State */
@@ -42,12 +43,13 @@ let _targetVerseNumber = null;
  * @param {string} type - 'surah' | 'juz'
  * @param {number|null} targetVerseNumber - Verse to scroll to on open (for bookmarks)
  */
-export async function open(item, type = 'surah', targetVerseNumber = null) {
+export async function open(item, type = 'surah', targetVerseNumber = null, options = {}) {
    if (_isOpen) return;
    _isOpen = true;
    _currentItem = item;
    _currentType = type;
    _targetVerseNumber = targetVerseNumber;
+   _onCloseCallback = options?.onClose || null;
 
    _quranPage = document.querySelector('.quran-page');
    if (!_quranPage) return;
@@ -90,13 +92,17 @@ export function close() {
    if (!_isOpen) return;
    _isOpen = false;
 
+   if (typeof _onCloseCallback === 'function') {
+      _onCloseCallback();
+   }
+
    unregisterModalDismiss(close);
 
    // Cancel any in-flight renders
    _renderCtx.incrementAndGet();
 
    _exitReaderSearch();
-   _closeSurahPicker();
+   closePicker();
    dismissTooltip();
 
    if (_overlay) {
@@ -115,15 +121,16 @@ export function close() {
       if (_overlay && _overlay.parentNode) {
          _overlay.parentNode.removeChild(_overlay);
       }
-      if (_pickerOverlay && _pickerOverlay.parentNode) {
-         _pickerOverlay.parentNode.removeChild(_pickerOverlay);
-      }
       _overlay = null;
-      _pickerOverlay = null;
+      if (_readerHeaderInstance) {
+         _readerHeaderInstance.destroy();
+         _readerHeaderInstance = null;
+      }
       _scrollContainer = null;
       _currentItem = null;
       _currentType = 'surah';
       _currentReaderData = [];
+      _onCloseCallback = null;
    }, 400);
 }
 
@@ -134,30 +141,31 @@ export function destroy() {
    if (_isOpen) {
       // Fast close without animation
       _isOpen = false;
-      _isPickerOpen = false;
       _isReaderSearchActive = false;
       if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
       _renderCtx.incrementAndGet();
       unregisterModalDismiss(close);
-      unregisterModalDismiss(_closeSurahPicker);
       unregisterModalDismiss(_exitReaderSearch);
       dismissTooltip();
+      destroyPicker();
+      
       if (_overlay && _overlay.parentNode) {
          _overlay.parentNode.removeChild(_overlay);
-      }
-      if (_pickerOverlay && _pickerOverlay.parentNode) {
-         _pickerOverlay.parentNode.removeChild(_pickerOverlay);
       }
       if (_quranPage) {
          _quranPage.classList.remove('is-reading');
       }
       _overlay = null;
-      _pickerOverlay = null;
+      if (_readerHeaderInstance) {
+         _readerHeaderInstance.destroy();
+         _readerHeaderInstance = null;
+      }
       _scrollContainer = null;
       _currentItem = null;
       _currentType = 'surah';
       _currentReaderData = [];
       _quranPage = null;
+      _onCloseCallback = null;
    }
 }
 
@@ -176,61 +184,29 @@ function _buildOverlay(item) {
    _overlay.id = 'quran-reader-overlay';
 
    // Header
-   const header = document.createElement('div');
-   header.className = 'quran-reader-header';
-
-   // Back button
-   const backBtn = document.createElement('button');
-   backBtn.className = 'quran-reader-back';
-   backBtn.setAttribute('aria-label', 'Kembali');
-   backBtn.innerHTML = `<i class='bx bx-chevron-left'></i>`;
-   makeAccessibleBtn(backBtn, close);
-
-   // Title wrapper (container for dropdown)
-   const titleWrapper = document.createElement('div');
-   titleWrapper.className = 'quran-reader-title-wrapper';
-   titleWrapper.setAttribute('role', 'button');
-   titleWrapper.setAttribute('tabindex', '0');
-
-   const titleText = document.createElement('span');
-   titleText.className = 'quran-reader-title';
-
+   let titleStr = '';
+   let ariaLabelStr = '';
    if (_currentType === 'juz') {
-      titleText.textContent = `Juz ${parseInt(item.index)}`;
-      titleWrapper.setAttribute('aria-label', `Pilih Juz (Saat ini Juz ${parseInt(item.index)})`);
+      titleStr = `Juz ${parseInt(item.index)}`;
+      ariaLabelStr = `Pilih Juz (Saat ini Juz ${parseInt(item.index)})`;
    } else {
-      titleText.textContent = `${parseInt(item.index)}. ${item.title}`;
-      titleWrapper.setAttribute('aria-label', `Pilih Surah (Saat ini Surah ${item.title})`);
+      titleStr = `${parseInt(item.index)}. ${item.title}`;
+      ariaLabelStr = `Pilih Surah (Saat ini Surah ${item.title})`;
    }
 
-   const titleChevron = document.createElement('i');
-   titleChevron.className = 'bx bx-chevron-down quran-reader-title-chevron';
-
-   titleWrapper.addEventListener('click', _openSurahPicker);
-
-   titleWrapper.appendChild(titleText);
-   titleWrapper.appendChild(titleChevron);
-
-   // Search button (replaces right spacer for symmetry)
-   const searchBtn = document.createElement('button');
-   searchBtn.className = 'quran-reader-search-btn';
-   searchBtn.setAttribute('aria-label', 'Cari ayat');
-   searchBtn.innerHTML = `<i class='bx bx-search'></i>`;
-   makeAccessibleBtn(searchBtn, _toggleReaderSearch);
-
-   // Search input (hidden by default, shown inline when search is active)
-   const searchInput = document.createElement('input');
-   searchInput.className = 'quran-reader-search-input';
-   searchInput.type = 'number';
-   searchInput.inputMode = 'numeric';
-   searchInput.placeholder = 'Nomor ayat...';
-   searchInput.autocomplete = 'off';
-   searchInput.addEventListener('input', _onSearchInput);
-
-   header.appendChild(backBtn);
-   header.appendChild(titleWrapper);
-   header.appendChild(searchInput);
-   header.appendChild(searchBtn);
+   _readerHeaderInstance = QuranHeader.createHeader({
+      title: titleStr,
+      onBack: close,
+      titleClickable: true,
+      onTitleClick: _openSurahPicker,
+      titleAriaLabel: ariaLabelStr,
+      hasSearchInput: true,
+      searchPlaceholder: 'Nomor ayat...',
+      onSearchInput: _onSearchInput,
+      rightBtnIcon: 'bx-search',
+      rightBtnAriaLabel: 'Cari ayat',
+      onRightBtnClick: _toggleReaderSearch
+   });
 
    // Scroll content area
    _scrollContainer = document.createElement('div');
@@ -239,7 +215,7 @@ function _buildOverlay(item) {
    // Loading state
    QuranCard.renderLoadingState(_scrollContainer);
 
-   _overlay.appendChild(header);
+   _overlay.appendChild(_readerHeaderInstance.element);
    _overlay.appendChild(_scrollContainer);
 
    // Mount into the quran-page
@@ -249,114 +225,32 @@ function _buildOverlay(item) {
 /* Picker Logic */
 
 function _openSurahPicker() {
-   if (_isPickerOpen) return;
-   _isPickerOpen = true;
-
-   if (!_pickerOverlay) {
-      _pickerOverlay = document.createElement('div');
-      _pickerOverlay.className = 'quran-reader-picker-overlay';
-
-      const header = document.createElement('div');
-      header.className = 'quran-reader-picker-header';
-
-      const backBtn = document.createElement('button');
-      backBtn.className = 'quran-reader-back';
-      backBtn.setAttribute('aria-label', 'Tutup daftar');
-      backBtn.innerHTML = `<i class='bx bx-x'></i>`;
-      makeAccessibleBtn(backBtn, _closeSurahPicker);
-
-      const title = document.createElement('div');
-      title.className = 'quran-reader-picker-title';
-      title.textContent = _currentType === 'juz' ? 'Pilih Juz' : 'Pilih Surah';
-
-      const spacer = document.createElement('div');
-      spacer.className = 'quran-reader-header-spacer';
-
-      header.appendChild(backBtn);
-      header.appendChild(title);
-      header.appendChild(spacer);
-
-      const content = document.createElement('div');
-      content.className = 'quran-reader-picker-content';
-
-      const listContainer = document.createElement('div');
-      listContainer.className = 'surah-list'; // Reusing front page styles
-
-      _pickerOverlay.appendChild(header);
-      _pickerOverlay.appendChild(content);
-      content.appendChild(listContainer);
-
-      _quranPage.appendChild(_pickerOverlay);
-
-      // Populate list
-      const fetchPromise = _currentType === 'juz' ? getJuzList() : getSurahList();
-      fetchPromise.then(data => {
-         _renderPickerList(listContainer, data);
-      }).catch(err => {
-         QuranCard.renderErrorState(content, "Gagal memuat daftar");
-      });
-   }
-
-   registerModalDismiss(_closeSurahPicker);
-
-   requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-         if (_pickerOverlay) _pickerOverlay.classList.add('active');
-
-         // Scroll to active card if necessary
-         const activeCard = _pickerOverlay.querySelector('.active-surah, .active-juz');
-         if (activeCard) {
-            activeCard.scrollIntoView({ behavior: 'auto', block: 'center' });
-         }
-      });
-   });
-}
-
-function _renderPickerList(container, listData) {
-   container.innerHTML = '';
-   listData.forEach(item => {
-      const createFn = _currentType === 'juz' ? QuranCard.createJuzCard : QuranCard.createSurahCard;
-      const card = createFn(item, (selectedItem) => {
+   const isJuz = _currentType === 'juz';
+   
+   openPicker({
+      title: isJuz ? 'Pilih Juz' : 'Pilih Surah',
+      data: isJuz ? getJuzList() : getSurahList(),
+      createCardFn: isJuz ? QuranCard.createJuzCard : QuranCard.createSurahCard,
+      isActiveFn: (item) => item.index === _currentItem.index,
+      activeClass: isJuz ? 'active-juz' : 'active-surah',
+      onSelect: (selectedItem) => {
          if (selectedItem.index !== _currentItem.index) {
             _changeItem(selectedItem);
-
-            // Update active state in picker
-            const allCards = _pickerOverlay.querySelectorAll('.surah-card, .juz-card');
-            allCards.forEach(c => c.classList.remove('active-surah', 'active-juz'));
-            card.classList.add(_currentType === 'juz' ? 'active-juz' : 'active-surah');
          }
-         _closeSurahPicker();
-      });
-
-      if (item.index === _currentItem.index) {
-         card.classList.add(_currentType === 'juz' ? 'active-juz' : 'active-surah');
-      }
-      container.appendChild(card);
+      },
+      container: _quranPage
    });
-}
-
-function _closeSurahPicker() {
-   if (!_isPickerOpen) return;
-   _isPickerOpen = false;
-   unregisterModalDismiss(_closeSurahPicker);
-
-   if (_pickerOverlay) {
-      _pickerOverlay.classList.remove('active');
-   }
 }
 
 function _changeItem(newItem) {
    _currentItem = newItem;
 
    // Update title
-   if (_overlay) {
-      const titleText = _overlay.querySelector('.quran-reader-title');
-      if (titleText) {
-         if (_currentType === 'juz') {
-            titleText.textContent = `Juz ${parseInt(newItem.index)}`;
-         } else {
-            titleText.textContent = `${parseInt(newItem.index, 10)}. ${newItem.title}`;
-         }
+   if (_readerHeaderInstance) {
+      if (_currentType === 'juz') {
+         _readerHeaderInstance.setTitle(`Juz ${parseInt(newItem.index)}`);
+      } else {
+         _readerHeaderInstance.setTitle(`${parseInt(newItem.index, 10)}. ${newItem.title}`);
       }
    }
 
@@ -370,8 +264,6 @@ function _changeItem(newItem) {
    _renderCtx.incrementAndGet();
    _fetchAndRender(newItem);
 }
-
-/* Data Fetching and Rendering */
 
 async function _fetchAndRender(item) {
    _renderCtx.setContainer(_scrollContainer);
@@ -441,7 +333,7 @@ async function _fetchAndRender(item) {
                   `.quran-ayah-card[data-ayah-number="${targetNum}"]`
                );
                if (targetCard) {
-                  const header = _overlay?.querySelector('.quran-reader-header');
+                  const header = _overlay?.querySelector('.quran-unified-header');
                   const headerHeight = header ? header.offsetHeight : 0;
                   const scrollTarget = targetCard.offsetTop - headerHeight - 12;
 
@@ -677,16 +569,12 @@ function _enterReaderSearch() {
    if (_isReaderSearchActive) return;
    _isReaderSearchActive = true;
 
-   const header = _overlay?.querySelector('.quran-reader-header');
-   if (header) header.classList.add('is-searching');
-
-   // Swap icon to close (X)
-   const icon = _overlay?.querySelector('.quran-reader-search-btn i');
-   if (icon) icon.className = 'bx bx-x';
-
-   // Focus input
-   const input = _overlay?.querySelector('.quran-reader-search-input');
-   if (input) setTimeout(() => input.focus(), 300);
+   if (_readerHeaderInstance) {
+      _readerHeaderInstance.toggleSearchMode(true);
+      _readerHeaderInstance.setRightIcon('bx-x');
+      const input = _readerHeaderInstance.getSearchInput();
+      if (input) setTimeout(() => input.focus(), 300);
+   }
 
    registerModalDismiss(_exitReaderSearch);
 }
@@ -698,16 +586,12 @@ function _exitReaderSearch() {
    if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
    unregisterModalDismiss(_exitReaderSearch);
 
-   const header = _overlay?.querySelector('.quran-reader-header');
-   if (header) header.classList.remove('is-searching');
-
-   // Restore icon to search
-   const icon = _overlay?.querySelector('.quran-reader-search-btn i');
-   if (icon) icon.className = 'bx bx-search';
-
-   // Clear input
-   const input = _overlay?.querySelector('.quran-reader-search-input');
-   if (input) input.value = '';
+   if (_readerHeaderInstance) {
+      _readerHeaderInstance.toggleSearchMode(false);
+      _readerHeaderInstance.setRightIcon('bx-search');
+      const input = _readerHeaderInstance.getSearchInput();
+      if (input) input.value = '';
+   }
 
    // Re-render full data
    if (_currentReaderData.length) {

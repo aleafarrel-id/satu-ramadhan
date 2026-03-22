@@ -1,6 +1,6 @@
 /* Tajweed Coloring Styles */
 
-/* Base Span */
+/* ── Base Span ── */
 
 .tj {
    position: relative;
@@ -8,7 +8,7 @@
    transition: opacity var(--transition-fast);
    border-radius: 2px;
 
-   /* Prevent layout shifts from inline spans */
+   /* Prevent inline layout shifts */
    display: inline;
    line-height: inherit;
 
@@ -16,7 +16,7 @@
    --tooltip-offset-x: -50%;
 }
 
-/* Subtle underline indicator */
+/* ── Underline Indicator ── */
 .tj::before {
    content: '';
    position: absolute;
@@ -30,14 +30,14 @@
    pointer-events: none;
 }
 
-/* Tooltip Element */
+/* ── Tooltip Element ── */
 
 .tj::after {
    content: attr(data-label);
    position: absolute;
    bottom: calc(100% + 6px);
    left: 50%;
-   transform: translateX(var(--tooltip-offset-x)) translateY(4px);
+   transform: translateX(var(--tooltip-offset-x)) translateY(var(--sp-1));
    white-space: nowrap;
 
    /* Appearance */
@@ -48,8 +48,8 @@
    line-height: 1;
    color: #fff;
    background: rgba(0, 0, 0, 0.8);
-   padding: 4px 8px;
-   border-radius: 4px;
+   padding: var(--sp-1) var(--sp-2);
+   border-radius: var(--radius-sm);
    z-index: 100;
 
    /* Hidden by default */
@@ -59,22 +59,9 @@
    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
 }
 
-/* Tooltip Visibility States */
+/* ── Tooltip States ── */
 
-/* Desktop hover */
-@media (pointer: fine) {
-   .tj:hover {
-      opacity: 0.85;
-   }
-
-   .tj:hover::after {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(var(--tooltip-offset-x)) translateY(0);
-   }
-}
-
-/* Mobile Active State */
+/* Active State */
 .tj.active::after {
    opacity: 1;
    visibility: visible;
@@ -85,7 +72,7 @@
    opacity: 0.85;
 }
 
-/* Rule Colors */
+/* ── Rule Colors ── */
 
 /* Ghunnah (Nasalization) */
 .tj-ghunnah {
@@ -137,11 +124,21 @@
    color: var(--clr-quran-text);
 }
 
-/* Tooltip Edge Handling
- * RTL direction ensures centering, with JS layout adjustments if needed.
- */
+/* Edge handling governed by RTL alignment and JS tooltip offsets */
 
-/* Media Queries */
+/* ── Responsive Rules ── */
+
+@media (pointer: fine) {
+   .tj:hover {
+      opacity: 0.85;
+   }
+
+   .tj:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(var(--tooltip-offset-x)) translateY(0);
+   }
+}
 
 @media screen and (max-width: 390px) {
    .tj::after {

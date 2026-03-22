@@ -6,7 +6,8 @@ import * as QuranNav from '../modules/quran/quran-nav.js';
 import * as QuranSearch from '../components/quran/quran-search.js';
 import * as QuranReader from '../modules/quran/quran-reader.js';
 import * as QuranDock from '../components/quran/quran-dock.js';
-import { makeAccessibleBtn } from '../utils/a11y.js';
+import * as QuranHeader from '../components/quran/quran-header.js';
+import * as Router from '../router.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
 
 let _container = null;
@@ -27,16 +28,7 @@ export async function render(container) {
 
    container.innerHTML = `
       <div class="quran-page" id="quran-page-modal">
-         <div class="quran-inline-header" data-focus-group="quran-header" data-focus-direction="horizontal">
-            <button class="quran-back-btn quran-icon-btn" aria-label="Kembali" data-focus-item>
-               <i class='bx bx-chevron-left'></i>
-            </button>
-            <h1 class="quran-header-title">Al-Qur'an</h1>
-            <button class="quran-search-btn quran-icon-btn" aria-label="Cari" data-focus-item>
-               <i class='bx bx-search'></i>
-            </button>
-         </div>
-
+         <div id="quran-header-slot"></div>
          ${QuranSearch.renderHTML()}
 
          <div class="quran-content" id="quran-content">
@@ -45,12 +37,20 @@ export async function render(container) {
       </div>
    `;
 
+   const headerSlot = container.querySelector('#quran-header-slot');
+   const mainHeader = QuranHeader.createHeader({
+      title: "Al-Qur'an",
+      onBack: () => Router.goBack(),
+      rightBtnIcon: 'bx-search',
+      rightBtnAriaLabel: 'Cari',
+      onRightBtnClick: () => toggleSearchMode(true)
+   });
+   headerSlot.replaceWith(mainHeader.element);
+
    QuranSearch.init(container, {
       onClose: _dismissSearchAction,
       onInput: handleSearchInput
    });
-   const searchBtn = container.querySelector('.quran-search-btn');
-   if (searchBtn) makeAccessibleBtn(searchBtn, () => toggleSearchMode(true));
 
    _quranContent = container.querySelector('#quran-content');
    QuranNav.init();

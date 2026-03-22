@@ -125,7 +125,14 @@ export function onSearchExit() {
  */
 function _openBookmarkedVerse(bookmark, surah) {
    if (!surah) return;
-   QuranReader.open(surah, 'surah', bookmark.verseNumber);
+   QuranReader.open(surah, 'surah', bookmark.verseNumber, {
+      onClose: () => {
+         // Refresh list when reader is closed
+         if (_container) {
+            render(_container, _callbacks);
+         }
+      }
+   });
 }
 
 /**

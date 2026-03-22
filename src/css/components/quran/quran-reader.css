@@ -1,6 +1,6 @@
 /* Reader Overlay Component */
 
-/* Container: Overlay */
+/* ── Container Overlay ── */
 
 .quran-reader-overlay {
    position: absolute;
@@ -11,7 +11,7 @@
    flex-direction: column;
    opacity: 0;
    visibility: hidden;
-   transform: translateY(12px);
+   transform: translateY(var(--sp-3));
    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
       transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
       visibility 0.35s;
@@ -26,191 +26,15 @@
    pointer-events: all;
 }
 
-/* State: Hide main content when reading */
+/* ── Active Reading State ── */
 .is-reading .quran-content {
    opacity: 0;
    visibility: hidden;
    pointer-events: none;
 }
 
-/* Header */
 
-.quran-reader-header {
-   --rh-padding: var(--sp-4);
-   display: flex;
-   align-items: center;
-   gap: var(--sp-2);
-   padding: var(--rh-padding);
-   padding-top: max(var(--rh-padding), env(safe-area-inset-top));
-   background: var(--clr-quran-card-bg);
-   border-bottom: 1px solid var(--clr-quran-border);
-   flex-shrink: 0;
-   position: relative;
-   z-index: 10;
-}
-
-.quran-reader-back {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 40px;
-   height: 40px;
-   background: transparent;
-   border: none;
-   color: var(--clr-quran-text);
-   cursor: pointer;
-   transition: color var(--transition-fast), transform var(--transition-fast);
-   -webkit-tap-highlight-color: transparent;
-   flex-shrink: 0;
-   border-radius: 50%;
-}
-
-.quran-reader-back:active {
-   transform: scale(0.92);
-}
-
-.quran-reader-back i {
-   font-size: var(--icon-lg);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 1em;
-   height: 1em;
-}
-
-.quran-reader-title-wrapper {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   gap: var(--sp-2);
-   min-width: 0;
-   cursor: pointer;
-   -webkit-tap-highlight-color: transparent;
-   padding: var(--sp-2) var(--sp-4);
-   border-radius: var(--radius-lg);
-   transition: background var(--transition-fast);
-   margin: 0 auto;
-}
-
-.quran-reader-title-wrapper:active {
-   background: var(--clr-quran-bg-alt);
-}
-
-.quran-reader-title {
-   font-size: var(--fs-md);
-   font-weight: var(--fw-semibold);
-   color: var(--clr-quran-text);
-   text-align: center;
-   line-height: var(--lh-tight);
-   font-family: var(--ff-primary);
-   margin: 0;
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
-}
-
-.quran-reader-title-chevron {
-   font-size: var(--icon-md);
-   color: var(--clr-quran-text-secondary);
-   flex-shrink: 0;
-   transition: transform var(--transition-fast);
-}
-
-.quran-reader-surah-select {
-   position: absolute;
-   inset: 0;
-   width: 100%;
-   height: 100%;
-   opacity: 0;
-   cursor: pointer;
-   z-index: 2;
-   -webkit-appearance: none;
-   appearance: none;
-}
-
-/* Layout: Right search button (replaces symmetry spacer) */
-.quran-reader-search-btn {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 40px;
-   height: 40px;
-   background: transparent;
-   border: none;
-   color: var(--clr-quran-text);
-   cursor: pointer;
-   transition: color var(--transition-fast), transform var(--transition-fast);
-   -webkit-tap-highlight-color: transparent;
-   flex-shrink: 0;
-   border-radius: 50%;
-}
-
-.quran-reader-search-btn:active {
-   transform: scale(0.92);
-}
-
-.quran-reader-search-btn i {
-   font-size: var(--icon-lg);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 1em;
-   height: 1em;
-   transition: transform 0.2s ease;
-}
-
-/* Inline Search Input (hidden by default) */
-.quran-reader-search-input {
-   display: none;
-   flex: 1;
-   min-width: 0;
-   height: 36px;
-   padding: 0 var(--sp-3);
-   border: none;
-   border-radius: var(--radius-lg);
-   background: var(--clr-quran-bg-alt);
-   color: var(--clr-quran-text);
-   font-family: var(--ff-primary);
-   font-size: var(--fs-sm);
-   outline: none;
-   -moz-appearance: textfield;
-   appearance: textfield;
-}
-
-.quran-reader-search-input::-webkit-outer-spin-button,
-.quran-reader-search-input::-webkit-inner-spin-button {
-   -webkit-appearance: none;
-   appearance: none;
-   margin: 0;
-}
-
-.quran-reader-search-input::placeholder {
-   color: var(--clr-quran-text-secondary);
-   opacity: 0.6;
-}
-
-/* State: Header is-searching */
-.quran-reader-header.is-searching .quran-reader-title-wrapper {
-   display: none;
-}
-
-.quran-reader-header.is-searching .quran-reader-search-input {
-   display: block;
-   animation: readerSearchSlideIn 0.25s ease-out;
-}
-
-@keyframes readerSearchSlideIn {
-   from {
-      opacity: 0;
-      transform: scaleX(0.85);
-   }
-   to {
-      opacity: 1;
-      transform: scaleX(1);
-   }
-}
-
-/* No Results Placeholder */
+/* ── No Results Placeholder ── */
 .quran-reader-no-results {
    display: flex;
    flex-direction: column;
@@ -236,7 +60,7 @@
    line-height: var(--lh-relaxed);
 }
 
-/* Scroll Area */
+/* ── Scroll Layout ── */
 
 .quran-reader-scroll {
    position: relative;
@@ -257,7 +81,7 @@
    scrollbar-width: none;
 }
 
-/* Surah Banner Info */
+/* ── Surah Banner Info ── */
 
 .quran-reader-surah-info {
    display: flex;
@@ -270,7 +94,7 @@
 
 .quran-reader-surah-name-ar {
    font-family: 'DecoType-Thuluth-II-Regular', serif;
-   font-size: 2.5rem;
+   font-size: var(--fs-4xl);
    color: var(--clr-quran-text);
    line-height: 1.4;
    direction: rtl;
@@ -305,7 +129,7 @@
    opacity: 0.4;
 }
 
-/* Ayah List Container */
+/* ── Ayah List Container ── */
 
 .quran-reader-ayah-list {
    display: flex;
@@ -313,7 +137,7 @@
    padding: 0 var(--sp-4) var(--sp-8);
 }
 
-/* Header: Bismillah */
+/* ── Bismillah Header ── */
 
 .quran-ayah-bismillah {
    display: flex;
@@ -325,14 +149,14 @@
 
 .quran-ayah-bismillah-text {
    font-family: 'DecoType-Thuluth-Regular', serif;
-   font-size: 2rem;
+   font-size: var(--fs-3xl);
    color: var(--clr-quran-text);
    line-height: 1.8;
    direction: rtl;
    word-spacing: 6px;
 }
 
-/* Container: Ayah Card */
+/* ── Ayah Card Container ── */
 
 .quran-ayah-card {
    display: flex;
@@ -359,7 +183,7 @@
    }
 }
 
-/* Ayah Card Header */
+/* ── Ayah Card Header ── */
 .quran-ayah-header {
    display: flex;
    align-items: center;
@@ -373,8 +197,8 @@
    display: flex;
    align-items: center;
    justify-content: center;
-   min-width: 32px;
-   height: 32px;
+   min-width: var(--sp-8);
+   height: var(--sp-8);
    padding: 0 var(--sp-2);
    background: var(--clr-quran-accent);
    color: #fff;
@@ -392,7 +216,7 @@
    font-family: var(--ff-primary);
 }
 
-/* Ayah Actions Shell */
+/* ── Ayah Actions Wrapper ── */
 .quran-ayah-actions {
    display: flex;
    align-items: center;
@@ -404,14 +228,14 @@
    display: flex;
    align-items: center;
    justify-content: center;
-   width: 32px;
-   height: 32px;
+   width: var(--sp-8);
+   height: var(--sp-8);
    background: transparent;
    border: none;
    color: var(--clr-quran-text-secondary);
    opacity: 0.6;
    cursor: pointer;
-   border-radius: 50%;
+   border-radius: var(--radius-circle);
    transition: opacity var(--transition-fast), color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
    -webkit-tap-highlight-color: transparent;
    flex-shrink: 0;
@@ -439,7 +263,7 @@
    color: var(--clr-quran-accent);
 }
 
-/* Base: Arabic Glyph */
+/* ── Text: Arabic Glyph ── */
 .quran-ayah-arabic {
    font-family: 'LPMQ-IsepMisbah', serif;
    font-size: 1.65rem;
@@ -454,7 +278,7 @@
    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Base: Translation String */
+/* ── Text: Translation String ── */
 .quran-ayah-translation {
    font-family: var(--ff-primary);
    font-size: 0.85rem;
@@ -465,7 +289,7 @@
    padding: 0 var(--sp-1);
 }
 
-/* State: Loading Indicator */
+/* ── Loading State ── */
 
 .quran-reader-loading {
    position: absolute;
@@ -493,7 +317,7 @@
    margin: 0;
 }
 
-/* State: Error Feedback */
+/* ── Error State ── */
 
 .quran-reader-error {
    display: flex;
@@ -522,9 +346,9 @@
 /* ── Surah Picker Overlay ── */
 
 .quran-reader-picker-overlay {
-   position: absolute;
+   position: fixed;
    inset: 0;
-   z-index: 60;
+   z-index: 400;
    background: var(--clr-quran-bg);
    display: flex;
    flex-direction: column;
@@ -539,29 +363,6 @@
    pointer-events: all;
 }
 
-.quran-reader-picker-header {
-   --rh-padding: var(--sp-4);
-   display: flex;
-   align-items: center;
-   gap: var(--sp-2);
-   padding: var(--rh-padding);
-   padding-top: max(var(--rh-padding), env(safe-area-inset-top));
-   background: var(--clr-quran-card-bg);
-   border-bottom: 1px solid var(--clr-quran-border);
-   flex-shrink: 0;
-   position: relative;
-   z-index: 10;
-}
-
-.quran-reader-picker-title {
-   font-size: var(--fs-md);
-   font-weight: var(--fw-semibold);
-   color: var(--clr-quran-text);
-   text-align: center;
-   line-height: var(--lh-tight);
-   font-family: var(--ff-primary);
-   margin: 0 auto;
-}
 
 .quran-reader-picker-content {
    flex: 1;
@@ -577,19 +378,15 @@
    display: none;
 }
 
-/* Add an active state for the currently viewing surah card */
+/* Highlight actively reading surah card */
 .surah-card.active-surah {
    border-color: var(--clr-quran-accent);
    background: var(--clr-quran-bg-alt);
 }
 
-/* Media Queries */
+/* ── Responsive Rules ── */
 
 @media (pointer: fine) {
-   .quran-reader-back:hover {
-      color: var(--clr-quran-accent);
-   }
-
    .quran-reader-title-wrapper:hover {
       background: var(--clr-quran-bg-alt);
    }
@@ -601,26 +398,8 @@
 }
 
 @media screen and (max-width: 390px) {
-   .quran-reader-header {
-      --rh-padding: var(--sp-3);
-   }
-
-   .quran-reader-back,
-   .quran-reader-search-btn {
-      width: 36px;
-      height: 36px;
-   }
-
-   .quran-reader-back i {
-      font-size: var(--icon-md);
-   }
-
-   .quran-reader-title {
-      font-size: var(--fs-sm);
-   }
-
    .quran-reader-surah-name-ar {
-      font-size: 2rem;
+      font-size: var(--fs-3xl);
    }
 
    .quran-ayah-bismillah-text {
@@ -634,7 +413,7 @@
 
    .quran-ayah-translation {
       font-size: 0.75rem;
-      /* Scale down for mobile bounds */
+      /* Scale down translation text for mobile bounds */
    }
 
    .quran-ayah-number {
@@ -654,10 +433,6 @@
 }
 
 @media screen and (max-width: 360px) {
-   .quran-reader-header {
-      --rh-padding: var(--sp-2);
-   }
-
    .quran-reader-surah-info {
       padding: var(--sp-4) var(--sp-3) var(--sp-3);
    }
@@ -685,20 +460,6 @@
 }
 
 @media screen and (max-width: 320px) {
-
-   .quran-reader-back,
-   .quran-reader-search-btn {
-      width: 30px;
-      height: 30px;
-   }
-
-   .quran-reader-back i {
-      font-size: 1.25rem;
-   }
-
-   .quran-reader-title {
-      font-size: var(--fs-xs);
-   }
 
    .quran-reader-surah-name-ar {
       font-size: 1.5rem;

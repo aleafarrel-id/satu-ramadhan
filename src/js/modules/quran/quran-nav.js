@@ -35,11 +35,6 @@ export async function enterQuranMode(options = {}) {
    if (appHeader) appHeader.classList.add('header-hidden');
    if (appContent) appContent.classList.add('no-padding');
 
-   const inlineHeader = document.querySelector('.quran-inline-header');
-   if (inlineHeader) {
-      QuranHeader.init(inlineHeader, handleQuranBack);
-   }
-
    const dockSlot = document.getElementById('quran-dock-slot');
    if (dockSlot) {
       QuranDock.render(dockSlot, handleQuranNav);
@@ -105,7 +100,7 @@ export async function exitQuranMode() {
 
    return new Promise(resolve => {
       setTimeout(() => {
-         QuranHeader.destroy();
+         QuranHeader.destroyAll();
          QuranDock.destroy();
          resolve();
       }, 800);

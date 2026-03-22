@@ -44,7 +44,7 @@
    width: 90%;
    max-width: 320px;
    height: var(--nav-height-list-container-xl);
-   margin: 0 auto var(--spacing-sm);
+   margin: 0 auto var(--sp-2);
    background: var(--clr-quran-card-bg);
    border: 1px solid var(--clr-quran-border);
    border-radius: var(--radius-full);
@@ -114,7 +114,7 @@
    height: 1em;
 }
 
-/* Media Queries */
+/* ── Responsive Rules ── */
 
 @media screen and (min-width: 480px) {
    .quran-dock-list {
@@ -132,7 +132,7 @@
 @media screen and (max-width: 360px) {
    .quran-dock-list {
       width: 95%;
-      padding: 0 10px;
+      padding: 0 var(--sp-2);
    }
 
    .quran-dock-slider,
@@ -148,7 +148,7 @@
 
 @media screen and (max-width: 320px) {
    .quran-dock-list {
-      padding: 0 8px;
+      padding: 0 var(--sp-2);
       height: var(--nav-height-list-container-md);
       width: 90%;
    }
@@ -157,7 +157,7 @@
    .quran-dock-item:focus-visible::after {
       width: 40px !important;
       height: var(--nav-slider-size-sm);
-      border-radius: 50% !important;
+      border-radius: var(--radius-circle) !important;
    }
 
    .quran-dock-item i {

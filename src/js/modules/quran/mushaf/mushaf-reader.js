@@ -12,7 +12,8 @@ import { PageFlip } from 'page-flip';
 import * as MushafApi from './mushaf-api.js';
 import * as MushafUI from './mushaf-ui.js';
 import * as QuranDock from '../../../components/quran/quran-dock.js';
-import { createSurahCard, createSurahList } from '../../../components/quran/quran-card.js';
+import { createSurahCard } from '../../../components/quran/quran-card.js';
+import { openPicker, closePicker, isOpen as isPickerOpen, destroyPicker } from '../../../components/quran/quran-picker.js';
 import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
 
@@ -33,14 +34,11 @@ let _overlay = null;
 let _viewportContainer = null;
 let _bookContainer = null;
 let _pageCounterEl = null;
-let _surahTitleEl = null;
-let _surahChevronEl = null;
-let _titleWrapper = null;
+let _menuBtnEl = null;
+
 let _quranPage = null;
-let _pickerOverlay = null;
 let _backdropEl = null;
 let _onCloseCallback = null;
-let _isPickerOpen = false;
 
 /** @type {PageFlip|null} */
 let _pageFlip = null;
@@ -80,10 +78,8 @@ function _resetState() {
    _viewportContainer = null;
    _bookContainer = null;
    _pageCounterEl = null;
-   _surahTitleEl = null;
-   _surahChevronEl = null;
-   _titleWrapper = null;
-   _pickerOverlay = null;
+   _menuBtnEl = null;
+
    _backdropEl = null;
    _onCloseCallback = null;
    _quranPage = null;
@@ -91,7 +87,6 @@ function _resetState() {
    _windowEnd = 1;
    _isExpanding = false;
    _isReloading = false;
-   _isPickerOpen = false;
    _resizeTimeout = null;
 }
 
@@ -100,14 +95,14 @@ function _detachListeners() {
    unregisterModalDismiss(close);
    window.removeEventListener('resize', _onWindowResize);
    document.removeEventListener('visibilitychange', _onVisibilityChange);
+   _detachSwipeHandlers();
    if (_resizeTimeout) clearTimeout(_resizeTimeout);
-   _closePicker();
+   closePicker();
 }
 
 /** Removes overlay elements from the DOM. */
 function _removeOverlays() {
    if (_overlay?.parentNode) _overlay.parentNode.removeChild(_overlay);
-   if (_pickerOverlay?.parentNode) _pickerOverlay.parentNode.removeChild(_pickerOverlay);
    if (_backdropEl?.parentNode) _backdropEl.parentNode.removeChild(_backdropEl);
 }
 
@@ -131,10 +126,7 @@ function _getSurahForPage(pageNumber) {
 
 function _updateSurahHeader() {
    const surah = _getSurahForPage(_currentPage);
-   if (surah && _surahTitleEl) {
-      _currentSurahIndex = surah.surah;
-      _surahTitleEl.textContent = `${surah.surah}. ${surah.title}`;
-   }
+   if (surah) _currentSurahIndex = surah.surah;
 }
 
 function _updatePageCounter() {
@@ -164,6 +156,7 @@ export async function open(startPage = 1, options = {}) {
    registerModalDismiss(close);
    window.addEventListener('resize', _onWindowResize);
    document.addEventListener('visibilitychange', _onVisibilityChange);
+   _attachSwipeHandlers();
 
    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -184,6 +177,7 @@ export function close() {
 
    _detachListeners();
    _destroyPageFlip(false);
+   destroyPicker();
 
    // Show backdrop immediately (same pattern as Al-Quran exit)
    if (_backdropEl) _backdropEl.classList.add('active');
@@ -247,6 +241,69 @@ function _onVisibilityChange() {
    }
 }
 
+/* ─── Swipe & Interaction Handlers ─── */
+
+let _swipeStartX = 0;
+let _swipeStartY = 0;
+let _isSwiping = false;
+let _swipeStartTime = 0;
+
+function _attachSwipeHandlers() {
+   if (!_viewportContainer) return;
+   _viewportContainer.addEventListener('pointerdown', _onPointerDown);
+   _viewportContainer.addEventListener('pointerup', _onPointerUp);
+   _viewportContainer.addEventListener('pointercancel', _onPointerCancel);
+}
+
+function _detachSwipeHandlers() {
+   if (!_viewportContainer) return;
+   _viewportContainer.removeEventListener('pointerdown', _onPointerDown);
+   _viewportContainer.removeEventListener('pointerup', _onPointerUp);
+   _viewportContainer.removeEventListener('pointercancel', _onPointerCancel);
+}
+
+function _onPointerDown(e) {
+   // Ignore multi-touch, pen, or non-left-click
+   if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return;
+   
+   _isSwiping = true;
+   _swipeStartX = e.clientX;
+   _swipeStartY = e.clientY;
+   _swipeStartTime = Date.now();
+}
+
+function _onPointerUp(e) {
+   if (!_isSwiping || !_pageFlip || _isExpanding) return;
+   _isSwiping = false;
+
+   const diffX = e.clientX - _swipeStartX;
+   const diffY = e.clientY - _swipeStartY;
+   const timeDiff = Date.now() - _swipeStartTime;
+
+   // Detect active horizontal swipe
+   if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0 && _currentPage < TOTAL_PAGES) {
+         _pageFlip.flipPrev('bottom'); // Navigate forward
+      } else if (diffX < 0 && _currentPage > 1) {
+         _pageFlip.flipNext('bottom'); // Navigate backward
+      }
+   } 
+   // Detect quick tap interaction
+   else if (Math.abs(diffX) < 15 && Math.abs(diffY) < 15 && timeDiff < 300) {
+      const vWidth = _viewportContainer.clientWidth || window.innerWidth;
+      
+      if (e.clientX < vWidth * 0.3 && _currentPage < TOTAL_PAGES) {
+         _pageFlip.flipPrev('bottom');
+      } else if (e.clientX > vWidth * 0.7 && _currentPage > 1) {
+         _pageFlip.flipNext('bottom');
+      }
+   }
+}
+
+function _onPointerCancel(e) {
+   _isSwiping = false;
+}
+
 /* ─── DOM Construction ─── */
 
 function _buildBackdrop() {
@@ -288,7 +345,7 @@ function _buildHeader() {
 
    const backBtn = document.createElement('button');
    backBtn.className = 'mushaf-back-btn';
-   backBtn.setAttribute('aria-label', 'Kembali');
+   backBtn.setAttribute('aria-label', 'Back');
    backBtn.innerHTML = `<i class='bx bx-chevron-left'></i>`;
    makeAccessibleBtn(backBtn, close);
 
@@ -296,24 +353,15 @@ function _buildHeader() {
    _pageCounterEl.className = 'mushaf-page-counter';
    _updatePageCounter();
 
-   _titleWrapper = document.createElement('div');
-   _titleWrapper.className = 'mushaf-title-wrapper';
-   _titleWrapper.setAttribute('role', 'button');
-   _titleWrapper.setAttribute('tabindex', '0');
-
-   _surahTitleEl = document.createElement('span');
-   _surahTitleEl.className = 'mushaf-surah-title';
-
-   _surahChevronEl = document.createElement('i');
-   _surahChevronEl.className = 'bx bx-chevron-down mushaf-title-chevron';
-
-   _titleWrapper.appendChild(_surahTitleEl);
-   _titleWrapper.appendChild(_surahChevronEl);
-   _titleWrapper.addEventListener('click', _togglePicker);
+   _menuBtnEl = document.createElement('button');
+   _menuBtnEl.className = 'mushaf-back-btn';
+   _menuBtnEl.setAttribute('aria-label', 'Menu');
+   _menuBtnEl.innerHTML = `<i class='bx bx-menu'></i>`;
+   makeAccessibleBtn(_menuBtnEl, _togglePicker);
 
    header.appendChild(backBtn);
-   header.appendChild(_titleWrapper);
    header.appendChild(_pageCounterEl);
+   header.appendChild(_menuBtnEl);
 
    return header;
 }
@@ -322,20 +370,12 @@ function _buildViewport() {
    const viewport = document.createElement('div');
    viewport.className = 'mushaf-viewport';
    viewport.id = 'mushaf-viewport';
+   viewport.style.touchAction = 'pan-y'; // Prevent browser horizontal swipe if present
 
    _bookContainer = document.createElement('div');
    _bookContainer.className = 'mushaf-book-container';
    _bookContainer.id = 'mushaf-book';
    viewport.appendChild(_bookContainer);
-
-   const rightNav = document.createElement('div');
-   rightNav.className = 'mushaf-nav-right';
-   rightNav.addEventListener('click', () => {
-      if (_pageFlip && !_isExpanding && _currentPage > 1) {
-         _pageFlip.flipNext('bottom');
-      }
-   });
-   viewport.appendChild(rightNav);
 
    return viewport;
 }
@@ -354,11 +394,12 @@ function _getPageFlipConfig() {
       height: ph,
       size: 'fixed',
       usePortrait: false,
+      useMouseEvents: false, // Critical: Disable native events to fix double-trigger
       drawShadow: false,
       maxShadowOpacity: 0,
       flippingTime: 600,
       mobileScrollSupport: false,
-      swipeDistance: 30, // Make swipe more sensitive
+      swipeDistance: 10,
       showCover: false,
    };
 }
@@ -463,81 +504,18 @@ async function _reloadWindow(targetPage) {
 
 /* ─── Surah Picker ─── */
 
-function _togglePicker() { _isPickerOpen ? _closePicker() : _openPicker(); }
+function _togglePicker() { isPickerOpen() ? closePicker() : _openPicker(); }
 
 function _openPicker() {
-   if (_isPickerOpen || !_mushafIndex) return;
-   _isPickerOpen = true;
+   if (!_mushafIndex) return;
 
-   if (!_pickerOverlay) {
-      _pickerOverlay = document.createElement('div');
-      _pickerOverlay.className = 'mushaf-picker-overlay';
-
-      const pickerHeader = document.createElement('div');
-      pickerHeader.className = 'mushaf-picker-header';
-
-      const closePickerBtn = document.createElement('button');
-      closePickerBtn.className = 'mushaf-back-btn';
-      closePickerBtn.setAttribute('aria-label', 'Tutup');
-      closePickerBtn.innerHTML = `<i class='bx bx-x'></i>`;
-      makeAccessibleBtn(closePickerBtn, _closePicker);
-
-      const pickerTitle = document.createElement('div');
-      pickerTitle.className = 'mushaf-picker-title';
-      pickerTitle.textContent = 'Pilih Surah';
-
-      const pickerSpacer = document.createElement('div');
-      pickerSpacer.style.width = '36px';
-
-      pickerHeader.appendChild(closePickerBtn);
-      pickerHeader.appendChild(pickerTitle);
-      pickerHeader.appendChild(pickerSpacer);
-
-      const pickerContent = document.createElement('div');
-      pickerContent.className = 'mushaf-picker-content';
-
-      const surahListContainer = createSurahList();
-
-      _mushafIndex.forEach(entry => {
-         const item = createSurahCard(entry, () => {
-            _closePicker();
-            goToPage(entry.startPage);
-         });
-
-         if (entry.surah === _currentSurahIndex) {
-            item.classList.add('mushaf-picker-active');
-         }
-
-         surahListContainer.appendChild(item);
-      });
-
-      pickerContent.appendChild(surahListContainer);
-      _pickerOverlay.appendChild(pickerHeader);
-      _pickerOverlay.appendChild(pickerContent);
-      _quranPage.appendChild(_pickerOverlay);
-   }
-
-   registerModalDismiss(_closePicker);
-
-   requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-         if (_pickerOverlay) _pickerOverlay.classList.add('active');
-         const activeItem = _pickerOverlay.querySelector('.mushaf-picker-item.active');
-         if (activeItem) activeItem.scrollIntoView({ behavior: 'auto', block: 'center' });
-      });
+   openPicker({
+      title: 'Pilih Surah',
+      data: _mushafIndex,
+      createCardFn: createSurahCard,
+      isActiveFn: (item) => item.surah === _currentSurahIndex,
+      activeClass: 'mushaf-picker-active',
+      onSelect: (item) => goToPage(item.startPage),
+      container: _quranPage
    });
-}
-
-function _closePicker() {
-   if (!_isPickerOpen) return;
-   _isPickerOpen = false;
-   unregisterModalDismiss(_closePicker);
-
-   if (_pickerOverlay) {
-      _pickerOverlay.classList.remove('active');
-      setTimeout(() => {
-         if (_pickerOverlay?.parentNode) _pickerOverlay.parentNode.removeChild(_pickerOverlay);
-         _pickerOverlay = null;
-      }, 350);
-   }
 }

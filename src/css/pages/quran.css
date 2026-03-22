@@ -134,39 +134,6 @@
    line-height: var(--lh-relaxed);
 }
 
-@media screen and (max-width: 360px) {
-   .quran-content {
-      padding: var(--sp-3);
-      padding-bottom: calc(80px + env(safe-area-inset-bottom));
-   }
-
-   .quran-empty p {
-      font-size: var(--fs-xs);
-   }
-
-   .quran-loading i {
-      font-size: 3rem;
-   }
-
-   .quran-loading p {
-      font-size: var(--fs-sm);
-   }
-
-   .quran-empty i {
-      font-size: 2.5rem;
-   }
-}
-
-@media screen and (max-width: 320px) {
-   .quran-loading i {
-      font-size: 2.5rem;
-   }
-
-   .quran-empty i {
-      font-size: 2rem;
-   }
-}
-
 /* Base Overrides */
 
 .quran-page ::selection {
@@ -179,11 +146,9 @@
    color: var(--clr-primary-900);
 }
 
-@media (pointer: fine) {
-   .quran-page :focus-visible {
-      outline: 2px solid var(--clr-primary-500);
-      outline-offset: 2px;
-   }
+.quran-page ::-moz-selection {
+   background-color: var(--clr-primary-200);
+   color: var(--clr-primary-900);
 }
 
 /* Search Overlay */
@@ -219,6 +184,9 @@
 
 .quran-search-header {
    --header-padding: var(--sp-4);
+   --header-btn-size: var(--icon-xl);
+   --header-icon-size: var(--icon-lg);
+
    display: flex;
    align-items: center;
    gap: var(--sp-2);
@@ -226,12 +194,14 @@
    padding-top: max(var(--header-padding), env(safe-area-inset-top));
    background: var(--clr-quran-card-bg);
    border-bottom: 1px solid var(--clr-quran-border);
+   flex-shrink: 0;
    transition: padding var(--transition-fast);
 }
 
 .quran-search-input-wrapper {
    position: relative;
    flex: 1;
+   min-width: 0;
 }
 
 .quran-search-icon {
@@ -246,17 +216,26 @@
 
 .quran-search-input {
    width: 100%;
-   background: var(--clr-quran-bg-secondary);
+   height: 36px;
+   background: var(--clr-quran-bg);
    border: 1px solid var(--clr-quran-border);
    color: var(--clr-quran-text);
-   font-size: var(--fs-sm);
-   padding: 10px 12px 10px 40px;
+   font-family: var(--ff-primary);
+   font-size: clamp(12px, 3.5vw, var(--fs-sm));
+   padding: 0 12px 0 40px;
    border-radius: var(--radius-lg);
    outline: none !important;
    box-shadow: none !important;
-   transition: border-color var(--transition-fast);
+   transition: border-color var(--transition-fast), font-size var(--transition-fast), height var(--transition-fast), padding var(--transition-fast);
+   -moz-appearance: textfield;
+   appearance: textfield;
+}
+
+.quran-search-input::-webkit-outer-spin-button,
+.quran-search-input::-webkit-inner-spin-button {
    -webkit-appearance: none;
    appearance: none;
+   margin: 0;
 }
 
 .quran-search-input:focus {
@@ -299,14 +278,80 @@
    color: var(--clr-quran-text-secondary);
 }
 
-@media screen and (max-width: 360px) {
+/* ── Responsive Rules ── */
+
+@media (pointer: fine) {
+   .quran-page :focus-visible {
+      outline: 2px solid var(--clr-primary-500);
+      outline-offset: 2px;
+   }
+}
+
+@media screen and (max-width: 390px) {
    .quran-search-header {
       --header-padding: var(--sp-3);
+      --header-btn-size: 36px;
+      --header-icon-size: var(--icon-md);
+   }
+   .quran-search-input {
+      font-size: 13px;
+      padding: 8px 10px 8px 36px;
+   }
+   .quran-search-icon {
+      font-size: 18px;
+      left: 10px;
+   }
+}
+
+@media screen and (max-width: 360px) {
+   .quran-content {
+      padding: var(--sp-3);
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
+   }
+   .quran-empty p {
+      font-size: var(--fs-xs);
+   }
+   .quran-loading i {
+      font-size: 3rem;
+   }
+   .quran-loading p {
+      font-size: var(--fs-sm);
+   }
+   .quran-empty i {
+      font-size: 2.5rem;
+   }
+   
+   .quran-search-header {
+      --header-padding: var(--sp-2);
+   }
+   .quran-search-input {
+      font-size: 12px;
+      padding: 6px 10px 6px 32px;
+   }
+   .quran-search-icon {
+      font-size: 16px;
+      left: 8px;
    }
 }
 
 @media screen and (max-width: 320px) {
+   .quran-loading i {
+      font-size: 2.5rem;
+   }
+   .quran-empty i {
+      font-size: 2rem;
+   }
+
    .quran-search-header {
-      --header-padding: var(--sp-2);
+      --header-btn-size: 30px;
+      --header-icon-size: 1.25rem;
+   }
+   .quran-search-input {
+      font-size: 11px;
+      padding: 5px 8px 5px 28px;
+   }
+   .quran-search-icon {
+      font-size: 14px;
+      left: 6px;
    }
 }
