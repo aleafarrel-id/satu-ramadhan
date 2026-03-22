@@ -1,67 +1,145 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" preserveAspectRatio="none">
-<defs>
-<g id="f">
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(45)"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(90)"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(135)"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(180)"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(225)"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(270)"/>
-<path d="M 0,-25 C 8,-25 12,-10 0,0 C -12,-10 -8,-25 0,-25 Z" fill="#245e45" transform="rotate(315)"/>
-<circle cx="0" cy="0" r="10" fill="#cba557"/>
-<circle cx="0" cy="0" r="5" fill="#ffffff"/>
-<circle cx="0" cy="0" r="2.5" fill="#245e45"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(45)"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(90)"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(135)"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(180)"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(225)"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(270)"/>
-<path d="M 0,-20 L 2,-12 L 0,-5 L -2,-12 Z" fill="#d2a945" transform="rotate(315)"/>
-</g>
-<g id="p">
-<path d="M 15,15 L 250,15 L 220,60 L 250,105 L 15,105 Z" fill="#e6ebd6"/>
-<path d="M 250,15 L 220,60 L 250,105" fill="none" stroke="#cba557" stroke-width="4"/>
-<path d="M 245,15 L 215,60 L 245,105" fill="none" stroke="#245e45" stroke-width="2"/>
-<path d="M 15,15 L 60,15 C 60,35 45,50 15,50 Z" fill="#245e45"/>
-<path d="M 15,105 L 60,105 C 60,85 45,70 15,70 Z" fill="#245e45"/>
-<path d="M 15,22 L 40,22 C 40,32 30,37 15,37 Z" fill="#ffffff"/>
-<path d="M 15,98 L 40,98 C 40,88 30,83 15,83 Z" fill="#ffffff"/>
-<path d="M 75,60 C 75,30 115,30 115,45 C 115,55 95,60 95,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
-<path d="M 75,60 C 75,90 115,90 115,75 C 115,65 95,60 95,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
-<path d="M 95,60 C 95,45 125,35 125,55" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
-<path d="M 95,60 C 95,75 125,85 125,65" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
-<path d="M 195,60 C 195,30 155,30 155,45 C 155,55 175,60 175,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
-<path d="M 195,60 C 195,90 155,90 155,75 C 155,65 175,60 175,60" fill="none" stroke="#d2a945" stroke-width="8" stroke-linecap="round"/>
-<path d="M 175,60 C 175,45 145,35 145,55" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
-<path d="M 175,60 C 175,75 145,85 145,65" fill="none" stroke="#b2a275" stroke-width="4" stroke-linecap="round"/>
-<path d="M 25,60 C 45,35 70,55 70,60 C 70,65 45,85 25,60 Z" fill="#ffffff" stroke="#245e45" stroke-width="2"/>
-<circle cx="45" cy="60" r="4" fill="#245e45"/>
-<circle cx="55" cy="60" r="2.5" fill="#cba557"/>
-<path d="M 235,60 C 215,35 190,55 190,60 C 190,65 215,85 235,60 Z" fill="#ffffff" stroke="#245e45" stroke-width="2"/>
-<circle cx="215" cy="60" r="4" fill="#245e45"/>
-<circle cx="205" cy="60" r="2.5" fill="#cba557"/>
-<path d="M 135,15 C 115,25 155,25 135,15 Z" fill="#d2a945"/>
-<path d="M 135,105 C 115,95 155,95 135,105 Z" fill="#d2a945"/>
-<circle cx="230" cy="35" r="4" fill="#245e45"/>
-<circle cx="230" cy="85" r="4" fill="#245e45"/>
-<circle cx="240" cy="50" r="3" fill="#d2a945"/>
-<circle cx="240" cy="70" r="3" fill="#d2a945"/>
-<circle cx="100" cy="30" r="2.5" fill="#245e45"/>
-<circle cx="100" cy="90" r="2.5" fill="#245e45"/>
-<circle cx="170" cy="30" r="2.5" fill="#245e45"/>
-<circle cx="170" cy="90" r="2.5" fill="#245e45"/>
-<use href="#f" x="135" y="60"/>
-</g>
-</defs>
-<rect x="10" y="10" width="780" height="100" fill="#ffffff" stroke="#cba557" stroke-width="4"/>
-<rect x="15" y="15" width="770" height="90" fill="none" stroke="#cba557" stroke-width="1.5"/>
-<use href="#p" x="0" y="0"/>
-<use href="#p" transform="translate(800, 0) scale(-1, 1)"/>
-<path d="M 350,15 L 400,22 L 450,15" fill="none" stroke="#cba557" stroke-width="1.5"/>
-<path d="M 350,105 L 400,98 L 450,105" fill="none" stroke="#cba557" stroke-width="1.5"/>
-<circle cx="400" cy="22" r="3" fill="#cba557"/>
-<circle cx="400" cy="98" r="3" fill="#cba557"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" width="100%" height="100%">
+  <defs>
+    <!-- Rich Gold Gradient -->
+    <linearGradient id="gold" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DEB841"/>
+      <stop offset="25%" stop-color="#F9EB9F"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="75%" stop-color="#8E6A1C"/>
+      <stop offset="100%" stop-color="#F1D44D"/>
+    </linearGradient>
+
+    <!-- Base Teal Color (Slightly lighter than app theme) -->
+    <linearGradient id="tealBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4db8b8"/>
+      <stop offset="50%" stop-color="#2d9e9e"/>
+      <stop offset="100%" stop-color="#1a8a8a"/>
+    </linearGradient>
+
+    <!-- Dark Teal for shadow and depth -->
+    <linearGradient id="tealDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a8a8a"/>
+      <stop offset="100%" stop-color="#0a3540"/>
+    </linearGradient>
+
+    <!-- Card Background representing the main app theme -->
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a4a5a"/>
+      <stop offset="100%" stop-color="#0a3540"/>
+    </linearGradient>
+
+    <!-- A basic Jepara leaf element (Daun Trubusan) -->
+    <g id="jepara-leaf">
+      <path d="M0,0 C15,-20 40,-20 50,0 C40,5 20,15 0,0 Z" fill="url(#tealBase)" stroke="url(#gold)" stroke-width="1.2"/>
+      <path d="M5,-2 C20,-10 35,-10 45,-2 C35,2 20,6 5,-2 Z" fill="url(#tealDark)"/>
+      <path d="M0,0 Q25,-5 48,0" fill="none" stroke="url(#gold)" stroke-width="0.8"/>
+    </g>
+
+    <g id="jepara-leaf-small">
+      <use href="#jepara-leaf" transform="scale(0.7)"/>
+    </g>
+
+    <!-- A carving curling vine with leaves -->
+    <g id="vine-curve">
+      <!-- Main stalk -->
+      <path d="M0,0 C30,40 70,-40 100,0 C130,40 170,-40 200,0" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+      <path d="M0,0 C30,40 70,-40 100,0 C130,40 170,-40 200,0" fill="none" stroke="url(#tealBase)" stroke-width="5" opacity="0.6"/>
+      
+      <!-- Attaching leaves along the stalk -->
+      <use href="#jepara-leaf" x="15" y="15" transform="rotate(45 15 15)"/>
+      <use href="#jepara-leaf" x="35" y="-15" transform="rotate(-60 35 -15)"/>
+      <use href="#jepara-leaf-small" x="60" y="-5" transform="rotate(-20 60 -5)"/>
+      <use href="#jepara-leaf-small" x="85" y="20" transform="rotate(70 85 20)"/>
+      
+      <use href="#jepara-leaf" x="115" y="-15" transform="rotate(-45 115 -15)"/>
+      <use href="#jepara-leaf" x="135" y="15" transform="rotate(60 135 15)"/>
+      <use href="#jepara-leaf-small" x="160" y="5" transform="rotate(20 160 5)"/>
+      <use href="#jepara-leaf-small" x="185" y="-20" transform="rotate(-70 185 -20)"/>
+
+      <!-- Inner spirals (ulir pakis) common in Jepara -->
+      <path d="M35,-15 C45,-30 65,-20 50,-5 C40,5 30,-5 35,-15 Z" fill="url(#tealDark)" stroke="url(#gold)" stroke-width="1.5"/>
+      <circle cx="47" cy="-12" r="2" fill="url(#gold)"/>
+      
+      <path d="M135,15 C145,30 165,20 150,5 C140,-5 130,5 135,15 Z" fill="url(#tealDark)" stroke="url(#gold)" stroke-width="1.5"/>
+      <circle cx="147" cy="12" r="2" fill="url(#gold)"/>
+    </g>
+
+    <g id="vine-curve-flipped">
+      <use href="#vine-curve" transform="matrix(-1 0 0 -1 200 0)"/>
+    </g>
+
+    <!-- Jepara Flower Focus -->
+    <g id="jepara-flower">
+      <!-- Outer radiating petals -->
+      <path d="M0,-16 C10,-24 20,-10 16,0 C24,10 10,20 0,16 C-10,24 -20,10 -16,0 C-24,-10 -10,-20 0,-16 Z" fill="url(#tealBase)" stroke="url(#gold)" stroke-width="2"/>
+      <!-- Inner core -->
+      <circle cx="0" cy="0" r="8" fill="url(#tealDark)" stroke="url(#gold)" stroke-width="1.5"/>
+      <circle cx="0" cy="0" r="4" fill="url(#gold)"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f4c5c"/>
+      <!-- Small decorative dots around -->
+      <circle cx="0" cy="-20" r="1.5" fill="url(#gold)"/>
+      <circle cx="0" cy="20" r="1.5" fill="url(#gold)"/>
+      <circle cx="-20" cy="0" r="1.5" fill="url(#gold)"/>
+      <circle cx="20" cy="0" r="1.5" fill="url(#gold)"/>
+    </g>
+
+    <!-- The Dense Jepara Pattern -->
+    <pattern id="jepara-pattern" x="0" y="0" width="200" height="120" patternUnits="userSpaceOnUse">
+       <!-- Layer 1: Vines flowing right -->
+       <use href="#vine-curve" x="0" y="30"/>
+       <use href="#vine-curve" x="0" y="90"/>
+       <!-- Layer 2: Vines flowing left -->
+       <use href="#vine-curve-flipped" x="0" y="30"/>
+       <use href="#vine-curve-flipped" x="0" y="90"/>
+       
+       <!-- Crossings where we place flowers -->
+       <use href="#jepara-flower" x="0" y="60" transform="scale(0.8)"/>
+       <use href="#jepara-flower" x="100" y="60" transform="scale(1.1)"/>
+       <use href="#jepara-flower" x="200" y="60" transform="scale(0.8)"/>
+       
+       <use href="#jepara-flower" x="50" y="0" transform="scale(0.6)"/>
+       <use href="#jepara-flower" x="150" y="0" transform="scale(0.6)"/>
+       <use href="#jepara-flower" x="50" y="120" transform="scale(0.6)"/>
+       <use href="#jepara-flower" x="150" y="120" transform="scale(0.6)"/>
+    </pattern>
+  </defs>
+
+  <!-- Solid App Background matching app header -->
+  <rect x="0" y="0" width="800" height="120" fill="#0a3540"/>
+
+  <!-- Outer Carved Frame -->
+  <rect x="4" y="4" width="792" height="112" rx="10" fill="url(#cardBg)" stroke="url(#gold)" stroke-width="3"/>
+  
+  <!-- Carved Ornaments Filling the space -->
+  <rect x="10" y="10" width="780" height="100" rx="6" fill="url(#jepara-pattern)" stroke="#2d9e9e" stroke-width="2"/>
+
+  <!-- Center Plaque for the Surah Title -->
+  <g transform="translate(400, 60)">
+     <!-- Outer Drop Shadow -->
+     <path d="M-220,-48 L220,-48 C245,-48 260,-20 260,0 C260,20 245,48 220,48 L-220,48 C-245,48 -260,20 -260,0 C-260,-20 -245,-48 -220,-48 Z" fill="#000000" opacity="0.6" transform="translate(0, 4)"/>
+     
+     <!-- Outer Gold Rim of the plaque with Solid White Base -->
+     <path d="M-220,-48 L220,-48 C245,-48 260,-20 260,0 C260,20 245,48 220,48 L-220,48 C-245,48 -260,20 -260,0 C-260,-20 -245,-48 -220,-48 Z" fill="#ffffff" stroke="url(#gold)" stroke-width="4"/>
+  </g>
+
+  <!-- Ornate Corner Overlays -->
+  <g fill="url(#tealBase)" stroke="url(#gold)" stroke-width="2">
+     <!-- Top-Left overlay -->
+     <path d="M10,10 L50,10 C50,25 25,50 10,50 Z"/>
+     <!-- Top-Right overlay -->
+     <path d="M790,10 L750,10 C750,25 775,50 790,50 Z"/>
+     <!-- Bottom-Left overlay -->
+     <path d="M10,110 L50,110 C50,95 25,70 10,70 Z"/>
+     <!-- Bottom-Right overlay -->
+     <path d="M790,110 L750,110 C750,95 775,70 790,70 Z"/>
+     
+     <!-- Gold dots embedded in the corners -->
+     <circle cx="20" cy="20" r="4" fill="url(#gold)"/>
+     <circle cx="780" cy="20" r="4" fill="url(#gold)"/>
+     <circle cx="20" cy="100" r="4" fill="url(#gold)"/>
+     <circle cx="780" cy="100" r="4" fill="url(#gold)"/>
+     
+     <!-- Additional corner details -->
+     <path d="M28,28 L38,38 M772,28 L762,38 M28,92 L38,82 M772,92 L762,82" stroke="url(#gold)" stroke-width="2" stroke-linecap="round"/>
+  </g>
 </svg>

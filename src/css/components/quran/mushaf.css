@@ -222,10 +222,11 @@
    display: flex;
    align-items: center;
    justify-content: center;
-   padding: var(--sp-1) 45px;
-   margin: 2px auto;
-   width: 92%;
-   max-width: 380px;
+   padding: var(--sp-1) 22%;
+   margin: 4px auto;
+   width: 95%;
+   max-width: 420px;
+   min-height: 58px;
    position: relative;
    border: none;
    border-radius: 0;
@@ -239,7 +240,7 @@
 
 .mushaf-surah-name {
    font-family: var(--ff-mushaf-header-ar);
-   font-size: 1.35rem;
+   font-size: var(--fs-xl);
    color: var(--clr-mushaf-text);
    text-align: center;
    line-height: 1.8;
@@ -329,10 +330,10 @@
 
 .mushaf-page--opening .mushaf-line--surah-header {
    margin: var(--sp-1) auto var(--sp-2) auto;
-   padding: var(--sp-2) 45px;
-   min-height: 48px;
-   width: 85%;
-   max-width: 380px;
+   padding: var(--sp-2) 22%;
+   min-height: 64px;
+   width: 92%;
+   max-width: 440px;
 }
 
 .mushaf-page--opening .mushaf-surah-name {
@@ -412,8 +413,8 @@
    }
 
    .mushaf-page--opening .mushaf-line--surah-header {
-      padding: var(--sp-2) 38px;
-      width: 92%;
+      padding: var(--sp-2) 20%;
+      width: 94%;
    }
 
    .mushaf-page--opening .mushaf-word {
@@ -445,7 +446,7 @@
    }
 
    .mushaf-page--opening .mushaf-line--surah-header {
-      padding: var(--sp-1) 32px;
+      padding: var(--sp-1) 18%;
       width: 96%;
    }
 
