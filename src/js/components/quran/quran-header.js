@@ -38,6 +38,8 @@ export function createHeader(options = {}) {
       titleAriaLabel = '',
       hasSearchInput = false,
       searchPlaceholder = 'Cari...',
+      searchInputType = 'text',
+      searchInputMode = 'search',
       onSearchInput = null,
       className = 'quran-unified-header'
    } = options;
@@ -92,8 +94,8 @@ export function createHeader(options = {}) {
    if (hasSearchInput) {
       searchInput = document.createElement('input');
       searchInput.className = 'quran-header-search-input';
-      searchInput.type = 'number';
-      searchInput.inputMode = 'numeric';
+      searchInput.type = searchInputType;
+      searchInput.inputMode = searchInputMode;
       searchInput.placeholder = searchPlaceholder;
       searchInput.autocomplete = 'off';
       if (onSearchInput) searchInput.addEventListener('input', onSearchInput);

@@ -202,6 +202,8 @@ function _buildOverlay(item) {
       titleAriaLabel: ariaLabelStr,
       hasSearchInput: true,
       searchPlaceholder: 'Nomor ayat...',
+      searchInputType: 'number',
+      searchInputMode: 'numeric',
       onSearchInput: _onSearchInput,
       rightBtnIcon: 'bx-search',
       rightBtnAriaLabel: 'Cari ayat',

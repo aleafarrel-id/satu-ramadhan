@@ -114,7 +114,8 @@
    color: var(--clr-quran-text);
    font-family: var(--ff-primary);
    font-size: clamp(12px, 3.5vw, var(--fs-sm));
-   outline: none;
+   outline: none !important;
+   box-shadow: none !important;
    -moz-appearance: textfield;
    appearance: textfield;
    transition: border-color var(--transition-fast), font-size var(--transition-fast), height var(--transition-fast), padding var(--transition-fast);
@@ -129,6 +130,8 @@
 
 .quran-header-search-input:focus {
    border-color: var(--clr-quran-accent);
+   outline: none !important;
+   box-shadow: none !important;
 }
 
 .quran-header-search-input::placeholder {
