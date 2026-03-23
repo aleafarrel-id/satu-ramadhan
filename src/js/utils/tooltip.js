@@ -18,18 +18,46 @@ let _activeTooltipTrigger = null;
  * Calculates and applies horizontal offset to prevent tooltip overflow.
  * @param {Element} triggerEl - The element triggering the tooltip
  */
-function _adjustTooltipPosition(triggerEl) {
+function _adjustTooltipPosition(triggerEl, e) {
    // Find the nearest scrollable or block container, fallback to document
    const scrollContainer = triggerEl.closest('.quran-reader-scroll') || document.documentElement;
    const containerRect = scrollContainer.getBoundingClientRect();
    const triggerRect = triggerEl.getBoundingClientRect();
+   const rects = triggerEl.getClientRects();
+
+   let targetRect = triggerRect;
+
+   // Handle wrapped inline elements
+   if (rects.length > 1) {
+      if (e && typeof e.clientX === 'number' && e.clientX > 0) {
+         let minDist = Infinity;
+         for (const rect of rects) {
+            const center = rect.left + rect.width / 2;
+            const dist = Math.abs(center - e.clientX);
+            if (dist < minDist) {
+               minDist = dist;
+               targetRect = rect;
+            }
+         }
+      } else {
+         // Fallback to the first physical fragment
+         targetRect = rects[0];
+      }
+      
+      // Make CSS tooltip container anchor precisely over the interacted fragment
+      const targetLeftOffset = (targetRect.left + (targetRect.width / 2)) - triggerRect.left;
+      triggerEl.style.setProperty('--tooltip-target-left', `${targetLeftOffset}px`);
+   } else {
+      // Clean up fallback if no longer wrapped dynamically
+      triggerEl.style.removeProperty('--tooltip-target-left');
+   }
 
    // Best-effort estimation of tooltip width (since pseudo-elements cannot be measured directly)
    const label = triggerEl.getAttribute('data-label') || '';
    const estimatedWidth = (label.length * 7) + 24; // approx char width + padding width
    const halfWidth = estimatedWidth / 2;
 
-   const triggerCenterX = triggerRect.left + (triggerRect.width / 2);
+   const triggerCenterX = targetRect.left + (targetRect.width / 2);
    const safetyPadding = 12; // safety margin from screen edges in pixels
 
    // Reset positional custom property before calculation
@@ -80,7 +108,7 @@ export function initTooltip(container, triggerSelector = '[data-tooltip]') {
          }
 
          // Adjust position to fit screen and activate
-         _adjustTooltipPosition(triggerEl);
+         _adjustTooltipPosition(triggerEl, e);
          triggerEl.classList.add('active');
          _activeTooltipTrigger = triggerEl;
       } else {
@@ -97,7 +125,7 @@ export function initTooltip(container, triggerSelector = '[data-tooltip]') {
    container.addEventListener('mouseover', (e) => {
       const triggerEl = e.target.closest(triggerSelector);
       if (triggerEl) {
-         _adjustTooltipPosition(triggerEl);
+         _adjustTooltipPosition(triggerEl, e);
       }
    });
 }

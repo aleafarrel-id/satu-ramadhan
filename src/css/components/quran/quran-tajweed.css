@@ -7,9 +7,7 @@
    cursor: help;
    transition: opacity var(--transition-fast);
    border-radius: 2px;
-
-   /* Prevent wrapping to ensure correct anchor rect for tooltip */
-   display: inline-block;
+   display: inline;
    line-height: inherit;
 
    /* Dynamic Tooltip Alignment (controlled via JS) */
@@ -36,7 +34,7 @@
    content: attr(data-label);
    position: absolute;
    bottom: calc(100% + 6px);
-   left: 50%;
+   left: var(--tooltip-target-left, 50%);
    transform: translateX(var(--tooltip-offset-x)) translateY(var(--sp-1));
    white-space: nowrap;
 
