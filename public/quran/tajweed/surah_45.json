@@ -1,2092 +1,2044 @@
 {
     "index": "045",
     "verse": {
-        "verse_0": [
-            {
-                "end": 8,
-                "rule": "hamzat_wasl",
-                "start": 7
-            },
-            {
-                "end": 16,
-                "rule": "hamzat_wasl",
-                "start": 15
-            },
-            {
-                "end": 17,
-                "rule": "lam_shamsiyyah",
-                "start": 16
-            },
-            {
-                "end": 25,
-                "rule": "madd_2",
-                "start": 24
-            },
-            {
-                "end": 29,
-                "rule": "hamzat_wasl",
-                "start": 28
-            },
-            {
-                "end": 30,
-                "rule": "lam_shamsiyyah",
-                "start": 29
-            },
-            {
-                "end": 36,
-                "rule": "madd_246",
-                "start": 35
-            }
-        ],
         "verse_1": [
             {
+                "start": 1,
                 "end": 3,
-                "rule": "madd_6",
-                "start": 1
+                "rule": "madd_6"
             }
         ],
         "verse_2": [
             {
+                "start": 2,
                 "end": 5,
-                "rule": "ikhfa",
-                "start": 2
+                "rule": "ikhfa"
             },
             {
+                "start": 9,
                 "end": 10,
-                "rule": "hamzat_wasl",
-                "start": 9
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 14,
                 "end": 17,
-                "rule": "madd_2",
-                "start": 16
+                "rule": "madd_2"
             },
             {
+                "start": 25,
                 "end": 26,
-                "rule": "hamzat_wasl",
-                "start": 25
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 33,
                 "end": 34,
-                "rule": "hamzat_wasl",
-                "start": 33
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 44,
                 "end": 45,
-                "rule": "hamzat_wasl",
-                "start": 44
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 49,
                 "end": 52,
-                "rule": "madd_246",
-                "start": 51
+                "rule": "madd_246"
             }
         ],
         "verse_3": [
             {
+                "start": 2,
                 "end": 5,
-                "rule": "ghunnah",
-                "start": 2
+                "rule": "ghunnah"
             },
             {
+                "start": 10,
                 "end": 11,
-                "rule": "hamzat_wasl",
-                "start": 10
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 11,
                 "end": 12,
-                "rule": "lam_shamsiyyah",
-                "start": 11
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 15,
                 "end": 18,
-                "rule": "madd_2",
-                "start": 17
+                "rule": "madd_2"
             },
             {
+                "start": 18,
                 "end": 21,
-                "rule": "madd_2",
-                "start": 20
+                "rule": "madd_2"
             },
             {
+                "start": 26,
                 "end": 27,
-                "rule": "hamzat_wasl",
-                "start": 26
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 41,
                 "end": 44,
-                "rule": "madd_2",
-                "start": 43
+                "rule": "madd_2"
             },
             {
-                "end": 50,
-                "rule": "idghaam_no_ghunnah",
-                "start": 45
+                "start": 44,
+                "end": 51,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 61,
-                "rule": "madd_246",
-                "start": 60
+                "start": 59,
+                "end": 62,
+                "rule": "madd_246"
             }
         ],
         "verse_4": [
             {
+                "start": 33,
                 "end": 37,
-                "rule": "ikhfa",
-                "start": 33
+                "rule": "ikhfa"
             },
             {
+                "start": 35,
                 "end": 39,
-                "rule": "madd_6",
-                "start": 37
+                "rule": "madd_6"
             },
             {
+                "start": 48,
                 "end": 51,
-                "rule": "madd_2",
-                "start": 50
+                "rule": "madd_2"
             },
             {
-                "end": 57,
-                "rule": "idghaam_no_ghunnah",
-                "start": 52
+                "start": 51,
+                "end": 58,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 66,
-                "rule": "idghaam_ghunnah",
-                "start": 62
+                "start": 62,
+                "end": 68,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 72,
-                "rule": "madd_246",
-                "start": 71
+                "start": 71,
+                "end": 74,
+                "rule": "madd_246"
             }
         ],
         "verse_5": [
             {
+                "start": 2,
                 "end": 3,
-                "rule": "hamzat_wasl",
-                "start": 2
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 7,
                 "end": 10,
-                "rule": "madd_2",
-                "start": 9
+                "rule": "madd_2"
             },
             {
+                "start": 13,
                 "end": 14,
-                "rule": "hamzat_wasl",
-                "start": 13
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 24,
                 "end": 25,
-                "rule": "hamzat_wasl",
-                "start": 24
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 25,
                 "end": 26,
-                "rule": "lam_shamsiyyah",
-                "start": 25
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 26,
                 "end": 29,
-                "rule": "ghunnah",
-                "start": 26
+                "rule": "ghunnah"
             },
             {
+                "start": 37,
                 "end": 41,
-                "rule": "madd_munfasil",
-                "start": 39
+                "rule": "madd_muttasil"
             },
             {
+                "start": 44,
                 "end": 47,
-                "rule": "ikhfa",
-                "start": 44
+                "rule": "ikhfa"
             },
             {
+                "start": 50,
                 "end": 51,
-                "rule": "hamzat_wasl",
-                "start": 50
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 63,
                 "end": 64,
-                "rule": "hamzat_wasl",
-                "start": 63
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 64,
                 "end": 65,
-                "rule": "lam_shamsiyyah",
-                "start": 64
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 68,
                 "end": 72,
-                "rule": "madd_muttasil",
-                "start": 70
+                "rule": "madd_muttasil"
             },
             {
+                "start": 75,
                 "end": 82,
-                "rule": "idghaam_no_ghunnah",
-                "start": 77
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 89,
-                "rule": "ikhfa",
-                "start": 85
+                "start": 84,
+                "end": 90,
+                "rule": "ikhfa"
             },
             {
-                "end": 103,
-                "rule": "hamzat_wasl",
-                "start": 102
+                "start": 103,
+                "end": 104,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 142,
-                "rule": "hamzat_wasl",
-                "start": 141
-            },
-            {
+                "start": 142,
                 "end": 143,
-                "rule": "lam_shamsiyyah",
-                "start": 142
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 149,
-                "rule": "madd_2",
-                "start": 148
+                "start": 143,
+                "end": 144,
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 158,
-                "rule": "madd_2",
-                "start": 157
+                "start": 147,
+                "end": 150,
+                "rule": "madd_2"
             },
             {
-                "end": 164,
-                "rule": "idghaam_no_ghunnah",
-                "start": 159
+                "start": 156,
+                "end": 159,
+                "rule": "madd_2"
             },
             {
-                "end": 173,
-                "rule": "idghaam_ghunnah",
-                "start": 169
+                "start": 159,
+                "end": 166,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 180,
-                "rule": "madd_246",
-                "start": 179
+                "start": 170,
+                "end": 176,
+                "rule": "idghaam_ghunnah"
+            },
+            {
+                "start": 180,
+                "end": 183,
+                "rule": "madd_246"
             }
         ],
         "verse_6": [
             {
+                "start": 10,
                 "end": 13,
-                "rule": "madd_2",
-                "start": 12
+                "rule": "madd_2"
             },
             {
+                "start": 16,
                 "end": 17,
-                "rule": "hamzat_wasl",
-                "start": 16
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 46,
                 "end": 47,
-                "rule": "hamzat_wasl",
-                "start": 46
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 75,
-                "rule": "iqlab",
-                "start": 71
+                "start": 72,
+                "end": 78,
+                "rule": "iqlab"
             },
             {
-                "end": 82,
-                "rule": "hamzat_wasl",
-                "start": 81
+                "start": 83,
+                "end": 84,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 97,
-                "rule": "madd_2",
-                "start": 96
+                "start": 96,
+                "end": 99,
+                "rule": "madd_2"
             },
             {
-                "end": 102,
-                "rule": "madd_2",
-                "start": 101
+                "start": 101,
+                "end": 104,
+                "rule": "madd_2"
             },
             {
-                "end": 112,
-                "rule": "madd_246",
-                "start": 111
+                "start": 111,
+                "end": 114,
+                "rule": "madd_246"
             }
         ],
         "verse_7": [
             {
-                "end": 10,
-                "rule": "idghaam_no_ghunnah",
-                "start": 5
+                "start": 4,
+                "end": 11,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 30,
-                "rule": "madd_246",
-                "start": 29
+                "start": 28,
+                "end": 31,
+                "rule": "madd_246"
             }
         ],
         "verse_8": [
             {
+                "start": 12,
                 "end": 15,
-                "rule": "madd_2",
-                "start": 14
+                "rule": "madd_2"
             },
             {
+                "start": 18,
                 "end": 19,
-                "rule": "hamzat_wasl",
-                "start": 18
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 46,
                 "end": 49,
-                "rule": "ghunnah",
-                "start": 46
+                "rule": "ghunnah"
             },
             {
-                "end": 74,
-                "rule": "ikhfa",
-                "start": 69
+                "start": 68,
+                "end": 75,
+                "rule": "ikhfa"
             },
             {
-                "end": 81,
-                "rule": "idghaam_no_ghunnah",
-                "start": 76
+                "start": 75,
+                "end": 82,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 123,
-                "rule": "madd_246",
-                "start": 122
+                "start": 123,
+                "end": 126,
+                "rule": "madd_246"
             }
         ],
         "verse_9": [
             {
+                "start": 23,
                 "end": 26,
-                "rule": "madd_2",
-                "start": 25
+                "rule": "madd_2"
             },
             {
+                "start": 41,
                 "end": 42,
-                "rule": "hamzat_wasl",
-                "start": 41
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 65,
-                "rule": "silent",
-                "start": 63
+                "start": 65,
+                "end": 67,
+                "rule": "silent"
             },
             {
-                "end": 69,
-                "rule": "madd_muttasil",
-                "start": 67
+                "start": 67,
+                "end": 71,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 92,
-                "rule": "idghaam_ghunnah",
-                "start": 87
-            },
-            {
+                "start": 88,
                 "end": 95,
-                "rule": "madd_246",
-                "start": 94
+                "rule": "idghaam_ghunnah"
+            },
+            {
+                "start": 95,
+                "end": 98,
+                "rule": "madd_246"
             }
         ],
         "verse_10": [
             {
+                "start": 0,
                 "end": 7,
-                "rule": "idghaam_ghunnah",
-                "start": 3
+                "rule": "idghaam_ghunnah"
             },
             {
+                "start": 7,
                 "end": 11,
-                "rule": "madd_muttasil",
-                "start": 9
+                "rule": "madd_muttasil"
             },
             {
+                "start": 22,
                 "end": 25,
-                "rule": "ghunnah",
-                "start": 22
+                "rule": "ghunnah"
             },
             {
-                "end": 53,
-                "rule": "idghaam_shafawi",
-                "start": 48
+                "start": 48,
+                "end": 55,
+                "rule": "idghaam_shafawi"
             },
             {
-                "end": 64,
-                "rule": "silent",
-                "start": 62
+                "start": 64,
+                "end": 66,
+                "rule": "silent"
             },
             {
-                "end": 76,
-                "rule": "idghaam_ghunnah",
-                "start": 71
+                "start": 69,
+                "end": 79,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 85,
-                "rule": "hamzat_wasl",
-                "start": 84
+                "start": 87,
+                "end": 88,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 95,
-                "rule": "silent",
-                "start": 93
+                "start": 96,
+                "end": 98,
+                "rule": "silent"
             },
             {
-                "end": 102,
-                "rule": "ikhfa",
-                "start": 98
+                "start": 101,
+                "end": 105,
+                "rule": "ikhfa"
             },
             {
-                "end": 107,
-                "rule": "hamzat_wasl",
-                "start": 106
+                "start": 109,
+                "end": 110,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 124,
-                "rule": "madd_muttasil",
-                "start": 122
+                "start": 123,
+                "end": 127,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 149,
-                "rule": "madd_246",
-                "start": 148
+                "start": 151,
+                "end": 154,
+                "rule": "madd_246"
             }
         ],
         "verse_11": [
             {
+                "start": 0,
                 "end": 3,
-                "rule": "madd_2",
-                "start": 2
+                "rule": "madd_2"
             },
             {
-                "end": 15,
-                "rule": "idghaam_ghunnah",
-                "start": 10
+                "start": 9,
+                "end": 18,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 16,
-                "rule": "hamzat_wasl",
-                "start": 15
+                "start": 18,
+                "end": 19,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 34,
-                "rule": "silent",
-                "start": 32
+                "start": 35,
+                "end": 37,
+                "rule": "silent"
             },
             {
-                "end": 44,
-                "rule": "madd_2",
-                "start": 43
+                "start": 44,
+                "end": 47,
+                "rule": "madd_2"
             },
             {
-                "end": 75,
-                "rule": "idghaam_ghunnah",
-                "start": 70
+                "start": 72,
+                "end": 79,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 80,
-                "rule": "idghaam_no_ghunnah",
-                "start": 75
+                "start": 76,
+                "end": 84,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 82,
-                "rule": "qalqalah",
-                "start": 80
+                "start": 84,
+                "end": 86,
+                "rule": "qalqalah"
             },
             {
-                "end": 90,
-                "rule": "madd_246",
-                "start": 89
+                "start": 91,
+                "end": 94,
+                "rule": "madd_246"
             }
         ],
         "verse_12": [
             {
-                "end": 9,
-                "rule": "hamzat_wasl",
-                "start": 8
+                "start": 10,
+                "end": 11,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 32,
-                "rule": "hamzat_wasl",
-                "start": 31
+                "start": 33,
+                "end": 34,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 47,
-                "rule": "qalqalah",
-                "start": 45
+                "start": 47,
+                "end": 49,
+                "rule": "qalqalah"
             },
             {
-                "end": 53,
-                "rule": "hamzat_wasl",
-                "start": 52
+                "start": 54,
+                "end": 55,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 79,
-                "rule": "madd_2",
-                "start": 78
+                "start": 78,
+                "end": 81,
+                "rule": "madd_2"
             },
             {
-                "end": 88,
-                "rule": "qalqalah",
-                "start": 86
+                "start": 88,
+                "end": 90,
+                "rule": "qalqalah"
             },
             {
-                "end": 95,
-                "rule": "silent",
-                "start": 93
+                "start": 95,
+                "end": 97,
+                "rule": "silent"
             },
             {
-                "end": 102,
-                "rule": "ikhfa",
-                "start": 98
+                "start": 100,
+                "end": 104,
+                "rule": "ikhfa"
             },
             {
-                "end": 109,
-                "rule": "madd_2",
-                "start": 108
+                "start": 108,
+                "end": 111,
+                "rule": "madd_2"
             },
             {
-                "end": 133,
-                "rule": "madd_246",
-                "start": 132
+                "start": 132,
+                "end": 135,
+                "rule": "madd_246"
             }
         ],
         "verse_13": [
             {
+                "start": 12,
                 "end": 19,
-                "rule": "idghaam_shafawi",
-                "start": 14
+                "rule": "idghaam_shafawi"
             },
             {
+                "start": 25,
                 "end": 26,
-                "rule": "hamzat_wasl",
-                "start": 25
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 26,
                 "end": 27,
-                "rule": "lam_shamsiyyah",
-                "start": 26
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 30,
                 "end": 33,
-                "rule": "madd_2",
-                "start": 32
+                "rule": "madd_2"
             },
             {
+                "start": 33,
                 "end": 36,
-                "rule": "madd_2",
-                "start": 35
+                "rule": "madd_2"
             },
             {
+                "start": 49,
                 "end": 50,
-                "rule": "hamzat_wasl",
-                "start": 49
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 71,
-                "rule": "idghaam_ghunnah",
-                "start": 65
+                "start": 64,
+                "end": 72,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 81,
-                "rule": "ghunnah",
-                "start": 78
+                "start": 81,
+                "end": 84,
+                "rule": "ghunnah"
             },
             {
-                "end": 89,
-                "rule": "madd_2",
-                "start": 88
+                "start": 89,
+                "end": 92,
+                "rule": "madd_2"
             },
             {
-                "end": 102,
-                "rule": "madd_2",
-                "start": 101
+                "start": 102,
+                "end": 105,
+                "rule": "madd_2"
             },
             {
-                "end": 108,
-                "rule": "idghaam_no_ghunnah",
-                "start": 103
+                "start": 105,
+                "end": 112,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 117,
-                "rule": "idghaam_ghunnah",
-                "start": 113
+                "start": 116,
+                "end": 122,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 127,
-                "rule": "madd_246",
-                "start": 126
+                "start": 129,
+                "end": 132,
+                "rule": "madd_246"
             }
         ],
         "verse_14": [
             {
+                "start": 24,
                 "end": 26,
-                "rule": "silent",
-                "start": 24
+                "rule": "silent"
             },
             {
+                "start": 36,
                 "end": 38,
-                "rule": "silent",
-                "start": 36
+                "rule": "silent"
             },
             {
+                "start": 73,
                 "end": 74,
-                "rule": "hamzat_wasl",
-                "start": 73
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 85,
                 "end": 87,
-                "rule": "qalqalah",
-                "start": 85
+                "rule": "qalqalah"
             },
             {
-                "end": 102,
-                "rule": "iqlab",
-                "start": 97
+                "start": 96,
+                "end": 103,
+                "rule": "iqlab"
             },
             {
+                "start": 113,
                 "end": 115,
-                "rule": "silent",
-                "start": 113
+                "rule": "silent"
             },
             {
+                "start": 122,
                 "end": 125,
-                "rule": "madd_246",
-                "start": 124
+                "rule": "madd_246"
             }
         ],
         "verse_15": [
             {
+                "start": 12,
                 "end": 15,
-                "rule": "madd_2",
-                "start": 14
+                "rule": "madd_2"
             },
             {
-                "end": 23,
-                "rule": "ikhfa",
-                "start": 18
+                "start": 17,
+                "end": 24,
+                "rule": "ikhfa"
             },
             {
-                "end": 34,
-                "rule": "madd_2",
-                "start": 33
+                "start": 32,
+                "end": 35,
+                "rule": "madd_2"
             },
             {
-                "end": 48,
-                "rule": "madd_muttasil",
-                "start": 46
+                "start": 47,
+                "end": 51,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 68,
-                "rule": "ghunnah",
-                "start": 65
+                "start": 70,
+                "end": 73,
+                "rule": "ghunnah"
             },
             {
-                "end": 95,
-                "rule": "madd_246",
-                "start": 94
+                "start": 97,
+                "end": 100,
+                "rule": "madd_246"
             }
         ],
         "verse_16": [
             {
+                "start": 6,
                 "end": 8,
-                "rule": "qalqalah",
-                "start": 6
+                "rule": "qalqalah"
             },
             {
+                "start": 22,
                 "end": 26,
-                "rule": "madd_munfasil",
-                "start": 24
+                "rule": "madd_muttasil"
             },
             {
+                "start": 31,
                 "end": 35,
-                "rule": "madd_muttasil",
-                "start": 33
+                "rule": "madd_muttasil"
             },
             {
+                "start": 41,
                 "end": 42,
-                "rule": "hamzat_wasl",
-                "start": 41
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 46,
                 "end": 49,
-                "rule": "madd_2",
-                "start": 48
+                "rule": "madd_2"
             },
             {
+                "start": 54,
                 "end": 55,
-                "rule": "hamzat_wasl",
-                "start": 54
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 66,
                 "end": 67,
-                "rule": "hamzat_wasl",
-                "start": 66
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 67,
                 "end": 68,
-                "rule": "lam_shamsiyyah",
-                "start": 67
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 68,
                 "end": 71,
-                "rule": "ghunnah",
-                "start": 68
+                "rule": "ghunnah"
             },
             {
+                "start": 85,
                 "end": 87,
-                "rule": "qalqalah",
-                "start": 85
+                "rule": "qalqalah"
             },
             {
+                "start": 87,
                 "end": 90,
-                "rule": "madd_2",
-                "start": 89
+                "rule": "madd_2"
             },
             {
+                "start": 90,
                 "end": 97,
-                "rule": "idghaam_shafawi",
-                "start": 92
+                "rule": "idghaam_shafawi"
             },
             {
+                "start": 100,
                 "end": 101,
-                "rule": "hamzat_wasl",
-                "start": 100
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 101,
                 "end": 102,
-                "rule": "lam_shamsiyyah",
-                "start": 101
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 108,
                 "end": 111,
-                "rule": "madd_2",
-                "start": 110
+                "rule": "madd_2"
             },
             {
+                "start": 123,
                 "end": 126,
-                "rule": "madd_2",
-                "start": 125
+                "rule": "madd_2"
             },
             {
+                "start": 137,
                 "end": 138,
-                "rule": "hamzat_wasl",
-                "start": 137
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 140,
                 "end": 143,
-                "rule": "madd_2",
-                "start": 142
+                "rule": "madd_2"
             },
             {
+                "start": 145,
                 "end": 148,
-                "rule": "madd_246",
-                "start": 147
+                "rule": "madd_246"
             }
         ],
         "verse_17": [
             {
+                "start": 9,
                 "end": 12,
-                "rule": "madd_2",
-                "start": 11
+                "rule": "madd_2"
             },
             {
+                "start": 12,
                 "end": 18,
-                "rule": "ikhfa_shafawi",
-                "start": 14
+                "rule": "ikhfa_shafawi"
             },
             {
+                "start": 21,
                 "end": 24,
-                "rule": "madd_2",
-                "start": 23
+                "rule": "madd_2"
             },
             {
-                "end": 30,
-                "rule": "idghaam_ghunnah",
-                "start": 25
+                "start": 24,
+                "end": 31,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 34,
-                "rule": "hamzat_wasl",
-                "start": 33
+                "start": 34,
+                "end": 35,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 50,
-                "rule": "hamzat_wasl",
-                "start": 49
+                "start": 52,
+                "end": 53,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 60,
-                "rule": "madd_munfasil",
-                "start": 58
+                "start": 59,
+                "end": 63,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 62,
-                "rule": "silent",
-                "start": 60
+                "start": 63,
+                "end": 65,
+                "rule": "silent"
             },
             {
-                "end": 76,
-                "rule": "iqlab",
-                "start": 73
+                "start": 73,
+                "end": 80,
+                "rule": "iqlab"
             },
             {
-                "end": 90,
-                "rule": "madd_muttasil",
-                "start": 88
+                "start": 89,
+                "end": 93,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 98,
-                "rule": "hamzat_wasl",
-                "start": 97
+                "start": 100,
+                "end": 101,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 117,
-                "rule": "iqlab",
-                "start": 112
+                "start": 114,
+                "end": 121,
+                "rule": "iqlab"
             },
             {
-                "end": 132,
-                "rule": "ghunnah",
-                "start": 129
+                "start": 134,
+                "end": 137,
+                "rule": "ghunnah"
             },
             {
-                "end": 145,
-                "rule": "qalqalah",
-                "start": 143
+                "start": 148,
+                "end": 150,
+                "rule": "qalqalah"
             },
             {
-                "end": 168,
-                "rule": "hamzat_wasl",
-                "start": 167
+                "start": 172,
+                "end": 173,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 175,
-                "rule": "madd_2",
-                "start": 174
+                "start": 177,
+                "end": 180,
+                "rule": "madd_2"
             },
             {
-                "end": 195,
-                "rule": "silent",
-                "start": 193
+                "start": 198,
+                "end": 200,
+                "rule": "silent"
             },
             {
-                "end": 213,
-                "rule": "madd_246",
-                "start": 212
+                "start": 215,
+                "end": 218,
+                "rule": "madd_246"
             }
         ],
         "verse_18": [
             {
+                "start": 2,
                 "end": 5,
-                "rule": "ghunnah",
-                "start": 2
+                "rule": "ghunnah"
             },
             {
+                "start": 12,
                 "end": 15,
-                "rule": "madd_2",
-                "start": 14
+                "rule": "madd_2"
             },
             {
-                "end": 38,
-                "rule": "idghaam_ghunnah",
-                "start": 33
+                "start": 32,
+                "end": 39,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 42,
-                "rule": "hamzat_wasl",
-                "start": 41
+                "start": 42,
+                "end": 43,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 54,
-                "rule": "hamzat_wasl",
-                "start": 53
+                "start": 54,
+                "end": 55,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 89,
-                "rule": "madd_muttasil",
-                "start": 87
+                "start": 86,
+                "end": 90,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 93,
-                "rule": "hamzat_wasl",
-                "start": 92
+                "start": 93,
+                "end": 94,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 115,
-                "rule": "madd_246",
-                "start": 114
+                "start": 113,
+                "end": 116,
+                "rule": "madd_246"
             }
         ],
         "verse_19": [
             {
+                "start": 2,
                 "end": 5,
-                "rule": "ghunnah",
-                "start": 2
+                "rule": "ghunnah"
             },
             {
+                "start": 10,
                 "end": 16,
-                "rule": "idghaam_ghunnah",
-                "start": 12
+                "rule": "idghaam_ghunnah"
             },
             {
+                "start": 21,
                 "end": 23,
-                "rule": "silent",
-                "start": 21
+                "rule": "silent"
             },
             {
+                "start": 26,
                 "end": 29,
-                "rule": "ikhfa",
-                "start": 26
+                "rule": "ikhfa"
             },
             {
+                "start": 35,
                 "end": 36,
-                "rule": "hamzat_wasl",
-                "start": 35
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 54,
-                "rule": "idghaam_ghunnah",
-                "start": 49
+                "start": 45,
+                "end": 57,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 59,
-                "rule": "ghunnah",
-                "start": 56
-            },
-            {
-                "end": 61,
-                "rule": "hamzat_wasl",
-                "start": 60
-            },
-            {
+                "start": 59,
                 "end": 62,
-                "rule": "lam_shamsiyyah",
-                "start": 61
+                "rule": "ghunnah"
             },
             {
-                "end": 66,
-                "rule": "madd_2",
-                "start": 65
+                "start": 63,
+                "end": 64,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 95,
-                "rule": "madd_muttasil",
-                "start": 93
+                "start": 64,
+                "end": 65,
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 107,
-                "rule": "idghaam_ghunnah",
-                "start": 103
+                "start": 65,
+                "end": 69,
+                "rule": "madd_2"
             },
             {
-                "end": 108,
-                "rule": "hamzat_wasl",
-                "start": 107
+                "start": 94,
+                "end": 98,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 124,
-                "rule": "hamzat_wasl",
-                "start": 123
+                "start": 105,
+                "end": 113,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 134,
-                "rule": "madd_246",
-                "start": 133
+                "start": 113,
+                "end": 114,
+                "rule": "hamzat_wasl"
+            },
+            {
+                "start": 129,
+                "end": 130,
+                "rule": "hamzat_wasl"
+            },
+            {
+                "start": 137,
+                "end": 140,
+                "rule": "madd_246"
             }
         ],
         "verse_20": [
             {
+                "start": 0,
                 "end": 3,
-                "rule": "madd_2",
-                "start": 2
+                "rule": "madd_2"
             },
             {
+                "start": 9,
                 "end": 13,
-                "rule": "madd_muttasil",
-                "start": 11
+                "rule": "madd_muttasil"
             },
             {
-                "end": 21,
-                "rule": "lam_shamsiyyah",
-                "start": 20
-            },
-            {
+                "start": 21,
                 "end": 24,
-                "rule": "ghunnah",
-                "start": 21
+                "rule": "ghunnah"
             },
             {
-                "end": 38,
-                "rule": "idghaam_ghunnah",
-                "start": 33
+                "start": 32,
+                "end": 39,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 50,
-                "rule": "idghaam_no_ghunnah",
-                "start": 45
+                "start": 45,
+                "end": 52,
+                "rule": "idghaam_no_ghunnah"
             },
             {
-                "end": 59,
-                "rule": "idghaam_ghunnah",
-                "start": 55
+                "start": 56,
+                "end": 62,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 65,
-                "rule": "madd_246",
-                "start": 64
+                "start": 65,
+                "end": 68,
+                "rule": "madd_246"
             }
         ],
         "verse_21": [
             {
+                "start": 12,
                 "end": 13,
-                "rule": "hamzat_wasl",
-                "start": 12
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 22,
                 "end": 23,
-                "rule": "hamzat_wasl",
-                "start": 22
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 23,
                 "end": 25,
-                "rule": "qalqalah",
-                "start": 23
+                "rule": "qalqalah"
             },
             {
+                "start": 32,
                 "end": 34,
-                "rule": "silent",
-                "start": 32
+                "rule": "silent"
             },
             {
+                "start": 35,
                 "end": 36,
-                "rule": "hamzat_wasl",
-                "start": 35
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 36,
                 "end": 37,
-                "rule": "lam_shamsiyyah",
-                "start": 36
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 50,
                 "end": 57,
-                "rule": "idghaam_ghunnah",
-                "start": 52
+                "rule": "idghaam_ghunnah"
             },
             {
+                "start": 57,
                 "end": 59,
-                "rule": "qalqalah",
-                "start": 57
+                "rule": "qalqalah"
             },
             {
+                "start": 70,
                 "end": 71,
-                "rule": "hamzat_wasl",
-                "start": 70
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 88,
                 "end": 90,
-                "rule": "silent",
-                "start": 88
+                "rule": "silent"
             },
             {
+                "start": 100,
                 "end": 102,
-                "rule": "silent",
-                "start": 100
+                "rule": "silent"
             },
             {
+                "start": 103,
                 "end": 104,
-                "rule": "hamzat_wasl",
-                "start": 103
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 104,
                 "end": 105,
-                "rule": "lam_shamsiyyah",
-                "start": 104
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 105,
                 "end": 109,
-                "rule": "madd_2",
-                "start": 108
+                "rule": "madd_2"
             },
             {
+                "start": 111,
                 "end": 114,
-                "rule": "madd_2",
-                "start": 113
+                "rule": "madd_2"
             },
             {
+                "start": 119,
                 "end": 123,
-                "rule": "madd_muttasil",
-                "start": 121
+                "rule": "madd_muttasil"
             },
             {
-                "end": 129,
-                "rule": "idghaam_ghunnah",
-                "start": 124
+                "start": 123,
+                "end": 130,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 157,
-                "rule": "madd_muttasil",
-                "start": 155
+                "start": 156,
+                "end": 160,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 173,
-                "rule": "madd_246",
-                "start": 172
+                "start": 173,
+                "end": 176,
+                "rule": "madd_246"
             }
         ],
         "verse_22": [
             {
+                "start": 9,
                 "end": 10,
-                "rule": "hamzat_wasl",
-                "start": 9
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 17,
                 "end": 18,
-                "rule": "hamzat_wasl",
-                "start": 17
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 18,
                 "end": 19,
-                "rule": "lam_shamsiyyah",
-                "start": 18
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 22,
                 "end": 25,
-                "rule": "madd_2",
-                "start": 24
+                "rule": "madd_2"
             },
             {
+                "start": 25,
                 "end": 28,
-                "rule": "madd_2",
-                "start": 27
+                "rule": "madd_2"
             },
             {
+                "start": 33,
                 "end": 34,
-                "rule": "hamzat_wasl",
-                "start": 33
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 45,
                 "end": 46,
-                "rule": "hamzat_wasl",
-                "start": 45
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 60,
                 "end": 62,
-                "rule": "qalqalah",
-                "start": 60
+                "rule": "qalqalah"
             },
             {
-                "end": 82,
-                "rule": "iqlab",
-                "start": 78
+                "start": 77,
+                "end": 83,
+                "rule": "iqlab"
             },
             {
+                "start": 113,
                 "end": 116,
-                "rule": "madd_246",
-                "start": 115
+                "rule": "madd_246"
             }
         ],
         "verse_23": [
             {
+                "start": 18,
                 "end": 19,
-                "rule": "hamzat_wasl",
-                "start": 18
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 29,
                 "end": 32,
-                "rule": "madd_2",
-                "start": 31
+                "rule": "madd_2"
             },
             {
+                "start": 34,
                 "end": 37,
-                "rule": "madd_2",
-                "start": 36
+                "rule": "madd_2"
             },
             {
+                "start": 40,
                 "end": 44,
-                "rule": "madd_2",
-                "start": 43
+                "rule": "madd_2"
             },
             {
+                "start": 59,
                 "end": 60,
-                "rule": "hamzat_wasl",
-                "start": 59
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 83,
-                "rule": "idghaam_ghunnah",
-                "start": 79
+                "start": 78,
+                "end": 84,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 106,
-                "rule": "madd_2",
-                "start": 105
+                "start": 104,
+                "end": 107,
+                "rule": "madd_2"
             },
             {
-                "end": 118,
-                "rule": "madd_2",
-                "start": 117
+                "start": 116,
+                "end": 119,
+                "rule": "madd_2"
             },
             {
-                "end": 144,
-                "rule": "madd_2",
-                "start": 143
+                "start": 142,
+                "end": 145,
+                "rule": "madd_2"
             },
             {
-                "end": 150,
-                "rule": "madd_2",
-                "start": 149
+                "start": 148,
+                "end": 151,
+                "rule": "madd_2"
             },
             {
-                "end": 157,
-                "rule": "ikhfa",
-                "start": 153
+                "start": 153,
+                "end": 159,
+                "rule": "ikhfa"
             },
             {
-                "end": 163,
-                "rule": "idghaam_ghunnah",
-                "start": 159
+                "start": 159,
+                "end": 165,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 177,
-                "rule": "iqlab",
-                "start": 174
+                "start": 173,
+                "end": 180,
+                "rule": "iqlab"
             },
             {
-                "end": 184,
-                "rule": "hamzat_wasl",
-                "start": 183
+                "start": 185,
+                "end": 186,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 209,
-                "rule": "madd_246",
-                "start": 208
+                "start": 210,
+                "end": 213,
+                "rule": "madd_246"
             }
         ],
         "verse_24": [
             {
+                "start": 8,
                 "end": 10,
-                "rule": "silent",
-                "start": 8
+                "rule": "silent"
             },
             {
+                "start": 38,
                 "end": 39,
-                "rule": "hamzat_wasl",
-                "start": 38
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 39,
                 "end": 40,
-                "rule": "lam_shamsiyyah",
-                "start": 39
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 81,
                 "end": 85,
-                "rule": "madd_munfasil",
-                "start": 83
+                "rule": "madd_muttasil"
             },
             {
+                "start": 93,
                 "end": 94,
-                "rule": "hamzat_wasl",
-                "start": 93
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 94,
                 "end": 95,
-                "rule": "lam_shamsiyyah",
-                "start": 94
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 117,
-                "rule": "ikhfa_shafawi",
-                "start": 113
+                "start": 113,
+                "end": 119,
+                "rule": "ikhfa_shafawi"
             },
             {
-                "end": 120,
-                "rule": "madd_2",
-                "start": 119
+                "start": 119,
+                "end": 122,
+                "rule": "madd_2"
             },
             {
-                "end": 161,
-                "rule": "ghunnah",
-                "start": 158
+                "start": 162,
+                "end": 165,
+                "rule": "ghunnah"
             },
             {
-                "end": 162,
-                "rule": "madd_246",
-                "start": 161
+                "start": 162,
+                "end": 166,
+                "rule": "madd_246"
             }
         ],
         "verse_25": [
             {
+                "start": 31,
                 "end": 34,
-                "rule": "madd_2",
-                "start": 33
+                "rule": "madd_2"
             },
             {
+                "start": 45,
                 "end": 48,
-                "rule": "madd_2",
-                "start": 47
+                "rule": "madd_2"
             },
             {
-                "end": 54,
-                "rule": "idghaam_ghunnah",
-                "start": 49
+                "start": 48,
+                "end": 55,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 81,
-                "rule": "madd_munfasil",
-                "start": 79
+                "start": 77,
+                "end": 82,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 88,
-                "rule": "ikhfa",
-                "start": 84
+                "start": 85,
+                "end": 89,
+                "rule": "ikhfa"
             },
             {
-                "end": 94,
-                "rule": "silent",
-                "start": 92
+                "start": 93,
+                "end": 95,
+                "rule": "silent"
             },
             {
-                "end": 96,
-                "rule": "hamzat_wasl",
-                "start": 95
+                "start": 96,
+                "end": 97,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 103,
-                "rule": "silent",
-                "start": 101
+                "start": 102,
+                "end": 104,
+                "rule": "silent"
             },
             {
-                "end": 114,
-                "rule": "madd_muttasil",
-                "start": 112
+                "start": 111,
+                "end": 115,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 120,
-                "rule": "madd_munfasil",
-                "start": 118
+                "start": 117,
+                "end": 121,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 127,
-                "rule": "ikhfa",
-                "start": 123
+                "start": 124,
+                "end": 128,
+                "rule": "ikhfa"
             },
             {
-                "end": 130,
-                "rule": "ikhfa",
-                "start": 127
+                "start": 128,
+                "end": 131,
+                "rule": "ikhfa"
             },
             {
-                "end": 136,
-                "rule": "madd_2",
-                "start": 135
+                "start": 134,
+                "end": 137,
+                "rule": "madd_2"
             },
             {
-                "end": 141,
-                "rule": "madd_246",
-                "start": 140
+                "start": 139,
+                "end": 142,
+                "rule": "madd_246"
             }
         ],
         "verse_26": [
             {
+                "start": 5,
                 "end": 6,
-                "rule": "hamzat_wasl",
-                "start": 5
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 27,
                 "end": 30,
-                "rule": "ghunnah",
-                "start": 27
+                "rule": "ghunnah"
             },
             {
+                "start": 45,
                 "end": 48,
-                "rule": "ghunnah",
-                "start": 45
+                "rule": "ghunnah"
             },
             {
+                "start": 51,
                 "end": 53,
-                "rule": "qalqalah",
-                "start": 51
+                "rule": "qalqalah"
             },
             {
+                "start": 76,
                 "end": 77,
-                "rule": "hamzat_wasl",
-                "start": 76
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 81,
                 "end": 84,
-                "rule": "madd_2",
-                "start": 83
+                "rule": "madd_2"
             },
             {
+                "start": 108,
                 "end": 111,
-                "rule": "madd_2",
-                "start": 110
+                "rule": "madd_2"
             },
             {
+                "start": 113,
                 "end": 116,
-                "rule": "ghunnah",
-                "start": 113
+                "rule": "ghunnah"
             },
             {
+                "start": 126,
                 "end": 127,
-                "rule": "hamzat_wasl",
-                "start": 126
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 127,
                 "end": 128,
-                "rule": "lam_shamsiyyah",
-                "start": 127
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 128,
                 "end": 131,
-                "rule": "ghunnah",
-                "start": 128
+                "rule": "ghunnah"
             },
             {
+                "start": 145,
                 "end": 148,
-                "rule": "madd_246",
-                "start": 147
+                "rule": "madd_246"
             }
         ],
         "verse_27": [
             {
+                "start": 17,
                 "end": 18,
-                "rule": "hamzat_wasl",
-                "start": 17
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 18,
                 "end": 19,
-                "rule": "lam_shamsiyyah",
-                "start": 18
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 22,
                 "end": 25,
-                "rule": "madd_2",
-                "start": 24
+                "rule": "madd_2"
             },
             {
+                "start": 25,
                 "end": 28,
-                "rule": "madd_2",
-                "start": 27
+                "rule": "madd_2"
             },
             {
+                "start": 33,
                 "end": 34,
-                "rule": "hamzat_wasl",
-                "start": 33
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 61,
-                "rule": "hamzat_wasl",
-                "start": 60
+                "start": 62,
+                "end": 63,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 62,
-                "rule": "lam_shamsiyyah",
-                "start": 61
+                "start": 63,
+                "end": 64,
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 84,
-                "rule": "idghaam_ghunnah",
-                "start": 80
+                "start": 81,
+                "end": 87,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 92,
-                "rule": "hamzat_wasl",
-                "start": 91
+                "start": 94,
+                "end": 95,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 98,
-                "rule": "qalqalah",
-                "start": 96
+                "start": 99,
+                "end": 101,
+                "rule": "qalqalah"
             },
             {
-                "end": 103,
-                "rule": "madd_246",
-                "start": 102
+                "start": 103,
+                "end": 106,
+                "rule": "madd_246"
             }
         ],
         "verse_28": [
             {
+                "start": 17,
                 "end": 20,
-                "rule": "ghunnah",
-                "start": 17
+                "rule": "ghunnah"
             },
             {
-                "end": 25,
-                "rule": "ikhfa",
-                "start": 21
+                "start": 20,
+                "end": 26,
+                "rule": "ikhfa"
             },
             {
-                "end": 35,
-                "rule": "ikhfa",
-                "start": 31
+                "start": 31,
+                "end": 39,
+                "rule": "ikhfa"
             },
             {
-                "end": 44,
-                "rule": "ghunnah",
-                "start": 41
+                "start": 45,
+                "end": 48,
+                "rule": "ghunnah"
             },
             {
-                "end": 49,
-                "rule": "ikhfa",
-                "start": 45
+                "start": 48,
+                "end": 54,
+                "rule": "ikhfa"
             },
             {
-                "end": 51,
-                "rule": "qalqalah",
-                "start": 49
-            },
-            {
+                "start": 54,
                 "end": 56,
-                "rule": "madd_munfasil",
-                "start": 53
+                "rule": "qalqalah"
             },
             {
-                "end": 69,
-                "rule": "madd_2",
-                "start": 68
+                "start": 58,
+                "end": 61,
+                "rule": "madd_muttasil"
             },
             {
-                "end": 76,
-                "rule": "hamzat_wasl",
-                "start": 75
+                "start": 71,
+                "end": 74,
+                "rule": "madd_2"
             },
             {
-                "end": 89,
-                "rule": "qalqalah",
-                "start": 87
+                "start": 80,
+                "end": 81,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 105,
-                "rule": "ikhfa",
-                "start": 102
+                "start": 92,
+                "end": 94,
+                "rule": "qalqalah"
             },
             {
-                "end": 117,
-                "rule": "madd_246",
-                "start": 116
+                "start": 107,
+                "end": 110,
+                "rule": "ikhfa"
+            },
+            {
+                "start": 119,
+                "end": 122,
+                "rule": "madd_246"
             }
         ],
         "verse_29": [
             {
+                "start": 0,
                 "end": 3,
-                "rule": "madd_2",
-                "start": 2
+                "rule": "madd_2"
             },
             {
+                "start": 9,
                 "end": 12,
-                "rule": "madd_2",
-                "start": 11
+                "rule": "madd_2"
             },
             {
+                "start": 20,
                 "end": 23,
-                "rule": "ikhfa",
-                "start": 20
+                "rule": "ikhfa"
             },
             {
+                "start": 32,
                 "end": 38,
-                "rule": "ikhfa_shafawi",
-                "start": 34
+                "rule": "ikhfa_shafawi"
             },
             {
+                "start": 38,
                 "end": 39,
-                "rule": "hamzat_wasl",
-                "start": 38
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 52,
-                "rule": "ghunnah",
-                "start": 49
+                "start": 51,
+                "end": 54,
+                "rule": "ghunnah"
             },
             {
-                "end": 59,
-                "rule": "ghunnah",
-                "start": 56
+                "start": 58,
+                "end": 61,
+                "rule": "ghunnah"
             },
             {
-                "end": 70,
-                "rule": "ikhfa",
-                "start": 67
+                "start": 69,
+                "end": 72,
+                "rule": "ikhfa"
             },
             {
-                "end": 82,
-                "rule": "ikhfa",
-                "start": 79
+                "start": 81,
+                "end": 84,
+                "rule": "ikhfa"
             },
             {
-                "end": 94,
-                "rule": "madd_246",
-                "start": 93
+                "start": 93,
+                "end": 96,
+                "rule": "madd_246"
             }
         ],
         "verse_30": [
             {
+                "start": 4,
                 "end": 7,
-                "rule": "ghunnah",
-                "start": 4
+                "rule": "ghunnah"
             },
             {
+                "start": 9,
                 "end": 10,
-                "rule": "hamzat_wasl",
-                "start": 9
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 27,
                 "end": 29,
-                "rule": "silent",
-                "start": 27
+                "rule": "silent"
             },
             {
+                "start": 39,
                 "end": 41,
-                "rule": "silent",
-                "start": 39
+                "rule": "silent"
             },
             {
+                "start": 42,
                 "end": 43,
-                "rule": "hamzat_wasl",
-                "start": 42
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 43,
                 "end": 44,
-                "rule": "lam_shamsiyyah",
-                "start": 43
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 44,
                 "end": 48,
-                "rule": "madd_2",
-                "start": 47
+                "rule": "madd_2"
             },
             {
+                "start": 50,
                 "end": 53,
-                "rule": "madd_2",
-                "start": 52
+                "rule": "madd_2"
             },
             {
+                "start": 60,
                 "end": 62,
-                "rule": "qalqalah",
-                "start": 60
+                "rule": "qalqalah"
             },
             {
+                "start": 93,
                 "end": 96,
-                "rule": "madd_2",
-                "start": 95
+                "rule": "madd_2"
             },
             {
-                "end": 100,
-                "rule": "madd_2",
-                "start": 99
+                "start": 99,
+                "end": 102,
+                "rule": "madd_2"
             },
             {
-                "end": 111,
-                "rule": "hamzat_wasl",
-                "start": 110
+                "start": 112,
+                "end": 113,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 121,
-                "rule": "hamzat_wasl",
-                "start": 120
+                "start": 122,
+                "end": 123,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 128,
-                "rule": "madd_246",
-                "start": 127
+                "start": 127,
+                "end": 130,
+                "rule": "madd_246"
             }
         ],
         "verse_31": [
             {
+                "start": 4,
                 "end": 7,
-                "rule": "ghunnah",
-                "start": 4
+                "rule": "ghunnah"
             },
             {
+                "start": 9,
                 "end": 10,
-                "rule": "hamzat_wasl",
-                "start": 9
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 23,
                 "end": 27,
-                "rule": "madd_munfasil",
-                "start": 25
+                "rule": "madd_muttasil"
             },
             {
+                "start": 27,
                 "end": 29,
-                "rule": "silent",
-                "start": 27
+                "rule": "silent"
             },
             {
+                "start": 49,
                 "end": 52,
-                "rule": "madd_2",
-                "start": 51
+                "rule": "madd_2"
             },
             {
+                "start": 78,
                 "end": 79,
-                "rule": "hamzat_wasl",
-                "start": 78
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 98,
                 "end": 101,
-                "rule": "ikhfa",
-                "start": 98
+                "rule": "ikhfa"
             },
             {
-                "end": 115,
-                "rule": "idghaam_ghunnah",
-                "start": 109
+                "start": 108,
+                "end": 116,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 117,
-                "rule": "qalqalah",
-                "start": 115
+                "start": 116,
+                "end": 118,
+                "rule": "qalqalah"
             },
             {
-                "end": 122,
-                "rule": "madd_246",
-                "start": 121
+                "start": 120,
+                "end": 123,
+                "rule": "madd_246"
             }
         ],
         "verse_32": [
             {
+                "start": 16,
                 "end": 19,
-                "rule": "ghunnah",
-                "start": 16
+                "rule": "ghunnah"
             },
             {
+                "start": 27,
                 "end": 28,
-                "rule": "hamzat_wasl",
-                "start": 27
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 43,
-                "rule": "idghaam_ghunnah",
-                "start": 39
-            },
-            {
+                "start": 37,
                 "end": 44,
-                "rule": "hamzat_wasl",
-                "start": 43
+                "rule": "idghaam_ghunnah"
             },
             {
+                "start": 44,
                 "end": 45,
-                "rule": "lam_shamsiyyah",
-                "start": 44
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 83,
-                "rule": "idghaam_shafawi",
-                "start": 78
+                "start": 45,
+                "end": 46,
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 89,
-                "rule": "qalqalah",
-                "start": 87
+                "start": 77,
+                "end": 84,
+                "rule": "idghaam_shafawi"
             },
             {
-                "end": 98,
-                "rule": "hamzat_wasl",
-                "start": 97
+                "start": 88,
+                "end": 90,
+                "rule": "qalqalah"
             },
             {
+                "start": 98,
                 "end": 99,
-                "rule": "lam_shamsiyyah",
-                "start": 98
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 115,
-                "rule": "idghaam_ghunnah",
-                "start": 110
+                "start": 99,
+                "end": 100,
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 120,
-                "rule": "ghunnah",
-                "start": 117
+                "start": 109,
+                "end": 116,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 133,
-                "rule": "ghunnah",
-                "start": 130
+                "start": 118,
+                "end": 121,
+                "rule": "ghunnah"
             },
             {
-                "end": 137,
-                "rule": "idghaam_ghunnah",
-                "start": 132
+                "start": 131,
+                "end": 139,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 163,
-                "rule": "madd_246",
-                "start": 162
+                "start": 162,
+                "end": 165,
+                "rule": "madd_246"
             }
         ],
         "verse_33": [
             {
+                "start": 38,
                 "end": 40,
-                "rule": "silent",
-                "start": 38
+                "rule": "silent"
             },
             {
+                "start": 51,
                 "end": 58,
-                "rule": "idghaam_shafawi",
-                "start": 53
+                "rule": "idghaam_shafawi"
             },
             {
+                "start": 66,
                 "end": 68,
-                "rule": "silent",
-                "start": 66
+                "rule": "silent"
             },
             {
+                "start": 71,
                 "end": 74,
-                "rule": "madd_2",
-                "start": 73
+                "rule": "madd_2"
             },
             {
+                "start": 85,
                 "end": 88,
-                "rule": "madd_246",
-                "start": 87
+                "rule": "madd_246"
             }
         ],
         "verse_34": [
             {
+                "start": 8,
                 "end": 9,
-                "rule": "hamzat_wasl",
-                "start": 8
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 20,
                 "end": 23,
-                "rule": "ikhfa",
-                "start": 20
+                "rule": "ikhfa"
             },
             {
+                "start": 21,
                 "end": 25,
-                "rule": "madd_2",
-                "start": 24
+                "rule": "madd_2"
             },
             {
+                "start": 48,
                 "end": 52,
-                "rule": "madd_muttasil",
-                "start": 50
+                "rule": "madd_muttasil"
             },
             {
+                "start": 66,
                 "end": 69,
-                "rule": "madd_2",
-                "start": 68
+                "rule": "madd_2"
             },
             {
+                "start": 79,
                 "end": 83,
-                "rule": "madd_2",
-                "start": 82
+                "rule": "madd_2"
             },
             {
+                "start": 88,
                 "end": 89,
-                "rule": "hamzat_wasl",
-                "start": 88
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 89,
                 "end": 90,
-                "rule": "lam_shamsiyyah",
-                "start": 89
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 90,
                 "end": 93,
-                "rule": "ghunnah",
-                "start": 90
+                "rule": "ghunnah"
             },
             {
+                "start": 105,
                 "end": 112,
-                "rule": "idghaam_shafawi",
-                "start": 107
+                "rule": "idghaam_shafawi"
             },
             {
-                "end": 117,
-                "rule": "idghaam_ghunnah",
-                "start": 112
-            },
-            {
+                "start": 109,
                 "end": 118,
-                "rule": "madd_2",
-                "start": 117
+                "rule": "idghaam_ghunnah"
             },
             {
+                "start": 114,
+                "end": 118,
+                "rule": "madd_2"
+            },
+            {
+                "start": 120,
                 "end": 123,
-                "rule": "madd_246",
-                "start": 122
+                "rule": "madd_246"
             }
         ],
         "verse_35": [
             {
+                "start": 0,
                 "end": 3,
-                "rule": "madd_2",
-                "start": 2
+                "rule": "madd_2"
             },
             {
+                "start": 5,
                 "end": 11,
-                "rule": "ikhfa_shafawi",
-                "start": 7
+                "rule": "ikhfa_shafawi"
             },
             {
+                "start": 13,
                 "end": 16,
-                "rule": "ghunnah",
-                "start": 13
+                "rule": "ghunnah"
             },
             {
+                "start": 21,
                 "end": 22,
-                "rule": "hamzat_wasl",
-                "start": 21
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 37,
                 "end": 40,
-                "rule": "madd_2",
-                "start": 39
+                "rule": "madd_2"
             },
             {
+                "start": 43,
                 "end": 44,
-                "rule": "hamzat_wasl",
-                "start": 43
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 61,
-                "rule": "idghaam_ghunnah",
-                "start": 56
+                "start": 55,
+                "end": 62,
+                "rule": "idghaam_ghunnah"
             },
             {
-                "end": 74,
-                "rule": "hamzat_wasl",
-                "start": 73
+                "start": 74,
+                "end": 75,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 81,
-                "rule": "silent",
-                "start": 80
+                "start": 81,
+                "end": 83,
+                "rule": "silent"
             },
             {
-                "end": 82,
-                "rule": "madd_2",
-                "start": 81
+                "start": 81,
+                "end": 83,
+                "rule": "madd_2"
             },
             {
-                "end": 86,
-                "rule": "hamzat_wasl",
-                "start": 85
-            },
-            {
+                "start": 86,
                 "end": 87,
-                "rule": "lam_shamsiyyah",
-                "start": 86
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 99,
-                "rule": "hamzat_wasl",
-                "start": 98
+                "start": 87,
+                "end": 88,
+                "rule": "lam_shamsiyyah"
             },
             {
-                "end": 156,
-                "rule": "madd_246",
-                "start": 155
+                "start": 101,
+                "end": 102,
+                "rule": "hamzat_wasl"
+            },
+            {
+                "start": 156,
+                "end": 159,
+                "rule": "madd_246"
             }
         ],
         "verse_36": [
             {
+                "start": 10,
                 "end": 11,
-                "rule": "hamzat_wasl",
-                "start": 10
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 26,
                 "end": 27,
-                "rule": "hamzat_wasl",
-                "start": 26
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 27,
                 "end": 28,
-                "rule": "lam_shamsiyyah",
-                "start": 27
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 31,
                 "end": 34,
-                "rule": "madd_2",
-                "start": 33
+                "rule": "madd_2"
             },
             {
+                "start": 34,
                 "end": 37,
-                "rule": "madd_2",
-                "start": 36
+                "rule": "madd_2"
             },
             {
+                "start": 48,
                 "end": 49,
-                "rule": "hamzat_wasl",
-                "start": 48
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 64,
                 "end": 65,
-                "rule": "hamzat_wasl",
-                "start": 64
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 67,
                 "end": 70,
-                "rule": "madd_2",
-                "start": 69
+                "rule": "madd_2"
             },
             {
+                "start": 72,
                 "end": 75,
-                "rule": "madd_246",
-                "start": 74
+                "rule": "madd_246"
             }
         ],
         "verse_37": [
             {
+                "start": 7,
                 "end": 8,
-                "rule": "hamzat_wasl",
-                "start": 7
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 12,
                 "end": 14,
-                "rule": "qalqalah",
-                "start": 12
+                "rule": "qalqalah"
             },
             {
+                "start": 16,
                 "end": 20,
-                "rule": "madd_muttasil",
-                "start": 18
+                "rule": "madd_muttasil"
             },
             {
+                "start": 27,
                 "end": 28,
-                "rule": "hamzat_wasl",
-                "start": 27
+                "rule": "hamzat_wasl"
             },
             {
+                "start": 28,
                 "end": 29,
-                "rule": "lam_shamsiyyah",
-                "start": 28
+                "rule": "lam_shamsiyyah"
             },
             {
+                "start": 32,
                 "end": 35,
-                "rule": "madd_2",
-                "start": 34
+                "rule": "madd_2"
             },
             {
+                "start": 35,
                 "end": 38,
-                "rule": "madd_2",
-                "start": 37
+                "rule": "madd_2"
             },
             {
+                "start": 43,
                 "end": 44,
-                "rule": "hamzat_wasl",
-                "start": 43
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 61,
-                "rule": "hamzat_wasl",
-                "start": 60
+                "start": 62,
+                "end": 63,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 72,
-                "rule": "hamzat_wasl",
-                "start": 71
+                "start": 73,
+                "end": 74,
+                "rule": "hamzat_wasl"
             },
             {
-                "end": 79,
-                "rule": "madd_246",
-                "start": 78
+                "start": 78,
+                "end": 81,
+                "rule": "madd_246"
             }
         ]
-    },
-    "count": 37
+    }
 }

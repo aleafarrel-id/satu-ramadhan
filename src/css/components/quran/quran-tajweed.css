@@ -8,8 +8,8 @@
    transition: opacity var(--transition-fast);
    border-radius: 2px;
 
-   /* Prevent inline layout shifts */
-   display: inline;
+   /* Prevent wrapping to ensure correct anchor rect for tooltip */
+   display: inline-block;
    line-height: inherit;
 
    /* Dynamic Tooltip Alignment (controlled via JS) */
