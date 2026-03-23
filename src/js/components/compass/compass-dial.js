@@ -69,16 +69,21 @@ export function renderCompass() {
     `;
 }
 
+/** Cached DOM reference — survives the page's lifetime */
+let _cachedContainer = null;
+
 /**
  * Updates the compass UI angles via CSS variables
  * @param {number} heading - The device heading (0-360)
  * @param {number} qiblaAngle - The angle to the Qibla relative to True North
  */
 export function updateCompassUI(heading, qiblaAngle) {
-    const container = document.getElementById('compass-dial-container');
-    if (!container) return;
+    if (!_cachedContainer || !_cachedContainer.isConnected) {
+        _cachedContainer = document.getElementById('compass-dial-container');
+    }
+    if (!_cachedContainer) return;
 
     // Apply strictly via CSS variable for smooth transition and clear separation of concerns
-    container.style.setProperty('--heading', `${heading}deg`);
-    container.style.setProperty('--qibla-angle', `${qiblaAngle}deg`);
+    _cachedContainer.style.setProperty('--heading', `${heading}deg`);
+    _cachedContainer.style.setProperty('--qibla-angle', `${qiblaAngle}deg`);
 }

@@ -23,7 +23,13 @@ const GYRO_DETECT_TIMEOUT_MS = 1000;
  * Low-pass filter smoothing factor (0–1).
  * Lower = smoother but more laggy, higher = more responsive but jittery.
  */
-const SMOOTHING_FACTOR = 0.15;
+const SMOOTHING_FACTOR = 0.25;
+
+/**
+ * Minimum heading change (in degrees) to actually push a DOM update.
+ * Skips imperceptible sub-degree changes that would waste paint cycles.
+ */
+const MIN_CHANGE_DEG = 0.1;
 
 /**
  * Global cache for gyroscope detection state to prevent re-detecting
@@ -47,6 +53,10 @@ export default class QiblaCompass {
 
         /** Haptic cooldown state */
         this._lastHapticTime = 0;
+
+        /** rAF throttle state */
+        this._rafId = null;
+        this._lastRenderedHeading = null;
     }
 
     /**
@@ -108,8 +118,7 @@ export default class QiblaCompass {
 
             // Apply circular low-pass filter to smooth jittery sensor data
             this._heading = this._smoothHeading(rawHeading);
-            this._update();
-            this._checkQiblaAlignment();
+            this._scheduleUpdate();
         };
 
         // iOS 13+ requires permission request
@@ -147,6 +156,11 @@ export default class QiblaCompass {
         if (!this._started) return;
         this._started = false;
         this._clearGyroDetectTimer();
+
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = null;
+        }
 
         if (this._orientationHandler) {
             window.removeEventListener('deviceorientationabsolute', this._orientationHandler, true);
@@ -230,6 +244,31 @@ export default class QiblaCompass {
 
         this._smoothedHeading = smoothDeg;
         return smoothDeg;
+    }
+
+    /**
+     * Schedule a single DOM update on the next animation frame.
+     * Coalesces rapid sensor events into one paint per vsync.
+     * @private
+     */
+    _scheduleUpdate() {
+        if (this._rafId) return; // already scheduled
+
+        this._rafId = requestAnimationFrame(() => {
+            this._rafId = null;
+
+            // Skip if heading hasn't changed enough to be visible
+            if (
+                this._lastRenderedHeading !== null &&
+                this._angleDiff(this._heading, this._lastRenderedHeading) < MIN_CHANGE_DEG
+            ) {
+                return;
+            }
+
+            this._lastRenderedHeading = this._heading;
+            this._update();
+            this._checkQiblaAlignment();
+        });
     }
 
     /**

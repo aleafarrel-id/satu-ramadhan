@@ -8,12 +8,21 @@ import * as Router from '../../router.js';
 
 let _quranMode = false;
 let _navOptions = {};
+const _exitTransitionManager = {
+   timers: [],
+   add(t) { this.timers.push(t); },
+   clear() {
+      this.timers.forEach(clearTimeout);
+      this.timers = [];
+   }
+};
 
 /**
  * Initializes the navigation manager.
  */
 export function init() {
 }
+
 
 /**
  * Activates Quran mode and transitions UI.
@@ -22,6 +31,8 @@ export async function enterQuranMode(options = {}) {
    if (_quranMode) return;
    _quranMode = true;
    _navOptions = options;
+
+   _exitTransitionManager.clear();
 
    const mainNav = document.getElementById('bottom-nav');
    const appHeader = document.getElementById('app-header');
@@ -93,26 +104,26 @@ export async function exitQuranMode() {
    QuranDock.hide();
 
    if (quranBackdrop) {
-      setTimeout(() => {
+      _exitTransitionManager.add(setTimeout(() => {
+         if (_quranMode) return;
          quranBackdrop.classList.remove('active');
-      }, 600);
+      }, 600));
    }
 
    return new Promise(resolve => {
-      setTimeout(() => {
-         QuranHeader.destroyAll();
-         QuranDock.destroy();
+      _exitTransitionManager.add(setTimeout(() => {
+         if (!_quranMode) {
+            QuranHeader.destroyAll();
+            QuranDock.destroy();
+         }
          resolve();
-      }, 800);
+      }, 800));
    });
 }
 
 /**
  * Handles the back button action.
  */
-function handleQuranBack() {
-   Router.goBack();
-}
 
 /**
  * Handles dock navigation events.

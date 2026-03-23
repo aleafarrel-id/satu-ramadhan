@@ -4,7 +4,7 @@
  */
 
 const TOTAL_PAGES = 604;
-const MAX_CACHE_SIZE = 30;
+const MAX_CACHE_SIZE = 50;
 
 /* ─── Page Cache ─── */
 

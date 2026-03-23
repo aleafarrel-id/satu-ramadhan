@@ -26,7 +26,6 @@
     "@capacitor/share": "^8.0.1",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.1",
-    "cordova-plugin-request-location-accuracy": "^2.3.0",
     "cordova.plugins.diagnostic": "^7.2.10",
     "html-to-image": "^1.11.13",
     "leaflet": "^1.9.4",

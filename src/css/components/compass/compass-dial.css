@@ -26,7 +26,7 @@
     width: 260px;
     height: 260px;
     border-radius: 50%;
-    transform: rotate(calc(-1 * var(--heading)));
+    transform: rotate(calc(-1 * var(--heading))) translate3d(0, 0, 0);
     will-change: transform;
 }
 
@@ -129,7 +129,6 @@
     border-bottom: 90px solid var(--clr-accent-600);
     position: absolute;
     bottom: 50%;
-    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
 .needle-bottom {
@@ -140,7 +139,6 @@
     border-top: 90px solid var(--clr-primary-900);
     position: absolute;
     top: 50%;
-    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
 .needle-center {
@@ -153,15 +151,17 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 15;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 .qibla-indicator-wrapper {
     position: absolute;
     inset: -2rem;
     border-radius: 50%;
-    transform: rotate(var(--qibla-angle));
+    transform: rotate(var(--qibla-angle)) translate3d(0, 0, 0);
     z-index: 20;
     transition: transform 0.3s ease-out;
+    will-change: transform;
 }
 
 .qibla-icon {

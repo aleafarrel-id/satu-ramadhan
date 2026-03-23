@@ -148,7 +148,7 @@ export function destroy() {
       unregisterModalDismiss(_exitReaderSearch);
       dismissTooltip();
       destroyPicker();
-      
+
       if (_overlay && _overlay.parentNode) {
          _overlay.parentNode.removeChild(_overlay);
       }
@@ -214,6 +214,9 @@ function _buildOverlay(item) {
    _scrollContainer = document.createElement('div');
    _scrollContainer.className = 'quran-reader-scroll';
 
+   // Delegated click handler — avoids per-card addEventListener overhead
+   _scrollContainer.addEventListener('click', _onScrollContainerClick);
+
    // Loading state
    QuranCard.renderLoadingState(_scrollContainer);
 
@@ -228,7 +231,7 @@ function _buildOverlay(item) {
 
 function _openSurahPicker() {
    const isJuz = _currentType === 'juz';
-   
+
    openPicker({
       title: isJuz ? 'Pilih Juz' : 'Pilih Surah',
       data: isJuz ? getJuzList() : getSurahList(),
@@ -363,13 +366,9 @@ function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
    const transObj = translationData.verse || {};
    const ayahList = [];
 
-   // Collect all verse keys and sort numerically
+   // V8/JSC return integer-like string keys in ascending numeric order,
+   // so Object.keys already gives us sorted verse keys without explicit sort.
    const verseKeys = Object.keys(verseObj);
-   verseKeys.sort((a, b) => {
-      const numA = parseInt(a.replace('verse_', ''));
-      const numB = parseInt(b.replace('verse_', ''));
-      return numA - numB;
-   });
 
    verseKeys.forEach(key => {
       const verseNum = parseInt(key.replace('verse_', ''));
@@ -442,6 +441,7 @@ function _createRegularAyahElement(ayah) {
    const card = document.createElement('div');
    card.className = 'quran-ayah-card';
    card.dataset.ayahNumber = ayah.number;
+   card.dataset.surahIndex = ayah.surahIndex;
 
    // Header with ayah number + action buttons
    const header = document.createElement('div');
@@ -455,20 +455,18 @@ function _createRegularAyahElement(ayah) {
    const actions = document.createElement('div');
    actions.className = 'quran-ayah-actions';
 
-   // Copy button
+   // Copy button — no inline listener, handled via delegation
    const copyBtn = document.createElement('button');
    copyBtn.className = 'quran-ayah-action-btn';
    copyBtn.setAttribute('aria-label', 'Salin ayat');
+   copyBtn.dataset.action = 'copy';
    copyBtn.innerHTML = `<i class='bx bx-copy-alt'></i>`;
-   copyBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      _handleCopyAyah(ayah, copyBtn);
-   });
 
-   // Bookmark button
+   // Bookmark button — no inline listener, handled via delegation
    const bookmarkBtn = document.createElement('button');
    bookmarkBtn.className = 'quran-ayah-action-btn';
    bookmarkBtn.setAttribute('aria-label', 'Tandai ayat');
+   bookmarkBtn.dataset.action = 'bookmark';
 
    // Set initial bookmark icon state
    const isMarked = BookmarkManager.isBookmarkedSync(ayah.surahIndex, ayah.number);
@@ -476,11 +474,6 @@ function _createRegularAyahElement(ayah) {
       ? `<i class='bx bxs-bookmark-alt'></i>`
       : `<i class='bx bx-bookmark-alt'></i>`;
    if (isMarked) bookmarkBtn.classList.add('bookmarked');
-
-   bookmarkBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      _handleToggleBookmark(ayah, bookmarkBtn);
-   });
 
    actions.appendChild(copyBtn);
    actions.appendChild(bookmarkBtn);
@@ -537,7 +530,7 @@ async function _renderItems(data, renderId, isInitialLoad = false) {
             ? _createSurahBannerElement(itemDesc.surah)
             : _createAyahElement(itemDesc.data);
          if (isInitialLoad && isInitialBatch) {
-            el.style.animationDelay = `${index * 0.04}s`;
+            el.style.animationDelay = `${index * 0.025}s`;
          } else {
             el.style.animation = 'none';
             el.style.opacity = '1';
@@ -650,6 +643,39 @@ function _filterVerses(query) {
    });
 
    _renderItems(results, renderId);
+}
+
+/* Delegated Click Handler */
+
+/**
+ * Single delegated handler on _scrollContainer — replaces per-card listeners.
+ * Looks up action buttons by data-action attribute and resolves the ayah
+ * from _currentReaderData using the card's data attributes.
+ */
+function _onScrollContainerClick(e) {
+   const btn = e.target.closest('.quran-ayah-action-btn');
+   if (!btn) return;
+
+   e.stopPropagation();
+
+   const card = btn.closest('.quran-ayah-card');
+   if (!card) return;
+
+   const ayahNumber = parseInt(card.dataset.ayahNumber, 10);
+   const surahIndex = parseInt(card.dataset.surahIndex, 10);
+
+   // Find the ayah data from the current reader data set
+   const ayahItem = _currentReaderData.find(
+      item => item.type === 'ayah' && item.data.number === ayahNumber && item.data.surahIndex === surahIndex
+   );
+   if (!ayahItem) return;
+
+   const action = btn.dataset.action;
+   if (action === 'copy') {
+      _handleCopyAyah(ayahItem.data, btn);
+   } else if (action === 'bookmark') {
+      _handleToggleBookmark(ayahItem.data, btn);
+   }
 }
 
 /* Clipboard Logic */

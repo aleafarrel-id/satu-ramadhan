@@ -5,6 +5,7 @@
 
 const _routes = {};
 let _currentPage = null;
+let _isNavigating = false;
 const _history = [];
 let _onNavigateCallback = null;
 
@@ -25,39 +26,44 @@ export function register(path, handler) {
  */
 export async function navigate(path, { pushHistory = true } = {}) {
     // Avoid double navigation or pushing same page
-    if (_currentPage === path) return;
+    if (_isNavigating || _currentPage === path) return;
+    _isNavigating = true;
 
-    if (pushHistory && _currentPage) {
-        // Prevent pushing the same page consecutively
-        if (_history.length === 0 || _history[_history.length - 1] !== _currentPage) {
-            _history.push(_currentPage);
+    try {
+        if (pushHistory && _currentPage) {
+            // Prevent pushing the same page consecutively
+            if (_history.length === 0 || _history[_history.length - 1] !== _currentPage) {
+                _history.push(_currentPage);
+            }
         }
-    }
 
-    // Destroy current page
-    if (_currentPage && _routes[_currentPage]?.destroy) {
-        await _routes[_currentPage].destroy();
-    }
-
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-    // Show target page
-    const pageEl = document.getElementById(`page-${path}`);
-    if (pageEl) {
-        pageEl.classList.add('active');
-
-        // Render the page
-        if (_routes[path]?.render) {
-            await _routes[path].render(pageEl);
+        // Destroy current page
+        if (_currentPage && _routes[_currentPage]?.destroy) {
+            await _routes[_currentPage].destroy();
         }
-    }
 
-    _currentPage = path;
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
-    // Notify listeners of navigation change
-    if (_onNavigateCallback) {
-        _onNavigateCallback(path);
+        // Show target page
+        const pageEl = document.getElementById(`page-${path}`);
+        if (pageEl) {
+            pageEl.classList.add('active');
+
+            // Render the page
+            if (_routes[path]?.render) {
+                await _routes[path].render(pageEl);
+            }
+        }
+
+        _currentPage = path;
+
+        // Notify listeners of navigation change
+        if (_onNavigateCallback) {
+            _onNavigateCallback(path);
+        }
+    } finally {
+        _isNavigating = false;
     }
 }
 

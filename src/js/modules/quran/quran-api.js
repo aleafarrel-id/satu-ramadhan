@@ -3,7 +3,7 @@
  * Handles data fetching and caching for all Quran-related features.
  */
 
-const MAX_CACHE_SIZE = 5;
+const MAX_CACHE_SIZE = 15;
 
 const _cache = {
    surahList: null,
@@ -74,7 +74,7 @@ export async function getSurahData(index) {
    const key = parseInt(index, 10);
    const cached = _getFromCache(_cache.surahs, key);
    if (cached !== undefined) return cached;
-   
+
    const data = await _fetchJson(`/quran/surah/surah_${key}.json`, `Gagal memuat surah ${key}`);
    _cache.surahs.set(key, data);
    _enforceCacheLimit(_cache.surahs);
@@ -90,7 +90,7 @@ export async function getTranslationData(index) {
    const key = parseInt(index, 10);
    const cached = _getFromCache(_cache.translations, key);
    if (cached !== undefined) return cached;
-   
+
    const data = await _fetchJson(`/quran/translation/id/id_translation_${key}.json`, `Gagal memuat terjemahan surah ${key}`);
    _cache.translations.set(key, data);
    _enforceCacheLimit(_cache.translations);
@@ -106,19 +106,17 @@ export async function getTajweedData(index) {
    const key = parseInt(index, 10);
    const cached = _getFromCache(_cache.tajweed, key);
    if (cached !== undefined) return cached;
-   
+
    try {
       const res = await fetch(`/quran/tajweed/surah_${key}.json`);
       if (!res.ok) {
-          _cache.tajweed.set(key, null);
-          _enforceCacheLimit(_cache.tajweed);
-          return null;
+         _cache.tajweed.set(key, null);
+         _enforceCacheLimit(_cache.tajweed);
+         return null;
       }
-      
-      const text = await res.text();
-      const cleanText = text.replace(/^\uFEFF/, '');
-      const data = JSON.parse(cleanText);
-      
+
+      const data = await res.json();
+
       _cache.tajweed.set(key, data);
       _enforceCacheLimit(_cache.tajweed);
       return data;

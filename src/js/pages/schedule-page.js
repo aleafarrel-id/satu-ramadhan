@@ -1,3 +1,6 @@
+import { Capacitor } from '@capacitor/core';
+import { Filesystem } from '@capacitor/filesystem';
+
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { getSavedLocation } from '../core/geolocation.js';
 
@@ -272,6 +275,19 @@ async function renderDayView() {
  */
 async function handleShareSchedule() {
     if (!_scheduleData) return;
+
+    // Request native file system permissions only when the user clicks "Buat"
+    if (Capacitor.getPlatform() !== 'web') {
+        try {
+            const permStatus = await Filesystem.checkPermissions();
+            if (permStatus.publicStorage !== 'granted') {
+                await Filesystem.requestPermissions();
+            }
+        } catch (e) {
+            console.warn('[SchedulePage] Storage permissions request failed:', e.message);
+        }
+    }
+
 
     const location = await getSavedLocation();
     const orgName = await getOrgDisplayNameAsync();

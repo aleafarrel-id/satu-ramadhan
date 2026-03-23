@@ -73,7 +73,7 @@
    src: url('../../assets/font/quran/DecoType-Thuluth-II-Regular.ttf') format('truetype');
    font-weight: 400;
    font-style: normal;
-   font-display: swap;
+   font-display: block;
 }
 
 @font-face {
@@ -81,7 +81,7 @@
    src: url('../../assets/font/quran/DecoType-Thuluth-Regular.ttf') format('truetype');
    font-weight: 400;
    font-style: normal;
-   font-display: swap;
+   font-display: block;
 }
 
 /* LPMQ Isep Misbah (Quran Arabic Text) */
@@ -90,7 +90,7 @@
    src: url('../../assets/font/quran/LPMQ-IsepMisbah.ttf') format('truetype');
    font-weight: 400;
    font-style: normal;
-   font-display: swap;
+   font-display: block;
 }
 
 @font-face {

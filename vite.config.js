@@ -14,12 +14,24 @@ export default defineConfig({
         // Matches 'webDir' in capacitor.config.json.
         outDir: 'dist',
         emptyOutDir: true,
-        // Enable sourcemaps for remote device debugging.
-        sourcemap: true,
+        sourcemap: false,
+        target: 'es2018',
+        minify: 'esbuild',
         rollupOptions: {
             input: {
                 main: resolve(process.cwd(), 'index.html'),
                 shareSchedule: resolve(process.cwd(), 'src/templates/share-schedule/share-schedule.html'),
+            },
+
+            output: {
+                manualChunks(id) {
+                    if (id.includes('quran')) return 'quran';
+
+                    if (id.includes('node_modules')) {
+                        if (id.includes('@capacitor')) return 'capacitor';
+                        return 'vendor';
+                    }
+                }
             }
         }
     },

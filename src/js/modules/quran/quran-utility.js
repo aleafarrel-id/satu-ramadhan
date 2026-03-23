@@ -40,7 +40,7 @@ export async function renderBatchedList({ data, container, createItemFn, onCheck
 
       if (i + batchSize < total) {
          await new Promise(resolve => {
-            if (window.requestIdleCallback) window.requestIdleCallback(resolve);
+            if (window.requestIdleCallback) window.requestIdleCallback(resolve, { timeout: 100 });
             else setTimeout(resolve, 0);
          });
       }
