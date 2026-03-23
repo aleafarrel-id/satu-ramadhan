@@ -1,17 +1,17 @@
-﻿{
-    "name":  "Al-Humazah",
-    "index":  "104",
-    "verse":  {
-                  "verse_0":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_1":  "Kecelakaanlah bagi setiap pengumpat lagi pencela,",
-                  "verse_2":  "yang mengumpulkan harta dan menghitung-hitung,",
-                  "verse_3":  "dia mengira bahwa hartanya itu dapat mengkekalkannya,",
-                  "verse_4":  "sekali-kali tidak! Sesungguhnya dia benar-benar akan dilemparkan ke dalam Huthamah.",
-                  "verse_5":  "Dan tahukah kamu apa Huthamah itu?",
-                  "verse_6":  "(yaitu) api (yang disediakan) Allah yang dinyalakan,",
-                  "verse_7":  "yang (membakar) sampai ke hati.",
-                  "verse_8":  "Sesungguhnya api itu ditutup rapat atas mereka,",
-                  "verse_9":  "(sedang mereka itu) diikat pada tiang-tiang yang panjang."
-              },
-    "count":  9
+{
+    "name": "Al-Humazah",
+    "index": "104",
+    "verse": {
+        "verse_0": "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
+        "verse_1": "Celakalah setiap pengumpat lagi pencela",
+        "verse_2": "yang mengumpulkan harta dan menghitung-hitungnya.",
+        "verse_3": "Dia (manusia) mengira bahwa hartanya dapat mengekalkannya.",
+        "verse_4": "Sekali-kali tidak! Pasti dia akan dilemparkan ke dalam (neraka) Hutamah.",
+        "verse_5": "Tahukah kamu apakah (neraka) Hutamah?",
+        "verse_6": "(Ia adalah) api (azab) Allah yang dinyalakan",
+        "verse_7": "yang (membakar) naik sampai ke hati.",
+        "verse_8": "Sesungguhnya dia (api itu) tertutup rapat (sebagai hukuman) atas mereka,",
+        "verse_9": "(sedangkan mereka) diikat pada tiang-tiang yang panjang."
+    },
+    "count": 9
 }

@@ -1,12 +1,12 @@
-﻿{
-    "name":  "Al-Ikhlash",
-    "index":  "112",
-    "verse":  {
-                  "verse_0":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_1":  "Katakanlah: \"Dialah Allah, Yang Maha Esa.",
-                  "verse_2":  "Allah adalah Tuhan yang bergantung kepada-Nya segala sesuatu.",
-                  "verse_3":  "Dia tiada beranak dan tidak pula diperanakkan,",
-                  "verse_4":  "dan tidak ada seorangpun yang setara dengan Dia\"."
-              },
-    "count":  4
+{
+    "name": "Al-Ikhlas",
+    "index": "112",
+    "verse": {
+        "verse_0": "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
+        "verse_1": "Katakanlah (Nabi Muhammad), “Dialah Allah Yang Maha Esa.",
+        "verse_2": "Allah tempat meminta segala sesuatu.",
+        "verse_3": "Dia tidak beranak dan tidak pula diperanakkan",
+        "verse_4": "serta tidak ada sesuatu pun yang setara dengan-Nya.”"
+    },
+    "count": 4
 }

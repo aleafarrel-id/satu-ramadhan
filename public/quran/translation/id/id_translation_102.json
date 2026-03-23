@@ -1,16 +1,16 @@
-﻿{
-    "name":  "At-Takatsur",
-    "index":  "102",
-    "verse":  {
-                  "verse_0":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_1":  "Bermegah-megahan telah melalaikan kamu,",
-                  "verse_2":  "sampai kamu masuk ke dalam kubur.",
-                  "verse_3":  "Janganlah begitu, kelak kamu akan mengetahui (akibat perbuatanmu itu),",
-                  "verse_4":  "dan janganlah begitu, kelak kamu akan mengetahui.",
-                  "verse_5":  "Janganlah begitu, jika kamu mengetahui dengan pengetahuan yang yakin,",
-                  "verse_6":  "niscaya kamu benar-benar akan melihat neraka Jahiim,",
-                  "verse_7":  "dan sesungguhnya kamu benar-benar akan melihatnya dengan \u0027ainul yaqin.",
-                  "verse_8":  "kemudian kamu pasti akan ditanyai pada hari itu tentang kenikmatan (yang kamu megah-megahkan di dunia itu)."
-              },
-    "count":  8
+{
+    "name": "At-Takasur",
+    "index": "102",
+    "verse": {
+        "verse_0": "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
+        "verse_1": "Berbangga-bangga dalam memperbanyak (dunia) telah melalaikanmu",
+        "verse_2": "sampai kamu masuk ke dalam kubur.",
+        "verse_3": "Sekali-kali tidak! Kelak kamu akan mengetahui (akibat perbuatanmu itu).",
+        "verse_4": "Sekali-kali tidak (jangan melakukan itu)! Kelak kamu akan mengetahui (akibatnya).",
+        "verse_5": "Sekali-kali tidak (jangan melakukan itu)! Sekiranya kamu mengetahui dengan pasti, (niscaya kamu tidak akan melakukannya).",
+        "verse_6": "Pasti kamu benar-benar akan melihat (neraka) Jahim.",
+        "verse_7": "Kemudian, kamu pasti benar-benar akan melihatnya dengan ainulyakin.",
+        "verse_8": "Kemudian, kamu pasti benar-benar akan ditanya pada hari itu tentang kenikmatan (yang megah di dunia itu)."
+    },
+    "count": 8
 }

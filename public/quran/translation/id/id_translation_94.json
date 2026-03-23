@@ -1,16 +1,16 @@
-﻿{
-    "name":  "Al-Insyirah",
-    "index":  "094",
-    "verse":  {
-                  "verse_0":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_1":  "Bukankah Kami telah melapangkan untukmu dadamu?,",
-                  "verse_2":  "dan Kami telah menghilangkan daripadamu bebanmu,",
-                  "verse_3":  "yang memberatkan punggungmu?",
-                  "verse_4":  "Dan Kami tinggikan bagimu sebutan (nama)mu,",
-                  "verse_5":  "Karena sesungguhnya sesudah kesulitan itu ada kemudahan,",
-                  "verse_6":  "sesungguhnya sesudah kesulitan itu ada kemudahan.",
-                  "verse_7":  "Maka apabila kamu telah selesai (dari sesuatu urusan), kerjakanlah dengan sungguh-sungguh (urusan) yang lain,",
-                  "verse_8":  "dan hanya kepada Tuhanmulah hendaknya kamu berharap."
-              },
-    "count":  8
+{
+    "name": "Al-Insyirah",
+    "index": "094",
+    "verse": {
+        "verse_0": "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
+        "verse_1": "Bukankah Kami telah melapangkan dadamu (Nabi Muhammad),",
+        "verse_2": "meringankan beban (tugas-tugas kenabian) darimu",
+        "verse_3": "yang memberatkan punggungmu,",
+        "verse_4": "dan meninggikan (derajat)-mu (dengan selalu) menyebut-nyebut (nama)-mu?",
+        "verse_5": "Maka, sesungguhnya beserta kesulitan ada kemudahan.",
+        "verse_6": "Sesungguhnya beserta kesulitan ada kemudahan.",
+        "verse_7": "Apabila engkau telah selesai (dengan suatu kebajikan), teruslah bekerja keras (untuk kebajikan yang lain)",
+        "verse_8": "dan hanya kepada Tuhanmu berharaplah!"
+    },
+    "count": 8
 }

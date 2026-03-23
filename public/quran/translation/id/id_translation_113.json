@@ -1,13 +1,13 @@
-﻿{
-    "name":  "Al-Falaq",
-    "index":  "113",
-    "verse":  {
-                  "verse_0":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_1":  "Katakanlah: \"Aku berlindung kepada Tuhan Yang Menguasai subuh,",
-                  "verse_2":  "dari kejahatan makhluk-Nya,",
-                  "verse_3":  "dan dari kejahatan malam apabila telah gelap gulita,",
-                  "verse_4":  "dan dari kejahatan wanita-wanita tukang sihir yang menghembus pada buhul-buhul,",
-                  "verse_5":  "dan dari kejahatan pendengki bila ia dengki\"."
-              },
-    "count":  5
+{
+    "name": "Al-Falaq",
+    "index": "113",
+    "verse": {
+        "verse_0": "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
+        "verse_1": "Katakanlah (Nabi Muhammad), “Aku berlindung kepada Tuhan yang (menjaga) fajar (subuh)",
+        "verse_2": "dari kejahatan (makhluk yang) Dia ciptakan,",
+        "verse_3": "dari kejahatan malam apabila telah gelap gulita,",
+        "verse_4": "dari kejahatan perempuan-perempuan (penyihir) yang meniup pada buhul-buhul (talinya),",
+        "verse_5": "dan dari kejahatan orang yang dengki apabila dia dengki.”"
+    },
+    "count": 5
 }

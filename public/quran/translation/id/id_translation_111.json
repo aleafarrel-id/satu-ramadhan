@@ -1,13 +1,13 @@
-﻿{
-    "name":  "Al-Lahab",
-    "index":  "111",
-    "verse":  {
-                  "verse_0":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_1":  "Binasalah kedua tangan Abu Lahab dan sesungguhnya dia akan binasa.",
-                  "verse_2":  "Tidaklah berfaedah kepadanya harta bendanya dan apa yang ia usahakan.",
-                  "verse_3":  "Kelak dia akan masuk ke dalam api yang bergejolak.",
-                  "verse_4":  "Dan (begitu pula) istrinya, pembawa kayu bakar.",
-                  "verse_5":  "Yang di lehernya ada tali dari sabut."
-              },
-    "count":  5
+{
+    "name": "Al-Lahab",
+    "index": "111",
+    "verse": {
+        "verse_0": "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.",
+        "verse_1": "Binasalah kedua tangan Abu Lahab dan benar-benar binasa dia.",
+        "verse_2": "Tidaklah berguna baginya hartanya dan apa yang dia usahakan.",
+        "verse_3": "Kelak dia akan memasuki api yang bergejolak (neraka),",
+        "verse_4": "(begitu pula) istrinya, pembawa kayu bakar (penyebar fitnah).",
+        "verse_5": "Di lehernya ada tali dari sabut yang dipintal."
+    },
+    "count": 5
 }

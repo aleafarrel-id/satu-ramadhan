@@ -1,14 +1,14 @@
-﻿{
-    "name":  "Al-Fatihah",
-    "index":  "001",
-    "verse":  {
-                  "verse_1":  "Dengan menyebut nama Allah Yang Maha Pemurah lagi Maha Penyayang.",
-                  "verse_2":  "Segala puji bagi Allah, Tuhan semesta alam.",
-                  "verse_3":  "Maha Pemurah lagi Maha Penyayang.",
-                  "verse_4":  "Yang menguasai di Hari Pembalasan.",
-                  "verse_5":  "Hanya Engkaulah yang kami sembah, dan hanya kepada Engkaulah kami meminta pertolongan.",
-                  "verse_6":  "Tunjukilah kami jalan yang lurus,",
-                  "verse_7":  "(yaitu) Jalan orang-orang yang telah Engkau beri nikmat kepada mereka; bukan (jalan) mereka yang dimurkai dan bukan (pula jalan) mereka yang sesat."
-              },
-    "count":  7
+{
+    "name": "Al-Fatihah",
+    "index": "001",
+    "verse": {
+        "verse_1": "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang.",
+        "verse_2": "Segala puji bagi Allah, Tuhan semesta alam",
+        "verse_3": "Yang Maha Pengasih lagi Maha Penyayang,",
+        "verse_4": "Pemilik hari Pembalasan.",
+        "verse_5": "Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami memohon pertolongan.",
+        "verse_6": "Bimbinglah kami ke jalan yang lurus,",
+        "verse_7": "(yaitu) jalan orang-orang yang telah Engkau beri nikmat, bukan (jalan) mereka yang dimurkai dan bukan (pula jalan) orang-orang yang sesat."
+    },
+    "count": 7
 }
