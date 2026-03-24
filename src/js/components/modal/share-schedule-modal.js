@@ -96,6 +96,8 @@ async function handleShare() {
     impact('medium');
     setButtonsLoading(true);
 
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+
     try {
         await _onShareCb(_canvas);
     } catch (err) {
@@ -114,6 +116,8 @@ async function handleDownload() {
 
     impact('medium');
     setButtonsLoading(true);
+
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
 
     try {
         await _onDownloadCb(_canvas);

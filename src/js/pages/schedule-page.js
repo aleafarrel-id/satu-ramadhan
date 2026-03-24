@@ -26,7 +26,7 @@ import {
     getActivePrayerKey,
 } from '../components/card/schedule-card.js';
 import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
-import { renderShareScheduleCard, bindShareScheduleCardEvents } from '../components/card/share-schedule-card.js';
+import { bindShareScheduleCardEvents } from '../components/card/share-schedule-card.js';
 import { handleOrgToggle } from '../components/prayer/prayer-widgets.js';
 import { renderScheduleSkeleton } from '../components/skeleton/skeleton-schedule.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
