@@ -1,5 +1,7 @@
 /* =============================================
    Satu Ramadhan — Main CSS Entry Point
+   Critical Path Only — loaded on initial render.
+   Non-critical page CSS is lazy-loaded via JS page modules.
    ============================================= */
 
 /* Base */
@@ -13,60 +15,34 @@
 @import './layout/navigation.css';
 
 /* ======================
-   Components
+   Components (Global / Critical Path)
    ====================== */
 
 /* UI */
 @import './components/ui/splash-screen.css';
-@import './components/ui/quran-backdrop.css';
 @import './components/ui/button.css';
 @import './components/ui/toggle.css';
 @import './components/ui/empty-state.css';
 
-/* Prayer */
+/* Prayer (used by Home) */
 @import './components/prayer/prayer-time.css';
 
-/* Schedule */
+/* Schedule Countdown (used by Home) */
 @import './components/schedule/countdown.css';
 
-/* Notification */
+/* Notification (global) */
 @import './components/notification/notification.css';
 
-/* Skeleton */
+/* Skeleton (critical — prevents flash on initial load) */
 @import './components/skeleton/skeleton.css';
 
-/* Card */
+/* Card (shared container, used by Home) */
 @import './components/card/card.css';
-@import './components/card/qibla-info-card.css';
 @import './components/card/location-card.css';
-@import './components/card/qibla-map-card.css';
-@import './components/card/share-schedule-card.css';
 
-/* Modal */
+/* Modal (used by Home for location setup) */
 @import './components/modal/location-modal.css';
 @import './components/modal/location-search-modal.css';
-@import './components/modal/compass-guide-modal.css';
-@import './components/modal/calendar-modal.css';
-@import './components/modal/preset-manager-modal.css';
-@import './components/modal/confirm-modal.css';
-@import './components/modal/date-picker-modal.css';
-@import './components/modal/share-schedule-modal.css';
 
-/* Compass */
-@import './components/compass/compass-dial.css';
-
-/* Pages */
+/* Pages (critical path only) */
 @import './pages/home.css';
-@import './pages/schedule.css';
-@import './pages/compass.css';
-@import './pages/settings.css';
-@import './pages/quran.css';
-
-/* Al-Quran Components */
-@import './components/quran/quran-header.css';
-@import './components/quran/quran-dock.css';
-@import './components/quran/quran-card.css';
-@import './components/quran/quran-reader.css';
-@import './components/quran/quran-tajweed.css';
-@import './components/quran/quran-bookmark.css';
-@import './components/quran/mushaf.css';

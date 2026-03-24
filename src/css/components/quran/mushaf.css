@@ -3,16 +3,14 @@
 /* ── Backdrop ── */
 
 .mushaf-backdrop {
-   position: fixed;
+   position: absolute;
    inset: 0;
    width: 100%;
-   max-width: 430px;
-   margin: 0 auto;
    display: flex;
    align-items: center;
    justify-content: center;
    background: var(--clr-quran-bg);
-   z-index: calc(var(--z-modal) - 1);
+   z-index: 100;
    opacity: 0;
    visibility: hidden;
    transition: opacity var(--transition-slow), visibility var(--transition-slow);
@@ -29,25 +27,33 @@
    align-items: center;
    justify-content: center;
    gap: var(--sp-2);
-   color: var(--clr-primary-500);
-   opacity: 0.25;
-   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   color: var(--clr-quran-text-secondary);
 }
 
 .mushaf-backdrop-content i {
    font-size: 4rem;
+   color: var(--clr-quran-accent);
    animation: mushafPulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes mushafPulse {
-   0%, 100% { transform: scale(1); opacity: 0.25; }
-   50% { transform: scale(1.1); opacity: 0.6; }
+
+   0%,
+   100% {
+      opacity: 1;
+      transform: scale(1);
+   }
+
+   50% {
+      opacity: 0.6;
+      transform: scale(0.92);
+   }
 }
 
-.mushaf-backdrop-content span {
-   font-size: var(--fs-lg);
-   font-weight: var(--fw-semibold);
-   letter-spacing: 0.05em;
+.mushaf-backdrop-content p {
+   font-size: var(--fs-sm);
+   margin: 0;
+   line-height: var(--lh-relaxed);
 }
 
 /* ── Overlay ── */
@@ -60,8 +66,9 @@
    display: flex;
    flex-direction: column;
    transform: translateY(100%) translateZ(0);
-   transition: transform var(--transition-mushaf-slide);
+   transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
    will-change: transform;
+   overflow: hidden;
 }
 
 .mushaf-overlay.active {
@@ -77,7 +84,6 @@
    padding: var(--sp-2) var(--sp-3);
    padding-top: max(var(--sp-2), env(safe-area-inset-top, var(--sp-2)));
    background: var(--clr-quran-card-bg);
-   border-bottom: 1px solid var(--clr-quran-border);
    flex-shrink: 0;
    min-height: var(--size-touch-target);
    z-index: 20;
@@ -126,7 +132,12 @@
    position: relative;
    overflow: hidden;
    z-index: 10;
-   contain: layout paint;
+   contain: layout size;
+   /* Force GPU compositing layer for the entire viewport */
+   transform: translateZ(0);
+   -webkit-transform: translateZ(0);
+   backface-visibility: hidden;
+   -webkit-backface-visibility: hidden;
 }
 
 .mushaf-book-container {
@@ -139,14 +150,26 @@
    -webkit-transform-style: preserve-3d;
    perspective: 1000px;
    -webkit-perspective: 1000px;
+   backface-visibility: hidden;
+   -webkit-backface-visibility: hidden;
 }
 
-/* Align PageFlip wrapper */
+/* Align PageFlip wrapper — GPU layer isolation */
 .mushaf-book-container .stf__wrapper {
    transform: translate3d(0, 0, 0) !important;
    left: 0 !important;
    backface-visibility: hidden !important;
    -webkit-backface-visibility: hidden !important;
+   will-change: transform;
+   contain: layout;
+}
+
+/* Force each PageFlip internal page into its own GPU layer */
+.stf__parent {
+   transform: translateZ(0);
+   -webkit-transform: translateZ(0);
+   backface-visibility: hidden;
+   -webkit-backface-visibility: hidden;
    will-change: transform;
 }
 
@@ -165,45 +188,23 @@
 
 .mushaf-page {
    background: linear-gradient(135deg, var(--clr-mushaf-page-start) 0%, var(--clr-mushaf-page-end) 100%);
-   padding: var(--sp-3) max(var(--sp-4), env(safe-area-inset-right)) var(--sp-3) max(var(--sp-4), env(safe-area-inset-left));
+   padding: var(--sp-3) var(--sp-4);
    overflow: hidden;
    direction: rtl;
    position: relative;
    box-sizing: border-box;
+   /* GPU layer promotion — critical for WebView flip performance */
    transform: translate3d(0, 0, 0);
    -webkit-transform: translate3d(0, 0, 0);
-   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+   backface-visibility: hidden;
+   -webkit-backface-visibility: hidden;
+   will-change: transform;
+   contain: layout style;
 }
 
 .mushaf-page-empty {
    border: none;
    box-shadow: none;
-}
-
-/* Left binding shadow */
-.mushaf-page:not(.mushaf-page-empty)::before {
-   content: '';
-   position: absolute;
-   left: 0;
-   top: 0;
-   bottom: 0;
-   width: 25px;
-   background: linear-gradient(to right, rgba(0, 0, 0, 0.12), transparent);
-   z-index: 10;
-   pointer-events: none;
-}
-
-/* Right edge shadow */
-.mushaf-page:not(.mushaf-page-empty)::after {
-   content: '';
-   position: absolute;
-   right: 0;
-   top: 0;
-   bottom: 0;
-   width: 5px;
-   background: linear-gradient(to left, rgba(0, 0, 0, 0.08), transparent);
-   z-index: 10;
-   pointer-events: none;
 }
 
 /* ── Lines Container ── */
@@ -213,7 +214,7 @@
    flex-direction: column;
    justify-content: space-between;
    height: 100%;
-   contain: layout paint;
+   contain: layout;
 }
 
 .mushaf-line {
@@ -272,14 +273,13 @@
 /* ── Line: Text ── */
 
 .mushaf-line--text {
-   display: flex;
+   display: block;
    direction: rtl;
-   justify-content: space-between;
-   align-items: baseline;
-   flex-wrap: nowrap;
+   text-align: justify;
+   text-align-last: justify;
    white-space: nowrap;
-   gap: 0;
-   border-bottom: 1.5px solid var(--clr-mushaf-line-border);
+   border-bottom: 1px solid var(--clr-mushaf-line-border);
+   contain: layout;
 }
 
 .mushaf-line--text:last-of-type {
@@ -298,11 +298,10 @@
    user-select: none;
    -webkit-user-select: none;
    white-space: nowrap;
-   transition: color 0.2s ease, opacity 0.3s ease;
-}
-
-.mushaf-word:active {
-   color: var(--clr-mushaf-text-active);
+   /* PERF: Remove transition — saves massive CPU during flip animation.
+      Each word had its own transition observer which multiplied across
+      hundreds of spans per page, causing severe jank in WebView. */
+   pointer-events: none;
 }
 
 /* ── Opening Pages ── */
@@ -324,8 +323,8 @@
 }
 
 .mushaf-page--opening .mushaf-line--text {
-   justify-content: center;
-   gap: 6px;
+   text-align: center;
+   text-align-last: center;
 }
 
 .mushaf-page--opening .mushaf-word {
@@ -397,10 +396,6 @@
       font-size: 3rem;
    }
 
-   .mushaf-backdrop-content span {
-      font-size: var(--fs-md);
-   }
-
    .mushaf-page {
       padding: var(--sp-2) max(var(--sp-3), env(safe-area-inset-right)) var(--sp-2) max(var(--sp-3), env(safe-area-inset-left));
    }
@@ -444,10 +439,6 @@
 
    .mushaf-backdrop-content i {
       font-size: 2.5rem;
-   }
-
-   .mushaf-backdrop-content span {
-      font-size: var(--fs-base);
    }
 
    .mushaf-page--opening .mushaf-line--surah-header {

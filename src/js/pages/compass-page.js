@@ -1,3 +1,10 @@
+/* Lazy-loaded CSS — only fetched when this page module is imported */
+import '../../css/pages/compass.css';
+import '../../css/components/compass/compass-dial.css';
+import '../../css/components/card/qibla-info-card.css';
+import '../../css/components/card/qibla-map-card.css';
+import '../../css/components/modal/compass-guide-modal.css';
+
 import { getSavedLocation } from '../core/geolocation.js';
 
 import QiblaCompass from '../modules/compass/compass.js';

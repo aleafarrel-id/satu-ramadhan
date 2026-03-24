@@ -27,6 +27,7 @@ const EXPAND_SIZE = 6;
 /* ─── State ─── */
 
 let _isOpen = false;
+let _isClosing = false;
 let _currentPage = 1;
 let _currentSurahIndex = 1;
 
@@ -149,7 +150,19 @@ function _updatePageCounter() {
 /* ─── Public API ─── */
 
 export async function open(startPage = 1, options = {}) {
-   if (_isOpen) return;
+   if (_isClosing) {
+      // Wait for the close animation to finish completely before re-opening
+      await new Promise(resolve => {
+         const checkInterval = setInterval(() => {
+            if (!_isClosing && !_isOpen) {
+               clearInterval(checkInterval);
+               resolve();
+            }
+         }, 50);
+      });
+   } else if (_isOpen) {
+      return;
+   }
    _isOpen = true;
    _currentPage = MushafApi.clampPage(startPage);
    _onCloseCallback = options.onClose;
@@ -165,71 +178,108 @@ export async function open(startPage = 1, options = {}) {
 
    QuranDock.hide();
 
-   // Show backdrop with loading label
-   _buildBackdrop('Mushaf');
-   if (_backdropEl) _backdropEl.classList.add('active');
-
+   // ── Phase 1: Build EMPTY overlay shell ──
+   // ── Phase 1: Build the OVERLAY first (it will act as the container) ──
    _buildOverlay();
    _updateSurahHeader();
+
+   // ── Phase 2: Build BACKDROP nested inside the overlay ──
+   _buildBackdrop('Memuat Mushaf', _overlay);
+   if (_backdropEl) {
+      _backdropEl.classList.add('active'); // Hidden because overlay is at 100% Y
+   }
+
+   QuranDock.hide();
 
    registerModalDismiss(close);
    window.addEventListener('resize', _onWindowResize);
    document.addEventListener('visibilitychange', _onVisibilityChange);
    _attachSwipeHandlers();
 
-   // Background DOM construction
-   _calcWindow(_currentPage);
-   await _buildAndMountPageFlip(_currentPage);
+   // Lock body scroll
+   document.body.style.overscrollBehavior = 'none';
 
-   // Smooth entrance only after heavy JS work is done
+   // ── Phase 3: Trigger the slide-up animation ──
    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-         if (!_isOpen) return; // Guard against quick close
+         if (!_isOpen) return;
          if (_overlay) _overlay.classList.add('active');
          if (_quranPage) _quranPage.classList.add('is-reading');
-
-         // Fade out loading backdrop after overlay is visible
-         setTimeout(() => {
-            if (_backdropEl) _backdropEl.classList.remove('active');
-         }, 400);
       });
    });
+
+   // Wait for slide animation (0.6s)
+   await new Promise(r => setTimeout(r, 650));
+   if (!_isOpen) return;
+
+   // ── Phase 4: Build content behind the backdrop ──
+   _calcWindow(_currentPage);
+   await _buildAndMountPageFlip(_currentPage);
+   if (!_isOpen) return;
+
+   // ── Phase 5: Reveal — fade out the backdrop nested inside ──
+   await new Promise(r => setTimeout(r, 100));
+   if (_backdropEl) {
+      _backdropEl.classList.remove('active');
+      // No need to remove yet, it's part of overlay
+   }
 }
 
-export function close() {
-   if (!_isOpen) return;
-   _isOpen = false;
-
-   if (_onCloseCallback) _onCloseCallback();
+export async function close() {
+   if (!_isOpen || _isClosing) return;
+   _isClosing = true;
 
    _detachListeners();
-   _destroyPageFlip(false);
    destroyPicker();
 
-   // Show backdrop immediately (same pattern as Al-Quran exit)
+   // 1. Fade in loading backdrop inside the overlay to hide Mushaf text
    if (_backdropEl) {
       _backdropEl.classList.add('active');
-      const label = _backdropEl.querySelector('span');
+      const label = _backdropEl.querySelector('p');
       if (label) label.textContent = '';
    }
+   // Wait for fade in
+   await new Promise(r => requestAnimationFrame(() => setTimeout(r, 300)));
+
+   // 2. Clear heavy PageFlip DOM to free memory while obscured
+   if (_pageFlip) {
+      _pageFlip.destroy();
+      _pageFlip = null;
+   }
+   if (_bookContainer) _bookContainer.innerHTML = '';
+   _bookContainer = null;
+
+   // 3. Command the background to rebuild (quran-page loadSubPage)
+   if (_onCloseCallback) {
+      try {
+         await _onCloseCallback();
+         // Native text re-flow can sometimes cause a tiny micro-stutter
+         await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+      } catch (e) {
+         console.error('Error during Mushaf close callback:', e);
+      }
+   }
+
+   // 4. Show dock and slide the overlay down
+   QuranDock.show();
 
    if (_overlay) _overlay.classList.remove('active');
    if (_quranPage) _quranPage.classList.remove('is-reading');
-   QuranDock.show();
+   document.body.style.overscrollBehavior = '';
 
-   _transitionManager.add(setTimeout(() => {
-      if (_isOpen) return;
-      if (_backdropEl) _backdropEl.classList.remove('active');
-   }, 600));
+   // Wait for overlay completely sliding down (CSS transition is 0.6s)
+   await new Promise(r => setTimeout(r, 600));
 
-   _transitionManager.add(setTimeout(() => {
-      if (_isOpen) return;
-      _removeOverlays();
-      _resetState();
-   }, 800));
+   // 5. Safe full cleanup
+   if (_overlay && _overlay.parentNode) _overlay.parentNode.removeChild(_overlay);
+
+   _isOpen = false;
+   _isClosing = false;
+   _resetState();
 }
 
 export function destroy() {
+   if (_isClosing) return; // Prevent abrupt structural interference while animating close
    _isOpen = false;
 
    _transitionManager.clear();
@@ -237,6 +287,7 @@ export function destroy() {
    _destroyPageFlip(false);
    _removeOverlays();
    if (_quranPage) _quranPage.classList.remove('is-reading');
+   document.body.style.overscrollBehavior = '';
    QuranDock.show();
 
    _resetState();
@@ -341,14 +392,16 @@ function _onPointerCancel(e) {
 
 /* ─── DOM Construction ─── */
 
-function _buildBackdrop(label = 'Mushaf') {
+function _buildBackdrop(label = 'Mushaf', parent = null) {
    // Reuse existing backdrop if available to prevent accumulation
    _backdropEl = document.getElementById('mushaf-backdrop');
    if (!_backdropEl) {
       _backdropEl = document.createElement('div');
       _backdropEl.className = 'mushaf-backdrop';
       _backdropEl.id = 'mushaf-backdrop';
-      _quranPage.appendChild(_backdropEl);
+
+      const target = parent || _quranPage;
+      if (target) target.appendChild(_backdropEl);
    }
 
    _backdropEl.innerHTML = ''; // Clear previous content
@@ -359,7 +412,7 @@ function _buildBackdrop(label = 'Mushaf') {
    const icon = document.createElement('i');
    icon.className = 'bx bx-book-reader';
 
-   const labelEl = document.createElement('span');
+   const labelEl = document.createElement('p');
    labelEl.textContent = label;
 
    content.appendChild(icon);
@@ -442,7 +495,7 @@ function _getPageFlipConfig() {
       useMouseEvents: false, // Critical: Disable native events to fix double-trigger
       drawShadow: false,
       maxShadowOpacity: 0,
-      flippingTime: 600,
+      flippingTime: 500,
       mobileScrollSupport: false,
       swipeDistance: 10,
       showCover: false,
@@ -460,10 +513,13 @@ async function _buildAndMountPageFlip(targetPage) {
    const pages = await _fetchPageRange(_windowStart, _windowEnd);
    if (!_isOpen || !_bookContainer) return;
 
+   // Build all pages as a single HTML string — one DOM parse instead of hundreds
+   let html = '';
    for (let i = pages.length - 1; i >= 0; i--) {
-      _bookContainer.appendChild(MushafUI.buildPageElement(pages[i]));
-      _bookContainer.appendChild(MushafUI.buildEmptyPageElement());
+      html += MushafUI.buildPageHTML(pages[i]);
+      html += MushafUI.buildEmptyPageHTML();
    }
+   _bookContainer.innerHTML = html;
 
    _pageFlip = new PageFlip(_bookContainer, _getPageFlipConfig());
    _pageFlip.loadFromHTML(_bookContainer.querySelectorAll('.mushaf-page'));
@@ -504,15 +560,15 @@ async function _checkAndExpand(flipIndex) {
 
       if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
 
-      const firstChild = _bookContainer.firstChild;
       const addedPairs = newEnd - _windowEnd;
 
+      // Build prepend HTML string in reverse order
+      let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
-         const el = MushafUI.buildPageElement(pages[i]);
-         const empty = MushafUI.buildEmptyPageElement();
-         _bookContainer.insertBefore(empty, firstChild);
-         _bookContainer.insertBefore(el, empty);
+         html += MushafUI.buildPageHTML(pages[i]);
+         html += MushafUI.buildEmptyPageHTML();
       }
+      _bookContainer.insertAdjacentHTML('afterbegin', html);
 
       _windowEnd = newEnd;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));
@@ -528,10 +584,13 @@ async function _checkAndExpand(flipIndex) {
 
       if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
 
+      // Build append HTML string in reverse order
+      let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
-         _bookContainer.appendChild(MushafUI.buildPageElement(pages[i]));
-         _bookContainer.appendChild(MushafUI.buildEmptyPageElement());
+         html += MushafUI.buildPageHTML(pages[i]);
+         html += MushafUI.buildEmptyPageHTML();
       }
+      _bookContainer.insertAdjacentHTML('beforeend', html);
 
       _windowStart = newStart;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));

@@ -25,12 +25,14 @@ export default defineConfig({
 
             output: {
                 manualChunks(id) {
-                    if (id.includes('quran')) return 'quran';
+                    // Quran-specific application code → isolated heavy chunk
+                    if (id.includes('quran') && !id.includes('node_modules')) return 'quran-core';
 
-                    if (id.includes('node_modules')) {
-                        if (id.includes('@capacitor')) return 'capacitor';
-                        return 'vendor';
-                    }
+                    // Capacitor SDK → isolated native bridge chunk
+                    if (id.includes('node_modules/@capacitor')) return 'capacitor';
+
+                    // All other vendor libraries → single vendor chunk
+                    if (id.includes('node_modules')) return 'vendor';
                 }
             }
         }

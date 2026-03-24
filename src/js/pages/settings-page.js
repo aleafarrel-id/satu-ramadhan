@@ -1,3 +1,8 @@
+/* Lazy-loaded CSS — only fetched when this page module is imported */
+import '../../css/pages/settings.css';
+import '../../css/components/modal/confirm-modal.css';
+import '../../css/components/modal/preset-manager-modal.css';
+
 import { CONFIG } from '../config.js';
 
 import * as settingsPanel from '../components/settings/settings-panel.js';

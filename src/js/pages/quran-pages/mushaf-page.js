@@ -16,9 +16,6 @@ let _container = null;
 export async function render(container) {
    _container = container;
 
-   // Clear the content area (no list to show — Mushaf is a full overlay)
-   container.innerHTML = '';
-
    // Open the Mushaf reader overlay
    // We pass the onClose callback to restore the previous subpage
    await MushafReader.open(1, { onClose: navigateBackFromMushaf });

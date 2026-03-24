@@ -1,3 +1,14 @@
+/* Lazy-loaded CSS — only fetched when this page module is imported */
+import '../../css/pages/quran.css';
+import '../../css/components/ui/quran-backdrop.css';
+import '../../css/components/quran/quran-header.css';
+import '../../css/components/quran/quran-dock.css';
+import '../../css/components/quran/quran-card.css';
+import '../../css/components/quran/quran-reader.css';
+import '../../css/components/quran/quran-tajweed.css';
+import '../../css/components/quran/quran-bookmark.css';
+import '../../css/components/quran/mushaf.css';
+
 /**
  * Page Skeleton Component
  */
@@ -71,9 +82,8 @@ export async function render(container) {
 async function loadSubPage(pageId) {
    if (_activePageId === pageId) return;
 
-   if (_activePage && _activePage.destroy) {
-      await _activePage.destroy();
-   }
+   const previousPage = _activePage;
+   const previousPageId = _activePageId;
 
    // Keep track of the last active page that wasn't 'mushaf'
    if (_activePageId && _activePageId !== 'mushaf') {
@@ -103,6 +113,12 @@ async function loadSubPage(pageId) {
             onItemSelected: _dismissSearchAction,
             renderPlaceholder: QuranSearch.renderSearchPlaceholder
          });
+      }
+
+      // Cleanup previous page only after new page has rendered
+      // This allows overlay pages (like Mushaf) to transition over the old content smoothly
+      if (previousPage && previousPage.destroy && previousPageId !== pageId) {
+         await previousPage.destroy();
       }
    } catch (error) {
       console.error(`Gagal memuat subhalaman quran: ${pageId}`, error);
@@ -182,7 +198,7 @@ export async function destroy() {
 /**
  * Navigates back to the last active subpage after closing Mushaf.
  */
-export function navigateBackFromMushaf() {
-   loadSubPage(_lastSubPageId);
+export async function navigateBackFromMushaf() {
+   await loadSubPage(_lastSubPageId);
    QuranDock.setActive(_lastSubPageId);
 }

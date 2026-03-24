@@ -1,3 +1,12 @@
+/* Lazy-loaded CSS — only fetched when this page module is imported */
+import '../../css/pages/schedule.css';
+import '../../css/components/card/share-schedule-card.css';
+import '../../css/components/modal/calendar-modal.css';
+import '../../css/components/modal/date-picker-modal.css';
+import '../../css/components/modal/share-schedule-modal.css';
+import '../../css/components/modal/confirm-modal.css';
+import '../../css/components/modal/preset-manager-modal.css';
+
 import { Capacitor } from '@capacitor/core';
 import { Filesystem } from '@capacitor/filesystem';
 

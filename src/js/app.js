@@ -19,10 +19,6 @@ import * as header from './components/ui/header.js';
 import * as navBar from './components/ui/nav-bar.js';
 
 import * as homePage from './pages/home-page.js';
-import * as schedulePage from './pages/schedule-page.js';
-import * as compassPage from './pages/compass-page.js';
-import * as quranPage from './pages/quran-page.js';
-import * as settingsPage from './pages/settings-page.js';
 import * as router from './router.js';
 
 import { initPullToRefresh } from './utils/pull-to-refresh.js';
@@ -85,12 +81,13 @@ export async function initApp() {
     const navEl = document.getElementById('bottom-nav');
     if (navEl) navBar.render(navEl, handleNavigation);
 
-    // Register routes
+    // Register routes — only homePage is statically imported (critical path).
+    // All other pages use lazy handlerFactory via dynamic import().
     router.register('home', homePage);
-    router.register('schedule', schedulePage);
-    router.register('compass', compassPage);
-    router.register('quran', quranPage);
-    router.register('settings', settingsPage);
+    router.register('schedule', () => import('./pages/schedule-page.js'));
+    router.register('compass', () => import('./pages/compass-page.js'));
+    router.register('quran', () => import('./pages/quran-page.js'));
+    router.register('settings', () => import('./pages/settings-page.js'));
 
     // Sync nav-bar on every navigation (including goBack)
     router.onNavigate((page) => navBar.setActive(page));
@@ -112,6 +109,15 @@ export async function initApp() {
 
     // Hide web splash with CSS fade-out transition
     if (splashEl) splashEl.classList.add('hidden');
+
+    // Background pre-fetch: download lazy route modules during idle time.
+    // Delayed to avoid competing with first meaningful paint.
+    setTimeout(() => {
+        router.prefetch('schedule');
+        router.prefetch('compass');
+        router.prefetch('quran');
+        router.prefetch('settings');
+    }, 2000);
 }
 
 /**
