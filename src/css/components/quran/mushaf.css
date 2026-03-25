@@ -37,17 +37,8 @@
 }
 
 @keyframes mushafPulse {
-
-   0%,
-   100% {
-      opacity: 1;
-      transform: scale(1);
-   }
-
-   50% {
-      opacity: 0.6;
-      transform: scale(0.92);
-   }
+   0%, 100% { opacity: 1; transform: scale(1); }
+   50%       { opacity: 0.6; transform: scale(0.92); }
 }
 
 .mushaf-backdrop-content p {
@@ -122,8 +113,6 @@
    text-align: center;
 }
 
-
-
 /* ── Viewport ── */
 
 .mushaf-viewport {
@@ -132,8 +121,7 @@
    position: relative;
    overflow: hidden;
    z-index: 10;
-   contain: layout size;
-   /* Force GPU compositing layer for the entire viewport */
+   contain: layout;
    transform: translateZ(0);
    -webkit-transform: translateZ(0);
    backface-visibility: hidden;
@@ -154,7 +142,6 @@
    -webkit-backface-visibility: hidden;
 }
 
-/* Align PageFlip wrapper — GPU layer isolation */
 .mushaf-book-container .stf__wrapper {
    transform: translate3d(0, 0, 0) !important;
    left: 0 !important;
@@ -164,7 +151,6 @@
    contain: layout;
 }
 
-/* Force each PageFlip internal page into its own GPU layer */
 .stf__parent {
    transform: translateZ(0);
    -webkit-transform: translateZ(0);
@@ -183,7 +169,6 @@
    z-index: 40;
 }
 
-
 /* ── Page ── */
 
 .mushaf-page {
@@ -193,7 +178,6 @@
    direction: rtl;
    position: relative;
    box-sizing: border-box;
-   /* GPU layer promotion — critical for WebView flip performance */
    transform: translate3d(0, 0, 0);
    -webkit-transform: translate3d(0, 0, 0);
    backface-visibility: hidden;
@@ -207,21 +191,20 @@
    box-shadow: none;
 }
 
-/* ── Lines Container ── */
+/* ── Lines ── */
 
 .mushaf-lines {
    display: flex;
    flex-direction: column;
    justify-content: space-between;
    height: 100%;
-   contain: layout;
 }
 
 .mushaf-line {
    width: 100%;
 }
 
-/* ── Line: Surah Header ── */
+/* ── Surah Header ── */
 
 .mushaf-line--surah-header {
    display: flex;
@@ -251,7 +234,7 @@
    line-height: 1.8;
 }
 
-/* ── Line: Basmala ── */
+/* ── Basmala ── */
 
 .mushaf-line--basmala {
    display: flex;
@@ -270,7 +253,7 @@
    text-align: center;
 }
 
-/* ── Line: Text ── */
+/* ── Text Line ── */
 
 .mushaf-line--text {
    display: block;
@@ -279,32 +262,36 @@
    text-align-last: justify;
    white-space: nowrap;
    border-bottom: 1px solid var(--clr-mushaf-line-border);
-   contain: layout;
+   /* overflow: visible — Arabic glyph widths vary per line content and cannot
+      be perfectly predicted by any font-size formula. Individual lines must
+      not clip. The outer .mushaf-page (overflow: hidden, 16px padding each
+      side) acts as the single safe boundary. */
+   overflow: visible;
+   padding-block: 0.25em;
 }
 
 .mushaf-line--text:last-of-type {
    border-bottom: none;
 }
 
-/* ── Word Spans ── */
-/* Dynamic page height injected by JS */
+/* ── Word Span ── */
 
 .mushaf-word {
    font-family: var(--ff-mushaf-arabic);
-   font-size: clamp(0.7rem, calc(var(--mushaf-page-h, 600px) / 40), 1.15rem);
-   line-height: 1.85;
+   /* Font size scales with content width (--mushaf-page-w is set in JS as
+      viewport width minus page padding). Dividing by 26 targets the standard
+      15-line Medina mushaf layout. */
+   font-size: clamp(0.65rem, calc(var(--mushaf-page-w, 320px) / 26), 1.1rem);
+   line-height: 1.95;
    color: var(--clr-mushaf-text-body);
    cursor: default;
    user-select: none;
    -webkit-user-select: none;
    white-space: nowrap;
-   /* PERF: Remove transition — saves massive CPU during flip animation.
-      Each word had its own transition observer which multiplied across
-      hundreds of spans per page, causing severe jank in WebView. */
    pointer-events: none;
 }
 
-/* ── Opening Pages ── */
+/* ── Opening Pages (1–2) ── */
 
 .mushaf-page--opening {
    display: flex;
@@ -328,7 +315,8 @@
 }
 
 .mushaf-page--opening .mushaf-word {
-   font-size: clamp(0.85rem, calc(var(--mushaf-page-h, 600px) / 32), 1.4rem);
+   /* Opening pages have shorter lines, so a smaller divisor (22) fits better. */
+   font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 375px) / 22), 1.35rem);
    line-height: 2.2;
 }
 
@@ -348,16 +336,14 @@
    font-size: 1.6rem;
 }
 
-/* ── Surah Picker Overlay ── */
-
-
+/* ── Surah Picker ── */
 
 .surah-card.mushaf-picker-active {
    border: 1.5px solid var(--clr-quran-ornament);
    background: var(--clr-accent-a10);
 }
 
-/* ── Responsive Rules ── */
+/* ── Responsive ── */
 
 @media (min-width: 480px) {
    .mushaf-page {
@@ -418,7 +404,7 @@
    }
 
    .mushaf-page--opening .mushaf-word {
-      font-size: clamp(0.9rem, calc(100vw / 20), 1.35rem);
+      font-size: clamp(0.85rem, calc(var(--mushaf-page-w, 360px) / 21), 1.3rem);
    }
 }
 
@@ -447,7 +433,7 @@
    }
 
    .mushaf-page--opening .mushaf-word {
-      font-size: clamp(0.85rem, calc(100vw / 21), 1.25rem);
+      font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 320px) / 21), 1.2rem);
    }
 
    .mushaf-page--opening .mushaf-line--basmala .mushaf-word {
@@ -456,7 +442,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-
    .mushaf-overlay,
    .mushaf-picker-overlay,
    .mushaf-backdrop {

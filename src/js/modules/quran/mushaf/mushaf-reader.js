@@ -52,6 +52,7 @@ let _isExpanding = false;
 let _isReloading = false;
 let _resizeTimeout = null;
 let _lastVisibilityPage = null;
+let _buildGeneration = 0;
 const _transitionManager = {
    timers: [],
    add(t) { this.timers.push(t); },
@@ -99,6 +100,7 @@ function _resetState() {
    _isExpanding = false;
    _isReloading = false;
    _resizeTimeout = null;
+   _buildGeneration = 0;
    _transitionManager.clear();
 }
 
@@ -213,6 +215,7 @@ export async function open(startPage = 1, options = {}) {
    if (!_isOpen) return;
 
    // ── Phase 4: Build content behind the backdrop ──
+   _buildGeneration++; // Invalidate any prior stale build
    _calcWindow(_currentPage);
    await _buildAndMountPageFlip(_currentPage);
    if (!_isOpen) return;
@@ -238,6 +241,10 @@ export async function close() {
       const label = _backdropEl.querySelector('p');
       if (label) label.textContent = '';
    }
+
+   // Abort any in-flight build immediately so it doesn't race with teardown
+   _buildGeneration++;
+
    // Wait for fade in
    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 300)));
 
@@ -281,6 +288,7 @@ export async function close() {
 export function destroy() {
    if (_isClosing) return; // Prevent abrupt structural interference while animating close
    _isOpen = false;
+   _buildGeneration++; // Cancel any in-flight build
 
    _transitionManager.clear();
    _detachListeners();
@@ -484,15 +492,25 @@ function _getPageFlipConfig() {
    const pw = _viewportContainer.clientWidth || window.innerWidth;
    const ph = _viewportContainer.clientHeight || (window.innerHeight - 50);
 
-   // Expose actual page height to CSS for accurate font scaling
+   // Expose content width (viewport minus page padding) to CSS for font scaling.
+   // Reading from computed style handles responsive padding overrides correctly.
+   let pageHPad = 32; // fallback: var(--sp-4) × 2 = 32px
+   const firstPage = _bookContainer?.querySelector('.mushaf-page');
+   if (firstPage) {
+      const cs = getComputedStyle(firstPage);
+      pageHPad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+   }
+   const contentW = Math.max(160, pw - pageHPad);
+
    _viewportContainer.style.setProperty('--mushaf-page-h', `${ph}px`);
+   _viewportContainer.style.setProperty('--mushaf-page-w', `${contentW}px`);
 
    return {
       width: pw,
       height: ph,
       size: 'fixed',
       usePortrait: false,
-      useMouseEvents: false, // Critical: Disable native events to fix double-trigger
+      useMouseEvents: false,
       drawShadow: false,
       maxShadowOpacity: 0,
       flippingTime: 500,
@@ -510,8 +528,12 @@ async function _fetchPageRange(start, end) {
 
 /** Populates _bookContainer with page elements and initializes PageFlip. */
 async function _buildAndMountPageFlip(targetPage) {
+   const myGeneration = _buildGeneration;
+
    const pages = await _fetchPageRange(_windowStart, _windowEnd);
-   if (!_isOpen || !_bookContainer) return;
+
+   // Abort if a newer build has started or mushaf was closed while fetching
+   if (myGeneration !== _buildGeneration || !_isOpen || !_bookContainer) return;
 
    // Build all pages as a single HTML string — one DOM parse instead of hundreds
    let html = '';
@@ -520,6 +542,9 @@ async function _buildAndMountPageFlip(targetPage) {
       html += MushafUI.buildEmptyPageHTML();
    }
    _bookContainer.innerHTML = html;
+
+   // Re-check after synchronous DOM mutation (can be slow on low-end devices)
+   if (myGeneration !== _buildGeneration || !_isOpen || !_bookContainer) return;
 
    _pageFlip = new PageFlip(_bookContainer, _getPageFlipConfig());
    _pageFlip.loadFromHTML(_bookContainer.querySelectorAll('.mushaf-page'));
@@ -601,6 +626,7 @@ async function _checkAndExpand(flipIndex) {
 async function _reloadWindow(targetPage) {
    if (!_bookContainer || !_isOpen || _isReloading) return;
    _isReloading = true;
+   _buildGeneration++; // Cancel any earlier in-flight build
 
    _destroyPageFlip(true);
    _calcWindow(targetPage);

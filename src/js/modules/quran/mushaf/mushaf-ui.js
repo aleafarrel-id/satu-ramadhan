@@ -1,13 +1,9 @@
 /**
- * Mushaf UI Builder — Pure HTML string construction for Mushaf page elements.
- * Uses string interpolation instead of DOM manipulation for 10x faster rendering.
+ * Mushaf UI — HTML string builders for Mushaf page elements.
+ * Uses string interpolation instead of DOM manipulation for faster rendering.
  */
 
-/**
- * Escapes HTML special characters to prevent XSS and rendering issues.
- * @param {string} str
- * @returns {string}
- */
+/** Escapes HTML special characters to prevent XSS. */
 function _esc(str) {
    if (str === null || str === undefined) return '';
    return String(str)
@@ -20,7 +16,7 @@ function _esc(str) {
 /**
  * Builds the full HTML string for a Mushaf page.
  * @param {Object} pageData
- * @returns {string} HTML string
+ * @returns {string}
  */
 export function buildPageHTML(pageData) {
    const pageNum = parseInt(pageData.page, 10);
@@ -29,26 +25,17 @@ export function buildPageHTML(pageData) {
    let linesHTML = '';
    for (const line of pageData.lines) {
       switch (line.type) {
-         case 'surah-header':
-            linesHTML += _buildSurahHeaderHTML(line);
-            break;
-         case 'basmala':
-            linesHTML += _buildBasmalaHTML();
-            break;
+         case 'surah-header': linesHTML += _buildSurahHeaderHTML(line); break;
+         case 'basmala':      linesHTML += _buildBasmalaHTML();          break;
          case 'text':
-         default:
-            linesHTML += _buildTextLineHTML(line);
-            break;
+         default:             linesHTML += _buildTextLineHTML(line);     break;
       }
    }
 
    return `<div class="mushaf-page${openingClass}" data-page="${_esc(pageData.page)}"><div class="mushaf-lines">${linesHTML}</div></div>`;
 }
 
-/**
- * Builds an empty backing page HTML string for the landscape RTL trick.
- * @returns {string} HTML string
- */
+/** Builds an empty backing page for the landscape RTL flip trick. */
 export function buildEmptyPageHTML() {
    return '<div class="mushaf-page mushaf-page-empty"></div>';
 }
@@ -86,11 +73,11 @@ function _buildTextLineHTML(line) {
       return `<div class="mushaf-line mushaf-line--text"><span class="mushaf-word">${_esc(line.text)}</span></div>`;
    }
 
+   // Concatenate all words into a single span for optimal rendering performance.
    let fullText = '';
    for (let i = 0, len = line.words.length; i < len; i++) {
       const w = line.words[i];
-      const text = w.word || w.text || '';
-      fullText += (i > 0 ? ' ' : '') + text;
+      fullText += (i > 0 ? ' ' : '') + (w.word || w.text || '');
    }
 
    return `<div class="mushaf-line mushaf-line--text"><span class="mushaf-word">${_esc(fullText)}</span></div>`;
