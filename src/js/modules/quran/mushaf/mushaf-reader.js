@@ -53,6 +53,7 @@ let _isReloading = false;
 let _resizeTimeout = null;
 let _lastVisibilityPage = null;
 let _buildGeneration = 0;
+let _cachedPageHPad = 32;
 const _transitionManager = {
    timers: [],
    add(t) { this.timers.push(t); },
@@ -101,6 +102,7 @@ function _resetState() {
    _isReloading = false;
    _resizeTimeout = null;
    _buildGeneration = 0;
+   _cachedPageHPad = 32;
    _transitionManager.clear();
 }
 
@@ -357,13 +359,25 @@ function _detachSwipeHandlers() {
 }
 
 function _onPointerDown(e) {
-   // Ignore multi-touch, pen, or non-left-click
    if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return;
 
    _isSwiping = true;
    _swipeStartX = e.clientX;
    _swipeStartY = e.clientY;
    _swipeStartTime = Date.now();
+
+   // Hint browser to promote the next pages into compositor layers before the flip starts
+   _promoteAdjacentPages();
+}
+
+function _promoteAdjacentPages() {
+   if (!_bookContainer) return;
+   const pages = _bookContainer.querySelectorAll('.mushaf-page:not(.mushaf-page-empty)');
+   pages.forEach(p => { p.style.willChange = 'transform'; });
+   const schedule = window.requestIdleCallback || ((cb) => setTimeout(cb, 0));
+   schedule(() => {
+      pages.forEach(p => { p.style.willChange = ''; });
+   }, { timeout: 1200 });
 }
 
 function _onPointerUp(e) {
@@ -491,16 +505,7 @@ function _buildViewport() {
 function _getPageFlipConfig() {
    const pw = _viewportContainer.clientWidth || window.innerWidth;
    const ph = _viewportContainer.clientHeight || (window.innerHeight - 50);
-
-   // Expose content width (viewport minus page padding) to CSS for font scaling.
-   // Reading from computed style handles responsive padding overrides correctly.
-   let pageHPad = 32; // fallback: var(--sp-4) × 2 = 32px
-   const firstPage = _bookContainer?.querySelector('.mushaf-page');
-   if (firstPage) {
-      const cs = getComputedStyle(firstPage);
-      pageHPad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
-   }
-   const contentW = Math.max(160, pw - pageHPad);
+   const contentW = Math.max(160, pw - _cachedPageHPad);
 
    _viewportContainer.style.setProperty('--mushaf-page-h', `${ph}px`);
    _viewportContainer.style.setProperty('--mushaf-page-w', `${contentW}px`);
@@ -513,7 +518,7 @@ function _getPageFlipConfig() {
       useMouseEvents: false,
       drawShadow: false,
       maxShadowOpacity: 0,
-      flippingTime: 500,
+      flippingTime: 350,
       mobileScrollSupport: false,
       swipeDistance: 10,
       showCover: false,
@@ -526,16 +531,13 @@ async function _fetchPageRange(start, end) {
    return Promise.all(promises);
 }
 
-/** Populates _bookContainer with page elements and initializes PageFlip. */
 async function _buildAndMountPageFlip(targetPage) {
    const myGeneration = _buildGeneration;
 
    const pages = await _fetchPageRange(_windowStart, _windowEnd);
 
-   // Abort if a newer build has started or mushaf was closed while fetching
    if (myGeneration !== _buildGeneration || !_isOpen || !_bookContainer) return;
 
-   // Build all pages as a single HTML string — one DOM parse instead of hundreds
    let html = '';
    for (let i = pages.length - 1; i >= 0; i--) {
       html += MushafUI.buildPageHTML(pages[i]);
@@ -543,8 +545,14 @@ async function _buildAndMountPageFlip(targetPage) {
    }
    _bookContainer.innerHTML = html;
 
-   // Re-check after synchronous DOM mutation (can be slow on low-end devices)
    if (myGeneration !== _buildGeneration || !_isOpen || !_bookContainer) return;
+
+   // Read padding once after DOM is populated — single forced reflow at build time only
+   const firstPage = _bookContainer.querySelector('.mushaf-page');
+   if (firstPage) {
+      const cs = getComputedStyle(firstPage);
+      _cachedPageHPad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+   }
 
    _pageFlip = new PageFlip(_bookContainer, _getPageFlipConfig());
    _pageFlip.loadFromHTML(_bookContainer.querySelectorAll('.mushaf-page'));
@@ -558,13 +566,13 @@ async function _buildAndMountPageFlip(targetPage) {
 }
 
 function _onPageFlip(e) {
+   if (_isExpanding) return;
    const flipIndex = e.data;
    _currentPage = _windowEnd - (flipIndex / 2);
    _updatePageCounter();
    _updateSurahHeader();
-   _checkAndExpand(flipIndex);
 
-   // Background prefetch: preload adjacent pages into cache before user reaches them
+   setTimeout(() => _checkAndExpand(flipIndex), 360);
    _prefetchAdjacent();
 }
 
@@ -577,7 +585,6 @@ async function _checkAndExpand(flipIndex) {
    const distFromHighest = flipIndex / 2;
    const distFromLowest = pagesInWindow - 1 - distFromHighest;
 
-   // Expand towards higher Quran page numbers (prepend)
    if (distFromHighest <= Math.floor(EXPAND_MARGIN / 2) && _windowEnd < TOTAL_PAGES) {
       _isExpanding = true;
       const newEnd = Math.min(TOTAL_PAGES, _windowEnd + EXPAND_SIZE);
@@ -587,7 +594,6 @@ async function _checkAndExpand(flipIndex) {
 
       const addedPairs = newEnd - _windowEnd;
 
-      // Build prepend HTML string in reverse order
       let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
          html += MushafUI.buildPageHTML(pages[i]);
@@ -598,10 +604,13 @@ async function _checkAndExpand(flipIndex) {
       _windowEnd = newEnd;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));
       _pageFlip.turnToPage(flipIndex + addedPairs * 2);
-      _isExpanding = false;
+
+      // Hold the lock until the flip animation finishes so spurious flip events
+      // emitted by updateFromHtml/turnToPage don't schedule a second expand.
+      setTimeout(() => { _isExpanding = false; }, 360);
+      return;
    }
 
-   // Expand towards lower Quran page numbers (append)
    if (distFromLowest <= Math.floor(EXPAND_MARGIN / 2) && _windowStart > 1) {
       _isExpanding = true;
       const newStart = Math.max(1, _windowStart - EXPAND_SIZE);
@@ -609,7 +618,6 @@ async function _checkAndExpand(flipIndex) {
 
       if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
 
-      // Build append HTML string in reverse order
       let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
          html += MushafUI.buildPageHTML(pages[i]);
@@ -619,7 +627,7 @@ async function _checkAndExpand(flipIndex) {
 
       _windowStart = newStart;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));
-      _isExpanding = false;
+      setTimeout(() => { _isExpanding = false; }, 360);
    }
 }
 
