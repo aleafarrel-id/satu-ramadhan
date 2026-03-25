@@ -42,7 +42,7 @@
             {
                 "start": 8,
                 "end": 11,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 14,
@@ -81,7 +81,7 @@
             {
                 "start": 33,
                 "end": 36,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 46,
@@ -181,7 +181,7 @@
             {
                 "start": 20,
                 "end": 23,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_16": [

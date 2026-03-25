@@ -92,7 +92,7 @@
             {
                 "start": 88,
                 "end": 91,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 123,
@@ -479,7 +479,7 @@
             {
                 "start": 54,
                 "end": 57,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 60,

@@ -27,7 +27,7 @@
             {
                 "start": 25,
                 "end": 28,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_3": [
@@ -81,7 +81,7 @@
             {
                 "start": 72,
                 "end": 75,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_5": [
@@ -110,7 +110,7 @@
             {
                 "start": 18,
                 "end": 21,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_7": [
@@ -186,7 +186,7 @@
             {
                 "start": 11,
                 "end": 14,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 19,

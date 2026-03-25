@@ -102,6 +102,16 @@
    color: var(--clr-tajweed-madd);
 }
 
+/* Mad Silah Qashirah (2 harakat) */
+.tj-madd-silah-qashirah {
+   color: var(--clr-tajweed-madd-silah-qashirah);
+}
+
+/* Mad Silah Thawilah (4-5 harakat) */
+.tj-madd-silah-thawilah {
+   color: var(--clr-tajweed-madd-silah-thawilah);
+}
+
 /* Lam Shamsiyyah */
 .tj-lam-shams {
    color: var(--clr-tajweed-lam-shams);

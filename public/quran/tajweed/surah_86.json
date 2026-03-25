@@ -214,7 +214,7 @@
             {
                 "start": 5,
                 "end": 8,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 18,
@@ -224,7 +224,7 @@
             {
                 "start": 22,
                 "end": 25,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_9": [
@@ -253,7 +253,7 @@
             {
                 "start": 8,
                 "end": 11,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 14,
@@ -329,7 +329,7 @@
             {
                 "start": 5,
                 "end": 8,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 15,

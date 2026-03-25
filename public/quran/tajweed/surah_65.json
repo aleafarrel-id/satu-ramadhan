@@ -150,7 +150,7 @@
             {
                 "start": 326,
                 "end": 329,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 338,
@@ -237,7 +237,7 @@
             {
                 "start": 184,
                 "end": 187,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 190,
@@ -277,7 +277,7 @@
             {
                 "start": 275,
                 "end": 278,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_3": [
@@ -319,7 +319,7 @@
             {
                 "start": 122,
                 "end": 125,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 130,
@@ -451,12 +451,12 @@
             {
                 "start": 234,
                 "end": 237,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 249,
                 "end": 252,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_5": [
@@ -493,7 +493,7 @@
             {
                 "start": 98,
                 "end": 101,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 115,
@@ -657,7 +657,7 @@
             {
                 "start": 33,
                 "end": 36,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 43,
@@ -667,7 +667,7 @@
             {
                 "start": 67,
                 "end": 70,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 77,
@@ -744,7 +744,7 @@
             {
                 "start": 61,
                 "end": 64,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 72,
@@ -1055,7 +1055,7 @@
             {
                 "start": 313,
                 "end": 316,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_12": [

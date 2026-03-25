@@ -122,7 +122,7 @@
             {
                 "start": 102,
                 "end": 105,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 106,
@@ -132,7 +132,7 @@
             {
                 "start": 117,
                 "end": 120,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 130,
@@ -425,7 +425,7 @@
             {
                 "start": 85,
                 "end": 88,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 99,
@@ -539,7 +539,7 @@
             {
                 "start": 18,
                 "end": 21,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 22,
@@ -549,7 +549,7 @@
             {
                 "start": 35,
                 "end": 38,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 53,
@@ -758,7 +758,7 @@
             {
                 "start": 131,
                 "end": 134,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 139,
@@ -865,7 +865,7 @@
             {
                 "start": 142,
                 "end": 145,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 158,
@@ -957,7 +957,7 @@
             {
                 "start": 70,
                 "end": 73,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 76,
@@ -1017,7 +1017,7 @@
             {
                 "start": 248,
                 "end": 251,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 272,
@@ -1134,7 +1134,7 @@
             {
                 "start": 212,
                 "end": 215,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 234,
@@ -1404,7 +1404,7 @@
             {
                 "start": 273,
                 "end": 276,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 287,
@@ -1777,7 +1777,7 @@
             {
                 "start": 75,
                 "end": 78,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 83,
@@ -1879,7 +1879,7 @@
             {
                 "start": 66,
                 "end": 69,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 72,
@@ -2053,7 +2053,7 @@
             {
                 "start": 64,
                 "end": 67,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 73,
@@ -2115,7 +2115,7 @@
             {
                 "start": 123,
                 "end": 126,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 134,
@@ -2162,7 +2162,7 @@
             {
                 "start": 99,
                 "end": 102,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 109,
@@ -2333,7 +2333,7 @@
             {
                 "start": 49,
                 "end": 52,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 79,
@@ -2529,7 +2529,7 @@
             {
                 "start": 62,
                 "end": 65,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 71,
@@ -2576,7 +2576,7 @@
             {
                 "start": 81,
                 "end": 84,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 101,
@@ -2795,7 +2795,7 @@
             {
                 "start": 140,
                 "end": 143,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ],
         "verse_42": [
@@ -2899,7 +2899,7 @@
             {
                 "start": 101,
                 "end": 104,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 116,
@@ -3021,7 +3021,7 @@
             {
                 "start": 165,
                 "end": 168,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 171,
@@ -3066,7 +3066,7 @@
             {
                 "start": 226,
                 "end": 229,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             },
             {
                 "start": 241,
@@ -3158,7 +3158,7 @@
             {
                 "start": 202,
                 "end": 205,
-                "rule": "madd_2"
+                "rule": "madd_silah_qashirah"
             }
         ]
     }

@@ -69,6 +69,14 @@ const TAJWEED_RULES = {
       cssClass: 'tj-madd',
       label: 'Mad Jaiz Munfashil'
    },
+   madd_silah_qashirah: {
+      cssClass: 'tj-madd-silah-qashirah',
+      label: 'Mad Silah Qashirah'
+   },
+   madd_silah_thawilah: {
+      cssClass: 'tj-madd-silah-thawilah',
+      label: 'Mad Silah Thawilah'
+   },
    lam_shamsiyyah: {
       cssClass: 'tj-lam-shams',
       label: 'Lam Syamsiyyah'

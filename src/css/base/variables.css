@@ -273,6 +273,10 @@
    /* qalqalah */
    --clr-tajweed-madd: #42A5F5;
    /* madd variants */
+   --clr-tajweed-madd-silah-qashirah: #26A69A;
+   /* mad silah qashirah (2 harakat) */
+   --clr-tajweed-madd-silah-thawilah: #00897B;
+   /* mad silah thawilah (4-5 harakat) */
    --clr-tajweed-lam-shams: #8D6E63;
    /* lam shamsiyyah */
    --clr-tajweed-hamza-wasl: #78909C;
