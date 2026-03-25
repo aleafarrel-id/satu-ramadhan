@@ -5,7 +5,7 @@
  */
 
 /* ── Configuration ── */
-import { CONFIG } from '../config.js';
+import { CONFIG } from '../config/version-config.js';
 
 const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
 const USER_AGENT = `${CONFIG.appName.toLowerCase().replace(/\s+/g, '-')}-app/${CONFIG.version}`;

@@ -3,9 +3,10 @@ import '../../css/pages/settings.css';
 import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
 
-import { CONFIG } from '../config.js';
+import { CONFIG } from '../config/version-config.js';
 
 import * as settingsPanel from '../components/settings/settings-panel.js';
+import * as settingsQuranPanel from '../components/settings/settings-quran-panel.js';
 import * as settingsLocCard from '../components/card/settings-loc-card.js';
 import * as settingsPresetCard from '../components/card/settings-preset-card.js';
 
@@ -29,6 +30,7 @@ export function render(container) {
             <div id="settings-loc-card-container"></div>
             <div id="settings-preset-card-container"></div>
             <div id="settings-panel-container"></div>
+            <div id="settings-quran-panel-container"></div>
             
             <p class="settings-version">${CONFIG.appName} v ${CONFIG.version}</p>
         </div>
@@ -48,6 +50,11 @@ export function render(container) {
     if (panelContainer) {
         settingsPanel.render(panelContainer);
     }
+
+    const quranPanelContainer = document.getElementById('settings-quran-panel-container');
+    if (quranPanelContainer) {
+        settingsQuranPanel.render(quranPanelContainer);
+    }
 }
 
 /**
@@ -58,5 +65,6 @@ export function destroy() {
     settingsLocCard.destroy();
     settingsPresetCard.destroy();
     settingsPanel.destroy();
+    settingsQuranPanel.destroy();
     _container = null;
 }

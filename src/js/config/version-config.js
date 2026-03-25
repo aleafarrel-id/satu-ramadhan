@@ -1,5 +1,5 @@
 /**
- * Application Configuration
+ * Application Version Configuration
  * Single source of truth for app-wide constants
  */
 

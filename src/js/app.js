@@ -3,7 +3,7 @@
  * Coordinates all modules and handles app lifecycle
  */
 
-import { CONFIG } from './config.js';
+import { CONFIG } from './config/version-config.js';
 
 import { App } from '@capacitor/app';
 
@@ -31,12 +31,18 @@ const SPLASH_MIN_DURATION = 1500;
  * Initialize the entire application
  */
 export async function initApp() {
-    // Set dynamic version and developer name on splash screen
+    // Set dynamic app name, version, and developer on splash screen
+    const splashTitleEl = document.querySelector('.splash-title');
+    if (splashTitleEl) splashTitleEl.textContent = CONFIG.appName;
+
     const splashVersionEl = document.getElementById('splash-version');
     if (splashVersionEl) splashVersionEl.textContent = `v ${CONFIG.version}`;
 
     const splashSubtitleEl = document.getElementById('splash-subtitle');
     if (splashSubtitleEl) splashSubtitleEl.textContent = `by ${CONFIG.developer}`;
+
+    // Set document title dynamically
+    document.title = CONFIG.appName;
 
     // Initialize hardware back button handler
     initBackHandler();

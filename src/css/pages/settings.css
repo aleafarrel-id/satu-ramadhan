@@ -20,7 +20,7 @@
    display: flex;
    flex-direction: column;
    padding: 0;
-   overflow: hidden;
+   overflow: visible;
    background: var(--clr-bg-card);
    backdrop-filter: blur(10px);
    -webkit-backdrop-filter: blur(10px);
@@ -28,6 +28,16 @@
    border-bottom: 1px solid var(--clr-border-light);
    border-radius: var(--radius-lg);
    box-shadow: none;
+}
+
+.settings-card> :first-child {
+   border-top-left-radius: var(--radius-lg);
+   border-top-right-radius: var(--radius-lg);
+}
+
+.settings-card> :last-child {
+   border-bottom-left-radius: var(--radius-lg);
+   border-bottom-right-radius: var(--radius-lg);
 }
 
 .settings-item {
@@ -104,7 +114,6 @@
    flex-direction: column;
    align-items: flex-start;
    gap: var(--spacing-sm);
-   margin-bottom: var(--spacing-md);
 }
 
 .settings-loc-title {
@@ -250,7 +259,6 @@
    flex-direction: column;
    align-items: flex-start;
    gap: var(--spacing-sm);
-   margin-bottom: var(--spacing-md);
 }
 
 .settings-preset-title {
@@ -343,6 +351,113 @@
    transform: scale(0.97);
 }
 
+/* =============================================
+   Settings Card Header (Universal / DRY)
+   ============================================= */
+
+.settings-card-header {
+   padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs) var(--spacing-lg);
+}
+
+.settings-card-title {
+   font-family: var(--font-primary);
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-regular);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+}
+
+.settings-card-spacing {
+   margin-top: var(--spacing-lg);
+}
+
+/* =============================================
+   Custom Dropdown Select
+   ============================================= */
+
+.custom-select {
+   position: relative;
+   min-width: 120px;
+   font-family: var(--font-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-medium);
+}
+
+.custom-select-trigger {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background-color: var(--clr-bg-dark);
+   color: var(--clr-text-secondary);
+   padding: var(--spacing-xs) var(--spacing-sm);
+   border: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-sm);
+   cursor: pointer;
+   transition: border-color var(--transition-fast);
+}
+
+.custom-select.open .custom-select-trigger {
+   border-color: var(--clr-primary-400);
+}
+
+.custom-select-trigger span {
+   margin-right: var(--spacing-sm);
+}
+
+.custom-select-trigger i {
+   font-size: 14px;
+   transition: transform var(--transition-fast);
+}
+
+.custom-select.open .custom-select-trigger i {
+   transform: rotate(180deg);
+}
+
+.custom-options {
+   position: absolute;
+   top: calc(100% + 4px);
+   right: 0;
+   min-width: 100%;
+   background: var(--clr-bg-dark);
+   border: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-sm);
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(-5px);
+   transition: all var(--transition-fast) ease;
+   z-index: 100;
+   overflow: hidden;
+}
+
+.custom-select.open .custom-options {
+   opacity: 1;
+   visibility: visible;
+   transform: translateY(0);
+}
+
+.custom-option {
+   padding: var(--spacing-xs) var(--spacing-sm);
+   color: var(--clr-text-secondary);
+   cursor: pointer;
+   transition: background var(--transition-fast), color var(--transition-fast);
+   white-space: nowrap;
+}
+
+.custom-option:hover {
+   background: var(--clr-white-a05);
+}
+
+.custom-option.selected {
+   color: var(--clr-primary-400);
+   background: var(--clr-white-a05);
+   font-weight: var(--fw-medium);
+}
+
+/* =============================================
+   Responsive Overrides
+   ============================================= */
+
 @media (max-width: 360px) {
 
    .settings-item-info {
@@ -358,6 +473,7 @@
 
    .settings-loc-title,
    .settings-loc-regency,
+   .settings-card-title,
    .settings-preset-title,
    .settings-preset-org {
       font-size: var(--fs-xs);
@@ -367,6 +483,10 @@
    .settings-loc-desc,
    .settings-preset-dates,
    .settings-preset-desc {
+      font-size: var(--fs-2xs);
+   }
+
+   .custom-select {
       font-size: var(--fs-2xs);
    }
 }

@@ -10,6 +10,9 @@ import { impact } from '../../modules/system/haptic.js';
 export function render(container) {
     container.innerHTML = `
         <div class="card settings-card" data-focus-group="settings-list" data-focus-direction="vertical">
+            <div class="settings-card-header">
+                <div class="settings-card-title">NOTIFIKASI</div>
+            </div>
             <label class="settings-item" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
