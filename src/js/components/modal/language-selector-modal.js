@@ -52,8 +52,8 @@ export function showLanguageSelectorModal({
  */
 function handleSelect(langCode, e) {
     if (e) e.stopPropagation();
-    impact('medium');
-    
+    impact('light');
+
     // Animate selection visual feedback before hiding
     const selectedItem = _overlayEl.querySelector(`.lang-option[data-code="${langCode}"]`);
     if (selectedItem) {
@@ -64,7 +64,7 @@ function handleSelect(langCode, e) {
     if (_onSelectCallback) {
         _onSelectCallback(langCode);
     }
-    
+
     hideModal();
 }
 

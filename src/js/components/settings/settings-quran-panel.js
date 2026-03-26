@@ -4,7 +4,7 @@
  * translation language dropdown.
  */
 
-import { QURAN_LANGUAGES, DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
+import { QURAN_LANGUAGES } from '../../config/quran-languages.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as Notif from '../../modules/notification/notification.js';
 import {
@@ -70,10 +70,9 @@ export function render(container) {
    if (quranTranslationItem) {
       makeAccessibleBtn(quranTranslationItem, async (e) => {
          e.stopPropagation();
-         await impact('light');
-         
+
          const currentLang = getTranslationLanguage();
-         
+
          showLanguageSelectorModal({
             currentLang,
             onSelect: (value) => {
