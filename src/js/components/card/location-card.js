@@ -49,7 +49,9 @@ export function renderLocationCardInner(location) {
     }
 
     // State: Location found
-    const name = location.regencyName;
+    const name = location.districtName
+        ? `${location.districtName}, ${location.regencyName}`
+        : location.regencyName;
     const province = location.provinceName || '';
 
     return `

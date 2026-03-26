@@ -15,7 +15,10 @@ export async function render(container) {
 
     function renderStatus(loc) {
         if (loc) {
-            return `<div class="settings-loc-body"><div class="settings-loc-regency">${loc.regencyName}</div>${loc.provinceName ? `<div class="settings-loc-province">${loc.provinceName}</div>` : ''}</div>`;
+            const displayName = loc.districtName
+                ? `${loc.districtName}, ${loc.regencyName}`
+                : loc.regencyName;
+            return `<div class="settings-loc-body"><div class="settings-loc-regency">${displayName}</div>${loc.provinceName ? `<div class="settings-loc-province">${loc.provinceName}</div>` : ''}</div>`;
         }
         return `<span class="settings-loc-status">Lokasi belum diatur</span>`;
     }

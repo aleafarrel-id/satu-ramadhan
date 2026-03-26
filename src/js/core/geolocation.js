@@ -5,6 +5,7 @@
 
 import { Geolocation } from '@capacitor/geolocation';
 import { fetchRegencies, getProvinceById } from './database.js';
+import { reverseGeocodeNominatim } from './nominatim.js';
 import * as storage from './storage.js';
 
 const STORAGE_KEY = 'user_location';
@@ -140,12 +141,38 @@ export async function detectLocation(forceRefresh = false) {
 
     try {
         const coords = await getCurrentPosition();
+
+        // Strategy 1: Try Nominatim reverse geocoding (online, detailed)
+        try {
+            const nomResult = await reverseGeocodeNominatim(coords.latitude, coords.longitude);
+            if (nomResult && nomResult.regencyName) {
+                // Cross-reference with local DB for accurate regencyId & provinceId
+                const localMatch = await findNearestRegency(coords.latitude, coords.longitude);
+
+                const location = {
+                    regencyId: localMatch?.regency?.id || nomResult.regencyId,
+                    regencyName: nomResult.regencyName,
+                    districtName: nomResult.districtName || '',
+                    provinceId: localMatch?.province?.id || nomResult.provinceId,
+                    provinceName: nomResult.provinceName || localMatch?.province?.name || '',
+                    latitude: coords.latitude,
+                    longitude: coords.longitude,
+                };
+                await storage.set(STORAGE_KEY, location);
+                return location;
+            }
+        } catch (nomErr) {
+            console.warn('[Geolocation] Nominatim reverse failed, using offline fallback:', nomErr.message);
+        }
+
+        // Strategy 2: Offline fallback — Haversine nearest regency
         const result = await findNearestRegency(coords.latitude, coords.longitude);
 
         if (result) {
             const location = {
                 regencyId: result.regency.id,
                 regencyName: result.regency.name,
+                districtName: '',
                 provinceId: result.province?.id,
                 provinceName: result.province?.name,
                 latitude: coords.latitude,
@@ -206,8 +233,8 @@ export function openLocationSettings() {
  * @param {number} locationData.longitude
  * @returns {Promise<object>} The saved location
  */
-export async function setManualLocation({ regencyId, regencyName, provinceId, provinceName, latitude, longitude }) {
-    const location = { regencyId, regencyName, provinceId, provinceName, latitude, longitude };
+export async function setManualLocation({ regencyId, regencyName, districtName, provinceId, provinceName, latitude, longitude }) {
+    const location = { regencyId, regencyName, districtName: districtName || '', provinceId, provinceName, latitude, longitude };
     await storage.set(STORAGE_KEY, location);
     return location;
 }

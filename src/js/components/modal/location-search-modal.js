@@ -219,11 +219,15 @@ function renderResultItem(location) {
         ? '<span class="loc-search-badge loc-search-badge--local">Lokal</span>'
         : '<span class="loc-search-badge loc-search-badge--online">Online</span>';
 
+    const displayName = location.districtName
+        ? `${location.districtName}, ${location.regencyName}`
+        : location.regencyName;
+
     return `
         <div class="loc-search-item" data-focus-item>
             <i class='bx ${icon}'></i>
             <div class="loc-search-item-info">
-                <div class="loc-search-item-title">${location.regencyName}</div>
+                <div class="loc-search-item-title">${displayName}</div>
                 <div class="loc-search-item-subtitle">${location.provinceName || ''}${badge}</div>
             </div>
         </div>

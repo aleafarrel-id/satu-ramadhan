@@ -269,8 +269,12 @@ function injectMetadata(el, payload) {
         if (target) target.textContent = text;
     };
 
-    setText('share-schedule-location', payload.location?.regencyName || '—');
-    setText('share-schedule-province', payload.location?.provinceName || '');
+    const loc = payload.location;
+    const locationDisplay = loc
+        ? (loc.districtName ? `${loc.districtName}, ${loc.regencyName}` : loc.regencyName)
+        : '—';
+    setText('share-schedule-location', locationDisplay);
+    setText('share-schedule-province', loc?.provinceName || '');
     setText('share-schedule-org', payload.orgName || '—');
     setText('share-schedule-hijri-title', `${payload.hijriMonthName || 'Ramadan'} ${payload.hijriYear || ''} H`);
     setText('share-schedule-qibla', payload.qiblaAngle != null ? `${payload.qiblaAngle.toFixed(1)}°` : '—');

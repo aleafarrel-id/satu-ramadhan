@@ -47,7 +47,10 @@ export async function detectLocationWithFeedback(forceRefresh = true) {
     try {
         const location = await detectLocation(forceRefresh);
         if (location) {
-            notif.success(`Lokasi terdeteksi: ${location.regencyName}`);
+            const displayName = location.districtName
+                ? `${location.districtName}, ${location.regencyName}`
+                : location.regencyName;
+            notif.success(`Lokasi terdeteksi: ${displayName}`);
             return location;
         } else {
             notif.error('Gagal mendeteksi lokasi, silakan coba lagi');
@@ -68,6 +71,9 @@ export async function detectLocationWithFeedback(forceRefresh = true) {
 export async function handleManualLocationSelection(location) {
     if (!location) return null;
 
-    notif.success(`Lokasi diatur: ${location.regencyName}`);
+    const displayName = location.districtName
+        ? `${location.districtName}, ${location.regencyName}`
+        : location.regencyName;
+    notif.success(`Lokasi diatur: ${displayName}`);
     return location;
 }

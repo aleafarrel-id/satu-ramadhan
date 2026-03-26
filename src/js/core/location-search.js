@@ -80,6 +80,7 @@ async function searchLocalDB(query) {
     const results = merged.slice(0, 10).map(reg => ({
         regencyId: reg.id,
         regencyName: reg.name,
+        districtName: '',
         provinceId: reg.province_id,
         provinceName: provinceMap.get(reg.province_id) || null,
         latitude: reg.latitude,
