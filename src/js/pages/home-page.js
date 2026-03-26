@@ -241,7 +241,7 @@ function bindScheduleEvents() {
  */
 function bindViewSpecificEvents() {
     document.getElementById('org-toggle')?.addEventListener('click', handleOrgToggle);
-    document.getElementById('btn-kiblat')?.addEventListener('click', () => {
+    document.getElementById('home-btn-kiblat')?.addEventListener('click', () => {
         document.querySelector('.nav-item[data-tab="compass"]')?.click();
     });
 }

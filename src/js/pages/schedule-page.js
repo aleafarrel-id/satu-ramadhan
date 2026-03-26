@@ -368,7 +368,7 @@ function bindEvents() {
         });
     });
 
-    document.getElementById('btn-kiblat')?.addEventListener('click', () => {
+    document.getElementById('schedule-btn-kiblat')?.addEventListener('click', () => {
         document.querySelector('.nav-item[data-tab="compass"]')?.click();
     });
 

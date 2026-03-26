@@ -33,7 +33,7 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, total
             <div class="card card--container schedule-widget-card">
                 <div id="schedule-featured-container">${featuredHtml}</div>
                 <div class="schedule-actions">
-                    ${renderKiblatButton()}
+                    ${renderKiblatButton('schedule-btn-kiblat')}
                     ${renderOrgToggle(orgName, 'schedule-org-toggle')}
                 </div>
             </div>

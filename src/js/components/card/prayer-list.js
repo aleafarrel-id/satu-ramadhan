@@ -40,7 +40,7 @@ export function renderPrayerListCard(timings, orgName, prayerState) {
             ${renderFeaturedCard(timings, prayerState)}
         </div>
         <div class="schedule-actions">
-            ${renderKiblatButton()}
+            ${renderKiblatButton('home-btn-kiblat')}
             ${renderOrgToggle(orgName, 'org-toggle')}
         </div>
         <div class="prayer-list-grid">
