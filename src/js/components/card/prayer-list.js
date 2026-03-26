@@ -9,7 +9,7 @@
 import { PRAYER_LIST } from '../../modules/prayer/prayer-times.js';
 import { SCHEDULE_PRAYERS, cleanTimeStr } from '../../utils/datetime.js';
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
-import { renderQiblaMapCard } from './qibla-map-card.js';
+import { renderQiblaMapCard } from './qibla-map-card-markup.js';
 
 /* ── Constants ── */
 

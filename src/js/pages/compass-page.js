@@ -11,7 +11,8 @@ import QiblaCompass from '../modules/compass/compass.js';
 
 import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
 import { renderQiblaInfoCard, updateQiblaInfoCard } from '../components/card/qibla-info-card.js';
-import { renderQiblaMapCard, initQiblaMapCard, destroyQiblaMapCard } from '../components/card/qibla-map-card.js';
+import { renderQiblaMapCard } from '../components/card/qibla-map-card-markup.js';
+import { initQiblaMapCard, destroyQiblaMapCard } from '../components/card/qibla-map-card.js';
 import { renderCompass, updateCompassUI } from '../components/compass/compass-dial.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';

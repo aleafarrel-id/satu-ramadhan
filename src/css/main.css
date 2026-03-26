@@ -20,6 +20,7 @@
 
 /* UI */
 @import './components/ui/splash-screen.css';
+@import './components/ui/quran-backdrop.css';
 @import './components/ui/button.css';
 @import './components/ui/toggle.css';
 @import './components/ui/empty-state.css';

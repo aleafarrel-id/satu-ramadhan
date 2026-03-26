@@ -1,6 +1,5 @@
 /* Lazy-loaded CSS — only fetched when this page module is imported */
 import '../../css/pages/quran.css';
-import '../../css/components/ui/quran-backdrop.css';
 import '../../css/components/quran/quran-header.css';
 import '../../css/components/quran/quran-dock.css';
 import '../../css/components/quran/quran-card.css';
