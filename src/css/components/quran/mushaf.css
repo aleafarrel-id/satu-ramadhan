@@ -37,8 +37,17 @@
 }
 
 @keyframes mushafPulse {
-   0%, 100% { opacity: 1; transform: scale(1); }
-   50%       { opacity: 0.6; transform: scale(0.92); }
+
+   0%,
+   100% {
+      opacity: 1;
+      transform: scale(1);
+   }
+
+   50% {
+      opacity: 0.6;
+      transform: scale(0.92);
+   }
 }
 
 .mushaf-backdrop-content p {
@@ -311,8 +320,8 @@
 }
 
 .mushaf-page--opening .mushaf-word {
-   /* Opening pages have shorter lines, so a smaller divisor (22) fits better. */
-   font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 375px) / 22), 1.35rem);
+   /* Opening pages have shorter lines, so a smaller divisor (20) fits better. */
+   font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 375px) / 20), 1.6rem);
    line-height: 2.2;
 }
 
@@ -400,7 +409,7 @@
    }
 
    .mushaf-page--opening .mushaf-word {
-      font-size: clamp(0.85rem, calc(var(--mushaf-page-w, 360px) / 21), 1.3rem);
+      font-size: clamp(0.85rem, calc(var(--mushaf-page-w, 360px) / 19.5), 1.4rem);
    }
 }
 
@@ -429,7 +438,7 @@
    }
 
    .mushaf-page--opening .mushaf-word {
-      font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 320px) / 21), 1.2rem);
+      font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 320px) / 19.5), 1.3rem);
    }
 
    .mushaf-page--opening .mushaf-line--basmala .mushaf-word {
@@ -438,6 +447,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
    .mushaf-overlay,
    .mushaf-picker-overlay,
    .mushaf-backdrop {
