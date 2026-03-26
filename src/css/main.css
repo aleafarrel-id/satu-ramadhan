@@ -26,6 +26,7 @@
 
 /* Prayer (used by Home) */
 @import './components/prayer/prayer-time.css';
+@import './components/prayer/prayer-list.css';
 
 /* Schedule Countdown (used by Home) */
 @import './components/schedule/countdown.css';

@@ -42,12 +42,8 @@ export function renderHomeSkeleton(container, location, onLocationAction) {
         <div class="home-schedule-header">
             <div class="schedule-title">Jadwal Hari Ini</div>
             <div class="schedule-nav__arrows shadow-sm">
-                <button class="schedule-nav__btn schedule-nav__btn--prev active" disabled>
-                    <i class='bx bx-grid-alt'></i>
-                </button>
-                <button class="schedule-nav__btn schedule-nav__btn--next" disabled>
-                    <i class='bx bx-list-ul'></i>
-                </button>
+                <div class="skeleton skeleton--toggle-btn"></div>
+                <div class="skeleton skeleton--toggle-btn"></div>
             </div>
         </div>
         <div class="card card--container">

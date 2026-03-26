@@ -1,0 +1,113 @@
+/* =============================================
+   Prayer List — Compact Horizontal Grid
+   ============================================= */
+
+/* ── List View Wrapper (gap between children) ── */
+#home-schedule-wrapper > .schedule-actions,
+#home-schedule-wrapper > .prayer-list-grid,
+#home-schedule-wrapper > .qibla-map-card {
+   margin-top: var(--spacing-md);
+}
+
+/* ── 5-Column Grid Container ── */
+.prayer-list-grid {
+   display: grid;
+   grid-template-columns: repeat(5, 1fr);
+   gap: var(--spacing-xs);
+   background: rgba(30, 65, 82, 0.5);
+   border: 1px solid var(--clr-primary-a20);
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-md) var(--spacing-sm);
+}
+
+/* ── Individual Column ── */
+.prayer-list-col {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: var(--spacing-xs);
+   padding: var(--spacing-sm) 0;
+   border-radius: var(--radius-md);
+   transition: all var(--transition-fast);
+}
+
+.prayer-list-col__name {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-medium);
+   color: var(--clr-text-muted);
+   white-space: nowrap;
+}
+
+.prayer-list-col__time {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   font-variant-numeric: tabular-nums;
+}
+
+/* ── Active Column Highlight ── */
+.prayer-list-col--active {
+   background: linear-gradient(135deg, var(--clr-accent-a25), var(--clr-accent-a15));
+   border: 1px solid var(--clr-accent-a30);
+}
+
+.prayer-list-col--active .prayer-list-col__name {
+   color: var(--clr-accent-400);
+   font-weight: var(--fw-semibold);
+}
+
+.prayer-list-col--active .prayer-list-col__time {
+   color: var(--clr-accent-400);
+}
+
+/* ── View Transition ── */
+#home-schedule-wrapper {
+   transition: opacity 200ms ease, transform 200ms ease;
+}
+
+#home-schedule-wrapper.view-fading-out {
+   opacity: 0;
+   transform: scale(0.97);
+}
+
+#home-schedule-wrapper.view-fading-in {
+   animation: viewFadeIn 250ms ease-out forwards;
+}
+
+@keyframes viewFadeIn {
+   from {
+      opacity: 0;
+      transform: scale(0.97);
+   }
+
+   to {
+      opacity: 1;
+      transform: scale(1);
+   }
+}
+
+/* ── Qibla Map inside List View (remove default bottom margin) ── */
+#home-schedule-wrapper .qibla-map-card {
+   margin-bottom: 0;
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 360px) {
+   .prayer-list-grid {
+      gap: 2px;
+      padding: var(--spacing-sm) var(--spacing-xs);
+   }
+
+   .prayer-list-col__name {
+      font-size: var(--fs-2xs);
+   }
+
+   .prayer-list-col__time {
+      font-size: var(--fs-xs);
+   }
+}

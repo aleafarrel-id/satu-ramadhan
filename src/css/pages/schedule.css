@@ -34,61 +34,7 @@
         inset 0 0 10px var(--clr-accent-a10);
 }
 
-/* ── Action Buttons Row ── */
-.schedule-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-}
 
-/* ── Kiblat Button (gold accent) ── */
-.kiblat-btn {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs);
-    background: linear-gradient(135deg, var(--clr-accent-a25), var(--clr-accent-a15));
-    border: 1px solid var(--clr-accent-a40);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-sm) var(--spacing-md);
-    padding-left: 28px;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    min-height: 40px;
-    flex-shrink: 0;
-}
-
-.kiblat-btn:active {
-    transform: scale(0.97);
-}
-
-.kiblat-btn__icon-circle {
-    position: absolute;
-    left: -8px;
-    top: -8px;
-    width: 26px;
-    height: 26px;
-    background: var(--clr-primary-600);
-    border: 2px solid var(--clr-accent-400);
-    border-radius: var(--radius-circle);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--clr-accent-300);
-    font-size: 13px;
-}
-
-.kiblat-btn__icon-circle i {
-    font-size: var(--fs-md);
-}
-
-.kiblat-btn__label {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
-    color: var(--clr-accent-400);
-    white-space: nowrap;
-}
 
 /* ── Date Navigator ── */
 .schedule-nav {
@@ -516,17 +462,8 @@
     }
 }
 
-@media (max-width: 360px) {
-    .kiblat-btn {
-        padding: var(--spacing-xs) var(--spacing-sm);
-        padding-left: 24px;
-        min-height: 34px;
-    }
 
-    .kiblat-btn__label {
-        font-size: var(--fs-xs);
-    }
-}
+
 
 @media (max-width: 340px) {
     .schedule-nav {
