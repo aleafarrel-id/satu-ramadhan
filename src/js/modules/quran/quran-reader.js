@@ -12,6 +12,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../system/back-han
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
 import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
+import { getTajweedEnabled } from './quran-settings.js';
 import { openPicker, closePicker, destroyPicker } from '../../components/quran/quran-picker.js';
 import * as BookmarkManager from './bookmark-manager.js';
 import * as Notification from '../notification/notification.js';
@@ -485,7 +486,7 @@ function _createRegularAyahElement(ayah) {
    const arabicEl = document.createElement('div');
    arabicEl.className = 'quran-ayah-arabic';
 
-   if (ayah.tajweedRules?.length) {
+   if (ayah.tajweedRules?.length && getTajweedEnabled()) {
       arabicEl.appendChild(buildTajweedFragment(ayah.arabic, ayah.tajweedRules));
    } else {
       arabicEl.textContent = ayah.arabic;

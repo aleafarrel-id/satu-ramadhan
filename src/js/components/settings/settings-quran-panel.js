@@ -7,10 +7,10 @@
 import { QURAN_LANGUAGES, DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as Notif from '../../modules/notification/notification.js';
-
-/* --- STORAGE KEYS --- */
-const KEY_TAJWEED = 'satu_ramadhan_tajweed';
-const KEY_LANG = 'satu_ramadhan_quran_lang';
+import {
+   getTajweedEnabled, setTajweedEnabled,
+   getTranslationLanguage, setTranslationLanguage
+} from '../../modules/quran/quran-settings.js';
 
 /**
  * Builds the custom dropdown options HTML.
@@ -23,10 +23,9 @@ function _buildCustomOptions(selectedCode) {
 }
 
 export function render(container) {
-   const savedTajweed = localStorage.getItem(KEY_TAJWEED);
-   const tajweedChecked = savedTajweed !== null ? savedTajweed === 'true' : true;
+   const tajweedChecked = getTajweedEnabled();
+   const savedLang = getTranslationLanguage();
 
-   const savedLang = localStorage.getItem(KEY_LANG) || DEFAULT_LANGUAGE;
    const savedLangLabel = QURAN_LANGUAGES.find(l => l.code === savedLang)?.label || savedLang;
 
    container.innerHTML = `
@@ -69,7 +68,7 @@ export function render(container) {
    tajweedToggle?.addEventListener('change', async (e) => {
       const enabled = e.target.checked;
       await impact('medium');
-      localStorage.setItem(KEY_TAJWEED, enabled);
+      setTajweedEnabled(enabled);
       Notif.show(
          enabled ? 'Tajweed diaktifkan' : 'Tajweed dimatikan',
          enabled ? 'success' : 'info'
@@ -113,8 +112,8 @@ export function render(container) {
 
             // Save & Notify
             await impact('light');
-            localStorage.setItem(KEY_LANG, value);
-            Notif.show(`Terjemahan: ${label}`, 'success');
+            setTranslationLanguage(value);
+            Notif.show(`Al-Qur'an Terjemahan: ${label}`, 'success');
          });
       });
 

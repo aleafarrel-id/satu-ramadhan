@@ -3,6 +3,8 @@
  * Handles data fetching and caching for all Quran-related features.
  */
 
+import { getTajweedEnabled, getTranslationLanguage } from './quran-settings.js';
+
 const MAX_CACHE_SIZE = 15;
 
 const _cache = {
@@ -87,12 +89,15 @@ export async function getSurahData(index) {
  * @returns {Promise<Object>}
  */
 export async function getTranslationData(index) {
+   const lang = getTranslationLanguage();
    const key = parseInt(index, 10);
-   const cached = _getFromCache(_cache.translations, key);
+   const cacheKey = `${lang}_${key}`;
+   
+   const cached = _getFromCache(_cache.translations, cacheKey);
    if (cached !== undefined) return cached;
 
-   const data = await _fetchJson(`/quran/translation/id/id_translation_${key}.json`, `Gagal memuat terjemahan surah ${key}`);
-   _cache.translations.set(key, data);
+   const data = await _fetchJson(`/quran/translation/${lang}/${lang}_translation_${key}.json`, `Gagal memuat terjemahan surah ${key}`);
+   _cache.translations.set(cacheKey, data);
    _enforceCacheLimit(_cache.translations);
    return data;
 }
@@ -103,6 +108,8 @@ export async function getTranslationData(index) {
  * @returns {Promise<Object|null>}
  */
 export async function getTajweedData(index) {
+   if (!getTajweedEnabled()) return null;
+
    const key = parseInt(index, 10);
    const cached = _getFromCache(_cache.tajweed, key);
    if (cached !== undefined) return cached;
