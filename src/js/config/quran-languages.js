@@ -5,8 +5,8 @@
  */
 
 export const QURAN_LANGUAGES = [
-   { code: 'id', label: 'Indonesia' },
-   { code: 'en', label: 'English' },
+   { code: 'id', label: 'Indonesia', desc: 'Bahasa Indonesia', icon: 'bx-globe' },
+   { code: 'en', label: 'English', desc: 'English Translation', icon: 'bx-globe' },
 ];
 
 export const DEFAULT_LANGUAGE = 'id';

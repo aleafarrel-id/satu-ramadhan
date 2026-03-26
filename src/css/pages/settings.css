@@ -48,6 +48,7 @@
    transition: background var(--transition-fast);
    min-height: 60px;
    cursor: pointer;
+   border-radius: var(--radius-md);
 }
 
 .settings-item:active {
@@ -105,7 +106,7 @@
    border-top: 1px solid var(--clr-border-light);
    border-bottom: 1px solid var(--clr-border-light);
    border-radius: var(--radius-lg);
-   padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+   padding: 0;
    margin-bottom: var(--spacing-lg);
    box-shadow: none;
 }
@@ -117,6 +118,20 @@
    align-items: flex-start;
    gap: var(--spacing-sm);
    cursor: pointer;
+   border-radius: var(--radius-lg);
+   padding: var(--spacing-md) var(--spacing-lg);
+   transition: background var(--transition-fast);
+}
+
+.settings-loc-header:active,
+.settings-preset-header:active {
+   background: var(--clr-white-a05);
+}
+
+.settings-loc-card.expanded .settings-loc-header,
+.settings-preset-card.expanded .settings-preset-header {
+   border-bottom-left-radius: 0;
+   border-bottom-right-radius: 0;
 }
 
 .settings-loc-title,
@@ -209,12 +224,17 @@
 .settings-card-collapse {
    display: grid;
    grid-template-rows: 0fr;
-   transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   visibility: hidden;
+   opacity: 0;
+   transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0s 0.3s;
 }
 
 .settings-loc-card.expanded .settings-card-collapse,
 .settings-preset-card.expanded .settings-card-collapse {
    grid-template-rows: 1fr;
+   visibility: visible;
+   opacity: 1;
+   transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0s 0s;
 }
 
 .settings-card-collapse-inner {
@@ -240,6 +260,7 @@
    font-size: var(--fs-xs);
    color: var(--clr-text-secondary);
    line-height: var(--lh-normal);
+   padding: 0 var(--spacing-lg);
    margin-top: var(--spacing-sm);
    margin-bottom: var(--spacing-lg);
 }
@@ -249,6 +270,7 @@
    display: flex;
    flex-direction: column;
    gap: var(--spacing-md);
+   padding: 0 var(--spacing-lg) var(--spacing-lg);
 }
 
 .settings-loc-actions .btn,
@@ -321,86 +343,27 @@
 }
 
 /* =============================================
-   Custom Dropdown Select
+   Settings Select Trigger (Modal Button)
    ============================================= */
 
-.custom-select {
-   position: relative;
-   min-width: 120px;
-   font-family: var(--font-primary);
-   font-size: var(--fs-xs);
-   font-weight: var(--fw-medium);
-}
-
-.custom-select-trigger {
+.settings-select-trigger {
    display: flex;
    align-items: center;
-   justify-content: space-between;
-   background-color: var(--clr-bg-dark);
-   color: var(--clr-text-secondary);
-   padding: var(--spacing-xs) var(--spacing-sm);
-   border: 1px solid var(--clr-border-light);
-   border-radius: var(--radius-sm);
+   justify-content: flex-end;
+   background-color: transparent;
+   color: var(--clr-accent-400);
+   padding: var(--spacing-xs) 0;
+   border: none;
    cursor: pointer;
-   transition: border-color var(--transition-fast);
-}
-
-.custom-select.open .custom-select-trigger {
-   border-color: var(--clr-primary-400);
-}
-
-.custom-select-trigger span {
-   margin-right: var(--spacing-sm);
-}
-
-.custom-select-trigger i {
-   font-size: 14px;
-   transition: transform var(--transition-fast);
-}
-
-.custom-select.open .custom-select-trigger i {
-   transform: rotate(180deg);
-}
-
-.custom-options {
-   position: absolute;
-   top: calc(100% + 4px);
-   right: 0;
-   min-width: 100%;
-   background: var(--clr-bg-dark);
-   border: 1px solid var(--clr-border-light);
-   border-radius: var(--radius-sm);
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-   opacity: 0;
-   visibility: hidden;
-   transform: translateY(-5px);
-   transition: all var(--transition-fast) ease;
-   z-index: 100;
-   overflow: hidden;
-}
-
-.custom-select.open .custom-options {
-   opacity: 1;
-   visibility: visible;
-   transform: translateY(0);
-}
-
-.custom-option {
-   padding: var(--spacing-xs) var(--spacing-sm);
-   color: var(--clr-text-secondary);
-   cursor: pointer;
-   transition: background var(--transition-fast), color var(--transition-fast);
-   white-space: nowrap;
-}
-
-.custom-option:hover {
-   background: var(--clr-white-a05);
-}
-
-.custom-option.selected {
-   color: var(--clr-primary-400);
-   background: var(--clr-white-a05);
+   transition: opacity var(--transition-fast), transform var(--transition-fast);
+   font-family: var(--font-primary);
+   font-size: var(--fs-sm);
    font-weight: var(--fw-medium);
+}
+
+.settings-select-trigger:active {
+   transform: scale(0.97);
+   opacity: 0.7;
 }
 
 /* =============================================
@@ -435,7 +398,7 @@
       font-size: var(--fs-2xs);
    }
 
-   .custom-select {
-      font-size: var(--fs-2xs);
+   .settings-select-trigger {
+      font-size: var(--fs-xs);
    }
 }

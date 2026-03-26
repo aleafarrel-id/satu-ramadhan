@@ -2,6 +2,7 @@
 import '../../css/pages/settings.css';
 import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
+import '../../css/components/modal/language-selector-modal.css';
 
 import { CONFIG } from '../config/version-config.js';
 

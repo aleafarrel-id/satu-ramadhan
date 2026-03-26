@@ -1,0 +1,106 @@
+/* 
+  Language Selector Modal Styles 
+  Reuses base styles from confirm-modal.css for overlay and base dialog behavior,
+  adding specific styling for the language list.
+*/
+
+.language-selector-dialog {
+    padding: 1.5rem;
+    max-width: 320px;
+    width: 90%;
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-color);
+}
+
+.lang-options-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem -1.5rem;
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 1.5rem;
+    margin: 0;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    position: relative;
+}
+
+.lang-option::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1.5rem;
+    right: 1.5rem;
+    height: 1px;
+    background-color: var(--clr-border-light);
+}
+
+.lang-option:active {
+    background: var(--clr-white-a05);
+}
+
+.lang-option:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--clr-accent-500);
+    border-bottom-color: transparent;
+}
+
+.lang-option.selected {
+    background-color: transparent;
+}
+
+.lang-icon {
+    color: var(--clr-info);
+    font-size: var(--icon-lg);
+    flex-shrink: 0;
+}
+
+.lang-option.selected .lang-icon {
+    color: var(--clr-accent-500);
+}
+
+.lang-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lang-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-primary);
+    line-height: var(--lh-snug);
+}
+
+.lang-desc {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    margin-top: 2px;
+}
+
+.lang-check {
+    display: none;
+    color: var(--clr-accent-500);
+    font-size: var(--icon-md);
+    margin-left: auto;
+}
+
+.lang-option.selected .lang-check {
+    display: block;
+}
+
+/* W-100 utility for cancel button */
+.w-100 {
+    width: 100%;
+}

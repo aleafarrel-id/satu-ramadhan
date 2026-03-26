@@ -9,6 +9,7 @@
 
 import { getActivePreset } from '../../modules/schedule/ramadhan.js';
 import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
+import { makeAccessibleBtn } from '../../utils/a11y.js';
 
 /* ── State ── */
 let _container = null;
@@ -96,9 +97,12 @@ async function renderCardContent() {
         </div>
     `;
 
-    _container.querySelector('#settings-preset-header')?.addEventListener('click', () => {
-        _container.querySelector('.settings-preset-card')?.classList.toggle('expanded');
-    });
+    const header = _container.querySelector('#settings-preset-header');
+    if (header) {
+        makeAccessibleBtn(header, () => {
+            _container.querySelector('.settings-preset-card')?.classList.toggle('expanded');
+        });
+    }
 
     _container.querySelector('#btn-manage-presets')?.addEventListener('click', () => {
         showPresetManagerModal({

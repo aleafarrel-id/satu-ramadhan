@@ -8,6 +8,7 @@ import { getSavedLocation } from '../../core/geolocation.js';
 import { showLocationSearchModal } from '../modal/location-search-modal.js';
 
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
+import { makeAccessibleBtn } from '../../utils/a11y.js';
 
 export async function render(container) {
     const savedLocation = await getSavedLocation();
@@ -52,10 +53,12 @@ export async function render(container) {
     `;
 
     const header = container.querySelector('#settings-loc-header');
-    header?.addEventListener('click', () => {
-        const card = container.querySelector('.settings-loc-card');
-        card?.classList.toggle('expanded');
-    });
+    if (header) {
+        makeAccessibleBtn(header, () => {
+            const card = container.querySelector('.settings-loc-card');
+            card?.classList.toggle('expanded');
+        });
+    }
 
     const btnGps = container.querySelector('#btn-settings-gps');
     const btnManual = container.querySelector('#btn-settings-manual');
