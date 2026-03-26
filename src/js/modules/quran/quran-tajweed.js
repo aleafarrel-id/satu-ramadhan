@@ -1,9 +1,10 @@
 /**
  * Tajweed Module
- * Handles data fetching, caching, and DOM fragment building for colored markup.
+ * Handles data fetching, caching, and colored markup building for both
+ * DOM-based (regular reader) and string-based (mushaf) rendering paths.
  */
 
-/* Rule Definitions */
+/* ─── Rule Definitions ─── */
 
 /**
  * Maps rule keys to CSS classes and labels.
@@ -91,7 +92,7 @@ const TAJWEED_RULES = {
    }
 };
 
-/* Combining Mark Detection */
+/* ─── Combining Mark Detection ─── */
 
 /**
  * Checks if a code point is a combining mark.
@@ -111,11 +112,99 @@ function _isCombiningMark(code) {
    );
 }
 
+/* ─── Shared Slot Builder ─── */
+
+/**
+ * Builds the slot array mapping each character index to a rule key or null.
+ * Applies rules (first-write wins), then propagates rules to trailing
+ * combining marks to keep glyph shaping intact.
+ *
+ * @param {string} text - The Arabic text
+ * @param {Array}  rules - Array of {start, end, rule}
+ * @returns {Array<string|null>} Slot array
+ */
+function _buildSlots(text, rules) {
+   const len = text.length;
+   const slots = new Array(len).fill(null);
+
+   // Apply rules — first-write wins
+   for (let i = 0; i < rules.length; i++) {
+      const safeStart = Math.max(0, rules[i].start);
+      const safeEnd = Math.min(len, rules[i].end);
+      if (safeStart >= safeEnd) continue;
+
+      for (let j = safeStart; j < safeEnd; j++) {
+         if (slots[j] === null) slots[j] = rules[i].rule;
+      }
+   }
+
+   // Propagate base-letter rules to trailing combining marks
+   for (let i = 0; i < len; i++) {
+      if (slots[i] !== null && !_isCombiningMark(text.charCodeAt(i))) {
+         let j = i + 1;
+         while (j < len && _isCombiningMark(text.charCodeAt(j))) {
+            if (slots[j] === null) slots[j] = slots[i];
+            j++;
+         }
+      }
+   }
+
+   return slots;
+}
+
+/* ─── HTML Escape (for string-based output) ─── */
+
+function _escHtml(str) {
+   return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+}
+
+/* ─── Run Iterator (shared by both output modes) ─── */
+
+/**
+ * Iterates over the slot array, grouping consecutive chars with the same
+ * rule and absorbing trailing combining marks at run boundaries.
+ * Calls `onPlain(text)` or `onRule(text, ruleKey)` for each run.
+ *
+ * @param {string}   text
+ * @param {Array}    slots
+ * @param {Function} onPlain - (runText: string) => void
+ * @param {Function} onRule  - (runText: string, ruleKey: string) => void
+ */
+function _iterateRuns(text, slots, onPlain, onRule) {
+   const len = text.length;
+   let runStart = 0;
+
+   while (runStart < len) {
+      const currentRule = slots[runStart];
+      let runEnd = runStart + 1;
+
+      while (runEnd < len && slots[runEnd] === currentRule) runEnd++;
+
+      // Absorb trailing combining marks into this run
+      while (runEnd < len && _isCombiningMark(text.charCodeAt(runEnd))) runEnd++;
+
+      const runText = text.slice(runStart, runEnd);
+
+      if (currentRule === null) {
+         onPlain(runText);
+      } else {
+         onRule(runText, currentRule);
+      }
+
+      runStart = runEnd;
+   }
+}
+
+/* ─── DOM-based Output (for Regular Reader) ─── */
 
 /**
  * Builds a DocumentFragment with colored tajweed spans.
  * @param {string} arabicText
- * @param {Array} verseRules
+ * @param {Array}  verseRules
  * @returns {DocumentFragment}
  */
 export function buildTajweedFragment(arabicText, verseRules) {
@@ -126,90 +215,146 @@ export function buildTajweedFragment(arabicText, verseRules) {
       return fragment;
    }
 
-   const len = arabicText.length;
+   const slots = _buildSlots(arabicText, verseRules);
 
-   // Step 1: Build slot array — each index maps to a rule key or null
-   const slots = new Array(len).fill(null);
-
-   for (let i = 0; i < verseRules.length; i++) {
-      const { start, end, rule } = verseRules[i];
-
-      // Validate bounds
-      const safeStart = Math.max(0, start);
-      const safeEnd = Math.min(len, end);
-
-      if (safeStart >= safeEnd) continue;
-
-      // First-write wins — don't overwrite existing rules
-      for (let j = safeStart; j < safeEnd; j++) {
-         if (slots[j] === null) {
-            slots[j] = rule;
-         }
-      }
-   }
-
-   // Step 2: Combining-mark propagation post-pass
-   // If a base letter has a tajweed rule but its trailing combining marks don't,
-   // propagate the base letter's rule to those marks. This prevents the scenario
-   // where a base letter ends up in a colored <span> but its harakat falls into
-   // an adjacent plain text node, breaking the visual connection.
-   for (let i = 0; i < len; i++) {
-      if (slots[i] !== null && !_isCombiningMark(arabicText.charCodeAt(i))) {
-         // This is a base letter with a rule — propagate to trailing combining marks
-         let j = i + 1;
-         while (j < len && _isCombiningMark(arabicText.charCodeAt(j))) {
-            if (slots[j] === null) {
-               slots[j] = slots[i];
-            }
-            j++;
-         }
-      }
-   }
-
-   // Step 3: Linear scan — group consecutive chars with same rule,
-   //         absorbing trailing combining marks at run boundaries.
-   let runStart = 0;
-
-   while (runStart < len) {
-      const currentRule = slots[runStart];
-      let runEnd = runStart + 1;
-
-      // Extend run while same rule
-      while (runEnd < len && slots[runEnd] === currentRule) {
-         runEnd++;
-      }
-
-      // Absorb any trailing combining marks into this run.
-      // Even after the post-pass, there may be edge cases (e.g. overlapping rules)
-      // where a combining mark at the boundary has a different rule. We must keep
-      // it with the preceding base letter to preserve correct glyph shaping.
-      while (runEnd < len && _isCombiningMark(arabicText.charCodeAt(runEnd))) {
-         runEnd++;
-      }
-
-      const runText = arabicText.slice(runStart, runEnd);
-
-      if (currentRule === null) {
-         // Plain text — no tajweed rule
+   _iterateRuns(arabicText, slots,
+      (runText) => {
          fragment.appendChild(document.createTextNode(runText));
-      } else {
-         // Tajweed span
-         const ruleInfo = TAJWEED_RULES[currentRule];
-
+      },
+      (runText, ruleKey) => {
+         const ruleInfo = TAJWEED_RULES[ruleKey];
          const span = document.createElement('span');
          span.className = `tj ${ruleInfo ? ruleInfo.cssClass : 'tj-unknown'}`;
-         span.setAttribute('data-rule', currentRule);
-         span.setAttribute('data-label', ruleInfo ? ruleInfo.label : currentRule);
+         span.setAttribute('data-rule', ruleKey);
+         span.setAttribute('data-label', ruleInfo ? ruleInfo.label : ruleKey);
          span.textContent = runText;
-
          fragment.appendChild(span);
       }
-
-      runStart = runEnd;
-   }
+   );
 
    return fragment;
 }
+
+/* ─── String-based Output (for Mushaf) ─── */
+
+/**
+ * Builds an HTML string with colored tajweed spans.
+ * Functionally identical to buildTajweedFragment but outputs a string
+ * suitable for innerHTML/string concatenation in the Mushaf pipeline.
+ *
+ * @param {string} arabicText
+ * @param {Array}  rules - Array of {start, end, rule}
+ * @returns {string} HTML string
+ */
+export function buildTajweedHTML(arabicText, rules) {
+   if (!arabicText || !rules || rules.length === 0) {
+      return _escHtml(arabicText || '');
+   }
+
+   const slots = _buildSlots(arabicText, rules);
+   let html = '';
+
+   _iterateRuns(arabicText, slots,
+      (runText) => {
+         html += _escHtml(runText);
+      },
+      (runText, ruleKey) => {
+         const ruleInfo = TAJWEED_RULES[ruleKey];
+         const cssClass = ruleInfo ? ruleInfo.cssClass : 'tj-unknown';
+         const label = ruleInfo ? ruleInfo.label : ruleKey;
+         html += `<span class="tj ${cssClass}" data-rule="${ruleKey}" data-label="${_escHtml(label)}">${_escHtml(runText)}</span>`;
+      }
+   );
+
+   return html;
+}
+
+/* ─── Mushaf Offset Alignment ─── */
+
+/**
+ * Characters that exist in Mushaf (Ottoman) text but not in the regular
+ * Surah text used to calibrate tajweed offsets.
+ * - U+0640 Tatweel / Kashida (used for line justification)
+ */
+const TATWEEL = 0x0640;
+
+/**
+ * Arabic-Indic digits used as inline verse-end markers in Mushaf text.
+ * These are NOT present in the regular surah text.
+ */
+function _isVerseEndDigit(code) {
+   return code >= 0x0660 && code <= 0x0669;
+}
+
+/**
+ * Checks if a character is an "extra" Mushaf-only character that does not
+ * exist in the regular surah text.
+ * @param {number} code
+ * @returns {boolean}
+ */
+function _isMushafExtra(code) {
+   return code === TATWEEL || _isVerseEndDigit(code);
+}
+
+/**
+ * Aligns tajweed rules (calibrated for regular surah text) to the Mushaf
+ * text of a single word. The Mushaf text may contain Tatweel (U+0640) and
+ * verse-end digits that shift character indices.
+ *
+ * Algorithm:
+ * 1. Build a mapping: for each char in the Mushaf word, if it's NOT an
+ *    extra char, record its original index. This gives us a "virtual index"
+ *    to "real index" mapping.
+ * 2. Walk the tajweed rules for this word and translate start/end offsets
+ *    from virtual (surah) space to real (mushaf) space.
+ *
+ * @param {string} mushafWord  - The word as it appears in the Mushaf page JSON
+ * @param {Array}  rules       - Tajweed rules with offsets relative to regular surah verse text
+ * @param {number} verseOffset - Char offset of this word's start within the full verse text
+ * @param {number} lineOffset  - Char offset of this word's start within the full line text
+ * @returns {Array} New rules with start/end mapped to line-text indices
+ */
+export function alignRulesToMushafText(mushafWord, rules, verseOffset, lineOffset) {
+   if (!rules || rules.length === 0) return [];
+
+   // Build virtual-to-real index map for this word
+   // virtualIdx[i] = the real (mushaf string) index of the i-th non-extra char
+   const virtualIdx = [];
+   for (let i = 0; i < mushafWord.length; i++) {
+      if (!_isMushafExtra(mushafWord.charCodeAt(i))) {
+         virtualIdx.push(i);
+      }
+   }
+
+   const wordEndInVerse = verseOffset + virtualIdx.length;
+   const aligned = [];
+
+   for (const rule of rules) {
+      // Does this rule overlap with this word's virtual range?
+      const rStart = rule.start;
+      const rEnd = rule.end;
+
+      if (rEnd <= verseOffset || rStart >= wordEndInVerse) continue;
+
+      // Clamp to this word's range
+      const clampedStart = Math.max(rStart, verseOffset) - verseOffset;
+      const clampedEnd = Math.min(rEnd, wordEndInVerse) - verseOffset;
+
+      if (clampedStart >= clampedEnd || clampedStart >= virtualIdx.length) continue;
+
+      // Map from virtual to real mushaf indices, then shift by lineOffset
+      const realStart = lineOffset + virtualIdx[clampedStart];
+      const realEnd = lineOffset + (clampedEnd < virtualIdx.length
+         ? virtualIdx[clampedEnd]
+         : mushafWord.length);
+
+      aligned.push({ start: realStart, end: realEnd, rule: rule.rule });
+   }
+
+   return aligned;
+}
+
+/* ─── Verse Rule Lookup ─── */
 
 /**
  * Extracts rules for a specific verse.
@@ -225,4 +370,3 @@ export function getVerseRules(tajweedData, verseKey) {
 
    return rules;
 }
-

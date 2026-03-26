@@ -531,6 +531,31 @@ async function _fetchPageRange(start, end) {
    return Promise.all(promises);
 }
 
+/**
+ * Fetches tajweed data for all surahs present in the given pages.
+ * Returns a map: surahNum → tajweedData (or null if unavailable).
+ * @param {Array} pages - Array of page data objects
+ * @returns {Promise<Object>} tajweedMap
+ */
+async function _fetchTajweedForPages(pages) {
+   const surahSet = new Set();
+   for (const page of pages) {
+      const surahs = MushafApi.getSurahsInPage(page);
+      for (const s of surahs) surahSet.add(s);
+   }
+
+   const surahNums = [...surahSet];
+   const tajweedResults = await Promise.all(
+      surahNums.map(s => MushafApi.getTajweed(s))
+   );
+
+   const tajweedMap = {};
+   for (let i = 0; i < surahNums.length; i++) {
+      if (tajweedResults[i]) tajweedMap[surahNums[i]] = tajweedResults[i];
+   }
+   return tajweedMap;
+}
+
 async function _buildAndMountPageFlip(targetPage) {
    const myGeneration = _buildGeneration;
 
@@ -538,9 +563,16 @@ async function _buildAndMountPageFlip(targetPage) {
 
    if (myGeneration !== _buildGeneration || !_isOpen || !_bookContainer) return;
 
+   // Fetch tajweed data in parallel (non-blocking if disabled)
+   const tajweedMap = await _fetchTajweedForPages(pages);
+
+   if (myGeneration !== _buildGeneration || !_isOpen || !_bookContainer) return;
+
+   const hasTajweed = Object.keys(tajweedMap).length > 0 ? tajweedMap : null;
+
    let html = '';
    for (let i = pages.length - 1; i >= 0; i--) {
-      html += MushafUI.buildPageHTML(pages[i]);
+      html += MushafUI.buildPageHTML(pages[i], hasTajweed);
       html += MushafUI.buildEmptyPageHTML();
    }
    _bookContainer.innerHTML = html;
@@ -592,11 +624,16 @@ async function _checkAndExpand(flipIndex) {
 
       if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
 
+      const tajweedMap = await _fetchTajweedForPages(pages);
+      const hasTajweed = Object.keys(tajweedMap).length > 0 ? tajweedMap : null;
+
+      if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
+
       const addedPairs = newEnd - _windowEnd;
 
       let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
-         html += MushafUI.buildPageHTML(pages[i]);
+         html += MushafUI.buildPageHTML(pages[i], hasTajweed);
          html += MushafUI.buildEmptyPageHTML();
       }
       _bookContainer.insertAdjacentHTML('afterbegin', html);
@@ -618,9 +655,14 @@ async function _checkAndExpand(flipIndex) {
 
       if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
 
+      const tajweedMap = await _fetchTajweedForPages(pages);
+      const hasTajweed = Object.keys(tajweedMap).length > 0 ? tajweedMap : null;
+
+      if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
+
       let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
-         html += MushafUI.buildPageHTML(pages[i]);
+         html += MushafUI.buildPageHTML(pages[i], hasTajweed);
          html += MushafUI.buildEmptyPageHTML();
       }
       _bookContainer.insertAdjacentHTML('beforeend', html);
