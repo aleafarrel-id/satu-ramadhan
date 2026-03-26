@@ -1,16 +1,16 @@
-﻿{
-    "name":  "At-Takatsur",
-    "index":  "102",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "Abundance distracts you.",
-                  "verse_2":  "Until you visit the graveyards.",
-                  "verse_3":  "Indeed, you will know.",
-                  "verse_4":  "Certainly, you will know.",
-                  "verse_5":  "If you knew with knowledge of certainty.",
-                  "verse_6":  "You would see the Inferno.",
-                  "verse_7":  "Then you will see it with the eye of certainty.",
-                  "verse_8":  "Then, on that Day, you will be questioned about the Bliss."
-              },
-    "count":  8
+{
+    "name": "At-Takaathur",
+    "index": "102",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "Competition in [worldly] increase diverts you",
+        "verse_2": "Until you visit the graveyards.",
+        "verse_3": "No! You are going to know.",
+        "verse_4": "Then no! You are going to know.",
+        "verse_5": "No! If you only knew with knowledge of certainty...",
+        "verse_6": "You will surely see the Hellfire.",
+        "verse_7": "Then you will surely see it with the eye of certainty.",
+        "verse_8": "Then you will surely be asked that Day about pleasure."
+    },
+    "count": 8
 }

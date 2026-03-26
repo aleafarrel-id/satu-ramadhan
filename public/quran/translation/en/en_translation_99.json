@@ -1,16 +1,16 @@
-﻿{
-    "name":  "Az-Zalzalah",
-    "index":  "099",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "When the earth is shaken with its quake.",
-                  "verse_2":  "And the earth brings out its loads.",
-                  "verse_3":  "And man says, \"What is the matter with it?\"",
-                  "verse_4":  "On that Day, it will tell its tales.",
-                  "verse_5":  "For your Lord will have inspired it.",
-                  "verse_6":  "On that Day, the people will emerge in droves, to be shown their works.",
-                  "verse_7":  "Whoever has done an atom\u0027s weight of good will see it.",
-                  "verse_8":  "And whoever has done an atom\u0027s weight of evil will see it."
-              },
-    "count":  8
+{
+    "name": "Az-Zalzala",
+    "index": "099",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "When the earth is shaken with its [final] earthquake",
+        "verse_2": "And the earth discharges its burdens",
+        "verse_3": "And man says, \"What is [wrong] with it?\" -",
+        "verse_4": "That Day, it will report its news",
+        "verse_5": "Because your Lord has commanded it.",
+        "verse_6": "That Day, the people will depart separated [into categories] to be shown [the result of] their deeds.",
+        "verse_7": "So whoever does an atom's weight of good will see it,",
+        "verse_8": "And whoever does an atom's weight of evil will see it."
+    },
+    "count": 8
 }

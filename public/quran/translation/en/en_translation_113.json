@@ -1,13 +1,13 @@
-﻿{
-    "name":  "Al-Falaq",
-    "index":  "113",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "Say, \"I take refuge with the Lord of Daybreak.",
-                  "verse_2":  "From the evil of what He created.",
-                  "verse_3":  "And from the evil of the darkness as it gathers.",
-                  "verse_4":  "And from the evil of those who practice sorcery.",
-                  "verse_5":  "And from the evil of an envious when he envies.\""
-              },
-    "count":  5
+{
+    "name": "Al-Falaq",
+    "index": "113",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "Say, \"I seek refuge in the Lord of daybreak",
+        "verse_2": "From the evil of that which He created",
+        "verse_3": "And from the evil of darkness when it settles",
+        "verse_4": "And from the evil of the blowers in knots",
+        "verse_5": "And from the evil of an envier when he envies.\""
+    },
+    "count": 5
 }

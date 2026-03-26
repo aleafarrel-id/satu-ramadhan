@@ -1,11 +1,11 @@
-﻿{
-    "name":  "Al-\u0027Ashr",
-    "index":  "103",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "By time.",
-                  "verse_2":  "The human being is in loss.",
-                  "verse_3":  "Except those who believe, and do good works, and encourage truth, and recommend patience."
-              },
-    "count":  3
+{
+    "name": "Al-Asr",
+    "index": "103",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "By time,",
+        "verse_2": "Indeed, mankind is in loss,",
+        "verse_3": "Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience."
+    },
+    "count": 3
 }

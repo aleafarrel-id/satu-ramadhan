@@ -1,20 +1,20 @@
-﻿{
-    "name":  "Ath-Thalaq",
-    "index":  "065",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "O Prophet! If any of you divorce women, divorce them during their period of purity, and calculate their term. And be pious before God, your Lord. And do not evict them from their homes, nor shall they leave, unless they have committed a proven adultery. These are the limits of God-whoever oversteps God\u0027s limits has wronged his own soul. You never know; God may afterwards bring about a new situation.",
-                  "verse_2":  "Once they have reached their term, either retain them honorably, or separate from them honorably. And call to witness two just people from among you, and give upright testimony for God. By that is exhorted whoever believes in God and the Last Day. And whoever fears God-He will make a way out for him.",
-                  "verse_3":  "And will provide for him from where he never expected. Whoever relies on God-He will suffice him. God will accomplish His purpose. God has set a measure to all things.",
-                  "verse_4":  "As for those of your women who have reached menopause, if you have any doubts, their term shall be three months-and also for those who have not yet menstruated. As for those who are pregnant, their term shall be until they have delivered. Whoever fears God-He will make things easy for him.",
-                  "verse_5":  "This is the ordinance of God, which He sent down to you. Whoever fears God-He will remit his sins, and will amplify his reward.",
-                  "verse_6":  "Allow them to reside where you reside, according to your means, and do not harass them in order to make things difficult for them. If they are pregnant, spend on them until they give birth. And if they nurse your infant, give them their payment. And conduct your relation in amity. But if you disagree, then let another woman nurse him.",
-                  "verse_7":  "The wealthy shall spend according to his means; and he whose resources are restricted shall spend according to what God has given him. God never burdens a soul beyond what He has given it. God will bring ease after hardship.",
-                  "verse_8":  "How many a town defied the command of its Lord and His messengers? So We held it strictly accountable, and We punished it with a dreadful punishment.",
-                  "verse_9":  "It tasted the result of its decisions, and the outcome of its decisions was perdition.",
-                  "verse_10":  "God has prepared for them a severe retribution. So beware of God, O you who possess intellect and have faith. God has sent down to you a Reminder.",
-                  "verse_11":  "A messenger who recites to you God\u0027s Verses, clear and distinct, that he may bring those who believe and work righteousness from darkness into light. Whoever believes in God and acts with integrity, He will admit him into gardens beneath which rivers flow, therein to abide forever. God has given him an excellent provision.",
-                  "verse_12":  "God is He Who created seven heavens, and their like of earth. The command descends through them, so that you may know that God is Capable of everything, and that God Encompasses everything in knowledge."
-              },
-    "count":  12
+{
+    "name": "At-Talaaq",
+    "index": "065",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "O Prophet, when you [Muslims] divorce women, divorce them for [the commencement of] their waiting period and keep count of the waiting period, and fear Allah, your Lord. Do not turn them out of their [husbands'] houses, nor should they [themselves] leave [during that period] unless they are committing a clear immorality. And those are the limits [set by] Allah. And whoever transgresses the limits of Allah has certainly wronged himself. You know not; perhaps Allah will bring about after that a [different] matter.",
+        "verse_2": "And when they have [nearly] fulfilled their term, either retain them according to acceptable terms or part with them according to acceptable terms. And bring to witness two just men from among you and establish the testimony for [the acceptance of] Allah. That is instructed to whoever should believe in Allah and the Last day. And whoever fears Allah - He will make for him a way out",
+        "verse_3": "And will provide for him from where he does not expect. And whoever relies upon Allah - then He is sufficient for him. Indeed, Allah will accomplish His purpose. Allah has already set for everything a [decreed] extent.",
+        "verse_4": "And those who no longer expect menstruation among your women - if you doubt, then their period is three months, and [also for] those who have not menstruated. And for those who are pregnant, their term is until they give birth. And whoever fears Allah - He will make for him of his matter ease.",
+        "verse_5": "That is the command of Allah, which He has sent down to you; and whoever fears Allah - He will remove for him his misdeeds and make great for him his reward.",
+        "verse_6": "Lodge them [in a section] of where you dwell out of your means and do not harm them in order to oppress them. And if they should be pregnant, then spend on them until they give birth. And if they breastfeed for you, then give them their payment and confer among yourselves in the acceptable way; but if you are in discord, then there may breastfeed for the father another woman.",
+        "verse_7": "Let a man of wealth spend from his wealth, and he whose provision is restricted - let him spend from what Allah has given him. Allah does not charge a soul except [according to] what He has given it. Allah will bring about, after hardship, ease.",
+        "verse_8": "And how many a city was insolent toward the command of its Lord and His messengers, so We took it to severe account and punished it with a terrible punishment.",
+        "verse_9": "And it tasted the bad consequence of its affair, and the outcome of its affair was loss.",
+        "verse_10": "Allah has prepared for them a severe punishment; so fear Allah, O you of understanding who have believed. Allah has sent down to you the Qur'an.",
+        "verse_11": "[He sent] a Messenger [Muhammad] reciting to you the distinct verses of Allah that He may bring out those who believe and do righteous deeds from darknesses into the light. And whoever believes in Allah and does righteousness - He will admit him into gardens beneath which rivers flow to abide therein forever. Allah will have perfected for him a provision.",
+        "verse_12": "It is Allah who has created seven heavens and of the earth, the like of them. [His] command descends among them so you may know that Allah is over all things competent and that Allah has encompassed all things in knowledge."
+    },
+    "count": 12
 }

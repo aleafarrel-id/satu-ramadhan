@@ -1,13 +1,13 @@
-﻿{
-    "name":  "Al-Fil",
-    "index":  "105",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "Have you not considered how your Lord dealt with the People of the Elephant?",
-                  "verse_2":  "Did He not make their plan go wrong?",
-                  "verse_3":  "He sent against them swarms of birds.",
-                  "verse_4":  "Throwing at them rocks of baked clay.",
-                  "verse_5":  "Leaving them like chewed-up leaves."
-              },
-    "count":  5
+{
+    "name": "Al-Fil",
+    "index": "105",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "Have you not considered, [O Muhammad], how your Lord dealt with the companions of the elephant?",
+        "verse_2": "Did He not make their plan into misguidance?",
+        "verse_3": "And He sent against them birds in flocks,",
+        "verse_4": "Striking them with stones of hard clay,",
+        "verse_5": "And He made them like eaten straw."
+    },
+    "count": 5
 }

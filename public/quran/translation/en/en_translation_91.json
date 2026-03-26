@@ -1,23 +1,23 @@
-﻿{
-    "name":  "Asy-Syams",
-    "index":  "091",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "By the sun and its radiance.",
-                  "verse_2":  "And the moon as it follows it.",
-                  "verse_3":  "And the day as it reveals it.",
-                  "verse_4":  "And the night as it conceals it.",
-                  "verse_5":  "And the sky and He who built it.",
-                  "verse_6":  "And the earth and He who spread it.",
-                  "verse_7":  "And the soul and He who proportioned it.",
-                  "verse_8":  "And inspired it with its wickedness and its righteousness.",
-                  "verse_9":  "Successful is he who purifies it.",
-                  "verse_10":  "Failing is he who corrupts it.",
-                  "verse_11":  "Thamood denied in its pride.",
-                  "verse_12":  "When it followed its most wicked.",
-                  "verse_13":  "The messenger of God said to them, \"This is the she-camel of God, so let her drink.\"",
-                  "verse_14":  "But they called him a liar, and hamstrung her. So their Lord crushed them for their sin, and leveled it.",
-                  "verse_15":  "And He does not fear its sequel."
-              },
-    "count":  15
+{
+    "name": "Ash-Shams",
+    "index": "091",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "By the sun and its brightness",
+        "verse_2": "And [by] the moon when it follows it",
+        "verse_3": "And [by] the day when it displays it",
+        "verse_4": "And [by] the night when it covers it",
+        "verse_5": "And [by] the sky and He who constructed it",
+        "verse_6": "And [by] the earth and He who spread it",
+        "verse_7": "And [by] the soul and He who proportioned it",
+        "verse_8": "And inspired it [with discernment of] its wickedness and its righteousness,",
+        "verse_9": "He has succeeded who purifies it,",
+        "verse_10": "And he has failed who instills it [with corruption].",
+        "verse_11": "Thamud denied [their prophet] by reason of their transgression,",
+        "verse_12": "When the most wretched of them was sent forth.",
+        "verse_13": "And the messenger of Allah [Salih] said to them, \"[Do not harm] the she-camel of Allah or [prevent her from] her drink.\"",
+        "verse_14": "But they denied him and hamstrung her. So their Lord brought down upon them destruction for their sin and made it equal [upon all of them].",
+        "verse_15": "And He does not fear the consequence thereof."
+    },
+    "count": 15
 }

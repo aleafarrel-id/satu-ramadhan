@@ -1,19 +1,19 @@
-﻿{
-    "name":  "Al-Munafiqun",
-    "index":  "063",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "When the hypocrites come to you, they say, \"We bear witness that you are God\u0027s Messenger.\" God knows that you are His Messenger, and God bears witness that the hypocrites are liars.",
-                  "verse_2":  "They treat their oaths as a cover, and so they repel others from God\u0027s path. Evil is what they do.",
-                  "verse_3":  "That is because they believed, and then disbelieved; so their hearts were sealed, and they cannot understand.",
-                  "verse_4":  "When you see them, their appearance impresses you. And when they speak, you listen to what they say. They are like propped-up timber. They think every shout is aimed at them. They are the enemy, so beware of them. God condemns them; how deluded they are!",
-                  "verse_5":  "And when it is said to them, \"Come, the Messenger of God will ask forgiveness for you,\" they bend their heads, and you see them turning away arrogantly.",
-                  "verse_6":  "It is the same for them, whether you ask forgiveness for them, or do not ask forgiveness for them; God will not forgive them. God does not guide the sinful people.",
-                  "verse_7":  "It is they who say: \"Do not spend anything on those who side with God\u0027s Messenger, unless they have dispersed.\" To God belong the treasures of the heavens and the earth, but the hypocrites do not understand.",
-                  "verse_8":  "They say, \"If we return to the City, the more powerful therein will evict the weak.\" But power belongs to God, and His Messenger, and the believers; but the hypocrites do not know.",
-                  "verse_9":  "O you who believe! Let neither your possessions nor your children distract you from the remembrance of God. Whoever does that-these are the losers.",
-                  "verse_10":  "And give from what We have provided for you, before death approaches one of you, and he says, \"My Lord, if only You would delay me for a short while, so that I may be charitable, and be one of the righteous.\"",
-                  "verse_11":  "But God will not delay a soul when its time has come. God is Informed of what you do."
-              },
-    "count":  11
+{
+    "name": "Al-Munaafiqoon",
+    "index": "063",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "When the hypocrites come to you, [O Muhammad], they say, \"We testify that you are the Messenger of Allah.\" And Allah knows that you are His Messenger, and Allah testifies that the hypocrites are liars.",
+        "verse_2": "They have taken their oaths as a cover, so they averted [people] from the way of Allah. Indeed, it was evil that they were doing.",
+        "verse_3": "That is because they believed, and then they disbelieved; so their hearts were sealed over, and they do not understand.",
+        "verse_4": "And when you see them, their forms please you, and if they speak, you listen to their speech. [They are] as if they were pieces of wood propped up - they think that every shout is against them. They are the enemy, so beware of them. May Allah destroy them; how are they deluded?",
+        "verse_5": "And when it is said to them, \"Come, the Messenger of Allah will ask forgiveness for you,\" they turn their heads aside and you see them evading while they are arrogant.",
+        "verse_6": "It is all the same for them whether you ask forgiveness for them or do not ask forgiveness for them; never will Allah forgive them. Indeed, Allah does not guide the defiantly disobedient people.",
+        "verse_7": "They are the ones who say, \"Do not spend on those who are with the Messenger of Allah until they disband.\" And to Allah belongs the depositories of the heavens and the earth, but the hypocrites do not understand.",
+        "verse_8": "They say, \"If we return to al-Madinah, the more honored [for power] will surely expel therefrom the more humble.\" And to Allah belongs [all] honor, and to His Messenger, and to the believers, but the hypocrites do not know.",
+        "verse_9": "O you who have believed, let not your wealth and your children divert you from remembrance of Allah. And whoever does that - then those are the losers.",
+        "verse_10": "And spend [in the way of Allah] from what We have provided you before death approaches one of you and he says, \"My Lord, if only You would delay me for a brief term so I would give charity and be among the righteous.\"",
+        "verse_11": "But never will Allah delay a soul when its time has come. And Allah is Acquainted with what you do."
+    },
+    "count": 11
 }

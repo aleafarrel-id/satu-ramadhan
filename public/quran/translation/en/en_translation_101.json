@@ -1,19 +1,19 @@
-﻿{
-    "name":  "Al-Qari\u0027ah",
-    "index":  "101",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "The Shocker.",
-                  "verse_2":  "What is the Shocker?",
-                  "verse_3":  "What will explain to you what the Shocker is?",
-                  "verse_4":  "The Day when the people will be like scattered moths.",
-                  "verse_5":  "And the mountains will be like tufted wool.",
-                  "verse_6":  "As for he whose scales are heavy.",
-                  "verse_7":  "He will be in a pleasant life.",
-                  "verse_8":  "But as for he whose scales are light.",
-                  "verse_9":  "His home is the Abyss.",
-                  "verse_10":  "Do you know what it is?",
-                  "verse_11":  "A Raging Fire."
-              },
-    "count":  11
+{
+    "name": "Al-Qaari'a",
+    "index": "101",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "The Striking Calamity -",
+        "verse_2": "What is the Striking Calamity?",
+        "verse_3": "And what can make you know what is the Striking Calamity?",
+        "verse_4": "It is the Day when people will be like moths, dispersed,",
+        "verse_5": "And the mountains will be like wool, fluffed up.",
+        "verse_6": "Then as for one whose scales are heavy [with good deeds],",
+        "verse_7": "He will be in a pleasant life.",
+        "verse_8": "But as for one whose scales are light,",
+        "verse_9": "His refuge will be an abyss.",
+        "verse_10": "And what can make you know what that is?",
+        "verse_11": "It is a Fire, intensely hot."
+    },
+    "count": 11
 }

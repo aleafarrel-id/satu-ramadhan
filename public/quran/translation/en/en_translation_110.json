@@ -1,11 +1,11 @@
-﻿{
-    "name":  "An-Nashr",
-    "index":  "110",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "When there comes God\u0027s victory, and conquest.",
-                  "verse_2":  "And you see the people entering God\u0027s religion in multitudes.",
-                  "verse_3":  "Then celebrate the praise of your Lord, and seek His forgiveness. He is the Accepter of Repentance."
-              },
-    "count":  3
+{
+    "name": "An-Nasr",
+    "index": "110",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "When the victory of Allah has come and the conquest,",
+        "verse_2": "And you see the people entering into the religion of Allah in multitudes,",
+        "verse_3": "Then exalt [Him] with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance."
+    },
+    "count": 3
 }

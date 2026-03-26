@@ -1,14 +1,14 @@
-﻿{
-    "name":  "Al-Fatihah",
-    "index":  "001",
-    "verse":  {
-                  "verse_1":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_2":  "Praise be to God, Lord of the Worlds.",
-                  "verse_3":  "The Most Gracious, the Most Merciful.",
-                  "verse_4":  "Master of the Day of Judgment.",
-                  "verse_5":  "It is You we worship, and upon You we call for help.",
-                  "verse_6":  "Guide us to the straight path.",
-                  "verse_7":  "The path of those You have blessed, not of those against whom there is anger, nor of those who are misguided."
-              },
-    "count":  7
+{
+    "name": "Al-Faatiha",
+    "index": "001",
+    "verse": {
+        "verse_1": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_2": "[All] praise is [due] to Allah, Lord of the worlds -",
+        "verse_3": "The Entirely Merciful, the Especially Merciful,",
+        "verse_4": "Sovereign of the Day of Recompense.",
+        "verse_5": "It is You we worship and You we ask for help.",
+        "verse_6": "Guide us to the straight path -",
+        "verse_7": "The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray."
+    },
+    "count": 7
 }

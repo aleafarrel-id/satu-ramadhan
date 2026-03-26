@@ -1,12 +1,12 @@
-﻿{
-    "name":  "Al-Ikhlash",
-    "index":  "112",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "Say, \"He is God, the One.",
-                  "verse_2":  "God, the Absolute.",
-                  "verse_3":  "He begets not, nor was He begotten.",
-                  "verse_4":  "And there is nothing comparable to Him.\""
-              },
-    "count":  4
+{
+    "name": "Al-Ikhlaas",
+    "index": "112",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "Say, \"He is Allah, [who is] One,",
+        "verse_2": "Allah, the Eternal Refuge.",
+        "verse_3": "He neither begets nor is born,",
+        "verse_4": "Nor is there to Him any equivalent.\""
+    },
+    "count": 4
 }

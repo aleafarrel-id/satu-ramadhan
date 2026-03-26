@@ -1,13 +1,13 @@
-﻿{
-    "name":  "Al-Lahab",
-    "index":  "111",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "Condemned are the hands of Abee Lahab, and he is condemned.",
-                  "verse_2":  "His wealth did not avail him, nor did what he acquired.",
-                  "verse_3":  "He will burn in a Flaming Fire.",
-                  "verse_4":  "And his wife-the firewood carrier.",
-                  "verse_5":  "Around her neck is a rope of thorns."
-              },
-    "count":  5
+{
+    "name": "Al-Masad",
+    "index": "111",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "May the hands of Abu Lahab be ruined, and ruined is he.",
+        "verse_2": "His wealth will not avail him or that which he gained.",
+        "verse_3": "He will [enter to] burn in a Fire of [blazing] flame",
+        "verse_4": "And his wife [as well] - the carrier of firewood.",
+        "verse_5": "Around her neck is a rope of [twisted] fiber."
+    },
+    "count": 5
 }

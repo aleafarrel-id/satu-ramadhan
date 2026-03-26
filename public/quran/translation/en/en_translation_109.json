@@ -1,14 +1,14 @@
-﻿{
-    "name":  "Al-Kafirun",
-    "index":  "109",
-    "verse":  {
-                  "verse_0":  "In the name of God, the Gracious, the Merciful.",
-                  "verse_1":  "Say, \"O disbelievers.",
-                  "verse_2":  "I do not worship what you worship.",
-                  "verse_3":  "Nor do you worship what I worship.",
-                  "verse_4":  "Nor do I serve what you serve.",
-                  "verse_5":  "Nor do you serve what I serve.",
-                  "verse_6":  "You have your way, and I have my way.\""
-              },
-    "count":  6
+{
+    "name": "Al-Kaafiroon",
+    "index": "109",
+    "verse": {
+        "verse_0": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "verse_1": "Say, \"O disbelievers,",
+        "verse_2": "I do not worship what you worship.",
+        "verse_3": "Nor are you worshippers of what I worship.",
+        "verse_4": "Nor will I be a worshipper of what you worship.",
+        "verse_5": "Nor will you be worshippers of what I worship.",
+        "verse_6": "For you is your religion, and for me is my religion.\""
+    },
+    "count": 6
 }
