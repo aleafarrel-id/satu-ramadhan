@@ -35,3 +35,24 @@
 .featured-card-wrapper {
    margin-bottom: var(--spacing-md);
 }
+
+/* ── Schedule Header (with toggle) ── */
+
+.home-schedule-header {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin-top: var(--spacing-lg);
+   margin-bottom: var(--spacing-md);
+   padding-right: var(--spacing-sm);
+}
+
+.home-schedule-header .schedule-title {
+   margin-top: 0;
+   margin-bottom: 0;
+}
+
+/* ── Toggle Button Overrides (Home Page Only) ── */
+.home-schedule-header .schedule-nav__btn {
+   width: 38px;
+}

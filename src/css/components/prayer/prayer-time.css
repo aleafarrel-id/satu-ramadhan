@@ -361,6 +361,10 @@
    Responsive — Small screens (≤360px)
    ============================================= */
 @media (max-width: 360px) {
+   .schedule-title {
+      font-size: var(--fs-md);
+   }
+
    .prayer-featured {
       gap: var(--spacing-sm);
    }
