@@ -49,6 +49,7 @@
    min-height: 60px;
    cursor: pointer;
    border-radius: var(--radius-md);
+   gap: var(--spacing-md);
 }
 
 .settings-item:active {
@@ -67,6 +68,7 @@
    color: var(--clr-text-secondary);
    font-size: var(--fs-sm);
    font-weight: var(--fw-medium);
+   flex-shrink: 0;
 }
 
 .settings-item-info i {
@@ -359,6 +361,15 @@
    font-family: var(--font-primary);
    font-size: var(--fs-sm);
    font-weight: var(--fw-medium);
+   flex: 1;
+   min-width: 0;
+}
+
+.settings-select-trigger span {
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   max-width: 100%;
 }
 
 .settings-select-trigger:active {
@@ -379,6 +390,10 @@
    .settings-item-info i {
       margin-right: var(--spacing-xs);
    }
+
+   .settings-select-trigger {
+      font-size: var(--fs-xs);
+   }
 }
 
 @media (max-width: 320px) {
@@ -396,9 +411,5 @@
    .settings-preset-dates,
    .settings-preset-desc {
       font-size: var(--fs-2xs);
-   }
-
-   .settings-select-trigger {
-      font-size: var(--fs-xs);
    }
 }
