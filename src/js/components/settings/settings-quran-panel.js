@@ -48,7 +48,7 @@ export function render(container) {
          <div class="settings-item" id="quran-translation-item" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-transfer-alt'></i>
-               <span>Terjemahan Al-Qur'an</span>
+               <span>Terjemahan</span>
             </div>
             
             <div class="custom-select" id="translation-custom-select">

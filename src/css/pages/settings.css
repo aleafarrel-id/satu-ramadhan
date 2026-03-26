@@ -94,29 +94,33 @@
 }
 
 /* =============================================
-   Settings Location Card
+   Settings Cards (Location & Preset)
    ============================================= */
 
-.settings-loc-card {
+.settings-loc-card,
+.settings-preset-card {
    background: var(--clr-bg-card);
    backdrop-filter: blur(10px);
    -webkit-backdrop-filter: blur(10px);
    border-top: 1px solid var(--clr-border-light);
    border-bottom: 1px solid var(--clr-border-light);
    border-radius: var(--radius-lg);
-   padding: var(--spacing-lg);
+   padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
    margin-bottom: var(--spacing-lg);
    box-shadow: none;
 }
 
-.settings-loc-header {
+.settings-loc-header,
+.settings-preset-header {
    display: flex;
    flex-direction: column;
    align-items: flex-start;
    gap: var(--spacing-sm);
+   cursor: pointer;
 }
 
-.settings-loc-title {
+.settings-loc-title,
+.settings-preset-title {
    font-family: var(--font-primary);
    font-size: var(--fs-sm);
    font-weight: var(--fw-regular);
@@ -125,30 +129,41 @@
    margin-bottom: var(--spacing-xs);
 }
 
-.settings-loc-icon-wrapper {
+.settings-loc-icon-wrapper,
+.settings-preset-icon-wrapper {
    display: flex;
    align-items: center;
    gap: var(--spacing-sm);
+   width: 100%;
 }
 
-.settings-loc-map-icon {
+/* Icons */
+.settings-loc-map-icon,
+.settings-preset-calendar-icon {
    font-size: var(--icon-lg);
    color: var(--clr-info);
    flex-shrink: 0;
 }
 
-.settings-loc-status-wrapper {
+.settings-loc-map-icon.unset {
+   color: var(--clr-text-muted);
+}
+
+.settings-loc-status-wrapper,
+.settings-preset-status-wrapper {
    flex: 1;
    min-width: 0;
    display: flex;
    align-items: center;
 }
 
-.settings-loc-body {
+.settings-loc-body,
+.settings-preset-body {
    flex: 1;
    min-width: 0;
 }
 
+/* Specific to location */
 .settings-loc-regency {
    font-size: var(--fs-sm);
    font-weight: var(--fw-semibold);
@@ -177,20 +192,67 @@
    font-size: var(--icon-lg);
 }
 
-.settings-loc-desc {
+/* Specific to preset */
+.settings-preset-org {
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-secondary);
+}
+
+.settings-preset-dates {
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-500);
+}
+
+/* Collapsible wrapper */
+.settings-card-collapse {
+   display: grid;
+   grid-template-rows: 0fr;
+   transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-loc-card.expanded .settings-card-collapse,
+.settings-preset-card.expanded .settings-card-collapse {
+   grid-template-rows: 1fr;
+}
+
+.settings-card-collapse-inner {
+   overflow: hidden;
+}
+
+.settings-card-chevron {
+   font-size: var(--icon-lg);
+   color: var(--clr-text-secondary);
+   transition: transform 0.3s ease;
+   flex-shrink: 0;
+   margin-left: auto;
+}
+
+.settings-loc-card.expanded .settings-card-chevron,
+.settings-preset-card.expanded .settings-card-chevron {
+   transform: rotate(180deg);
+}
+
+/* Description & Actions */
+.settings-loc-desc,
+.settings-preset-desc {
    font-size: var(--fs-xs);
    color: var(--clr-text-secondary);
    line-height: var(--lh-normal);
+   margin-top: var(--spacing-sm);
    margin-bottom: var(--spacing-lg);
 }
 
-.settings-loc-actions {
+.settings-loc-actions,
+.settings-preset-actions {
    display: flex;
    flex-direction: column;
    gap: var(--spacing-md);
 }
 
-.settings-loc-actions .btn {
+.settings-loc-actions .btn,
+.settings-preset-actions .btn {
    width: 100%;
    border-radius: var(--radius-full);
    font-family: var(--font-primary);
@@ -199,25 +261,29 @@
    justify-content: center;
 }
 
-.settings-loc-actions .btn--gold {
+.settings-loc-actions .btn--gold,
+.settings-preset-actions .btn--gold {
    background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
    box-shadow: 0 4px 12px var(--clr-accent-a30);
    color: var(--clr-text-dark);
    border: none;
 }
 
-.settings-loc-actions .btn--gold:active {
+.settings-loc-actions .btn--gold:active,
+.settings-preset-actions .btn--gold:active {
    background: linear-gradient(135deg, var(--clr-accent-700) 0%, var(--clr-accent-600) 100%);
    transform: scale(0.97);
 }
 
-.settings-loc-actions .btn--outline {
+.settings-loc-actions .btn--outline,
+.settings-preset-actions .btn--outline {
    border: 1px solid var(--clr-primary-a30);
    background: var(--clr-primary-a10);
    color: var(--clr-text-secondary);
 }
 
-.settings-loc-actions .btn--outline:active {
+.settings-loc-actions .btn--outline:active,
+.settings-preset-actions .btn--outline:active {
    background: var(--clr-primary-a20);
    transform: scale(0.97);
 }
@@ -232,123 +298,6 @@
       opacity: 1;
       transform: translateY(0);
    }
-}
-
-.settings-loc-map-icon.unset {
-   color: var(--clr-text-muted);
-}
-
-/* =============================================
-   Settings Preset Card
-   ============================================= */
-
-.settings-preset-card {
-   background: var(--clr-bg-card);
-   backdrop-filter: blur(10px);
-   -webkit-backdrop-filter: blur(10px);
-   border-top: 1px solid var(--clr-border-light);
-   border-bottom: 1px solid var(--clr-border-light);
-   border-radius: var(--radius-lg);
-   padding: var(--spacing-lg);
-   margin-bottom: var(--spacing-lg);
-   box-shadow: none;
-}
-
-.settings-preset-header {
-   display: flex;
-   flex-direction: column;
-   align-items: flex-start;
-   gap: var(--spacing-sm);
-}
-
-.settings-preset-title {
-   font-family: var(--font-primary);
-   font-size: var(--fs-sm);
-   font-weight: var(--fw-regular);
-   color: var(--clr-text-muted);
-   text-transform: uppercase;
-   margin-bottom: var(--spacing-xs);
-}
-
-.settings-preset-icon-wrapper {
-   display: flex;
-   align-items: center;
-   gap: var(--spacing-sm);
-}
-
-.settings-preset-calendar-icon {
-   font-size: var(--icon-lg);
-   color: var(--clr-info);
-   flex-shrink: 0;
-}
-
-.settings-preset-status-wrapper {
-   flex: 1;
-   min-width: 0;
-   display: flex;
-   align-items: center;
-}
-
-.settings-preset-body {
-   flex: 1;
-   min-width: 0;
-}
-
-.settings-preset-org {
-   font-size: var(--fs-sm);
-   font-weight: var(--fw-semibold);
-   color: var(--clr-text-secondary);
-}
-
-.settings-preset-dates {
-   font-size: var(--fs-xs);
-   font-weight: var(--fw-bold);
-   color: var(--clr-accent-500);
-}
-
-.settings-preset-desc {
-   font-size: var(--fs-xs);
-   color: var(--clr-text-secondary);
-   line-height: var(--lh-normal);
-   margin-bottom: var(--spacing-lg);
-}
-
-.settings-preset-actions {
-   display: flex;
-   flex-direction: column;
-   gap: var(--spacing-md);
-}
-
-.settings-preset-actions .btn {
-   width: 100%;
-   border-radius: var(--radius-full);
-   font-family: var(--font-primary);
-   font-weight: var(--fw-bold);
-   font-size: var(--fs-xs);
-   justify-content: center;
-}
-
-.settings-preset-actions .btn--gold {
-   background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
-   box-shadow: 0 4px 12px var(--clr-accent-a30);
-   color: var(--clr-text-dark);
-   border: none;
-}
-
-.settings-preset-actions .btn--gold:active {
-   background: linear-gradient(135deg, var(--clr-accent-700) 0%, var(--clr-accent-600) 100%);
-   transform: scale(0.97);
-}
-
-.settings-preset-actions .btn--outline {
-   border: 1px solid var(--clr-primary-a30);
-   background: var(--clr-primary-a10);
-   color: var(--clr-text-secondary);
-}
-
-.settings-preset-actions .btn--outline:active {
-   background: var(--clr-primary-a20);
-   transform: scale(0.97);
 }
 
 /* =============================================

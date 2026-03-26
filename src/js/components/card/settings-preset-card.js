@@ -67,7 +67,7 @@ async function renderCardContent() {
 
     _container.innerHTML = `
         <div class="card settings-preset-card">
-            <div class="settings-preset-header">
+            <div class="settings-preset-header" id="settings-preset-header">
                 <div class="settings-preset-title">PENGATURAN JADWAL</div>
                 <div class="settings-preset-icon-wrapper">
                     <i class='bx bx-calendar settings-preset-calendar-icon'></i>
@@ -77,19 +77,28 @@ async function renderCardContent() {
                             <div class="settings-preset-dates">${startStr} — ${endStr}</div>
                         </div>
                     </div>
+                    <i class='bx bx-chevron-down settings-card-chevron'></i>
                 </div>
             </div>
-            <p class="settings-preset-desc">
-                Kelola organisasi serta tanggal awal-akhir Ramadhan
-            </p>
-            <div class="settings-preset-actions">
-                <button class="btn btn--gold" id="btn-manage-presets">
-                    <i class='bx bx-cog'></i>
-                    <span>Kelola Preset</span>
-                </button>
+            <div class="settings-card-collapse">
+                <div class="settings-card-collapse-inner">
+                    <p class="settings-preset-desc">
+                        Kelola organisasi serta tanggal awal-akhir Ramadhan
+                    </p>
+                    <div class="settings-preset-actions">
+                        <button class="btn btn--gold" id="btn-manage-presets">
+                            <i class='bx bx-cog'></i>
+                            <span>Kelola Preset</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     `;
+
+    _container.querySelector('#settings-preset-header')?.addEventListener('click', () => {
+        _container.querySelector('.settings-preset-card')?.classList.toggle('expanded');
+    });
 
     _container.querySelector('#btn-manage-presets')?.addEventListener('click', () => {
         showPresetManagerModal({

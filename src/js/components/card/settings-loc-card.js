@@ -21,30 +21,41 @@ export async function render(container) {
 
     container.innerHTML = `
         <div class="card settings-loc-card">
-            <div class="settings-loc-header">
+            <div class="settings-loc-header" id="settings-loc-header">
                 <div class="settings-loc-title">LOKASI ANDA</div>
                 <div class="settings-loc-icon-wrapper">
                     <i class='bx bx-map settings-loc-map-icon ${savedLocation ? '' : 'unset'}'></i>
                     <div id="settings-loc-status-wrapper" class="settings-loc-status-wrapper">
                         ${renderStatus(savedLocation)}
                     </div>
+                    <i class='bx bx-chevron-down settings-card-chevron'></i>
                 </div>
             </div>
-            <p class="settings-loc-desc">
-                Sesuaikan lokasi untuk mendapatkan jadwal yang akurat
-            </p>
-            <div class="settings-loc-actions">
-                <button class="btn btn--gold" id="btn-settings-gps">
-                    <i class='bx bx-current-location'></i>
-                    <span>Akses Lokasi</span>
-                </button>
-                <button class="btn btn--outline" id="btn-settings-manual">
-                    <i class='bx bx-search'></i>
-                    <span>Pilih Manual</span>
-                </button>
+            <div class="settings-card-collapse">
+                <div class="settings-card-collapse-inner">
+                    <p class="settings-loc-desc">
+                        Sesuaikan lokasi untuk mendapatkan jadwal yang akurat
+                    </p>
+                    <div class="settings-loc-actions">
+                        <button class="btn btn--gold" id="btn-settings-gps">
+                            <i class='bx bx-current-location'></i>
+                            <span>Akses Lokasi</span>
+                        </button>
+                        <button class="btn btn--outline" id="btn-settings-manual">
+                            <i class='bx bx-search'></i>
+                            <span>Pilih Manual</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     `;
+
+    const header = container.querySelector('#settings-loc-header');
+    header?.addEventListener('click', () => {
+        const card = container.querySelector('.settings-loc-card');
+        card?.classList.toggle('expanded');
+    });
 
     const btnGps = container.querySelector('#btn-settings-gps');
     const btnManual = container.querySelector('#btn-settings-manual');
