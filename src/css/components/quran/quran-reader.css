@@ -280,6 +280,18 @@
    -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Text: Latin Transliteration ── */
+.quran-ayah-latin {
+   font-family: var(--ff-primary);
+   font-size: 0.85rem;
+   color: var(--clr-mushaf-text);
+   font-style: italic;
+   text-align: left;
+   direction: ltr;
+   line-height: 1.6;
+   padding: 0 var(--sp-1) var(--sp-2);
+}
+
 /* ── Text: Translation String ── */
 .quran-ayah-translation {
    font-family: var(--ff-primary);
@@ -416,6 +428,10 @@
    .quran-ayah-translation {
       font-size: 0.75rem;
       /* Scale down translation text for mobile bounds */
+   }
+
+   .quran-ayah-latin {
+      font-size: 0.75rem;
    }
 
    .quran-ayah-number {

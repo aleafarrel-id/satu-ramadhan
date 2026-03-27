@@ -12,7 +12,8 @@ const _cache = {
    juzList: null,
    surahs: new Map(),
    translations: new Map(),
-   tajweed: new Map()
+   tajweed: new Map(),
+   latin: new Map()
 };
 
 /**
@@ -84,6 +85,28 @@ export async function getSurahData(index) {
 }
 
 /**
+ * Fetches the Latin transliteration data for a specific Surah.
+ * @param {number|string} index 
+ * @returns {Promise<Object>}
+ */
+export async function getLatinData(index) {
+   const key = parseInt(index, 10);
+   const cached = _getFromCache(_cache.latin, key);
+   if (cached !== undefined) return cached;
+
+   try {
+      const data = await _fetchJson(`/quran/latin/surah_${key}.json`, `Gagal memuat transliterasi latin surah ${key}`);
+      _cache.latin.set(key, data);
+      _enforceCacheLimit(_cache.latin);
+      return data;
+   } catch (err) {
+      console.warn(`[QuranAPI] Failed to load latin for surah ${key}:`, err);
+      // Fallback: return empty formatting so error isn't fatal
+      return { verse: {} };
+   }
+}
+
+/**
  * Fetches the translation for a specific Surah.
  * @param {number|string} index 
  * @returns {Promise<Object>}
@@ -92,7 +115,7 @@ export async function getTranslationData(index) {
    const lang = getTranslationLanguage();
    const key = parseInt(index, 10);
    const cacheKey = `${lang}_${key}`;
-   
+
    const cached = _getFromCache(_cache.translations, cacheKey);
    if (cached !== undefined) return cached;
 
@@ -138,13 +161,14 @@ export async function getTajweedData(index) {
 /**
  * Utility to parallel fetch all data needed for reading a Surah.
  * @param {number|string} index
- * @returns {Promise<[Object, Object, Object|null]>} [surahData, translationData, tajweedData]
+ * @returns {Promise<[Object, Object, Object|null, Object]>} [surahData, translationData, tajweedData, latinData]
  */
 export async function getFullSurahPayload(index) {
    return Promise.all([
       getSurahData(index),
       getTranslationData(index),
-      getTajweedData(index)
+      getTajweedData(index),
+      getLatinData(index)
    ]);
 }
 

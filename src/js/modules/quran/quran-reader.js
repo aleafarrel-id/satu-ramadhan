@@ -297,11 +297,11 @@ async function _fetchAndRender(item) {
          for (let i = 0; i < allPayloads.length; i++) {
             const surahIndex = startSurahIndex + i;
             const surahMeta = surahList.find(s => parseInt(s.index, 10) === surahIndex);
-            const [surahData, transData, tajData] = allPayloads[i];
+            const [surahData, transData, tajData, latinData] = allPayloads[i];
 
             itemsToRender.push({ type: 'banner', surah: surahMeta });
 
-            let verses = _buildAyahList(surahData, transData, tajData, surahMeta);
+            let verses = _buildAyahList(surahData, transData, tajData, latinData, surahMeta);
 
             if (surahIndex === startSurahIndex) {
                verses = verses.filter(v => v.number === 0 || v.number >= startVerseNum);
@@ -314,12 +314,12 @@ async function _fetchAndRender(item) {
          }
       } else {
          // Standard Surah render mode
-         const [surahData, transData, tajData] = await getFullSurahPayload(parseInt(item.index));
+         const [surahData, transData, tajData, latinData] = await getFullSurahPayload(parseInt(item.index));
 
          if (_renderCtx.shouldCancelRender(renderId)) return;
 
          itemsToRender.push({ type: 'banner', surah: item });
-         const verses = _buildAyahList(surahData, transData, tajData, item);
+         const verses = _buildAyahList(surahData, transData, tajData, latinData, item);
          verses.forEach(v => itemsToRender.push({ type: 'ayah', data: v }));
       }
 
@@ -362,9 +362,10 @@ async function _fetchAndRender(item) {
 
 /* Ayah Data Processing */
 
-function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
+function _buildAyahList(surahData, translationData, tajweedData, latinData, surahMeta) {
    const verseObj = surahData.verse || {};
    const transObj = translationData.verse || {};
+   const latinObj = latinData?.verse || {};
    const ayahList = [];
 
    // V8/JSC return integer-like string keys in ascending numeric order,
@@ -382,6 +383,7 @@ function _buildAyahList(surahData, translationData, tajweedData, surahMeta) {
          isBismillah: verseNum === 0,
          arabic: cleanArabic,
          translation: transObj[key] || '',
+         latin: latinObj[key] || '',
          tajweedRules: getVerseRules(tajweedData, key),
          surahIndex: parseInt(surahMeta.index),
          surahName: surahMeta.title,
@@ -492,6 +494,15 @@ function _createRegularAyahElement(ayah) {
       arabicEl.textContent = ayah.arabic;
    }
 
+   // Latin text
+   const latinEl = document.createElement('div');
+   latinEl.className = 'quran-ayah-latin';
+   if (ayah.latin) {
+      latinEl.textContent = ayah.latin;
+   } else {
+      latinEl.style.display = 'none'; // hide if no data or bismillah
+   }
+
    // Translation
    const translationEl = document.createElement('div');
    translationEl.className = 'quran-ayah-translation';
@@ -499,6 +510,7 @@ function _createRegularAyahElement(ayah) {
 
    card.appendChild(header);
    card.appendChild(arabicEl);
+   card.appendChild(latinEl);
    card.appendChild(translationEl);
 
    return card;
