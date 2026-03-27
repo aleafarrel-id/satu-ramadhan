@@ -88,15 +88,15 @@ function createModalDOM() {
             <div class="mushaf-guide-modal__items">
                 <div class="mushaf-guide-item">
                     <i class='bx bx-navigation'></i>
-                    <span>Geser atau tekan sisi samping untuk pindah halaman</span>
+                    <span>Geser ke kanan atau tekan sisi kanan untuk pindah halaman</span>
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-zoom-in'></i>
-                    <span>Gunakan ikon zoom untuk memperbesar dan tekan untuk keluar</span>
+                    <span>Tekan ikon zoom untuk memperbesar dan tekan lagi untuk memperkecil</span>
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-menu'></i>
-                    <span>Klik ikon Menu untuk pindah surah secara langsung</span>
+                    <span>Klik ikon menu untuk pindah surah dengan mudah</span>
                 </div>
             </div>
             <div class="mushaf-guide-modal__buttons">
