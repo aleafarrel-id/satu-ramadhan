@@ -45,8 +45,8 @@
    font-weight: var(--fw-medium);
    letter-spacing: 0.3px;
    line-height: 1;
-   color: #fff;
-   background: rgba(0, 0, 0, 0.8);
+   color: var(--clr-text-primary);
+   background: var(--clr-bg-cal-overlay);
    padding: var(--sp-1) var(--sp-2);
    border-radius: var(--radius-sm);
    z-index: 9999;

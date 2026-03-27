@@ -17,7 +17,7 @@
 }
 
 .bookmark-verse-badge i {
-   font-size: 10px;
+   font-size: var(--fs-2xs);
 }
 
 /* Relative context for delete button */

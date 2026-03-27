@@ -158,7 +158,7 @@
 
 /* ── Title (Arabic) ── */
 .surah-title-arabic {
-   font-family: 'DecoType-Thuluth-II-Regular', serif;
+   font-family: var(--ff-mushaf-header-ar);
    font-size: var(--fs-2xl);
    color: var(--clr-quran-text);
    text-align: right;
@@ -170,7 +170,7 @@
 .surah-card.skeleton {
    background: linear-gradient(90deg,
          var(--clr-quran-bg-alt) 25%,
-         #f0f0f0 50%,
+         var(--clr-quran-bg) 50%,
          var(--clr-quran-bg-alt) 75%);
    background-size: 200% 100%;
    animation: shimmer 1.5s infinite;

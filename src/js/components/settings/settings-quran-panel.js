@@ -71,7 +71,7 @@ export function render(container) {
       await impact('medium');
       setTajweedEnabled(enabled);
       Notif.show(
-         enabled ? 'Tajweed diaktifkan' : 'Tajweed dimatikan',
+         enabled ? 'Tajwid diaktifkan' : 'Tajwid dimatikan',
          enabled ? 'success' : 'info'
       );
    });

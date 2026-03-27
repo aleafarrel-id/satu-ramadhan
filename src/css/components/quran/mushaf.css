@@ -149,8 +149,8 @@
 /* ── Zoom Toggle ── */
 
 .mushaf-zoom-btn.is-active {
-   color: var(--clr-quran-accent, #b89d63);
-   background: rgba(184, 157, 99, 0.12);
+   color: var(--clr-quran-accent);
+   background: var(--clr-accent-a15);
    border-radius: var(--radius-circle);
 }
 
@@ -165,7 +165,7 @@
 
 /* Subtle top-border indicator when zoom mode is on */
 .mushaf-overlay.is-zoom-mode .mushaf-header {
-   box-shadow: inset 0 -2px 0 0 var(--clr-quran-accent, #b89d63);
+   box-shadow: inset 0 -2px 0 0 var(--clr-quran-accent);
 }
 
 /* In zoom mode the viewport cursor should indicate drag-ability (desktop) */
@@ -304,10 +304,10 @@
    align-items: center;
    justify-content: center;
    padding: var(--sp-1) 22%;
-   margin: 4px auto;
+   margin: var(--sp-1) auto;
    width: 95%;
    max-width: 420px;
-   min-height: 58px;
+   min-height: var(--nav-height);
    position: relative;
    border: none;
    border-radius: 0;
@@ -416,13 +416,13 @@
 .mushaf-page--opening .mushaf-line--surah-header {
    margin: var(--sp-1) auto var(--sp-2) auto;
    padding: var(--sp-2) 22%;
-   min-height: 64px;
+   min-height: var(--nav-height-list-container-xl);
    width: 92%;
    max-width: 440px;
 }
 
 .mushaf-page--opening .mushaf-surah-name {
-   font-size: 1.5rem;
+   font-size: var(--fs-xl);
 }
 
 .mushaf-page--opening .mushaf-line--basmala .mushaf-word {
