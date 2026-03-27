@@ -16,7 +16,7 @@ export function render(container) {
             <label class="settings-item" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
-                    <span>Hidupkan Notifikasi</span>
+                    <span>Notifikasi Waktu</span>
                 </div>
                 <div class="switch-toggle">
                     <input type="checkbox" id="toggle-notification" checked>
@@ -27,7 +27,7 @@ export function render(container) {
             <label class="settings-item" id="adzan-row" for="toggle-adzan" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-volume-full'></i>
-                    <span>Hidupkan Suara Adzan</span>
+                    <span>Suara Adzan</span>
                 </div>
                 <div class="switch-toggle">
                     <input type="checkbox" id="toggle-adzan" checked>

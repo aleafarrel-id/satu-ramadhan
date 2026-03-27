@@ -9,6 +9,7 @@ import { impact } from '../../modules/system/haptic.js';
 import * as Notif from '../../modules/notification/notification.js';
 import {
    getTajweedEnabled, setTajweedEnabled,
+   getTransliterationEnabled, setTransliterationEnabled,
    getTranslationLanguage, setTranslationLanguage
 } from '../../modules/quran/quran-settings.js';
 import { showLanguageSelectorModal } from '../modal/language-selector-modal.js';
@@ -18,6 +19,7 @@ import { makeAccessibleBtn } from '../../utils/a11y.js';
 
 export function render(container) {
    const tajweedChecked = getTajweedEnabled();
+   const transliterationChecked = getTransliterationEnabled();
    const savedLang = getTranslationLanguage();
 
    const savedLangLabel = QURAN_LANGUAGES.find(l => l.code === savedLang)?.label || savedLang;
@@ -30,10 +32,21 @@ export function render(container) {
          <label class="settings-item" for="toggle-tajweed" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-font-color'></i>
-               <span>Hidupkan Tajweed</span>
+               <span>Tajwid</span>
             </div>
             <div class="switch-toggle">
                <input type="checkbox" id="toggle-tajweed"${tajweedChecked ? ' checked' : ''}>
+               <span class="slider"></span>
+            </div>
+         </label>
+         <div class="settings-divider"></div>
+         <label class="settings-item" for="toggle-transliteration" data-focus-item>
+            <div class="settings-item-info">
+               <i class='bx bx-italic'></i>
+               <span>Transliterasi Latin</span>
+            </div>
+            <div class="switch-toggle">
+               <input type="checkbox" id="toggle-transliteration"${transliterationChecked ? ' checked' : ''}>
                <span class="slider"></span>
             </div>
          </label>
@@ -59,6 +72,18 @@ export function render(container) {
       setTajweedEnabled(enabled);
       Notif.show(
          enabled ? 'Tajweed diaktifkan' : 'Tajweed dimatikan',
+         enabled ? 'success' : 'info'
+      );
+   });
+
+   /* --- Transliteration Toggle --- */
+   const transliterationToggle = container.querySelector('#toggle-transliteration');
+   transliterationToggle?.addEventListener('change', async (e) => {
+      const enabled = e.target.checked;
+      await impact('medium');
+      setTransliterationEnabled(enabled);
+      Notif.show(
+         enabled ? 'Transliterasi Latin diaktifkan' : 'Transliterasi Latin dimatikan',
          enabled ? 'success' : 'info'
       );
    });

@@ -8,6 +8,7 @@
 import { DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
 
 const KEY_TAJWEED = 'satu_ramadhan_tajweed';
+const KEY_TRANSLITERATION = 'satu_ramadhan_transliteration';
 const KEY_LANG = 'satu_ramadhan_quran_lang';
 
 export const EVENTS = {
@@ -35,6 +36,27 @@ export function setTajweedEnabled(enabled) {
 }
 
 /**
+ * Ensures boolean casting from localStorage
+ * @returns {boolean} True if transliteration is enabled
+ */
+export function getTransliterationEnabled() {
+   const saved = localStorage.getItem(KEY_TRANSLITERATION);
+   // Default to true if not set
+   return saved !== null ? saved === 'true' : true;
+}
+
+/**
+ * Sets transliteration preference and emits change event
+ * @param {boolean} enabled 
+ */
+export function setTransliterationEnabled(enabled) {
+   const isEnabled = Boolean(enabled);
+   localStorage.setItem(KEY_TRANSLITERATION, isEnabled);
+   _emitChange();
+}
+
+
+/**
  * Gets currently selected translation language code
  * @returns {string} Language code (e.g. 'id', 'en')
  */
@@ -59,6 +81,7 @@ function _emitChange() {
    window.dispatchEvent(new CustomEvent(EVENTS.SETTINGS_CHANGED, {
       detail: {
          tajweed: getTajweedEnabled(),
+         transliteration: getTransliterationEnabled(),
          language: getTranslationLanguage()
       }
    }));

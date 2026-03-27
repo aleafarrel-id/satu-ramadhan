@@ -12,7 +12,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../system/back-han
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
 import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
-import { getTajweedEnabled } from './quran-settings.js';
+import { getTajweedEnabled, getTransliterationEnabled } from './quran-settings.js';
 import { openPicker, closePicker, destroyPicker } from '../../components/quran/quran-picker.js';
 import * as BookmarkManager from './bookmark-manager.js';
 import * as Notification from '../notification/notification.js';
@@ -497,10 +497,10 @@ function _createRegularAyahElement(ayah) {
    // Latin text
    const latinEl = document.createElement('div');
    latinEl.className = 'quran-ayah-latin';
-   if (ayah.latin) {
+   if (ayah.latin && getTransliterationEnabled()) {
       latinEl.textContent = ayah.latin;
    } else {
-      latinEl.style.display = 'none'; // hide if no data or bismillah
+      latinEl.style.display = 'none'; // hide if no data or disabled
    }
 
    // Translation

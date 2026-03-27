@@ -3,7 +3,7 @@
  * Handles data fetching and caching for all Quran-related features.
  */
 
-import { getTajweedEnabled, getTranslationLanguage } from './quran-settings.js';
+import { getTajweedEnabled, getTranslationLanguage, getTransliterationEnabled } from './quran-settings.js';
 
 const MAX_CACHE_SIZE = 15;
 
@@ -90,6 +90,8 @@ export async function getSurahData(index) {
  * @returns {Promise<Object>}
  */
 export async function getLatinData(index) {
+   if (!getTransliterationEnabled()) return { verse: {} };
+
    const key = parseInt(index, 10);
    const cached = _getFromCache(_cache.latin, key);
    if (cached !== undefined) return cached;
