@@ -9,6 +9,7 @@
  */
 
 import { PageFlip } from 'page-flip';
+import panzoom from 'panzoom';
 import * as MushafApi from './mushaf-api.js';
 import * as MushafUI from './mushaf-ui.js';
 import * as QuranDock from '../../../components/quran/quran-dock.js';
@@ -16,6 +17,7 @@ import { createSurahCard } from '../../../components/quran/quran-card.js';
 import { openPicker, closePicker, isOpen as isPickerOpen, destroyPicker } from '../../../components/quran/quran-picker.js';
 import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
+import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-modal.js';
 
 /* ─── Constants ─── */
 
@@ -36,6 +38,11 @@ let _viewportContainer = null;
 let _bookContainer = null;
 let _pageCounterEl = null;
 let _menuBtnEl = null;
+let _zoomBtnEl = null;
+
+/** @type {ReturnType<typeof panzoom>|null} */
+let _panzoomInstance = null;
+let _isZoomMode = false;
 
 let _quranPage = null;
 let _backdropEl = null;
@@ -92,6 +99,10 @@ function _resetState() {
    _bookContainer = null;
    _pageCounterEl = null;
    _menuBtnEl = null;
+   _zoomBtnEl = null;
+
+   _panzoomInstance = null;
+   _isZoomMode = false;
 
    _backdropEl = null;
    _onCloseCallback = null;
@@ -231,6 +242,8 @@ export async function open(startPage = 1, options = {}) {
 }
 
 export async function close() {
+   // Dispose panzoom before any teardown to prevent stale listeners
+   _disposePanzoom();
    if (!_isOpen || _isClosing) return;
    _isClosing = true;
 
@@ -292,6 +305,7 @@ export function destroy() {
    _isOpen = false;
    _buildGeneration++; // Cancel any in-flight build
 
+   _disposePanzoom();
    _transitionManager.clear();
    _detachListeners();
    _destroyPageFlip(false);
@@ -463,15 +477,38 @@ function _buildHeader() {
    const header = document.createElement('div');
    header.className = 'mushaf-header';
 
+   const leftWrap = document.createElement('div');
+   leftWrap.className = 'mushaf-header-left';
+
    const backBtn = document.createElement('button');
    backBtn.className = 'mushaf-back-btn';
-   backBtn.setAttribute('aria-label', 'Back');
+   backBtn.setAttribute('aria-label', 'Kembali');
    backBtn.innerHTML = `<i class='bx bx-chevron-left'></i>`;
    makeAccessibleBtn(backBtn, close);
+
+   const infoBtn = document.createElement('button');
+   infoBtn.className = 'mushaf-back-btn mushaf-info-btn';
+   infoBtn.setAttribute('aria-label', 'Panduan Mushaf');
+   infoBtn.innerHTML = `<i class='bx bx-info-circle'></i>`;
+   makeAccessibleBtn(infoBtn, showMushafGuideModal);
+
+   leftWrap.appendChild(backBtn);
+   leftWrap.appendChild(infoBtn);
 
    _pageCounterEl = document.createElement('span');
    _pageCounterEl.className = 'mushaf-page-counter';
    _updatePageCounter();
+
+   // Actions wrapper (right side: zoom + menu)
+   const actionsWrap = document.createElement('div');
+   actionsWrap.className = 'mushaf-header-actions';
+
+   _zoomBtnEl = document.createElement('button');
+   _zoomBtnEl.className = 'mushaf-back-btn mushaf-zoom-btn';
+   _zoomBtnEl.id = 'mushaf-zoom-toggle';
+   _zoomBtnEl.setAttribute('aria-label', 'Mode Zoom');
+   _zoomBtnEl.innerHTML = `<i class='bx bx-zoom-in'></i>`;
+   makeAccessibleBtn(_zoomBtnEl, _toggleZoomMode);
 
    _menuBtnEl = document.createElement('button');
    _menuBtnEl.className = 'mushaf-back-btn';
@@ -479,9 +516,12 @@ function _buildHeader() {
    _menuBtnEl.innerHTML = `<i class='bx bx-menu'></i>`;
    makeAccessibleBtn(_menuBtnEl, _togglePicker);
 
-   header.appendChild(backBtn);
+   actionsWrap.appendChild(_zoomBtnEl);
+   actionsWrap.appendChild(_menuBtnEl);
+
+   header.appendChild(leftWrap);
    header.appendChild(_pageCounterEl);
-   header.appendChild(_menuBtnEl);
+   header.appendChild(actionsWrap);
 
    return header;
 }
@@ -498,6 +538,68 @@ function _buildViewport() {
    viewport.appendChild(_bookContainer);
 
    return viewport;
+}
+
+/* ─── Panzoom Toggle ─── */
+
+function _toggleZoomMode() {
+   _isZoomMode ? _exitZoomMode() : _enterZoomMode();
+}
+
+function _enterZoomMode() {
+   if (_isZoomMode || !_bookContainer || !_viewportContainer) return;
+   _isZoomMode = true;
+
+   _detachSwipeHandlers();
+
+   if (_zoomBtnEl) {
+      _zoomBtnEl.classList.add('is-active');
+      _zoomBtnEl.innerHTML = `<i class='bx bx-zoom-out'></i>`;
+   }
+   if (_overlay) _overlay.classList.add('is-zoom-mode');
+
+   // Disable native viewport swipe to allow panzoom manipulation
+   _viewportContainer.style.touchAction = 'none';
+
+   // Strip GPU caching via CSS to prevent scaled text blurring
+   _bookContainer.classList.add('is-zoom-active');
+
+   _panzoomInstance = panzoom(_bookContainer, {
+      maxZoom: 5,
+      minZoom: 1,
+      smoothScroll: false,
+      beforeWheel: () => true, // Disable desktop wheel zoom
+      initialZoom: 1,
+   });
+}
+
+function _exitZoomMode() {
+   if (!_isZoomMode) return;
+   _isZoomMode = false;
+
+   _disposePanzoom();
+
+   if (_zoomBtnEl) {
+      _zoomBtnEl.classList.remove('is-active');
+      _zoomBtnEl.innerHTML = `<i class='bx bx-zoom-in'></i>`;
+   }
+   if (_overlay) _overlay.classList.remove('is-zoom-mode');
+
+   if (_viewportContainer) _viewportContainer.style.touchAction = 'pan-y';
+
+   _attachSwipeHandlers();
+}
+
+/** Safely disposes panzoom and restores GPU compositing CSS. */
+function _disposePanzoom() {
+   if (!_panzoomInstance) return;
+   _panzoomInstance.dispose();
+   _panzoomInstance = null;
+
+   if (_bookContainer) {
+      _bookContainer.style.transform = '';
+      _bookContainer.classList.remove('is-zoom-active');
+   }
 }
 
 /* ─── PageFlip Lifecycle ─── */
@@ -677,6 +779,9 @@ async function _reloadWindow(targetPage) {
    if (!_bookContainer || !_isOpen || _isReloading) return;
    _isReloading = true;
    _buildGeneration++; // Cancel any earlier in-flight build
+
+   // If zoom was active, exit cleanly before rebuilding
+   if (_isZoomMode) _exitZoomMode();
 
    _destroyPageFlip(true);
    _calcWindow(targetPage);

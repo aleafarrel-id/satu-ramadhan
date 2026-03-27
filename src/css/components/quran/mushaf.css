@@ -1,3 +1,5 @@
+@import '../modal/mushaf-guide-modal.css';
+
 /* Mushaf Mode Styles */
 
 /* ── Backdrop ── */
@@ -90,6 +92,12 @@
    position: relative;
 }
 
+.mushaf-header-left {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-1);
+}
+
 .mushaf-back-btn {
    display: flex;
    align-items: center;
@@ -110,6 +118,14 @@
    opacity: 0.5;
 }
 
+.mushaf-info-btn {
+   opacity: 0.65;
+}
+
+.mushaf-info-btn:active {
+   opacity: 1;
+}
+
 .mushaf-page-counter {
    position: absolute;
    left: 50%;
@@ -120,6 +136,45 @@
    color: var(--clr-mushaf-text);
    user-select: none;
    text-align: center;
+}
+
+/* ── Header Actions ── */
+
+.mushaf-header-actions {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-1);
+}
+
+/* ── Zoom Toggle ── */
+
+.mushaf-zoom-btn.is-active {
+   color: var(--clr-quran-accent, #b89d63);
+   background: rgba(184, 157, 99, 0.12);
+   border-radius: var(--radius-circle);
+}
+
+.mushaf-zoom-btn.is-active i {
+   animation: mushafZoomPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes mushafZoomPulse {
+   0%, 100% { opacity: 1; }
+   50% { opacity: 0.55; }
+}
+
+/* Subtle top-border indicator when zoom mode is on */
+.mushaf-overlay.is-zoom-mode .mushaf-header {
+   box-shadow: inset 0 -2px 0 0 var(--clr-quran-accent, #b89d63);
+}
+
+/* In zoom mode the viewport cursor should indicate drag-ability (desktop) */
+.mushaf-overlay.is-zoom-mode .mushaf-viewport {
+   cursor: grab;
+}
+
+.mushaf-overlay.is-zoom-mode .mushaf-viewport:active {
+   cursor: grabbing;
 }
 
 /* ── Viewport ── */
@@ -162,6 +217,39 @@
    backface-visibility: hidden;
    -webkit-backface-visibility: hidden;
    will-change: transform;
+}
+
+/*
+ * ── Zoom-active: strip GPU-compositing to prevent blurry text ──
+ * When panzoom is active, CSS-transform scaling causes the browser to stretch
+ * a pre-rasterised 1× texture → blurry. Removing compositor-layer promotions
+ * forces re-rasterisation at the zoomed scale so text stays crisp.
+ * These use !important to override the existing !important on .stf__wrapper.
+ */
+
+.mushaf-book-container.is-zoom-active,
+.mushaf-book-container.is-zoom-active .stf__wrapper,
+.mushaf-book-container.is-zoom-active .stf__parent,
+.mushaf-book-container.is-zoom-active .mushaf-page {
+   backface-visibility: visible !important;
+   -webkit-backface-visibility: visible !important;
+   will-change: auto !important;
+   contain: none !important;
+}
+
+.mushaf-book-container.is-zoom-active .stf__wrapper {
+   transform: none !important;
+   -webkit-transform: none !important;
+}
+
+.mushaf-book-container.is-zoom-active .stf__parent {
+   transform: none !important;
+   -webkit-transform: none !important;
+}
+
+.mushaf-book-container.is-zoom-active .mushaf-page {
+   transform: none !important;
+   -webkit-transform: none !important;
 }
 
 /* Previous page tap zone */

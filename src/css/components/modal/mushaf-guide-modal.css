@@ -1,0 +1,159 @@
+/* =============================================
+   Mushaf Guide Modal Component
+   ============================================= */
+
+/* ── Overlay Backdrop ── */
+.mushaf-guide-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) + 10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mushaf-guide-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ── Modal Card ── */
+.mushaf-guide-modal {
+    width: 100%;
+    max-width: 320px;
+    background: var(--clr-quran-card-bg);
+    border: 1px solid rgba(184, 157, 99, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg) var(--spacing-md);
+    text-align: center;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(24px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mushaf-guide-modal-overlay.active .mushaf-guide-modal {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Icon Circle ── */
+.mushaf-guide-modal__icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto var(--spacing-md);
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--clr-primary-a20) 0%, var(--clr-primary-a10) 100%);
+    border: 2px solid var(--clr-primary-a30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.mushaf-guide-modal__icon i {
+    font-size: var(--icon-lg);
+    color: var(--clr-quran-accent);
+}
+
+.mushaf-guide-modal__icon::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--clr-primary-a25);
+    animation: mushaf-guide-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes mushaf-guide-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 0.2;
+    }
+}
+
+/* ── Text Content ── */
+.mushaf-guide-modal__title {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-mushaf-text);
+    margin: 0 0 var(--spacing-md);
+    line-height: var(--lh-snug);
+}
+
+.mushaf-guide-modal__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin: 0 0 var(--spacing-lg);
+    text-align: left;
+}
+
+.mushaf-guide-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.04);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.mushaf-guide-item i {
+    font-size: var(--icon-md);
+    color: var(--clr-mushaf-text-muted, rgba(0, 0, 0, 0.6));
+    flex-shrink: 0;
+}
+
+.mushaf-guide-item span {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--clr-mushaf-text);
+    line-height: var(--lh-snug);
+}
+
+/* ── Buttons ── */
+.mushaf-guide-modal__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.mushaf-guide-modal__btn-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px var(--spacing-sm);
+    border: 1px solid var(--clr-mushaf-line-border);
+    border-radius: var(--radius-full);
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--clr-mushaf-text-dark);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.mushaf-guide-modal__btn-close:active {
+    transform: scale(0.97);
+    background: rgba(0, 0, 0, 0.06);
+}
