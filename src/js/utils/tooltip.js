@@ -12,6 +12,18 @@ const _attachedContainers = new WeakSet();
 /** @type {Element|null} The currently active tooltip trigger element */
 let _activeTooltipTrigger = null;
 
+/** @type {HTMLElement|null} The singleton global tooltip DOM element */
+let _globalTooltipEl = null;
+
+function _ensureGlobalTooltip() {
+   if (!_globalTooltipEl) {
+      _globalTooltipEl = document.createElement('div');
+      _globalTooltipEl.className = 'global-tajweed-tooltip';
+      document.body.appendChild(_globalTooltipEl);
+   }
+   return _globalTooltipEl;
+}
+
 /* Position Calculation */
 
 /**
@@ -19,7 +31,11 @@ let _activeTooltipTrigger = null;
  * @param {Element} triggerEl - The element triggering the tooltip
  */
 function _adjustTooltipPosition(triggerEl, e) {
-   // Find the nearest scrollable or block container, fallback to document
+   const tooltip = _ensureGlobalTooltip();
+   const label = triggerEl.getAttribute('data-label') || '';
+   tooltip.textContent = label;
+
+   // Find the nearest scrollable or block container, fallback to window/document
    const scrollContainer = triggerEl.closest('.quran-reader-scroll') || document.documentElement;
    const containerRect = scrollContainer.getBoundingClientRect();
    const triggerRect = triggerEl.getBoundingClientRect();
@@ -43,17 +59,13 @@ function _adjustTooltipPosition(triggerEl, e) {
          // Fallback to the first physical fragment
          targetRect = rects[0];
       }
-      
-      // Make CSS tooltip container anchor precisely over the interacted fragment
-      const targetLeftOffset = (targetRect.left + (targetRect.width / 2)) - triggerRect.left;
-      triggerEl.style.setProperty('--tooltip-target-left', `${targetLeftOffset}px`);
-   } else {
-      // Clean up fallback if no longer wrapped dynamically
-      triggerEl.style.removeProperty('--tooltip-target-left');
    }
 
-   // Best-effort estimation of tooltip width (since pseudo-elements cannot be measured directly)
-   const label = triggerEl.getAttribute('data-label') || '';
+   // Position the global tooltip explicitly
+   tooltip.style.left = `${targetRect.left + (targetRect.width / 2)}px`;
+   tooltip.style.top = `${targetRect.top - 6}px`;
+
+   // Best-effort estimation of tooltip width
    const estimatedWidth = (label.length * 7) + 24; // approx char width + padding width
    const halfWidth = estimatedWidth / 2;
 
@@ -61,17 +73,17 @@ function _adjustTooltipPosition(triggerEl, e) {
    const safetyPadding = 12; // safety margin from screen edges in pixels
 
    // Reset positional custom property before calculation
-   triggerEl.style.setProperty('--tooltip-offset-x', '-50%');
+   tooltip.style.setProperty('--tooltip-offset-x', '-50%');
 
    // Check right edge collision
    if (triggerCenterX + halfWidth > containerRect.right - safetyPadding) {
       const overflow = (triggerCenterX + halfWidth) - (containerRect.right - safetyPadding);
-      triggerEl.style.setProperty('--tooltip-offset-x', `calc(-50% - ${Math.ceil(overflow)}px)`);
+      tooltip.style.setProperty('--tooltip-offset-x', `calc(-50% - ${Math.ceil(overflow)}px)`);
    }
    // Check left edge collision
    else if (triggerCenterX - halfWidth < containerRect.left + safetyPadding) {
       const overflow = (containerRect.left + safetyPadding) - (triggerCenterX - halfWidth);
-      triggerEl.style.setProperty('--tooltip-offset-x', `calc(-50% + ${Math.ceil(overflow)}px)`);
+      tooltip.style.setProperty('--tooltip-offset-x', `calc(-50% + ${Math.ceil(overflow)}px)`);
    }
 }
 
@@ -88,46 +100,85 @@ export function initTooltip(container, triggerSelector = '[data-tooltip]') {
    if (!container || _attachedContainers.has(container)) return;
    _attachedContainers.add(container);
 
-   // Mobile Tap/Click Handling
-   container.addEventListener('click', (e) => {
-      const triggerEl = e.target.closest(triggerSelector);
+   // Setup touch state for this attached container
+   let isTouch = false;
+   let touchStartX = 0;
+   let touchStartY = 0;
+   let touchStartTime = 0;
 
-      if (triggerEl) {
-         e.stopPropagation();
-
-         // Toggle off if clicking the same active trigger
-         if (_activeTooltipTrigger === triggerEl) {
-            triggerEl.classList.remove('active');
-            _activeTooltipTrigger = null;
-            return;
-         }
-
-         // Dismiss previously active tooltip
-         if (_activeTooltipTrigger) {
-            _activeTooltipTrigger.classList.remove('active');
-         }
-
-         // Adjust position to fit screen and activate
-         _adjustTooltipPosition(triggerEl, e);
-         triggerEl.classList.add('active');
-         _activeTooltipTrigger = triggerEl;
+   // 1. Pointer Down (Capture Phase)
+   container.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') {
+         isTouch = true;
+         touchStartX = e.clientX;
+         touchStartY = e.clientY;
+         touchStartTime = Date.now();
       } else {
-         // Dismiss active tooltip if tapped outside any trigger
-         if (_activeTooltipTrigger) {
-            _activeTooltipTrigger.classList.remove('active');
-            _activeTooltipTrigger = null;
+         isTouch = false;
+      }
+   }, { capture: true, passive: true });
+
+   // 2. Pointer Up (Capture Phase) - Robust Tap Detection
+   container.addEventListener('pointerup', (e) => {
+      if (e.pointerType !== 'mouse') {
+         const dx = Math.abs(e.clientX - touchStartX);
+         const dy = Math.abs(e.clientY - touchStartY);
+         const dt = Date.now() - touchStartTime;
+
+         // Quick tap criteria: < 15px movement, < 500ms duration
+         if (dx < 15 && dy < 15 && dt < 500) {
+            const triggerEl = e.target.closest(triggerSelector);
+            if (triggerEl) {
+               // Toggle off if tapping the same active trigger
+               if (_activeTooltipTrigger === triggerEl) {
+                  dismissTooltip();
+               } else {
+                  dismissTooltip(); // Cleanly dismiss any previous tooltip
+                  
+                  // Calculate and position
+                  _adjustTooltipPosition(triggerEl, e);
+                  triggerEl.classList.add('active');
+                  if (_globalTooltipEl) _globalTooltipEl.classList.add('is-active');
+                  _activeTooltipTrigger = triggerEl;
+               }
+            } else {
+               // Tap outside any trigger -> dismiss
+               dismissTooltip();
+            }
          }
       }
-   });
+   }, { capture: true, passive: true });
 
-   // Desktop Hover Handling
-   // Ensures offset calculates before CSS transition begins
+   // 3. Desktop Hover Handling
    container.addEventListener('mouseover', (e) => {
+      // Prevent emulated mouse events from triggering double-logic on touch devices
+      if (isTouch) return;
+
       const triggerEl = e.target.closest(triggerSelector);
       if (triggerEl) {
-         _adjustTooltipPosition(triggerEl, e);
+         if (_activeTooltipTrigger !== triggerEl) {
+            dismissTooltip();
+            _adjustTooltipPosition(triggerEl, e);
+            triggerEl.classList.add('active');
+            if (_globalTooltipEl) _globalTooltipEl.classList.add('is-active');
+            _activeTooltipTrigger = triggerEl;
+         }
       }
-   });
+   }, { capture: true, passive: true });
+
+   container.addEventListener('mouseout', (e) => {
+      if (isTouch) return;
+      const triggerEl = e.target.closest(triggerSelector);
+      
+      // Ensure we only dismiss if leaving the currently active trigger
+      if (triggerEl && _activeTooltipTrigger === triggerEl) {
+         dismissTooltip();
+      }
+   }, { capture: true, passive: true });
+
+   // Global scroll listener to dismiss tooltip when scrolling
+   // We attach it passively to window
+   window.addEventListener('scroll', dismissTooltip, { passive: true, capture: true });
 }
 
 /**
@@ -138,5 +189,8 @@ export function dismissTooltip() {
    if (_activeTooltipTrigger) {
       _activeTooltipTrigger.classList.remove('active');
       _activeTooltipTrigger = null;
+   }
+   if (_globalTooltipEl) {
+      _globalTooltipEl.classList.remove('is-active');
    }
 }

@@ -9,9 +9,11 @@
    border-radius: 2px;
    display: inline;
    line-height: inherit;
+   pointer-events: auto;
 
    /* Dynamic Tooltip Alignment (controlled via JS) */
-   --tooltip-offset-x: -50%;
+   /* Tooltip cursor indicator */
+   cursor: help;
 }
 
 /* ── Underline Indicator ── */
@@ -28,14 +30,13 @@
    pointer-events: none;
 }
 
-/* ── Tooltip Element ── */
+/* ── Global Tooltip Element (Inserted via JS) ── */
 
-.tj::after {
-   content: attr(data-label);
-   position: absolute;
-   bottom: calc(100% + 6px);
-   left: var(--tooltip-target-left, 50%);
-   transform: translateX(var(--tooltip-offset-x)) translateY(var(--sp-1));
+.global-tajweed-tooltip {
+   position: fixed;
+   left: 0;
+   top: 0;
+   transform: translateX(var(--tooltip-offset-x, -50%)) translateY(var(--sp-1));
    white-space: nowrap;
 
    /* Appearance */
@@ -48,7 +49,7 @@
    background: rgba(0, 0, 0, 0.8);
    padding: var(--sp-1) var(--sp-2);
    border-radius: var(--radius-sm);
-   z-index: 100;
+   z-index: 9999;
 
    /* Hidden by default */
    opacity: 0;
@@ -60,10 +61,10 @@
 /* ── Tooltip States ── */
 
 /* Active State */
-.tj.active::after {
+.global-tajweed-tooltip.is-active {
    opacity: 1;
    visibility: visible;
-   transform: translateX(var(--tooltip-offset-x)) translateY(0);
+   transform: translateX(var(--tooltip-offset-x, -50%)) translateY(0);
 }
 
 .tj.active {
@@ -140,27 +141,19 @@
    .tj:hover {
       opacity: 0.85;
    }
-
-   .tj:hover::after {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(var(--tooltip-offset-x)) translateY(0);
-   }
 }
 
 @media screen and (max-width: 390px) {
-   .tj::after {
+   .global-tajweed-tooltip {
       font-size: 0.55rem;
       padding: 3px 6px;
-      bottom: calc(100% + 4px);
    }
 }
 
 @media screen and (max-width: 320px) {
-   .tj::after {
+   .global-tajweed-tooltip {
       font-size: 0.5rem;
       padding: 2px 5px;
-      bottom: calc(100% + 3px);
    }
 
    .tj::before {

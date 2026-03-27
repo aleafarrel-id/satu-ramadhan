@@ -88,7 +88,7 @@ function createModalDOM() {
             <div class="mushaf-guide-modal__items">
                 <div class="mushaf-guide-item">
                     <i class='bx bx-navigation'></i>
-                    <span>Geser ke kanan atau tekan sisi kanan untuk pindah halaman</span>
+                    <span>Geser atau tekan sisi layar untuk berpindah halaman</span>
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-zoom-in'></i>

@@ -15,6 +15,7 @@ import * as MushafUI from './mushaf-ui.js';
 import * as QuranDock from '../../../components/quran/quran-dock.js';
 import { createSurahCard } from '../../../components/quran/quran-card.js';
 import { openPicker, closePicker, isOpen as isPickerOpen, destroyPicker } from '../../../components/quran/quran-picker.js';
+import { initTooltip, dismissTooltip } from '../../../utils/tooltip.js';
 import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
 import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-modal.js';
@@ -214,6 +215,9 @@ export async function open(startPage = 1, options = {}) {
    // Lock body scroll
    document.body.style.overscrollBehavior = 'none';
 
+   // Initialize tooltip delegation for interaction
+   initTooltip(_viewportContainer, '.tj');
+
    // ── Phase 3: Trigger the slide-up animation ──
    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -247,6 +251,7 @@ export async function close() {
    if (!_isOpen || _isClosing) return;
    _isClosing = true;
 
+   dismissTooltip();
    _detachListeners();
    destroyPicker();
 
@@ -305,6 +310,7 @@ export function destroy() {
    _isOpen = false;
    _buildGeneration++; // Cancel any in-flight build
 
+   dismissTooltip();
    _disposePanzoom();
    _transitionManager.clear();
    _detachListeners();
@@ -374,6 +380,8 @@ function _detachSwipeHandlers() {
 
 function _onPointerDown(e) {
    if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return;
+
+   dismissTooltip();
 
    _isSwiping = true;
    _swipeStartX = e.clientX;
@@ -550,6 +558,7 @@ function _enterZoomMode() {
    if (_isZoomMode || !_bookContainer || !_viewportContainer) return;
    _isZoomMode = true;
 
+   dismissTooltip();
    _detachSwipeHandlers();
 
    if (_zoomBtnEl) {
@@ -700,6 +709,7 @@ async function _buildAndMountPageFlip(targetPage) {
 }
 
 function _onPageFlip(e) {
+   dismissTooltip();
    if (_isExpanding) return;
    const flipIndex = e.data;
    _currentPage = _windowEnd - (flipIndex / 2);
