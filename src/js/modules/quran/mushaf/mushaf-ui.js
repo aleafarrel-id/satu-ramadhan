@@ -171,11 +171,11 @@ function _collectAlignedRules(words, tajweedMap) {
          const offsets = [];
          let currentOff = 0;
          
-         // quran.com 'location' skips isolated waqf marks. We must skip them in the array 
+         // quran.com 'location' skips isolated waqf and structural marks. We must skip them in the array 
          // so that offsets[wordIdx - 1] perfectly aligns with the real base text.
-         const ISOLATED_WAQF = /^[\u06D6-\u06DC\u06DF]+$/;
+         const ISOLATED_MARKERS = /^[\u06D6-\u06DC\u06DF\u06DE\u06E9\u06DD]+$/;
          for (const vw of vWords) {
-            if (!ISOLATED_WAQF.test(vw)) {
+            if (!ISOLATED_MARKERS.test(vw)) {
                offsets.push(currentOff);
             }
             currentOff += vw.length + 1; // +1 for the space

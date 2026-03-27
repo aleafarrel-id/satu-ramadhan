@@ -71,6 +71,28 @@
    opacity: 0.85;
 }
 
+/* ── Optional / Contextual Waqf Rules ── */
+
+/* Optional rules use dedicated darker color overrides below,
+   no opacity change needed — keeps text readable */
+
+.tj.tj-optional::before {
+   height: 1px;
+   border-bottom: 1px dashed currentColor;
+   background: none;
+   opacity: 0.5;
+}
+
+/* Optional color overrides (darker variants for readability) */
+.tj-ghunnah.tj-optional { color: var(--clr-tajweed-opt-ghunnah); }
+.tj-idgham.tj-optional { color: var(--clr-tajweed-opt-idgham); }
+.tj-ikhfa.tj-optional { color: var(--clr-tajweed-opt-ikhfa); }
+.tj-iqlab.tj-optional { color: var(--clr-tajweed-opt-iqlab); }
+.tj-qalqalah.tj-optional { color: var(--clr-tajweed-opt-qalqalah); }
+.tj-madd.tj-optional { color: var(--clr-tajweed-opt-madd); }
+.tj-madd-silah-qashirah.tj-optional { color: var(--clr-tajweed-opt-madd-silah-qashirah); }
+.tj-madd-silah-thawilah.tj-optional { color: var(--clr-tajweed-opt-madd-silah-thawilah); }
+
 /* ── Rule Colors ── */
 
 /* Ghunnah (Nasalization) */

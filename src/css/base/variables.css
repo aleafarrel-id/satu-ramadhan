@@ -284,6 +284,16 @@
    --clr-tajweed-silent: #B0BEC5;
    /* silent */
 
+   /* Tajweed Optional/Contextual Colors (Waqf-dependent, darker variants) */
+   --clr-tajweed-opt-ghunnah: #3E7A42;
+   --clr-tajweed-opt-idgham: #18838E;
+   --clr-tajweed-opt-ikhfa: #B87418;
+   --clr-tajweed-opt-iqlab: #763080;
+   --clr-tajweed-opt-qalqalah: #B33A38;
+   --clr-tajweed-opt-madd: #2E74AC;
+   --clr-tajweed-opt-madd-silah-qashirah: #1B756C;
+   --clr-tajweed-opt-madd-silah-thawilah: #006054;
+
    /* Mushaf Specific */
    --clr-mushaf-bg-start: #f7eed7;
    --clr-mushaf-bg-mid: #f0e2c0;
