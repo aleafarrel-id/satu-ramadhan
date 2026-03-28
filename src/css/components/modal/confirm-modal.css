@@ -25,7 +25,7 @@
 }
 
 .confirm-dialog {
-    background: linear-gradient(165deg, rgba(26, 58, 74, 1) 0%, rgba(15, 40, 52, 1) 100%);
+    background: var(--gradient-cal-bg);
     border: 1px solid var(--clr-primary-a30);
     border-radius: var(--radius-xl);
     width: 100%;

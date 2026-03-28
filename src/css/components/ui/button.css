@@ -91,23 +91,6 @@
    background: var(--clr-accent-a25);
 }
 
-@media (max-width: 360px) {
-   .btn {
-      font-size: var(--fs-2xs);
-      padding: 2px var(--spacing-xs);
-      min-height: 32px;
-      min-width: 32px;
-   }
-
-   .btn--accent-outline {
-      min-height: 28px;
-      padding: 2px var(--spacing-sm);
-   }
-
-   .btn i {
-      font-size: var(--fs-sm);
-   }
-}
 
 /* =============================================
    Action Buttons Row
@@ -172,6 +155,22 @@
 }
 
 @media (max-width: 360px) {
+   .btn {
+      font-size: var(--fs-2xs);
+      padding: 2px var(--spacing-xs);
+      min-height: 32px;
+      min-width: 32px;
+   }
+
+   .btn--accent-outline {
+      min-height: 28px;
+      padding: 2px var(--spacing-sm);
+   }
+
+   .btn i {
+      font-size: var(--fs-sm);
+   }
+
    .kiblat-btn {
       padding: var(--spacing-xs) var(--spacing-sm);
       padding-left: 24px;

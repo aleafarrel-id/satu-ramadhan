@@ -23,7 +23,7 @@
 }
 
 .loc-search-sheet {
-    background: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+    background: var(--gradient-cal-bg);
     border-top: 1px solid var(--clr-primary-a30);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);

@@ -203,7 +203,7 @@
    height: var(--sp-8);
    padding: 0 var(--sp-2);
    background: var(--clr-quran-accent);
-   color: #fff;
+   color: var(--clr-text-primary);
    border-radius: var(--radius-full);
    font-family: var(--ff-primary);
    font-size: var(--fs-xs);

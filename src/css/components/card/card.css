@@ -11,7 +11,7 @@
 }
 
 .card--inner {
-   background: rgba(30, 65, 82, 0.7);
+   background: var(--color-bg-card-inner);
    border: 1px solid var(--clr-primary-a20);
 }
 

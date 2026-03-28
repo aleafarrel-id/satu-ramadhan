@@ -81,7 +81,7 @@
     left: 50%;
     transform: translateX(-50%);
     color: var(--clr-accent-500);
-    font-size: 14px;
+    font-size: var(--fs-sm);
     font-weight: 700;
     line-height: 1;
 }
@@ -208,7 +208,7 @@
 
     .compass-label {
         top: 8px;
-        font-size: 12px;
+        font-size: var(--fs-xs);
     }
 
     .compass-inner {

@@ -12,7 +12,7 @@
    align-items: center;
    justify-content: center;
    padding: var(--spacing-lg);
-   background: rgba(4, 26, 32, 0.85);
+   background: var(--clr-bg-cal-overlay);
    backdrop-filter: blur(8px);
    -webkit-backdrop-filter: blur(8px);
    opacity: 0;
@@ -29,7 +29,7 @@
 .location-modal {
    width: 100%;
    max-width: 310px;
-   background: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+   background: var(--gradient-cal-bg);
    border: 1px solid var(--clr-primary-a30);
    border-radius: var(--radius-lg);
    padding: var(--spacing-lg) var(--spacing-md);

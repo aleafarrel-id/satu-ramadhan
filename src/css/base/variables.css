@@ -1,9 +1,12 @@
-/* =============================================
-   CSS Custom Properties (Design Tokens)
-   Aligned with design-sample
-   ============================================= */
+/* ==========================================================================
+   DESIGN TOKENS (variables.css)
+   Central source of truth for all styles in app.
+   ========================================================================== */
 
 :root {
+   /* --- 1. PRIMITIVE COLORS ---
+      Base palettes and their alpha/transparency variants. */
+
    /* Primary (Teal) */
    --clr-primary-50: #e6f5f5;
    --clr-primary-100: #b3e0e0;
@@ -16,7 +19,6 @@
    --clr-primary-800: #072830;
    --clr-primary-900: #041a20;
 
-   /* Primary Alpha */
    --clr-primary-a10: rgba(45, 158, 158, 0.1);
    --clr-primary-a15: rgba(45, 158, 158, 0.15);
    --clr-primary-a20: rgba(45, 158, 158, 0.2);
@@ -47,7 +49,6 @@
    --clr-accent-800: #9a7a1c;
    --clr-accent-900: #7c5f14;
 
-   /* Accent Alpha */
    --clr-accent-a10: rgba(212, 175, 55, 0.1);
    --clr-accent-a15: rgba(212, 175, 55, 0.15);
    --clr-accent-a20: rgba(212, 175, 55, 0.2);
@@ -56,34 +57,36 @@
    --clr-accent-a40: rgba(212, 175, 55, 0.4);
    --clr-accent-a50: rgba(212, 175, 55, 0.5);
 
-   /* White Alpha */
+   /* Neutral Alpha (White & Black) */
    --clr-white-a05: rgba(255, 255, 255, 0.05);
    --clr-white-a10: rgba(255, 255, 255, 0.1);
    --clr-white-a15: rgba(255, 255, 255, 0.15);
    --clr-white-a30: rgba(255, 255, 255, 0.3);
    --clr-white-a70: rgba(255, 255, 255, 0.7);
 
-   /* Black Alpha */
    --clr-black-a10: rgba(0, 0, 0, 0.1);
    --clr-black-a15: rgba(0, 0, 0, 0.15);
    --clr-black-a20: rgba(0, 0, 0, 0.2);
    --clr-black-a30: rgba(0, 0, 0, 0.3);
    --clr-black-a40: rgba(0, 0, 0, 0.4);
 
-   /* Semantic Colors */
+   /* --- 2. SEMANTIC COLORS ---
+      Functional colors for text, background, and UI status. */
+
+   /* Status & Feedback */
    --clr-info: #0097b2;
    --clr-danger: #ff3b3b;
    --clr-cal-friday: #4ade80;
    --clr-cal-sunday: #f87171;
 
-   /* Text */
+   /* Text Tokens */
    --clr-text-primary: #ffffff;
    --clr-text-secondary: #d0e0f0;
    --clr-text-muted: #a0b0c0;
    --clr-text-dark: #1a2a3a;
    --clr-text-accent: var(--clr-accent-500);
 
-   /* Backgrounds */
+   /* Background Tokens */
    --clr-bg-gradient: linear-gradient(135deg, #0a3540 0%, #1a4a5a 50%, #0f3545 100%);
    --clr-bg-dark: #0d1f2d;
    --clr-bg-card: rgba(26, 58, 74, 0.6);
@@ -91,12 +94,12 @@
    --clr-bg-overlay: rgba(10, 53, 64, 0.95);
    --clr-bg-cal-overlay: rgba(4, 26, 32, 0.85);
 
-   /* Borders */
+   /* Border & Line Tokens */
    --clr-border: var(--clr-primary-a30);
    --clr-border-light: var(--clr-white-a10);
    --clr-border-accent: var(--clr-accent-500);
 
-   /* Badges */
+   /* User Badges & Status */
    --clr-badge-local-bg: rgba(74, 222, 128, 0.15);
    --clr-badge-local-text: var(--clr-cal-friday);
    --clr-badge-online-bg: rgba(0, 151, 178, 0.15);
@@ -106,10 +109,14 @@
    --clr-badge-active-bg: rgba(52, 211, 153, 0.15);
    --clr-badge-active-text: #34d399;
 
-   /* Typography */
+   /* --- 3. TYPOGRAPHY ---
+      Fonts, scale, weights, and leading. */
+
+   /* Fonts */
    --ff-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
    --ff-decorative: 'Amiri', Georgia, 'Times New Roman', serif;
 
+   /* Font Scale */
    --fs-2xs: 0.625rem;
    --fs-xs: 0.75rem;
    --fs-sm: 0.875rem;
@@ -121,35 +128,30 @@
    --fs-3xl: 2rem;
    --fs-4xl: 2.5rem;
 
+   /* Font Weights */
    --fw-light: 300;
    --fw-regular: 400;
    --fw-medium: 500;
    --fw-semibold: 600;
    --fw-bold: 700;
 
+   /* Line Height */
    --lh-none: 1;
    --lh-snug: 1.2;
    --lh-tight: 1.2;
    --lh-relaxed: 1.3;
    --lh-normal: 1.5;
 
+   /* Letter Spacing */
    --ls-tight: 0.5px;
    --ls-normal: 1px;
    --ls-wide: 1.5px;
    --ls-wider: 2px;
 
-   /* Sizing */
-   --icon-sm: 16px;
-   --icon-md: 20px;
-   --icon-lg: 24px;
-   --icon-xl: 40px;
+   /* --- 4. SIZING & SPACING ---
+      Layout metrics, spacing, and icon sizes. */
 
-   --size-logo: 52px;
-   --size-nav-item: 48px;
-   --size-touch-target: 44px;
-   --size-splash-logo: 160px;
-
-   /* Spacing */
+   /* Spacing Scale (Abstract) */
    --sp-1: 0.25rem;
    --sp-2: 0.5rem;
    --sp-3: 0.75rem;
@@ -157,27 +159,63 @@
    --sp-5: 1.25rem;
    --sp-6: 1.5rem;
    --sp-8: 2rem;
+   --sp-12: 3rem;
 
-   /* Radius & Effects */
+   /* Spacing Scale (Named) */
+   --spacing-xs: 4px;
+   --spacing-sm: 8px;
+   --spacing-md: 16px;
+   --spacing-lg: 24px;
+   --spacing-xl: 32px;
+
+   /* Iconic Sizes */
+   --icon-sm: 16px;
+   --icon-md: 20px;
+   --icon-lg: 24px;
+   --icon-xl: 40px;
+
+   /* Interactive Components */
+   --size-logo: 52px;
+   --size-nav-item: 48px;
+   --size-touch-target: 44px;
+   --size-splash-logo: 160px;
+
+   /* --- 5. SURFACE & EFFECTS ---
+      Borders, shadows, and transitions. */
+
+   /* Border Radius */
    --radius-sm: 0.25rem;
    --radius-md: 0.5rem;
    --radius-lg: 0.75rem;
    --radius-xl: 1rem;
+   --radius-pill: 24px;
+   --radius-circle: 50%;
    --radius-full: 9999px;
 
+   /* Elevation (Shadows) */
    --shadow-sm: 0 1px 2px var(--clr-black-a20);
    --shadow-md: 0 4px 6px var(--clr-black-a30);
    --shadow-lg: 0 10px 25px var(--clr-black-a40);
    --shadow-glow: 0 0 15px var(--clr-accent-a40);
    --shadow-modal: 0 20px 60px var(--clr-black-a40), 0 0 40px var(--clr-black-a10), inset 0 1px 0 var(--clr-white-a10);
+   --shadow-card: var(--shadow-md);
+   --shadow-nav: 0 -4px 16px var(--clr-black-a30);
 
+   /* Transitions & Motion */
    --transition-fast: 150ms ease;
    --transition-normal: 300ms ease;
+   --transition-slow: 0.5s ease;
 
+   /* Layering (Z-Index) */
    --z-sticky: 200;
    --z-modal: 300;
 
-   /* Navigation */
+   /* --- 6. COMPONENT SPECIFIC ---
+      Tokens scoped to specific application modules. */
+
+   /* Navigation (Global & Quran Lock) */
+   --nav-height: 58px;
+   --nav-indicator-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
    --nav-height-list-container-xl: 64px;
    --nav-height-list-container-lg: 60px;
    --nav-height-list-container-md: 56px;
@@ -189,10 +227,13 @@
    --nav-slider-size-md: 42px;
    --nav-slider-size-sm: 40px;
 
-   --nav-height: 58px;
-   --nav-indicator-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+   /* Navigation Slider Specifics */
+   --nav-slider-size-xl: 46px;
+   --nav-slider-size-lg: 44px;
+   --nav-slider-size-md: 42px;
+   --nav-slider-size-sm: 40px;
 
-   /* Map Card */
+   /* Qibla Map Card */
    --clr-map-fallback: var(--clr-bg-card-solid);
    --clr-map-route: var(--clr-primary-400);
    --clr-map-route-a80: rgba(45, 158, 158, 0.8);
@@ -203,53 +244,7 @@
    --size-map-icon: 32px;
    --size-map-user-dot: 12px;
 
-   /* Legacy aliases */
-   --color-bg-primary: var(--clr-secondary-600);
-   --color-bg-secondary: var(--clr-bg-card-solid);
-   --color-bg-card: var(--clr-bg-card);
-   --color-bg-card-inner: rgba(30, 65, 82, 0.7);
-   --color-accent-gold: var(--clr-accent-500);
-   --color-accent-gold-light: var(--clr-accent-400);
-   --color-accent-gold-dark: var(--clr-accent-700);
-   --color-text-primary: var(--clr-text-primary);
-   --color-text-secondary: var(--clr-text-secondary);
-   --color-text-accent: var(--clr-text-accent);
-   --color-skeleton: rgba(26, 58, 74, 0.5);
-   --color-skeleton-shine: rgba(36, 85, 101, 0.5);
-   --color-tube-empty: rgba(20, 50, 65, 0.8);
-   --color-nav-bg: var(--clr-secondary-700);
-   --color-nav-active: var(--clr-accent-500);
-   --color-nav-inactive: #6B8599;
-
-   --gradient-app-bg: var(--clr-bg-gradient);
-   --gradient-splash-bg: linear-gradient(180deg, #0a3540 0%, #1a4a5a 50%, #d4af37 100%);
-   --gradient-tube-fill: linear-gradient(to top, rgba(154, 122, 28, 0.95), rgba(212, 175, 55, 0.85), rgba(232, 200, 110, 0.7));
-   --clr-liquid-surface: #D3B969;
-   --clr-liquid-body: #A5913A;
-   --clr-liquid-deep: #8D7320;
-   --clr-liquid-bubble: rgba(255, 235, 170, 0.4);
-   --gradient-loading-bar: linear-gradient(90deg, #d4af37, #e8c86e);
-   --gradient-org-badge: linear-gradient(90deg, #1a5f6f 0%, #2d9e9e 50%, #1a5f6f 100%);
-   --gradient-cal-bg: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
-
-   --font-primary: var(--ff-primary);
-   --font-display: var(--ff-decorative);
-
-   --spacing-xs: 4px;
-   --spacing-sm: 8px;
-   --spacing-md: 16px;
-   --spacing-lg: 24px;
-   --spacing-xl: 32px;
-
-   --radius-pill: 24px;
-   --radius-circle: 50%;
-
-   --shadow-card: var(--shadow-md);
-   --shadow-nav: 0 -4px 16px var(--clr-black-a30);
-
-   --transition-slow: 0.5s ease;
-
-   /* Al-Quran Specific */
+   /* --- Al-Quran Module --- */
    --clr-quran-bg: #FDF9F1;
    --clr-quran-bg-alt: #f1ebd9;
    --clr-quran-text: #2b2b2b;
@@ -262,31 +257,20 @@
    --clr-quran-card-hover: #F8F3E5;
    --clr-quran-ornament: #d4af37;
 
-   /* Tajweed Colors */
+   /* Tajweed Rules (Standard) */
    --clr-tajweed-ghunnah: #66BB6A;
-   /* ghunnah*/
    --clr-tajweed-idgham: #26C6DA;
-   /* idgham variants */
    --clr-tajweed-ikhfa: #FFA726;
-   /* ikhfa variants */
    --clr-tajweed-iqlab: #AB47BC;
-   /* iqlab */
    --clr-tajweed-qalqalah: #EF5350;
-   /* qalqalah */
    --clr-tajweed-madd: #42A5F5;
-   /* madd variants */
    --clr-tajweed-madd-silah-qashirah: #26A69A;
-   /* mad silah qashirah (2 harakat) */
    --clr-tajweed-madd-silah-thawilah: #00897B;
-   /* mad silah thawilah (4-5 harakat) */
    --clr-tajweed-lam-shams: #8D6E63;
-   /* lam shamsiyyah */
    --clr-tajweed-hamza-wasl: #78909C;
-   /* hamzat wasl */
    --clr-tajweed-silent: #B0BEC5;
-   /* silent */
 
-   /* Tajweed Optional/Contextual Colors (Waqf-dependent, darker variants) */
+   /* Tajweed Rules (Optional/Waqf Variants) */
    --clr-tajweed-opt-ghunnah: #3E7A42;
    --clr-tajweed-opt-idgham: #18838E;
    --clr-tajweed-opt-ikhfa: #B87418;
@@ -296,7 +280,7 @@
    --clr-tajweed-opt-madd-silah-qashirah: #1B756C;
    --clr-tajweed-opt-madd-silah-thawilah: #006054;
 
-   /* Mushaf Specific */
+   /* Mushaf Rendering Context */
    --clr-mushaf-bg-start: #f7eed7;
    --clr-mushaf-bg-mid: #f0e2c0;
    --clr-mushaf-bg-end: #e8d5ab;
@@ -311,10 +295,57 @@
    --clr-mushaf-edge-shadow: rgba(180, 155, 100, 0.2);
    --clr-mushaf-line-border: rgba(180, 155, 100, 0.45);
    --clr-mushaf-page-shadow: 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+
+   /* Mushaf Fonts */
    --ff-mushaf-arabic: 'LPMQ-IsepMisbah', 'Amiri', 'Scheherazade New', serif;
    --ff-mushaf-decorative: 'Amiri', 'LPMQ-IsepMisbah', serif;
    --ff-mushaf-header-ar: 'DecoType-Thuluth-II-Regular', 'LPMQ-IsepMisbah', 'Amiri', serif;
    --ff-mushaf-basmala: 'DecoType-Thuluth-Regular', 'LPMQ-IsepMisbah', 'Amiri', serif;
+
+   /* Mushaf Transitions */
    --transition-mushaf-slide: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
    --transition-mushaf-picker: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+   /* --- 7. LEGACY ALIASES & REFS ---
+      Compatibility mappings for internal logic and design consistency. */
+
+   /* Global Design References */
+   --font-primary: var(--ff-primary);
+   --font-display: var(--ff-decorative);
+
+   /* Structural Aliases */
+   --color-bg-primary: var(--clr-secondary-600);
+   --color-bg-secondary: var(--clr-bg-card-solid);
+   --color-bg-card: var(--clr-bg-card);
+   --color-bg-card-inner: rgba(30, 65, 82, 0.7);
+   --color-text-primary: var(--clr-text-primary);
+   --color-text-secondary: var(--clr-text-secondary);
+   --color-text-accent: var(--clr-text-accent);
+
+   /* Gold Theme Aliases */
+   --color-accent-gold: var(--clr-accent-500);
+   --color-accent-gold-light: var(--clr-accent-400);
+   --color-accent-gold-dark: var(--clr-accent-700);
+
+   /* Transient & UI Effects Aliases */
+   --color-skeleton: rgba(26, 58, 74, 0.5);
+   --color-skeleton-shine: rgba(36, 85, 101, 0.5);
+   --color-tube-empty: rgba(20, 50, 65, 0.8);
+   --color-nav-bg: var(--clr-secondary-700);
+   --color-nav-active: var(--clr-accent-500);
+   --color-nav-inactive: #6B8599;
+
+   /* Gradient Compositions */
+   --gradient-app-bg: var(--clr-bg-gradient);
+   --gradient-splash-bg: linear-gradient(180deg, #0a3540 0%, #1a4a5a 50%, #d4af37 100%);
+   --gradient-tube-fill: linear-gradient(to top, rgba(154, 122, 28, 0.95), rgba(212, 175, 55, 0.85), rgba(232, 200, 110, 0.7));
+   --gradient-loading-bar: linear-gradient(90deg, #d4af37, #e8c86e);
+   --gradient-org-badge: linear-gradient(90deg, #1a5f6f 0%, #2d9e9e 50%, #1a5f6f 100%);
+   --gradient-cal-bg: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+
+   /* Liquid Component Refs */
+   --clr-liquid-surface: #D3B969;
+   --clr-liquid-body: #A5913A;
+   --clr-liquid-deep: #8D7320;
+   --clr-liquid-bubble: rgba(255, 235, 170, 0.4);
 }
