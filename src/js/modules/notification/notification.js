@@ -1,7 +1,5 @@
 /**
  * In-App Notification Module
- * Toast-style notifications that slide in from the top center
- * Supports stacking, auto-dismiss, and success/error/info/warning types
  */
 
 /** @type {HTMLElement|null} */

@@ -1,11 +1,13 @@
 /**
  * Generic Confirm Modal
  * A reusable UI component for asking user confirmation before destructive actions.
- * Follows SoC: purely UI, no storage logic.
  */
 
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
+
+// Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;
@@ -91,7 +93,6 @@ function bindEvents() {
     _overlayEl.querySelector('#confirm-btn-cancel')?.addEventListener('click', handleCancel);
     _overlayEl.querySelector('#confirm-btn-action')?.addEventListener('click', handleConfirm);
 
-    // ── Bind: Escape to cancel ──
     addEscHandler(_overlayEl, handleCancel);
 }
 

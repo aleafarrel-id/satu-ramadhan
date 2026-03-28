@@ -1,14 +1,17 @@
 /**
  * Settings Location Card Component
- * Renders the location settings card with GPS and Manual buttons
+ * Renders the location settings card with GPS and Manual buttons.
  */
 
+// Core & Libraries
 import { getSavedLocation } from '../../core/geolocation.js';
 
-import { showLocationSearchModal } from '../modal/location-search-modal.js';
-
+// Utilities & Helpers
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
+
+// UI Components
+import { showLocationSearchModal } from '../modal/location-search-modal.js';
 
 export async function render(container) {
     const savedLocation = await getSavedLocation();
@@ -26,7 +29,7 @@ export async function render(container) {
     container.innerHTML = `
         <div class="card settings-loc-card">
             <div class="settings-loc-header" id="settings-loc-header">
-                <div class="settings-loc-title">LOKASI ANDA</div>
+                <div class="settings-loc-title">LOKASI</div>
                 <div class="settings-loc-icon-wrapper">
                     <i class='bx bx-map settings-loc-map-icon ${savedLocation ? '' : 'unset'}'></i>
                     <div id="settings-loc-status-wrapper" class="settings-loc-status-wrapper">
@@ -68,7 +71,6 @@ export async function render(container) {
 
     btnGps?.addEventListener('click', () => {
         handleGpsDetectionWithButton(btnGps, (location) => {
-            // Update UI directly
             const statusWrapper = container.querySelector('#settings-loc-status-wrapper');
             if (statusWrapper) {
                 statusWrapper.innerHTML = renderStatus(location);
@@ -83,7 +85,6 @@ export async function render(container) {
     btnManual?.addEventListener('click', () => {
         showLocationSearchModal({
             onLocationSelected: (location) => {
-                // Update UI directly
                 const statusWrapper = container.querySelector('#settings-loc-status-wrapper');
                 if (statusWrapper) {
                     statusWrapper.innerHTML = renderStatus(location);

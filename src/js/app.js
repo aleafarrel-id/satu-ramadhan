@@ -1,29 +1,35 @@
 /**
  * App Initializer & Orchestrator
- * Coordinates all modules and handles app lifecycle
+ * Coordinates all modules and handles the application lifecycle.
  */
 
-import { CONFIG } from './config/version-config.js';
-
+// Core & Libraries
 import { App } from '@capacitor/app';
-
+import { CONFIG } from './config/version-config.js';
 import { getSavedLocation } from './core/geolocation.js';
 import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
 
+// State & Core Services
 import { initBackHandler } from './modules/system/back-handler.js';
 import { initNotificationService } from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
 import { updateWatcher } from './modules/prayer/prayer-watcher.js';
+import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
 
+// Utilities & Helpers
+import { initPullToRefresh } from './utils/pull-to-refresh.js';
+import { initGlobalFocusManager } from './utils/focus-manager.js';
+
+// Router
+import * as router from './router.js';
+import { refreshCurrentPage } from './router.js';
+
+// UI Components
 import * as header from './components/ui/header.js';
 import * as navBar from './components/ui/nav-bar.js';
 
+// Static Pages (Critical Path)
 import * as homePage from './pages/home-page.js';
-import * as router from './router.js';
-
-import { initPullToRefresh } from './utils/pull-to-refresh.js';
-import { initGlobalFocusManager } from './utils/focus-manager.js';
-import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
 
 const SPLASH_MIN_DURATION = 1500;
 
@@ -64,12 +70,15 @@ export async function initApp() {
     const fillEl = document.getElementById('splash-loading-fill');
     const splashStart = Date.now();
 
-    // Initialize pull-to-refresh
+    // Initialize global pull-to-refresh
+    // - Triggers soft-reload preserving the app shell and avoiding splash screen
+    // - Disabled when Quran modal is active to prevent gesture collision
     initPullToRefresh({
         scrollElement: '#app-content',
         threshold: 80,
-        onRefresh() {
-            window.location.reload();
+        disableOnQuran: true,
+        async onRefresh() {
+            await refreshCurrentPage();
         }
     });
 

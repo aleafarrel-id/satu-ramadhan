@@ -1,13 +1,7 @@
 /**
- * Share Schedule Card — UI Component
- * ───────────────────────────────────
+ * Share Schedule Card Component
  * Renders the "Jadwal Lengkap" card.
- * Displayed on the Schedule page below the main schedule card.
- *
- * Uses the exact same UI pattern as location-card for consistency.
  */
-
-/* ── Render ── */
 
 /**
  * Render the HTML string for the "Jadwal Lengkap" card.
@@ -34,8 +28,6 @@ export function renderShareScheduleCard() {
         </div>
     `;
 }
-
-/* ── Event Binding ── */
 
 /**
  * Bind click events to the generate button inside the card.

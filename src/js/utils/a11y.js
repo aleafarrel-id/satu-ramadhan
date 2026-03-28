@@ -7,11 +7,9 @@
  * - trapFocus: Auto-focuses and traps Tab cycling inside a modal
  */
 
-/* ── Native Interactive Tags ── */
 
 const NATIVE_INTERACTIVE = new Set(['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA']);
 
-/* ── Focusable Element Selector ── */
 
 const FOCUSABLE_SELECTOR = [
     'a[href]',
@@ -22,7 +20,6 @@ const FOCUSABLE_SELECTOR = [
     '[tabindex]:not([tabindex="-1"])',
 ].join(', ');
 
-/* ── Public API ── */
 
 /**
  * Make an element behave like an accessible button.
@@ -97,11 +94,11 @@ const activeFocusTraps = [];
  * @returns {Function} cleanup - Call this when the modal is hidden/removed
  */
 export function trapFocus(overlayEl) {
-    if (!overlayEl) return () => {};
+    if (!overlayEl) return () => { };
 
     // Remember what was focused before the modal opened
     const previouslyFocused = document.activeElement;
-    
+
     // Add to stack of active traps
     const trapConfig = { overlayEl };
     activeFocusTraps.push(trapConfig);

@@ -1,16 +1,12 @@
 /**
  * Unified Location Search Service
- * Queries local database first, then Nominatim API as fallback.
- * Merges, deduplicates, and returns normalized location results.
  */
 
+// Core Services
 import { fetchRegencies, fetchProvinces } from './database.js';
 import { searchNominatim } from './nominatim.js';
 
-/* ── Configuration ── */
-const DEDUP_DISTANCE_KM = 30; // Consider locations within 30km as duplicates
-
-/* ── Haversine (lightweight copy for dedup) ── */
+const DEDUP_DISTANCE_KM = 30;
 
 /**
  * Quick Haversine distance (km) for deduplication checks
@@ -30,8 +26,6 @@ function haversineQuick(lat1, lon1, lat2, lon2) {
         Math.sin(dLon / 2) ** 2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
-
-/* ── Local Search ── */
 
 /**
  * Search the local regency database by name (case-insensitive).
@@ -91,8 +85,6 @@ async function searchLocalDB(query) {
     return results;
 }
 
-/* ── Deduplication ── */
-
 /**
  * Check if a Nominatim result is a duplicate of any local result.
  * A result is considered duplicate if name is similar AND coordinates are close.
@@ -116,8 +108,6 @@ function isDuplicate(nomResult, localResults) {
         ) < DEDUP_DISTANCE_KM;
     });
 }
-
-/* ── Public API ── */
 
 /**
  * Search for locations using local database first, then Nominatim fallback.

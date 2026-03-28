@@ -3,14 +3,14 @@
  * Shows mushaf reading and navigation instructions.
  */
 
-/* ── DOM References ── */
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+
+// Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
-
-/* ── Public API ── */
 
 /**
  * Show the mushaf guide modal.
@@ -31,18 +31,15 @@ export function showMushafGuideModal() {
     // Trap focus inside modal
     _releaseFocus = trapFocus(_overlayEl);
 
-    // ── Bind: Close button ──
     const btnClose = _overlayEl.querySelector('#mushaf-guide-close');
     btnClose?.addEventListener('click', hideModal);
 
-    // ── Bind: Click outside to close ──
     _overlayEl.addEventListener('click', (e) => {
         if (e.target === _overlayEl) {
             hideModal();
         }
     });
 
-    // ── Bind: Escape to close ──
     addEscHandler(_overlayEl, hideModal);
 }
 
@@ -56,8 +53,6 @@ export function hideModal() {
     // Safety: force remove after animation duration
     setTimeout(removeModal, 400);
 }
-
-/* ── Internal Helpers ── */
 
 function removeModal() {
     if (_releaseFocus) {

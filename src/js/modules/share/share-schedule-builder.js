@@ -1,18 +1,5 @@
 /**
- * Share Schedule Builder
- * ──────────────────────
- * Loads the share schedule template inside a hidden same-origin <iframe>,
- * injects schedule data, and returns the rendered element for capture.
- *
- * WHY IFRAME?
- *   DOM-to-image libraries (html2canvas, html-to-image) fail to render
- *   CSS custom properties, @font-face, pseudo-elements, and icon fonts
- *   when capturing cloned DOM elements. By loading the template in an
- *   iframe, the BROWSER'S OWN rendering engine handles all CSS — identical
- *   to opening the HTML file directly. The capture library then only needs
- *   to serialize the ALREADY-RENDERED content with computed styles.
- *
- * @module share-schedule-builder
+ * Share Schedule Builder Module
  */
 
 import { MONTH_NAMES_SHORT, cleanTimeStr } from '../../utils/datetime.js';
@@ -57,17 +44,8 @@ const FONT_FILES = [
  * @property {number}       hijriYear      - Hijri year
  */
 
-/* ── Cache ── */
-
-/** @type {string|null} Cached base64 @font-face CSS for html-to-image */
 let _cachedFontCSS = null;
-
-/* ── Module State ── */
-
-/** WeakMap to store iframe reference for cleanup */
 const _iframeMap = new WeakMap();
-
-/* ── Public API ── */
 
 /**
  * Build the share schedule element by loading the template in a hidden iframe.
@@ -123,8 +101,6 @@ export function destroyShareScheduleElement(el) {
     _iframeMap.delete(el);
 }
 
-/* ── Internal: Iframe Creation ── */
-
 /**
  * Create a hidden iframe that loads the share schedule template.
  * The iframe is same-origin, so we have full DOM access.
@@ -170,10 +146,6 @@ function createTemplateIframe() {
     });
 }
 
-/* ── Internal: Iframe Helpers ── */
-
-
-
 /**
  * Wait for all fonts, images, and styles to fully load inside the iframe.
  *
@@ -205,8 +177,6 @@ async function waitForIframeReady(iframe) {
     // Small extra delay for rendering to settle
     await new Promise(r => setTimeout(r, 200));
 }
-
-/* ── Internal: Font Embedding ── */
 
 /**
  * Build and cache base64-embedded @font-face CSS for html-to-image.
@@ -255,8 +225,6 @@ function blobToDataUrl(blob) {
         reader.readAsDataURL(blob);
     });
 }
-
-/* ── Internal: Data Injection ── */
 
 /**
  * Inject metadata into the template elements.

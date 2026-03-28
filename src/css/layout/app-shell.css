@@ -40,7 +40,8 @@
    width: 100%;
    max-width: 430px;
    margin: 0 auto;
-   z-index: 2; /* In front of quran-backdrop */
+   z-index: 2;
+   /* In front of quran-backdrop */
 }
 
 /* Scrollable content area between header and nav */
@@ -126,10 +127,29 @@
    gap: var(--spacing-sm);
    height: 0;
    overflow: hidden;
-   color: var(--color-text-secondary);
    font-size: var(--fs-sm);
    background-color: transparent;
    flex-shrink: 0;
+   will-change: height;
+}
+
+/* Light Theme (Default - for dark backgrounds) */
+.custom-ptr.ptr-light {
+   color: var(--clr-text-secondary);
+}
+
+.custom-ptr.ptr-light .custom-ptr-icon {
+   color: var(--clr-text-secondary);
+}
+
+/* Dark Theme (For light backgrounds like Al-Quran) */
+.custom-ptr.ptr-dark {
+   color: var(--clr-quran-text-secondary);
+}
+
+.custom-ptr.ptr-dark .custom-ptr-icon {
+   color: var(--clr-quran-accent);
+   font-weight: var(--fw-bold);
 }
 
 .custom-ptr-icon {
@@ -137,7 +157,7 @@
    align-items: center;
    justify-content: center;
    font-size: var(--icon-md);
-   color: var(--color-text-secondary);
+   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .custom-ptr-icon.spinning i {

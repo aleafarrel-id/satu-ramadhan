@@ -2,14 +2,13 @@
  * Prayer Card Component
  * Renders the daily prayer schedule tube grid with liquid fill animations,
  * featured card, org toggle, and provides skeleton loading state.
- *
- * Extracted from home-page.js for Separation of Concerns.
  */
 
+// Core & Libraries
 import { PRAYER_LIST, getTubeFillPercent, parseTimeToDate } from '../../modules/prayer/prayer-times.js';
-import { renderFeaturedCard as renderFeaturedCardShared } from '../prayer/prayer-widgets.js';
 
-/* ── Constants ── */
+// UI Components
+import { renderFeaturedCard as renderFeaturedCardShared } from '../prayer/prayer-widgets.js';
 
 const TUBE_LAYOUT = [
     { type: 'stacked', items: ['terbit', 'subuh', 'imsak'] },
@@ -17,8 +16,6 @@ const TUBE_LAYOUT = [
     { type: 'single', key: 'magrib' },
     { type: 'single', key: 'isya' },
 ];
-
-/* ── Public API ── */
 
 /**
  * Render the complete prayer card HTML: featured card + tube grid + org toggle.
@@ -200,8 +197,6 @@ export function renderPrayerCardSkeleton() {
     `;
 }
 
-/* ── Internal Render Functions ── */
-
 /**
  * Render the featured "current prayer" card wrapper.
  * @param {object} timings     - Prayer timings object
@@ -318,8 +313,6 @@ function renderLiquidHTML() {
         </div>
     `;
 }
-
-/* ── Utilities ── */
 
 /**
  * Check if a prayer time has already passed, accounting for post-midnight.

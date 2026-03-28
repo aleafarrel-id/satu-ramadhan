@@ -1,28 +1,15 @@
 /**
  * Ramadhan Module
- * Handles hybrid presets: base data from JSON + user overrides/customs from Storage.
- * Provides CRUD operations, smart year-reset mechanism,
- * and Hijri offset calibration for year-round calendar support.
- *
- * Storage Keys (via storage.js):
- *   - 'user_presets'  → { overrides: { [id]: { startDate?, endDate? } }, customs: [...] }
- *   - 'saved_year'    → number (last known tahunHijriah)
- *   - 'selected_org'  → string (active preset ID)
- *   - 'hijri_offset'  → number (cached offset days between preset and API)
  */
 
 import { getRamadhanConfig } from '../../core/database.js';
 import { getPrayerTimesByCoords } from '../../core/api.js';
 import * as storage from '../../core/storage.js';
 
-/* ── Storage Keys ── */
-
 const ORG_KEY = 'selected_org';
 const USER_PRESETS_KEY = 'user_presets';
 const SAVED_YEAR_KEY = 'saved_year';
 const HIJRI_OFFSET_KEY = 'hijri_offset';
-
-/* ── Hijri Offset Calibration ── */
 
 /**
  * Calculate the offset (in days) between the preset's 1 Ramadhan
@@ -84,8 +71,6 @@ export async function getHijriOffset(location) {
     }
 }
 
-/* ── User Presets Storage Helpers ── */
-
 /**
  * Get user presets data from storage.
  * @returns {Promise<{ overrides: Object, customs: Array }>}
@@ -105,8 +90,6 @@ async function getUserPresetsData() {
 async function saveUserPresetsData(data) {
     await storage.set(USER_PRESETS_KEY, data);
 }
-
-/* ── Smart Year Reset ── */
 
 /**
  * Compare stored year with JSON year.
@@ -136,8 +119,6 @@ async function checkAndResetYear(jsonYear, basePresets) {
         await storage.set(SAVED_YEAR_KEY, jsonYear);
     }
 }
-
-/* ── Core Public API ── */
 
 /**
  * Get all presets (base + overrides + customs merged).
@@ -192,8 +173,6 @@ export async function getActivePreset() {
     return found || null;
 }
 
-/* ── Organization Selection ── */
-
 /**
  * Get the currently selected organization ID
  * @returns {Promise<string>}
@@ -229,8 +208,6 @@ export async function toggleOrg() {
     await setSelectedOrg(nextId);
     return nextId;
 }
-
-/* ── Date Accessors ── */
 
 /**
  * Get the start date of Ramadhan for the active (or specified) preset.
@@ -288,8 +265,6 @@ export async function getRamadhanTotalDays(org = null) {
     return Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
 }
 
-/* ── Display Name Helpers ── */
-
 /**
  * Get display name synchronously (when preset object is provided)
  * @param {string|null} orgId - preset ID
@@ -321,8 +296,6 @@ export async function getOrgDescription(org = null) {
     const preset = org ? await getPresetById(org) : await getActivePreset();
     return preset?.description || '';
 }
-
-/* ── CRUD Operations ── */
 
 /**
  * Update (override) a base preset's startDate/endDate.
@@ -400,8 +373,6 @@ export async function resetBasePreset(id) {
     delete data.overrides[id];
     await saveUserPresetsData(data);
 }
-
-/* ── Internal Helpers ── */
 
 /**
  * Get a single preset by ID from the merged list.

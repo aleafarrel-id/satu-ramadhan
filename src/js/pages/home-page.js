@@ -17,6 +17,8 @@ import { renderHomeSkeleton } from '../components/skeleton/skeleton-home.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { renderCountdownCard } from '../components/card/countdown-card.js';
 
+import { safeClear } from '../utils/dom-utils.js';
+
 /* --- CONSTANTS --- */
 const STORAGE_KEY = 'home_view_mode';
 const VIEW_TUBE = 'tube';
@@ -38,13 +40,20 @@ let _viewMode = VIEW_TUBE;
  * then retrieves prayer timings and renders the actual content.
  *
  * @param {HTMLElement} container - The DOM element to render into.
+ * @param {Object} [options={}] - Navigation options (e.g., refresh: true)
  */
-export async function render(container) {
+export async function render(container, options = {}) {
     _container = container;
+
+    safeClear(container);
+    renderSkeleton(null);
+
+    if (options.refresh) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+    }
+
     _location = await getSavedLocation();
     _viewMode = localStorage.getItem(STORAGE_KEY) || VIEW_TUBE;
-
-    renderSkeleton(_location);
 
     if (_location) {
         try {
@@ -198,10 +207,16 @@ async function renderContent() {
         _lastPrayerIndex = prayerState.currentIndex;
     }
 
-    _container.innerHTML = `
+    safeClear(_container);
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
         ${renderLocationCardShared(_location)}
         ${contentHtml}
     `;
+    // Append all internal elements of the wrapper to the container
+    while (wrapper.firstChild) {
+        _container.appendChild(wrapper.firstChild);
+    }
 
     bindLocationCardEvents(showLocationModalForHome, _container);
     bindScheduleEvents();
@@ -264,17 +279,17 @@ async function switchView(mode) {
     document.getElementById('home-view-tube')?.classList.toggle('active', mode === VIEW_TUBE);
     document.getElementById('home-view-list')?.classList.toggle('active', mode === VIEW_LIST);
 
-    // Phase 1: Fade out
+    // Fade out
     wrapper.classList.add('view-fading-out');
 
     await new Promise(resolve => setTimeout(resolve, FADE_OUT_MS));
 
-    // Phase 2: Swap content
+    // Swap content
     const prayerState = getCurrentPrayer(_timings);
     const orgName = await getOrgDisplayNameAsync();
     wrapper.innerHTML = renderScheduleView(prayerState, orgName);
 
-    // Phase 3: Fade in
+    // Fade in
     wrapper.classList.remove('view-fading-out');
     wrapper.classList.add('view-fading-in');
     wrapper.addEventListener('animationend', () => {

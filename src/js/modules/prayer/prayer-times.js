@@ -1,6 +1,5 @@
 /**
  * Prayer Times Module
- * Handles prayer time logic, current/next prayer detection, tube fill calculation
  */
 
 import iconMoonSvg from '../../../assets/icon/moon.svg?raw';
@@ -11,9 +10,6 @@ import iconSunSetSvg from '../../../assets/icon/sun-set.svg?raw';
 import iconSunFogSvg from '../../../assets/icon/sun-fog.svg?raw';
 import iconCloudSunSvg from '../../../assets/icon/cloud-sun.svg?raw';
 
-/**
- * Prayer time definitions with metadata
- */
 export const PRAYER_LIST = [
     { key: 'imsak', name: 'Imsak', icon: iconMoonStarsSvg },
     { key: 'subuh', name: 'Subuh', icon: iconSunFogSvg },
@@ -24,9 +20,6 @@ export const PRAYER_LIST = [
     { key: 'isya', name: "Isya'", icon: iconMoonSvg },
 ];
 
-/**
- * Parse time string "HH:MM" to Date object for today
- */
 export function parseTimeToDate(timeStr) {
     if (!timeStr) return null;
     const clean = timeStr.replace(/\s*\(.*\)/, ''); // remove timezone note

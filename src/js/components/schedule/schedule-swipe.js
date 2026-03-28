@@ -1,15 +1,10 @@
 /**
  * Schedule Swipe Handler
- * Reusable gesture recognition for horizontal navigation
- * supporting touch, mouse drag, and mouse wheel inputs.
+ * Reusable gesture recognition for horizontal navigation.
  */
-
-/* ── Constants ── */
 
 const SWIPE_THRESHOLD = 50;
 const WHEEL_COOLDOWN_MS = 600;
-
-/* ── State ── */
 
 let _startX = 0;
 let _startY = 0;
@@ -21,8 +16,6 @@ let _wheelScrollCooldown = false;
 let _swipeArea = null;
 let _onSwipe = null;
 let _handlers = null;
-
-/* ── Public API ── */
 
 /**
  * Bind all swipe/gesture event listeners on a target element.
@@ -81,8 +74,6 @@ export function unbindSwipeEvents() {
     resetGesture();
 }
 
-/* ── Gesture Core ── */
-
 function handleGestureStart(clientX, clientY) {
     _startX = clientX;
     _startY = clientY;
@@ -129,8 +120,6 @@ function resetGesture() {
     _isMouseDown = false;
 }
 
-/* ── Touch Handlers ── */
-
 function onTouchStart(e) {
     if (!e.touches || e.touches.length === 0) return;
     handleGestureStart(e.touches[0].clientX, e.touches[0].clientY);
@@ -145,8 +134,6 @@ function onTouchEnd(e) {
     if (!e.changedTouches || e.changedTouches.length === 0) return;
     handleGestureEnd(e.changedTouches[0].clientX);
 }
-
-/* ── Mouse Handlers ── */
 
 function onMouseDown(e) {
     if (e.button !== 0) return;
@@ -164,8 +151,6 @@ function onMouseUp(e) {
     _isMouseDown = false;
     handleGestureEnd(e.clientX);
 }
-
-/* ── Wheel Handler ── */
 
 function onWheel(e) {
     if (_wheelScrollCooldown) return;

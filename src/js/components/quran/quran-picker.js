@@ -1,7 +1,14 @@
-import * as QuranHeader from './quran-header.js';
-import * as QuranCard from './quran-card.js';
+/**
+ * Quran Picker Component
+ */
+
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { normalizeSearchText } from '../../modules/quran/quran-utility.js';
+
+// UI Components
+import * as QuranHeader from './quran-header.js';
+import * as QuranCard from './quran-card.js';
 
 let _pickerOverlay = null;
 let _pickerHeaderInstance = null;
@@ -112,8 +119,6 @@ export function destroyPicker() {
 export function isOpen() {
    return _isOpen;
 }
-
-/* ─── Render and Search Logic ─── */
 
 function _renderList(listData) {
    if (!_listContainer) return;

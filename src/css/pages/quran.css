@@ -39,7 +39,7 @@
    padding-bottom: calc(var(--nav-height-list-container-xl) + var(--sp-8) + env(safe-area-inset-bottom));
    -webkit-overflow-scrolling: touch;
    scroll-behavior: smooth;
-   overscroll-behavior: contain;
+   overscroll-behavior-y: auto;
    transform: translateZ(0);
    will-change: scroll-position;
 }
@@ -293,10 +293,12 @@
       --header-btn-size: 36px;
       --header-icon-size: var(--icon-md);
    }
+
    .quran-search-input {
       font-size: 13px;
       padding: 8px 10px 8px 36px;
    }
+
    .quran-search-icon {
       font-size: 18px;
       left: 10px;
@@ -308,26 +310,32 @@
       padding: var(--sp-3);
       padding-bottom: calc(80px + env(safe-area-inset-bottom));
    }
+
    .quran-empty p {
       font-size: var(--fs-xs);
    }
+
    .quran-loading i {
       font-size: 3rem;
    }
+
    .quran-loading p {
       font-size: var(--fs-sm);
    }
+
    .quran-empty i {
       font-size: 2.5rem;
    }
-   
+
    .quran-search-header {
       --header-padding: var(--sp-2);
    }
+
    .quran-search-input {
       font-size: 12px;
       padding: 6px 10px 6px 32px;
    }
+
    .quran-search-icon {
       font-size: 16px;
       left: 8px;
@@ -338,6 +346,7 @@
    .quran-loading i {
       font-size: 2.5rem;
    }
+
    .quran-empty i {
       font-size: 2rem;
    }
@@ -346,10 +355,12 @@
       --header-btn-size: 30px;
       --header-icon-size: 1.25rem;
    }
+
    .quran-search-input {
       font-size: 11px;
       padding: 5px 8px 5px 28px;
    }
+
    .quran-search-icon {
       font-size: 14px;
       left: 6px;

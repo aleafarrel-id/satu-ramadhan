@@ -1,24 +1,12 @@
 /**
  * Notification Sync Module
- * Centralized 30-day rolling pre-scheduling for prayer notifications.
- *
- * On every app open / resume:
- *   1. Cancels ALL existing prayer alarms from the system
- *   2. Fetches prayer times for today → today + 29 days
- *   3. Builds & schedules up to 210 alarms (7 prayers × 30 days)
- *   4. Sends "Anchor Location" to Native Java for background location detection
- *
- * This module is the SINGLE entry point for notification scheduling.
- * It replaces the old per-day `schedulePrayerNotifications()` approach.
  */
 
+// Core & Libraries
 import { Capacitor } from '@capacitor/core';
-
 import { getSavedLocation } from '../../core/geolocation.js';
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { PrayerService } from './native-notification.js';
-
-// ── Constants ──────────────────────────────────────────────────────
 
 /** Number of days to pre-schedule ahead (inclusive of today) */
 const ROLLING_DAYS = 30;
@@ -77,12 +65,8 @@ const PRAYER_NOTIFICATION_MAP = {
     },
 };
 
-// ── State ──────────────────────────────────────────────────────────
-
 /** Guard to prevent concurrent sync operations */
 let _syncing = false;
-
-// ── Public API ─────────────────────────────────────────────────────
 
 /**
  * Perform a full 30-day rolling notification sync.
@@ -108,34 +92,28 @@ export async function syncNotifications() {
     _syncing = true;
 
     try {
-        // ─── 1. Read user preferences ──────────────────────────────
         const isNotifEnabled = localStorage.getItem('satu_ramadhan_notif') !== 'false';
         const isAdzanEnabled = localStorage.getItem('satu_ramadhan_adzan') !== 'false';
 
-        // ─── 2. Cancel ALL existing alarms first ───────────────────
         await PrayerService.cancelAll();
 
-        // ─── 3. If notifications are disabled globally, stop here ──
         if (!isNotifEnabled) {
             console.log('[NotifSync] Notifications disabled by user — all alarms cleared');
             return;
         }
 
-        // ─── 4. Retrieve the user's active location ────────────────
         const location = await getSavedLocation();
         if (!location?.latitude || !location?.longitude) {
             console.warn('[NotifSync] No saved location available, cannot sync');
             return;
         }
 
-        // ─── 5. Fetch prayer times for 30 days ─────────────────────
         const allDays = await fetch30DaysData(location.latitude, location.longitude);
         if (!allDays || allDays.length === 0) {
             console.warn('[NotifSync] No prayer time data available for scheduling');
             return;
         }
 
-        // ─── 6. Build the massive alarm array ──────────────────────
         const now = Date.now();
         const alarmsToSchedule = [];
 
@@ -172,7 +150,6 @@ export async function syncNotifications() {
             });
         }
 
-        // ─── 7. Send everything to native plugin ───────────────────
         if (alarmsToSchedule.length > 0) {
             await PrayerService.schedule({
                 alarms: alarmsToSchedule,
@@ -187,9 +164,6 @@ export async function syncNotifications() {
             console.log('[NotifSync] No future alarms to schedule');
         }
 
-        // ─── 8. Start background location detection ──────
-        //    Ensures the passive worker is always active after sync.
-        //    Uses KEEP policy — safe to call on every sync without duplicates.
         try {
             await PrayerService.startLocationDetection();
             console.log('[NotifSync] Background location detection worker active');
@@ -202,8 +176,6 @@ export async function syncNotifications() {
         _syncing = false;
     }
 }
-
-// ── Internal: Data Fetching ────────────────────────────────────────
 
 /**
  * Fetch prayer time data covering the next 30 days.
@@ -262,8 +234,6 @@ function getRequiredMonths(startDate, endDate) {
 
     return [...months.values()];
 }
-
-// ── Internal: Date / Time Helpers ──────────────────────────────────
 
 /**
  * Format a Date as "DD-MM-YYYY" for matching against API data.

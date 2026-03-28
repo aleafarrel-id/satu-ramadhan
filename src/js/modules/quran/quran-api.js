@@ -1,6 +1,5 @@
 /**
- * API Data Service for Quran
- * Handles data fetching and caching for all Quran-related features.
+ * Quran API Module
  */
 
 import { getTajweedEnabled, getTranslationLanguage, getTransliterationEnabled } from './quran-settings.js';

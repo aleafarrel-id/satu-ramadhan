@@ -40,7 +40,7 @@ export function renderQiblaInfoCard() {
                 </div>
             </div>
             
-            <!-- Fallback text for devices without Gyroscope (hidden by default) -->
+            <!-- Fallback text for devices without Gyroscope -->
             <div class="qibla-info-card__fallback" id="qibla-fallback-text">
                 Perangkat tidak memiliki sensor gyroscope.
             </div>
@@ -66,11 +66,9 @@ export function updateQiblaInfoCard(heading, qiblaAngle, hasGyroscope = null) {
 
     if (deviceBadgeEl && deviceValEl && fallbackTextEl) {
         if (hasGyroscope === false) {
-            // Hide the device badge entirely and show small centered fallback string below
             deviceBadgeEl.classList.add('is-hidden');
             fallbackTextEl.classList.add('is-visible');
         } else {
-            // Support exists, or still pending detection
             deviceBadgeEl.classList.remove('is-hidden');
             fallbackTextEl.classList.remove('is-visible');
             deviceValEl.innerHTML = `${heading.toFixed(1)}&deg;`;

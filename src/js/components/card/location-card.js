@@ -1,9 +1,7 @@
 /**
- * Location Card — Shared UI component
- * Reusable across Home and Compass pages (DRY)
+ * Location Card Component
+ * Reusable across Home and Compass pages.
  */
-
-/* ── Location Card Wrapper ── */
 
 /**
  * Render the full location card with "LOKASI ANDA" header
@@ -23,15 +21,12 @@ export function renderLocationCard(location) {
     `;
 }
 
-/* ── Location Card Inner Content ── */
-
 /**
  * Render location card inner content (updatable)
  * @param {object|null} location - saved location object
  * @returns {string} HTML string
  */
 export function renderLocationCardInner(location) {
-    // State: No location set
     if (!location) {
         return `
             <div class="location-card__row">
@@ -48,7 +43,6 @@ export function renderLocationCardInner(location) {
         `;
     }
 
-    // State: Location found
     const name = location.districtName
         ? `${location.districtName}, ${location.regencyName}`
         : location.regencyName;
@@ -68,8 +62,6 @@ export function renderLocationCardInner(location) {
         </div>
     `;
 }
-
-/* ── Event Binding ── */
 
 /**
  * Bind click event on the change-location button

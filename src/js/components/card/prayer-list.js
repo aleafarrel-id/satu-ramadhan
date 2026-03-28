@@ -2,28 +2,25 @@
  * Prayer List Component
  * Renders a compact horizontal prayer time grid (list view)
  * with action widgets (Kiblat + Org Toggle) and Qibla map.
- *
- * Used by home-page.js as an alternative to the tube grid view.
  */
 
+// Core & Libraries
 import { PRAYER_LIST } from '../../modules/prayer/prayer-times.js';
+
+// Utilities & Helpers
 import { SCHEDULE_PRAYERS, cleanTimeStr } from '../../utils/datetime.js';
+
+// UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
 import { renderQiblaMapCard } from './qibla-map-card-markup.js';
 
-/* ── Constants ── */
-
 /**
  * The 5 main prayers shown in the compact list.
- * Derived from the centralized SCHEDULE_PRAYERS by filtering out
- * imsak and terbit, which are not wajib prayers.
  */
 const LIST_PRAYERS = SCHEDULE_PRAYERS.filter(k => k !== 'imsak' && k !== 'terbit');
 
 /** Unique map container ID to avoid collision with compass page */
 const HOME_MAP_ID = 'home-qibla-map';
-
-/* ── Public API ── */
 
 /**
  * Render the complete list view card:
@@ -58,8 +55,6 @@ export function renderPrayerListCard(timings, orgName, prayerState) {
 export function getHomeMapId() {
     return HOME_MAP_ID;
 }
-
-/* ── Internal Render Functions ── */
 
 /**
  * Render 5-column prayer time grid.

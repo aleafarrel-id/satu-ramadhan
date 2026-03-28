@@ -1,10 +1,5 @@
 /**
  * Prayer Watcher Module
- * Handles scheduling of exactly-timed in-app notifications
- * for prayer times using setTimeout and recursive scheduling.
- * 
- * Also supports subscriber callbacks for instant prayer transition
- * events.
  */
 
 import { getCurrentPrayer } from './prayer-times.js';
@@ -16,8 +11,6 @@ let _lastTriggeredDateMs = null;
 
 /** @type {Set<Function>} */
 const _listeners = new Set();
-
-/* ── Public API ── */
 
 /**
  * Stop the current watcher timeout
@@ -54,8 +47,6 @@ export function onPrayerChange(callback) {
 export function offPrayerChange(callback) {
     _listeners.delete(callback);
 }
-
-/* ── Internal ── */
 
 /**
  * Find the next prayer and schedule a timeout for it

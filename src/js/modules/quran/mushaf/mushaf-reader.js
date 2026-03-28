@@ -1,33 +1,30 @@
 /**
- * Mushaf Reader — Full-screen Quran page viewer with page-flip effects.
- *
- * RTL Strategy: Uses PageFlip in landscape mode (usePortrait: false) so the
- * book is 2 pages wide with the binding in the center. The viewport is 1 page
- * wide, showing only the left page. This makes the left edge the free edge,
- * perfectly mimicking an Arabic book. Even indices hold Quran pages; odd
- * indices hold empty backing pages.
+ * Mushaf Reader Module
  */
 
+// Core & Libraries
 import { PageFlip } from 'page-flip';
 import panzoom from 'panzoom';
+
+// API & Services
 import * as MushafApi from './mushaf-api.js';
+
+// UI Components
 import * as MushafUI from './mushaf-ui.js';
 import * as QuranDock from '../../../components/quran/quran-dock.js';
 import { createSurahCard } from '../../../components/quran/quran-card.js';
 import { openPicker, closePicker, isOpen as isPickerOpen, destroyPicker } from '../../../components/quran/quran-picker.js';
+import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-modal.js';
+
+// Utilities & Helpers
 import { initTooltip, dismissTooltip } from '../../../utils/tooltip.js';
 import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
-import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-modal.js';
-
-/* ─── Constants ─── */
 
 const TOTAL_PAGES = MushafApi.getTotalPages();
 const INITIAL_WINDOW = 4;
 const EXPAND_MARGIN = 2;
 const EXPAND_SIZE = 6;
-
-/* ─── State ─── */
 
 let _isOpen = false;
 let _isClosing = false;
@@ -70,8 +67,6 @@ const _transitionManager = {
       this.timers = [];
    }
 };
-
-/* ─── Internal Helpers ─── */
 
 /**
  * Safely destroys PageFlip and re-creates _bookContainer.
@@ -146,8 +141,6 @@ function _calcWindow(targetPage) {
    if (_windowEnd === TOTAL_PAGES) _windowStart = Math.max(1, TOTAL_PAGES - INITIAL_WINDOW + 1);
 }
 
-/* ─── Surah Data ─── */
-
 function _getSurahForPage(pageNumber) {
    return MushafApi.getSurahForPage(pageNumber);
 }
@@ -162,8 +155,6 @@ function _updatePageCounter() {
       _pageCounterEl.textContent = _toArabicDigits(_currentPage);
    }
 }
-
-/* ─── Public API ─── */
 
 export async function open(startPage = 1, options = {}) {
    if (_isClosing) {
@@ -338,8 +329,6 @@ export async function goToPage(pageNumber) {
 
 export function isOpen() { return _isOpen; }
 
-/* ─── Event Handlers ─── */
-
 function _onWindowResize() {
    clearTimeout(_resizeTimeout);
    _resizeTimeout = setTimeout(() => {
@@ -356,8 +345,6 @@ function _onVisibilityChange() {
       }
    }
 }
-
-/* ─── Swipe & Interaction Handlers ─── */
 
 let _swipeStartX = 0;
 let _swipeStartY = 0;
@@ -433,8 +420,6 @@ function _onPointerUp(e) {
 function _onPointerCancel(e) {
    _isSwiping = false;
 }
-
-/* ─── DOM Construction ─── */
 
 function _buildBackdrop(label = 'Mushaf', parent = null) {
    // Reuse existing backdrop if available to prevent accumulation
@@ -548,8 +533,6 @@ function _buildViewport() {
    return viewport;
 }
 
-/* ─── Panzoom Toggle ─── */
-
 function _toggleZoomMode() {
    _isZoomMode ? _exitZoomMode() : _enterZoomMode();
 }
@@ -610,8 +593,6 @@ function _disposePanzoom() {
       _bookContainer.classList.remove('is-zoom-active');
    }
 }
-
-/* ─── PageFlip Lifecycle ─── */
 
 function _getPageFlipConfig() {
    const pw = _viewportContainer.clientWidth || window.innerWidth;
@@ -720,8 +701,6 @@ function _onPageFlip(e) {
    _prefetchAdjacent();
 }
 
-/* ─── Page Window Management ─── */
-
 async function _checkAndExpand(flipIndex) {
    if (_isExpanding || !_pageFlip || !_isOpen) return;
 
@@ -819,8 +798,6 @@ function _prefetchAdjacent() {
       for (let i = prefetchStart; i < _windowStart; i++) MushafApi.getPage(i);
    }, { timeout: 1000 });
 }
-
-/* ─── Surah Picker ─── */
 
 function _togglePicker() { isPickerOpen() ? closePicker() : _openPicker(); }
 

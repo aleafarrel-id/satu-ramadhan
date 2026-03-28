@@ -1,11 +1,10 @@
 /**
  * Compass UI Component
- * Generates and manages the complex compass DOM
+ * Generates and manages the complex compass DOM.
  */
 
 /**
  * Generates the HTML string for the compass.
- * Creates the 72 ticks dynamically to keep HTML/CSS clean.
  * @returns {string} HTML string of the compass
  */
 export function renderCompass() {
@@ -69,7 +68,6 @@ export function renderCompass() {
     `;
 }
 
-/** Cached DOM reference — survives the page's lifetime */
 let _cachedContainer = null;
 
 /**
@@ -83,7 +81,6 @@ export function updateCompassUI(heading, qiblaAngle) {
     }
     if (!_cachedContainer) return;
 
-    // Apply strictly via CSS variable for smooth transition and clear separation of concerns
     _cachedContainer.style.setProperty('--heading', `${heading}deg`);
     _cachedContainer.style.setProperty('--qibla-angle', `${qiblaAngle}deg`);
 }

@@ -1,18 +1,11 @@
 /**
  * Schedule Data Module
- * Handles dynamic Hijri month date computation and prayer schedule data fetching.
- * Works year-round: during Ramadhan uses preset dates, outside Ramadhan
- * dynamically detects the current Hijri month via Aladhan API data.
- *
- * Separated from schedule-page.js for clean business logic isolation.
  */
 
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { getRamadhanConfig } from '../../core/database.js';
 import { HIJRI_MONTH_NAMES } from '../../utils/datetime.js';
 import { getActivePreset, getHijriOffset } from './ramadhan.js';
-
-/* ── Public API ── */
 
 /**
  * Fetch the full prayer schedule for the current Hijri month.
@@ -98,8 +91,6 @@ export function getTodayDateStr() {
     const now = new Date();
     return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
 }
-
-/* ── Internal Functions ── */
 
 /**
  * Compute all Gregorian dates for the current Hijri month.
@@ -299,8 +290,6 @@ function computeFallbackMonth() {
         },
     };
 }
-
-/* ── Shared Helpers ── */
 
 /**
  * Resolve unique year-month pairs needed for API fetches,

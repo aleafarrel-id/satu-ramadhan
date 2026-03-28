@@ -103,6 +103,27 @@ export async function navigate(path, { pushHistory = true } = {}) {
 }
 
 /**
+ * Soft-reload the current page in place.
+ * Calls destroy() then render() on the active handler without modifying
+ * the history stack or triggering a full app restart (no Splash Screen).
+ * Safe to call even when a navigation is not in flight.
+ */
+export async function refreshCurrentPage() {
+    if (_isNavigating || !_currentPage) return;
+    _isNavigating = true;
+    try {
+        const handler = _routeCache[_currentPage];
+        const pageEl = document.getElementById(`page-${_currentPage}`);
+        if (!handler || !pageEl) return;
+
+        if (handler.destroy) await handler.destroy();
+        if (handler.render) await handler.render(pageEl, { refresh: true });
+    } finally {
+        _isNavigating = false;
+    }
+}
+
+/**
  * Go back to previous page in history
  */
 export function goBack() {

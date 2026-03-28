@@ -1,11 +1,11 @@
 /**
  * Centralized Al-Qur'an Header Component
- * Implements DRY principle for unified headers across page, reader overlay, and pickers.
  */
 
+// Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 
-let _activeHeaders = new Set(); // Keep track of headers to clean up event listeners if needed
+let _activeHeaders = new Set();
 
 /**
  * Creates a unified header element.

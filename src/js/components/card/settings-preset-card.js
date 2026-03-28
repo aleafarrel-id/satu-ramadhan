@@ -1,20 +1,19 @@
 /**
  * Settings Preset Card Component
- * Renders the "PENGATURAN JADWAL" card on the settings page.
- * Shows the active organization, its start/end dates,
- * and a button to open the Preset Manager modal.
- *
- * Follows the same render/destroy pattern as settings-loc-card.js.
+ * Renders the preset settings card on the settings page.
  */
 
+// Core & Libraries
 import { getActivePreset } from '../../modules/schedule/ramadhan.js';
-import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
+
+// Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
+import { MONTH_NAMES_SHORT } from '../../utils/datetime.js';
 
-/* ── State ── */
+// UI Components
+import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
+
 let _container = null;
-
-/* ── Helpers ── */
 
 /**
  * Format a YYYY-MM-DD date string for display.
@@ -22,12 +21,9 @@ let _container = null;
  * @returns {string} e.g. "19 Feb 2026"
  */
 function formatDate(dateStr) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     const [y, m, d] = dateStr.split('-');
-    return `${parseInt(d)} ${months[parseInt(m) - 1]} ${y}`;
+    return `${parseInt(d)} ${MONTH_NAMES_SHORT[parseInt(m) - 1]} ${y}`;
 }
-
-/* ── Public API ── */
 
 /**
  * Render the preset settings card into the given container.
@@ -54,8 +50,6 @@ export function destroy() {
     _container = null;
 }
 
-/* ── Internal ── */
-
 /**
  * Build and insert the card HTML, then bind events.
  */
@@ -69,7 +63,7 @@ async function renderCardContent() {
     _container.innerHTML = `
         <div class="card settings-preset-card">
             <div class="settings-preset-header" id="settings-preset-header">
-                <div class="settings-preset-title">PENGATURAN JADWAL</div>
+                <div class="settings-preset-title">JADWAL RAMADAN</div>
                 <div class="settings-preset-icon-wrapper">
                     <i class='bx bx-calendar settings-preset-calendar-icon'></i>
                     <div class="settings-preset-status-wrapper">

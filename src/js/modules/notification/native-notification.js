@@ -1,25 +1,14 @@
 /**
  * Native Notification Module
- * Handles Android prayer time notification permissions and basic
- * native plugin operations (play/stop adzan, cancel alarms).
- *
- * Architecture:
- * - Custom PrayerService plugin → AlarmManager scheduling & alarm dispatch
- * - PrayerAlarmReceiver (Java)  → decides adzan playback vs standard notification
- * - @capacitor/local-notifications → permission management only
- *
  */
 
+// Core & Libraries
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 
-// ── Custom Plugin Bridge ───────────────────────────────────────────
 export const PrayerService = registerPlugin('PrayerService');
 
-// ── State ──────────────────────────────────────────────────────────
 let _initialized = false;
-
-// ── Public API ─────────────────────────────────────────────────────
 
 /**
  * Initialize the notification service.
@@ -60,8 +49,6 @@ export async function cancelAllPrayerNotifications() {
         console.warn('[NativeNotif] Cancel failed:', e);
     }
 }
-
-// ── Internal: Permissions ──────────────────────────────────────────
 
 /**
  * Check and request notification permissions.

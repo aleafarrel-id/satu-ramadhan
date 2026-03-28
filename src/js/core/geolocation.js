@@ -1,16 +1,14 @@
 /**
  * Geolocation Service
- * Capacitor Geolocation + Haversine centroid matching to nearest regency/province
  */
 
+// Core & Libraries
 import { Geolocation } from '@capacitor/geolocation';
 import { fetchRegencies, getProvinceById } from './database.js';
 import { reverseGeocodeNominatim } from './nominatim.js';
 import * as storage from './storage.js';
 
 const STORAGE_KEY = 'user_location';
-
-/* ── Haversine Helpers ── */
 
 /**
  * Convert degrees to radians
@@ -38,8 +36,6 @@ function haversine(lat1, lon1, lat2, lon2) {
         Math.sin(dLon / 2) ** 2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
-
-/* ── Location Detection ── */
 
 /**
  * Find nearest regency to given coordinates
@@ -188,8 +184,6 @@ export async function detectLocation(forceRefresh = false) {
     return null;
 }
 
-/* ── Device GPS Checks ── */
-
 /**
  * Check if Device GPS/Location Services is enabled using cordova-plugin-diagnostic
  * Returns true if enabled or on platform without plugin, false if disabled.
@@ -219,8 +213,6 @@ export function openLocationSettings() {
         window.cordova.plugins.diagnostic.switchToLocationSettings();
     }
 }
-
-/* ── Manual Location ── */
 
 /**
  * Manually set location (supports both local DB and Nominatim results)

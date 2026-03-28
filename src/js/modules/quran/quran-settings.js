@@ -1,8 +1,5 @@
 /**
  * Quran Settings Module
- * Centralized state management for Quran-related user preferences.
- * Handles reading from and writing to localStorage, and provides default values.
- * Emits events when settings change to allow reactive updates.
  */
 
 import { DEFAULT_LANGUAGE } from '../../config/quran-languages.js';

@@ -1,9 +1,9 @@
 /**
  * Settings Quran Panel Component
- * Renders the Al-Quran settings card with Tajweed toggle and
- * translation language dropdown.
+ * Renders the Al-Quran settings card.
  */
 
+// Core & Libraries
 import { QURAN_LANGUAGES } from '../../config/quran-languages.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as Notif from '../../modules/notification/notification.js';
@@ -12,10 +12,12 @@ import {
    getTransliterationEnabled, setTransliterationEnabled,
    getTranslationLanguage, setTranslationLanguage
 } from '../../modules/quran/quran-settings.js';
+
+// UI Components
 import { showLanguageSelectorModal } from '../modal/language-selector-modal.js';
+
+// Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
-
-
 
 export function render(container) {
    const tajweedChecked = getTajweedEnabled();
@@ -64,7 +66,6 @@ export function render(container) {
       </div>
    `;
 
-   /* --- Tajweed Toggle --- */
    const tajweedToggle = container.querySelector('#toggle-tajweed');
    tajweedToggle?.addEventListener('change', async (e) => {
       const enabled = e.target.checked;
@@ -76,7 +77,6 @@ export function render(container) {
       );
    });
 
-   /* --- Transliteration Toggle --- */
    const transliterationToggle = container.querySelector('#toggle-transliteration');
    transliterationToggle?.addEventListener('change', async (e) => {
       const enabled = e.target.checked;
@@ -88,7 +88,6 @@ export function render(container) {
       );
    });
 
-   /* --- Language Modal Logic --- */
    const quranTranslationItem = container.querySelector('#quran-translation-item');
    const labelSpan = container.querySelector('#translation-select-label');
 

@@ -2,6 +2,8 @@
  * Surah Card Component
  */
 
+// Utilities & Helpers
+import { safeClear } from '../../utils/dom-utils.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 
 /**
@@ -136,36 +138,42 @@ export function createJuzList() {
  * Renders the loading indicator.
  */
 export function renderLoadingState(container) {
-   container.innerHTML = `
-      <div class="quran-loading">
-         <i class='bx bx-book-reader'></i>
-         <p>Memuat Al-Qur'an</p>
-      </div>
+   safeClear(container);
+   const loadingEl = document.createElement('div');
+   loadingEl.className = 'quran-loading';
+   loadingEl.innerHTML = `
+      <i class='bx bx-book-reader'></i>
+      <p>Memuat Al-Qur'an</p>
    `;
+   container.appendChild(loadingEl);
 }
 
 /**
  * Renders the empty state.
  */
 export function renderEmptyState(container) {
-   container.innerHTML = `
-      <div class="quran-empty">
-         <i class='bx bx-bookmark-alt-minus'></i>   
-         <p>Surah tidak ditemukan</p>
-      </div>
+   safeClear(container);
+   const emptyEl = document.createElement('div');
+   emptyEl.className = 'quran-empty';
+   emptyEl.innerHTML = `
+      <i class='bx bx-bookmark-alt-minus'></i>   
+      <p>Surah tidak ditemukan</p>
    `;
+   container.appendChild(emptyEl);
 }
 
 /**
  * Renders the error state.
  */
 export function renderErrorState(container, message = "Gagal Memuat Al-Qur'an") {
-   container.innerHTML = `
-      <div class="quran-empty">
-         <i class='bx bx-error-circle'></i>
-         <p>${message}</p>
-      </div>
+   safeClear(container);
+   const errorEl = document.createElement('div');
+   errorEl.className = 'quran-empty';
+   errorEl.innerHTML = `
+      <i class='bx bx-error-circle'></i>
+      <p>${message}</p>
    `;
+   container.appendChild(errorEl);
 }
 
 /**

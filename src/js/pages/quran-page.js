@@ -1,4 +1,4 @@
-/* Lazy-loaded CSS — only fetched when this page module is imported */
+/* CSS Imports */
 import '../../css/pages/quran.css';
 import '../../css/components/quran/quran-header.css';
 import '../../css/components/quran/quran-dock.css';
@@ -8,18 +8,23 @@ import '../../css/components/quran/quran-tajweed.css';
 import '../../css/components/quran/quran-bookmark.css';
 import '../../css/components/quran/mushaf.css';
 
-/**
- * Page Skeleton Component
- */
+// App Router
+import * as Router from '../router.js';
 
-import * as QuranNav from '../modules/quran/quran-nav.js';
+// Components
 import * as QuranSearch from '../components/quran/quran-search.js';
-import * as QuranReader from '../modules/quran/quran-reader.js';
 import * as QuranDock from '../components/quran/quran-dock.js';
 import * as QuranHeader from '../components/quran/quran-header.js';
-import * as Router from '../router.js';
+
+// Modules
+import * as QuranNav from '../modules/quran/quran-nav.js';
+import * as QuranReader from '../modules/quran/quran-reader.js';
+
+// Utilities
+import { initPullToRefresh } from '../utils/pull-to-refresh.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
 
+/* Module State */
 let _container = null;
 let _quranContent = null;
 let _activePage = null;
@@ -27,6 +32,7 @@ let _activePageId = null;
 let _lastSubPageId = 'surah';
 let _debounceTimer = null;
 let _isSearchActive = false;
+let _ptrCleanup = null;
 
 const _dismissSearchAction = () => toggleSearchMode(false);
 
@@ -73,13 +79,27 @@ export async function render(container) {
 
    await transitionPromise;
    _quranContent.classList.add('ready');
+
+   // Attach native PTR to the Quran content area so its UI renders inside
+   // the overlay (not behind it).
+   _ptrCleanup = initPullToRefresh({
+      scrollElement: _quranContent,
+      theme: 'dark',
+      checkDisabled: () => _activePageId === 'mushaf',
+      async onRefresh() {
+         await new Promise(resolve => setTimeout(resolve, 350));
+         await loadSubPage(_activePageId, true);
+      }
+   });
 }
 
 /**
  * Loads a subpage into the skeleton.
+ * @param {string} pageId - ID of the subpage to load
+ * @param {boolean} [forceRefresh=false] - bypass the same-page guard for PTR soft-reload
  */
-async function loadSubPage(pageId) {
-   if (_activePageId === pageId) return;
+async function loadSubPage(pageId, forceRefresh = false) {
+   if (!forceRefresh && _activePageId === pageId) return;
 
    const previousPage = _activePage;
    const previousPageId = _activePageId;
@@ -176,6 +196,11 @@ function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
 export async function destroy() {
    if (_debounceTimer) clearTimeout(_debounceTimer);
    unregisterModalDismiss(_dismissSearchAction);
+
+   if (_ptrCleanup) {
+      _ptrCleanup();
+      _ptrCleanup = null;
+   }
 
    QuranReader.destroy();
 

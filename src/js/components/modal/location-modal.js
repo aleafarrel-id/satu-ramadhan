@@ -4,19 +4,15 @@
  * Used on first launch (no cached location) or when user taps "Ubah".
  */
 
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+
+// Utilities & Helpers
+import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
-import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
-
-/* ── DOM References ── */
 let _overlayEl = null;
 let _releaseFocus = null;
-
-/* ── State ── */
-// State is purely DOM-based now (button.disabled)
-
-/* ── Public API ── */
 
 /**
  * Show the location modal.
@@ -41,7 +37,6 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
     // Trap focus inside modal
     _releaseFocus = trapFocus(_overlayEl);
 
-    // ── Bind: GPS button ──
     const btnGps = _overlayEl.querySelector('#loc-modal-btn-gps');
     btnGps?.addEventListener('click', () => {
         handleGpsDetectionWithButton(btnGps, (location) => {
@@ -50,14 +45,12 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
         });
     });
 
-    // ── Bind: Manual button ──
     const btnManual = _overlayEl.querySelector('#loc-modal-btn-manual');
     btnManual?.addEventListener('click', () => {
         hideModal();
         onManualSelect?.();
     });
 
-    // ── Bind: Click outside to close ──
     _overlayEl.addEventListener('click', (e) => {
         const isDetecting = btnGps?.disabled;
         if (e.target === _overlayEl && !isDetecting) {
@@ -65,7 +58,6 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
         }
     });
 
-    // ── Bind: Escape to close ──
     addEscHandler(_overlayEl, hideModal);
 }
 
@@ -79,8 +71,6 @@ export function hideModal() {
     // Safety: force remove after animation duration in case event doesn't fire
     setTimeout(removeModal, 400);
 }
-
-/* ── Internal Helpers ── */
 
 function removeModal() {
     if (_releaseFocus) {

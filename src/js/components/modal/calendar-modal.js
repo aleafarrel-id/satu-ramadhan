@@ -1,22 +1,17 @@
 /**
  * Calendar Modal Component
  * Shows a monthly Hijri calendar grid (Hijri day prominent, Gregorian small).
- * Works for any Hijri month (Ramadhan, Syawal, etc.).
- * Reuses the overlay pattern from location-modal.
  */
 
-/* ── Constants ── */
-
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+
+// Utilities & Helpers
 import { MONTH_ID, WEEKDAY_HEADERS_MON_FIRST } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
-/* ── DOM State ── */
-
 let _overlayEl = null;
 let _releaseFocus = null;
-
-/* ── Public API ── */
 
 /**
  * Show the calendar modal.
@@ -51,8 +46,6 @@ export function hideCalendarModal() {
     // Safety: force remove after animation
     setTimeout(removeModal, 400);
 }
-
-/* ── Internal Helpers ── */
 
 function removeModal() {
     if (_releaseFocus) {
@@ -173,7 +166,6 @@ function createModalDOM(scheduleData, currentIndex, onSelectDay) {
         </div>
     `;
 
-    // ── Bind: Day cell clicks ──
     overlay.querySelectorAll('.cal-modal__cell[data-day-index]').forEach(cell => {
         makeAccessibleBtn(cell, () => {
             const index = parseInt(cell.dataset.dayIndex, 10);
@@ -182,14 +174,12 @@ function createModalDOM(scheduleData, currentIndex, onSelectDay) {
         });
     });
 
-    // ── Bind: Click outside to close ──
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             hideCalendarModal();
         }
     });
 
-    // ── Bind: Escape to close ──
     addEscHandler(overlay, hideCalendarModal);
 
     return overlay;

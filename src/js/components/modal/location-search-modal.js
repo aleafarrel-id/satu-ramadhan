@@ -3,25 +3,22 @@
  * Real search with debounce, loading states, and location selection.
  */
 
+// Core & Libraries
 import { searchLocation } from '../../core/location-search.js';
 import { setManualLocation } from '../../core/geolocation.js';
-
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 
+// Utilities & Helpers
 import { handleManualLocationSelection } from '../../utils/location-feedback.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
-/* ── State ── */
 let _overlayEl = null;
 let _debounceTimer = null;
 let _onLocationSelected = null;
 let _currentQuery = '';
 let _releaseFocus = null;
 
-/* ── Configuration ── */
-const DEBOUNCE_MS = 600; // Adjusted for Nominatim's 1 req/sec limit
-
-/* ── Public API ── */
+const DEBOUNCE_MS = 600;
 
 /**
  * Show the location search modal.
@@ -44,12 +41,10 @@ export function showLocationSearchModal({ onLocationSelected } = {}) {
     // Trap focus inside modal
     _releaseFocus = trapFocus(_overlayEl);
 
-    // Bind overlay dismiss (click outside modal content)
     _overlayEl.addEventListener('click', (e) => {
         if (e.target === _overlayEl) hideModal();
     });
 
-    // ── Bind: Escape to close ──
     addEscHandler(_overlayEl, hideModal);
 
     // Bind search input with debounce
@@ -87,8 +82,6 @@ export function hideModal() {
     // Safety: force remove after animation
     setTimeout(removeModal, 450);
 }
-
-/* ── Internal Helpers ── */
 
 function removeModal() {
     if (_releaseFocus) {
@@ -169,8 +162,6 @@ function bindResultItems(container, results) {
         });
     });
 }
-
-/* ── Render Functions ── */
 
 function renderPlaceholder() {
     return `

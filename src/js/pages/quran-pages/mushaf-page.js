@@ -3,6 +3,7 @@
  */
 
 import * as MushafReader from '../../modules/quran/mushaf/mushaf-reader.js';
+
 import { navigateBackFromMushaf } from '../quran-page.js';
 
 let _container = null;

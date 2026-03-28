@@ -1,9 +1,12 @@
 /**
  * Compass Page Skeleton Loader
- * Renders loading placeholder for compass and Qibla info
  */
 
+// UI Components
 import { renderLocationCard, bindLocationCardEvents } from '../card/location-card.js';
+
+// Utilities & Helpers
+import { safeClear } from '../../utils/dom-utils.js';
 
 /**
  * Return inner HTML of the compass skeletons (dial + qibla card)
@@ -34,10 +37,17 @@ export function getCompassSkeletonInner() {
  * @param {Function} onLocationAction - callback when location card button is clicked
  */
 export function renderCompassSkeleton(container, location, onLocationAction) {
-    container.innerHTML = `
+    safeClear(container);
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
         ${renderLocationCard(location)}
         ${getCompassSkeletonInner()}
     `;
+
+    while (wrapper.firstChild) {
+        container.appendChild(wrapper.firstChild);
+    }
 
     bindLocationCardEvents(onLocationAction, container);
 }

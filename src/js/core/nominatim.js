@@ -1,11 +1,7 @@
 /**
  * Nominatim API Service
- * Searches and reverse-geocodes via OpenStreetMap's Nominatim service.
- * Results are normalized to the app's standard location shape,
- * including districtName (kecamatan/suburb/village) for granular display.
  */
 
-/* ── Configuration ── */
 import { CONFIG } from '../config/version-config.js';
 
 const NOMINATIM_SEARCH = 'https://nominatim.openstreetmap.org/search';
@@ -13,8 +9,6 @@ const NOMINATIM_REVERSE = 'https://nominatim.openstreetmap.org/reverse';
 const USER_AGENT = `${CONFIG.appName.toLowerCase().replace(/\s+/g, '-')}-app/${CONFIG.version}`;
 const REQUEST_TIMEOUT_MS = 8000;
 const MAX_RESULTS = 5;
-
-/* ── Shared fetch helper ── */
 
 /**
  * Fetch JSON from Nominatim with timeout + abort handling.
@@ -48,8 +42,6 @@ async function nominatimFetch(url) {
     }
 }
 
-/* ── Forward Search ── */
-
 /**
  * Search Nominatim for a location query.
  * Returns normalized results matching the app's location shape.
@@ -72,8 +64,6 @@ export async function searchNominatim(query) {
     return results.map(normalizeResult);
 }
 
-/* ── Reverse Geocoding ── */
-
 /**
  * Reverse-geocode GPS coordinates via Nominatim.
  * Returns a normalized location object with districtName (kecamatan/suburb/village).
@@ -95,8 +85,6 @@ export async function reverseGeocodeNominatim(lat, lon) {
     const result = await nominatimFetch(`${NOMINATIM_REVERSE}?${params}`);
     return normalizeResult(result);
 }
-
-/* ── Data Normalization ── */
 
 /**
  * Resolve the district name (kecamatan/village/suburb) from Nominatim address.

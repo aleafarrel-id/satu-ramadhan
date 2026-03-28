@@ -1,21 +1,13 @@
 /**
- * Bookmark Manager
- * Handles persistent storage and in-memory cache for Quran verse bookmarks.
- * Uses Capacitor Preferences via the core storage service.
+ * Bookmark Manager Module
  */
 
 import * as Storage from '../../core/storage.js';
 
-/* Constants */
-
 const STORAGE_KEY = 'quran_bookmarks';
-
-/* In-Memory Cache */
 
 let _cache = null;
 let _initPromise = null;
-
-/* Initialization */
 
 /**
  * Ensures the bookmark cache is loaded from storage.
@@ -39,8 +31,6 @@ async function _ensureLoaded() {
 async function _persist() {
    await Storage.set(STORAGE_KEY, _cache);
 }
-
-/* Public Interface */
 
 /**
  * Generates a unique bookmark key from ayah data.

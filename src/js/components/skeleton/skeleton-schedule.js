@@ -1,8 +1,8 @@
 /**
  * Schedule Page Skeleton Loader
- * Renders loading placeholder while schedule data is being fetched
  */
 
+// UI Components
 import { renderScheduleCardSkeleton } from '../card/schedule-card.js';
 
 /**

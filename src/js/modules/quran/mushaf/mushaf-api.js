@@ -1,7 +1,5 @@
 /**
- * Mushaf API — Data service for Mushaf Mode.
- * Handles page fetching (LRU-cached), Medina surah index queries,
- * and tajweed data loading for Mushaf text.
+ * Mushaf API
  */
 
 import { getTajweedEnabled } from '../quran-settings.js';
@@ -9,8 +7,6 @@ import { getTajweedEnabled } from '../quran-settings.js';
 const TOTAL_PAGES = 604;
 const MAX_CACHE_SIZE = 50;
 const MAX_TAJWEED_CACHE = 20;
-
-/* ─── Generic LRU Helpers ─── */
 
 function _touchMap(map, key) {
    if (map.has(key)) {
@@ -29,17 +25,11 @@ function _enforceMapLimit(map, limit) {
    }
 }
 
-/* ─── Page Cache ─── */
-
 const _pageCache = new Map();
 const _pagePending = new Map();
 
-/* ─── Tajweed Cache ─── */
-
 const _tajweedCache = new Map();
 const _tajweedPending = new Map();
-
-/* ─── Mushaf Index Cache ─── */
 
 let _mushafIndex = null;
 
@@ -68,8 +58,6 @@ export function getSurahForPage(pageNumber) {
    }
    return result;
 }
-
-/* ─── Public API ─── */
 
 function clampPage(n) {
    return Math.max(1, Math.min(TOTAL_PAGES, n));

@@ -3,16 +3,17 @@
  * Renders the daily prayer schedule view: date navigation,
  * prayer time rows, featured card, action buttons, and skeleton.
  * Displays dynamic Hijri month names (not hardcoded to Ramadan).
- *
- * Extracted from schedule-page.js for Separation of Concerns.
  */
 
+// Core & Libraries
 import { PRAYER_LIST, getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
-import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
-import { SCHEDULE_PRAYERS, WEEKDAY_ID, MONTH_ID } from '../../utils/datetime.js';
-import { renderShareScheduleCard } from './share-schedule-card.js';
 
-/* ── Public API ── */
+// Utilities & Helpers
+import { SCHEDULE_PRAYERS, WEEKDAY_ID, MONTH_ID } from '../../utils/datetime.js';
+
+// UI Components
+import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
+import { renderShareScheduleCard } from './share-schedule-card.js';
 
 /**
  * Render the complete schedule page HTML structure.
@@ -70,7 +71,6 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
     const viewingToday = entry.isToday;
     const activePrayerKey = viewingToday ? getActivePrayerKey(entry.timings) : null;
 
-    /* Prayer rows */
     const inner = document.getElementById('schedule-swipe-inner');
     if (inner) {
         inner.innerHTML = `
@@ -80,7 +80,6 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
         `;
     }
 
-    /* Nav title & subtitle */
     const titleEl = container?.querySelector('.schedule-nav__title');
     const subtitleEl = container?.querySelector('.schedule-nav__subtitle');
 
@@ -94,13 +93,11 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
         subtitleEl.textContent = `${weekdayId}, ${dateFormatted}`;
     }
 
-    /* Today button */
     const todayBtn = document.getElementById('schedule-today');
     if (todayBtn) {
         todayBtn.classList.toggle('hidden', viewingToday);
     }
 
-    /* Prev/Next navigation buttons */
     const prevBtn = document.getElementById('schedule-prev');
     const nextBtn = document.getElementById('schedule-next');
 
@@ -115,7 +112,6 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
         nextBtn.disabled = isNextDisabled;
     }
 
-    /* Content card today indicator */
     const contentCard = document.getElementById('schedule-swipe-area');
     if (contentCard) {
         contentCard.classList.toggle('schedule-content-card--today', viewingToday);
@@ -243,8 +239,6 @@ export function renderScheduleCardBottomSkeleton() {
     `;
 }
 
-/* ── Internal Render Functions ── */
-
 /**
  * Render the date navigation bar with title, subtitle, and controls.
  */
@@ -313,8 +307,6 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
         </div>
     `;
 }
-
-/* ── Utilities ── */
 
 /**
  * Strip timezone notes from time strings, e.g. "04:12 (WIB)" → "04:12".

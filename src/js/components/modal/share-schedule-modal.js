@@ -1,22 +1,19 @@
 /**
  * Share Schedule Modal
- * ────────────────────
  * Preview modal for the share schedule feature.
- * Orchestrates the builder (template render) and exporter (capture) to display
- * a PNG preview, then delegates share/download actions to the caller.
- *
- * Pattern: follows confirm-modal.js (module-level state, lifecycle, animation).
+ * Orchestrates the builder and exporter to display a PNG preview.
  *
  * @module share-schedule-modal
  */
 
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
-import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { buildShareScheduleElement, destroyShareScheduleElement } from '../../modules/share/share-schedule-builder.js';
 import { captureScheduleImage } from '../../modules/share/share-schedule-exporter.js';
 
-/* ── Module-level State ── */
+// Utilities & Helpers
+import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;
 let _canvas = null;
@@ -25,8 +22,6 @@ let _releaseFocus = null;
 let _onShareCb = null;
 let _onDownloadCb = null;
 let _onCancelCb = null;
-
-/* ── Public API ── */
 
 /**
  * Show the share schedule preview modal.
@@ -85,8 +80,6 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
     }
 }
 
-/* ── Internal: Action Handlers ── */
-
 /**
  * Handle the share action — haptic feedback, delegate to caller, close modal.
  */
@@ -137,8 +130,6 @@ function handleCancel() {
     hideModal();
 }
 
-/* ── Internal: Event Binding ── */
-
 /**
  * Bind click events to overlay and action buttons.
  */
@@ -162,8 +153,6 @@ function bindEvents() {
     // Escape key to cancel
     addEscHandler(_overlayEl, handleCancel);
 }
-
-/* ── Internal: Modal Lifecycle ── */
 
 /**
  * Trigger exit animation then remove the modal from the DOM.
@@ -211,8 +200,6 @@ function removeModal() {
     _onCancelCb = null;
 }
 
-/* ── Internal: DOM Construction ── */
-
 /**
  * Construct the modal overlay and dialog DOM.
  * Initially renders in a loading state with a spinner.
@@ -247,8 +234,6 @@ function createModalDOM() {
 
     return overlay;
 }
-
-/* ── Internal: UI State Updates ── */
 
 /**
  * Replace the loading spinner with the preview image from the captured canvas.

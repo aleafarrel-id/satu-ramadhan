@@ -1,8 +1,9 @@
 /**
  * Settings Panel Component
- * Renders the settings card with toggles
+ * Renders the settings card with toggles.
  */
 
+// Core & Libraries
 import { syncNotifications } from '../../modules/notification/notification-sync.js';
 import * as Notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
@@ -37,11 +38,9 @@ export function render(container) {
         </div>
     `;
 
-    // Listeners for toggles
     const notificationToggle = document.getElementById('toggle-notification');
     const adzanToggle = document.getElementById('toggle-adzan');
 
-    // Load saved preferences if any
     const savedNotif = localStorage.getItem('satu_ramadhan_notif');
     if (savedNotif !== null) {
         notificationToggle.checked = savedNotif === 'true';
@@ -52,7 +51,6 @@ export function render(container) {
         adzanToggle.checked = savedAdzan === 'true';
     }
 
-    // Sinkronisasi visual awal: mute adzan row jika notifikasi mati
     updateAdzanRowState(notificationToggle.checked);
 
     notificationToggle?.addEventListener('change', async (e) => {

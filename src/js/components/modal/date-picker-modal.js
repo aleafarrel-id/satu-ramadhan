@@ -1,22 +1,18 @@
 /**
  * Date Picker Modal Component
  * Replaces native <input type="date"> with a consistent, native-feeling UI.
- * - Monday-first weekday grid (matches calendar-modal)
- * - data-weekday attributes for Friday/Sunday column coloring
- * - Swipe/drag/wheel gesture for month navigation (touch + mouse + trackpad)
  */
 
+// Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
+
+// Utilities & Helpers
 import { WEEKDAY_HEADERS_MON_FIRST, MONTH_NAMES, formatDateToYYYYMMDD } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
-/* ── Constants ── */
-
 const SWIPE_THRESHOLD_PX = 50;
 const WHEEL_COOLDOWN_MS  = 600;
-
-/* ── Module State ── */
 
 let _overlayEl    = null;
 let _viewDate     = null; // Month currently displayed (always day 1)
@@ -30,8 +26,6 @@ let _animPhase     = 'idle';
 let _animDirection = null;
 let _animId        = 0;
 let _releaseFocus  = null;
-
-/* ── Helpers ── */
 
 /**
  * Parse a YYYY-MM-DD string into a local-time Date (avoids UTC off-by-one).
@@ -122,8 +116,6 @@ function animateSlide(direction, onMiddle) {
     });
 }
 
-/* ── Public API ── */
-
 /**
  * Show the date picker modal.
  * @param {object}          options
@@ -206,8 +198,6 @@ export function hideDatePickerModal() {
     setTimeout(removeModal, 450);
 }
 
-/* ── Internal Helpers ── */
-
 function removeModal() {
     if (_releaseFocus) {
         _releaseFocus();
@@ -224,11 +214,8 @@ function removeModal() {
     _animId++;    
 }
 
-/* ── Swipe Gesture (self-contained, works on element reference) ── */
-
 /**
  * Attach touch + mouse-drag + wheel horizontal swipe to a live DOM element.
- * Self-contained — does not depend on schedule-swipe singleton.
  * @param {HTMLElement} el
  */
 function bindSwipeGesture(el) {
@@ -240,8 +227,6 @@ function bindSwipeGesture(el) {
     let axisLocked  = false;
     let isMouseDown = false;
     let wheelBusy   = false;
-
-    // ── Common gesture core ──
 
     function onStart(clientX, clientY) {
         startX     = clientX;
@@ -273,7 +258,6 @@ function bindSwipeGesture(el) {
         shiftMonth(delta > 0 ? -1 : +1); // right → prev, left → next
     }
 
-    // ── Touch ──
     el.addEventListener('touchstart', (e) => {
         onStart(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
@@ -288,7 +272,6 @@ function bindSwipeGesture(el) {
 
     el.addEventListener('touchcancel', () => { startX = 0; }, { passive: true });
 
-    // ── Mouse drag ──
     el.addEventListener('mousedown', (e) => {
         if (e.button !== 0) return;
         isMouseDown = true;
@@ -307,7 +290,6 @@ function bindSwipeGesture(el) {
         onEnd(e.clientX);
     });
 
-    // ── Mouse wheel / trackpad horizontal scroll ──
     el.addEventListener('wheel', (e) => {
         if (wheelBusy) return;
         if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 20) {
@@ -319,8 +301,6 @@ function bindSwipeGesture(el) {
         }
     }, { passive: false });
 }
-
-/* ── DOM & Rendering ── */
 
 function createModalDOM() {
     const overlay = document.createElement('div');
@@ -355,15 +335,12 @@ function createModalDOM() {
         </div>
     `;
 
-    // ── Bind: Click outside to dismiss ──
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) hideDatePickerModal();
     });
 
-    // ── Bind: Escape to close ──
     addEscHandler(overlay, hideDatePickerModal);
 
-    // ── Bind: Navigation buttons ──
     overlay.querySelector('#dp-prev').addEventListener('click', () => {
         impact('light');
         shiftMonth(-1);
@@ -373,7 +350,6 @@ function createModalDOM() {
         shiftMonth(+1);
     });
 
-    // ── Bind: Today button ──
     overlay.querySelector('#dp-today').addEventListener('click', () => {
         impact('medium');
         const todayStr = formatDateToYYYYMMDD(new Date());
@@ -403,10 +379,8 @@ function renderCalendar() {
     const year  = _viewDate.getFullYear();
     const month = _viewDate.getMonth();
 
-    // ── Title ──
     titleEl.textContent = `${MONTH_NAMES[month]} ${year}`;
 
-    // ── Grid cells ──
     const startOffset = getMondayBasedDay(new Date(year, month, 1));
     const today       = new Date();
 
@@ -440,7 +414,6 @@ function renderCalendar() {
 
     daysEl.innerHTML = html;
 
-    // ── Bind: Day cell clicks ──
     daysEl.querySelectorAll('.date-picker-cell.date-picker-cell--disabled').forEach(cell => {
         // Stop clicks on disabled cells
         cell.addEventListener('click', (e) => e.stopPropagation());

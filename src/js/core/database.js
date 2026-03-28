@@ -1,16 +1,12 @@
 /**
  * Local JSON Database Loader
- * Fetches province & regency data from public/data/ asynchronously with memoization.
- * Ramadhan config is kept as a static import (tiny file, always needed).
  */
 
+// Data
 import ramadhanData from '../../data/ramadhan.json';
 
-/* ── Memoization Cache ── */
 let _provinces = null;
 let _regencies = null;
-
-/* ── Async Data Fetchers ── */
 
 /**
  * Fetch and cache the province list.
@@ -48,16 +44,12 @@ export async function fetchRegencies() {
     return _regencies;
 }
 
-/* ── Ramadhan Config (static, always bundled) ── */
-
 let _ramadhan = null;
 
 export function getRamadhanConfig() {
     if (!_ramadhan) _ramadhan = ramadhanData;
     return _ramadhan;
 }
-
-/* ── Lookup Helpers ── */
 
 /**
  * Find province by ID

@@ -1,26 +1,24 @@
 /**
- * Aladhan API Wrapper
- * Fetches prayer times with multi-mirror fallback, timeout, and retry
+ * Aladhan API Service
  */
 
+// Core & Libraries
 import * as storage from './storage.js';
+
+// Utilities & Helpers
 import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
 
-/* ── API Mirrors (tried in order) ── */
 const API_MIRRORS = [
     'https://api.aladhan.com/v1',
     'https://aladhan.api.islamic.network/v1',
     'https://aladhan.api.alislam.ru/v1',
 ];
 
-/* ── Configuration ── */
 const CACHE_PREFIX = 'prayer_cache_';
 const METHOD = 20; // Kemenag RI
 const REQUEST_TIMEOUT_MS = 8000;
 const MAX_RETRY_CYCLES = 2;
 const MIRROR_STORAGE_KEY = 'last_working_mirror';
-
-/* ── Required timings keys for response validation ── */
 const REQUIRED_KEYS = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 /**
@@ -228,8 +226,6 @@ function formatDate(date) {
     return `${dd}-${mm}-${yyyy}`;
 }
 
-/* ── Monthly Calendar API ── */
-
 const MONTHLY_CACHE_PREFIX = 'monthly_cache_';
 
 /**
@@ -385,8 +381,6 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
     console.error('[API] Monthly: all mirrors and retries exhausted');
     return null;
 }
-
-/* ── Qibla Direction API ── */
 
 const QIBLA_CACHE_PREFIX = 'qibla_cache_';
 

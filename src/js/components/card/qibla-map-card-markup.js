@@ -1,7 +1,6 @@
 /**
- * Qibla Map Card Markup
+ * Qibla Map Card Markup Component
  * Lightweight HTML string generator for the map container.
- * Separated from the Leaflet logic to allow code splitting and lazy loading.
  */
 
 /**

@@ -4,6 +4,7 @@
  */
 
 import * as QuranCard from '../../components/quran/quran-card.js';
+
 import * as BookmarkManager from '../../modules/quran/bookmark-manager.js';
 import * as QuranReader from '../../modules/quran/quran-reader.js';
 import * as Notification from '../../modules/notification/notification.js';

@@ -68,7 +68,7 @@
    overflow-y: auto;
    overflow-x: hidden;
    -webkit-overflow-scrolling: touch;
-   overscroll-behavior: contain;
+   overscroll-behavior-y: auto;
    scroll-behavior: smooth;
 }
 

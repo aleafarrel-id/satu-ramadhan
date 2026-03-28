@@ -1,8 +1,8 @@
 /**
  * Home Page Skeleton Loader
- * Renders loading placeholder while data is being fetched
  */
 
+// UI Components
 import { renderLocationCard, bindLocationCardEvents } from '../card/location-card.js';
 import { renderPrayerCardSkeleton } from '../card/prayer-card.js';
 
@@ -51,6 +51,5 @@ export function renderHomeSkeleton(container, location, onLocationAction) {
         </div>
     `;
 
-    // Bind location card instantly so user can click "Atur" even before schedule loads
     bindLocationCardEvents(onLocationAction, container);
 }

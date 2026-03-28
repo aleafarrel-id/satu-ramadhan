@@ -1,20 +1,17 @@
 /**
  * Qibla Compass Module
- * Fetches qibla bearing from API + handles device orientation for live heading.
- * Detects gyroscope availability and triggers haptic on qibla alignment.
- *
- * Uses a circular low-pass filter (EMA) to smooth noisy sensor data,
- * preventing jittery dial movement on mobile devices.
  */
 
+// Core Services
 import { getQiblaDirection } from '../../core/api.js';
 
+// UI Components
 import { updateCompassUI } from '../../components/compass/compass-dial.js';
 import { updateQiblaInfoCard } from '../../components/card/qibla-info-card.js';
 
+// Utilities & Modules
 import { doubleVibrate } from '../system/haptic.js';
 
-/* ── Configuration ── */
 const QIBLA_TOLERANCE_DEG = 2;
 const HAPTIC_COOLDOWN_MS = 2000;
 const GYRO_DETECT_TIMEOUT_MS = 1000;
@@ -183,8 +180,6 @@ export default class QiblaCompass {
     get hasGyroscope() {
         return this._hasGyroscope;
     }
-
-    /* ── Private helpers ── */
 
     /**
      * Subscribe to device orientation events

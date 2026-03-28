@@ -1,6 +1,5 @@
 /**
  * Haptic Feedback Module
- * Capacitor Haptics wrapper — vibration on interactions
  */
 
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';

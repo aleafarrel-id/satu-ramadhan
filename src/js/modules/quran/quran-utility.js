@@ -1,49 +1,81 @@
 /**
- * Utility Module
- * Shared tools for Quran features.
+ * Quran Utility Module
  */
 
 import * as QuranCard from '../../components/quran/quran-card.js';
+import { safeClear } from '../../utils/dom-utils.js';
 
 /**
  * Renders items in batches to prevent UI blocking.
  */
-export async function renderBatchedList({ data, container, createItemFn, onCheckCancel, batchSize = 25, listCreatorFn }) {
+export async function renderBatchedList({ data, container, createItemFn, onCheckCancel, batchSize = 25, listCreatorFn, initialBatchCount = 1 }) {
    if (!data || !container) return;
 
-   const existingList = container.querySelector('.surah-list');
-   if (existingList) existingList.remove();
-   const existingEmpty = container.querySelector('.quran-empty');
-   if (existingEmpty) existingEmpty.remove();
-   const existingPlaceholder = container.querySelector('.quran-search-placeholder');
-   if (existingPlaceholder) existingPlaceholder.remove();
+   safeClear(container, '.custom-ptr, .quran-loading');
 
    const listContainer = listCreatorFn();
    container.appendChild(listContainer);
 
    const total = data.length;
+   let currentIndex = 0;
 
-   for (let i = 0; i < total; i += batchSize) {
-      if (onCheckCancel && onCheckCancel()) return;
+   // Local helper to render exactly one chunk
+   const renderNextChunk = () => {
+      if (onCheckCancel && onCheckCancel()) return false;
+      if (currentIndex >= total) return false;
 
-      const chunk = data.slice(i, i + batchSize);
+      const chunk = data.slice(currentIndex, currentIndex + batchSize);
       const fragment = document.createDocumentFragment();
 
       chunk.forEach((item, indexInChunk) => {
-         const absoluteIndex = i + indexInChunk;
-         const isInitialBatch = i < batchSize * 2;
+         const absoluteIndex = currentIndex + indexInChunk;
+         const isInitialBatch = absoluteIndex < batchSize * 2;
          const card = createItemFn(item, absoluteIndex, isInitialBatch);
          fragment.appendChild(card);
       });
 
       listContainer.appendChild(fragment);
+      currentIndex += batchSize;
 
-      if (i + batchSize < total) {
-         await new Promise(resolve => {
-            if (window.requestIdleCallback) window.requestIdleCallback(resolve, { timeout: 100 });
-            else setTimeout(resolve, 0);
-         });
-      }
+      return currentIndex < total;
+   };
+
+   // Render initial batches immediately (to fill screen, or satisfy deep links)
+   let hasMore = true;
+   for (let i = 0; i < initialBatchCount; i++) {
+      if (!hasMore) break;
+      if (i > 0) await new Promise(resolve => setTimeout(resolve, 0));
+      hasMore = renderNextChunk();
+   }
+
+   // Attach IntersectionObserver for Infinite Scrolling if data remains
+   if (hasMore) {
+      const sentinel = document.createElement('div');
+      sentinel.className = 'quran-scroll-sentinel';
+      sentinel.style.height = '40px';
+      sentinel.style.width = '100%';
+      listContainer.appendChild(sentinel);
+
+      const observer = new IntersectionObserver((entries) => {
+         if (entries[0].isIntersecting) {
+            listContainer.removeChild(sentinel);
+
+            if (renderNextChunk()) {
+               listContainer.appendChild(sentinel);
+            } else {
+               // Finished all chunks natively
+               observer.disconnect();
+               container.__quranObserver = null;
+            }
+         }
+      }, {
+         root: container,
+         rootMargin: '1200px',
+         threshold: 0
+      });
+
+      observer.observe(sentinel);
+      container.__quranObserver = observer;
    }
 }
 

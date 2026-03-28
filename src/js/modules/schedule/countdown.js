@@ -1,6 +1,5 @@
 /**
  * Countdown Module
- * Real-time countdown timer to the next prayer time
  */
 
 let _interval = null;

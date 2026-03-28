@@ -1,25 +1,24 @@
 /**
- * Prayer Widgets — Shared UI components
- * Reusable across Home and Schedule pages (DRY)
+ * Prayer Widgets Component
+ * Shared UI components.
  */
 
+// Core & Libraries
 import { getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
 import { toggleOrg, getOrgDisplayNameAsync } from '../../modules/schedule/ramadhan.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as notif from '../../modules/notification/notification.js';
 
-/* ── Helpers ── */
-
-/** Remove timezone notes, e.g. "04:12 (WIB)" → "04:12" */
+/**
+ * Remove timezone notes, e.g. "04:12 (WIB)" → "04:12".
+ */
 function cleanTime(timeStr) {
     return timeStr ? timeStr.replace(/\s*\(.*\)/, '') : '--:--';
 }
 
-/* ── Featured Prayer Card ── */
-
 /**
- * Render the "current prayer" featured card with icon, name, time, and "Sekarang" badge
- * @param {object} timings - prayer timings object { imsak, subuh, ... }
+ * Render the "current prayer" featured card.
+ * @param {object} timings
  * @returns {string} HTML string
  */
 export function renderFeaturedCard(timings, prayerState = null) {
@@ -41,8 +40,6 @@ export function renderFeaturedCard(timings, prayerState = null) {
     `;
 }
 
-/* ── Organization Toggle Button ── */
-
 /**
  * Render the org toggle button HTML
  * @param {string} orgName - display name of the org
@@ -59,9 +56,8 @@ export function renderOrgToggle(orgName, id = 'org-toggle') {
 }
 
 /**
- * Handle org toggle click — switches org and updates label dynamically.
- * Uses getOrgDisplayNameAsync() for dynamic name resolution from presets.
- * @param {string} [labelId='org-toggle-label'] - ID of the label element to update
+ * Handle org toggle click.
+ * @param {string} [labelId='org-toggle-label']
  * @param {Function} [onToggle] - optional callback after toggling
  */
 export async function handleOrgToggle(labelId = 'org-toggle-label', onToggle) {
@@ -77,10 +73,8 @@ export async function handleOrgToggle(labelId = 'org-toggle-label', onToggle) {
     if (onToggle) onToggle();
 }
 
-/* ── Kiblat Button ── */
-
 /**
- * Render the Kiblat shortcut button with compass badge
+ * Render the Kiblat shortcut button.
  * @param {string} [id='btn-kiblat'] - element ID
  * @returns {string} HTML string
  */

@@ -1,12 +1,14 @@
 /**
- * Language Selector Modal
+ * Language Selector Modal Component
  * A reusable UI component for selecting the Quran translation language.
- * Follows SoC: purely UI, no storage logic here. State update happens in settings-quran-panel.
  */
 
+// Core & Libraries
 import { QURAN_LANGUAGES } from '../../config/quran-languages.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
+
+// Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;

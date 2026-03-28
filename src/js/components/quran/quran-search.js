@@ -2,6 +2,7 @@
  * Search UI Component
  */
 
+// Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 
 let _overlay = null;

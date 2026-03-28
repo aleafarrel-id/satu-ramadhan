@@ -1,9 +1,8 @@
 /**
  * Storage Service
- * Capacitor Preferences wrapper with JSON serialization
- * Falls back to web implementation when running in browser
  */
 
+// Core & Libraries
 import { Preferences } from '@capacitor/preferences';
 
 const PREFIX = 'satu_ramadhan_';

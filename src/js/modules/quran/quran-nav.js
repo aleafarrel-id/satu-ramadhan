@@ -1,10 +1,9 @@
 /**
- * Navigation Manager
+ * Quran Navigation Module
  */
 
 import * as QuranHeader from '../../components/quran/quran-header.js';
 import * as QuranDock from '../../components/quran/quran-dock.js';
-import * as Router from '../../router.js';
 
 let _quranMode = false;
 let _navOptions = {};
@@ -120,10 +119,6 @@ export async function exitQuranMode() {
       }, 800));
    });
 }
-
-/**
- * Handles the back button action.
- */
 
 /**
  * Handles dock navigation events.

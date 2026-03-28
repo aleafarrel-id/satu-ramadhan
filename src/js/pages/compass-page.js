@@ -34,11 +34,15 @@ let _compass = null;
  *
  * @param {HTMLElement} container - The DOM element to render into.
  */
-export async function render(container) {
+export async function render(container, options = {}) {
     _container = container;
 
     _location = await getSavedLocation();
     renderCompassSkeleton(_container, _location, showLocationModalForCompass);
+
+    if (options.refresh) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+    }
 
     await initCompass();
 

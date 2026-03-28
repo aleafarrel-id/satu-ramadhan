@@ -1,6 +1,5 @@
 /**
  * Hardware back button handler for Android
- * Orchestrates closing modals and page navigation
  */
 
 import { App } from '@capacitor/app';

@@ -1,7 +1,5 @@
 /**
- * Mushaf UI — HTML string builders for Mushaf page elements.
- * Uses string interpolation instead of DOM manipulation for faster rendering.
- * Supports optional tajweed coloring via the string-based pipeline.
+ * Mushaf UI Module
  */
 
 import { buildTajweedHTML, alignRulesToMushafText, getVerseRules } from '../quran-tajweed.js';
@@ -44,8 +42,6 @@ export function buildEmptyPageHTML() {
    return '<div class="mushaf-page mushaf-page-empty"></div>';
 }
 
-// ── Legacy DOM API (kept for backward compatibility) ──
-
 export function buildPageElement(pageData) {
    const t = document.createElement('template');
    t.innerHTML = buildPageHTML(pageData);
@@ -57,8 +53,6 @@ export function buildEmptyPageElement() {
    t.innerHTML = buildEmptyPageHTML();
    return t.content.firstChild;
 }
-
-// ── Private Helpers ──
 
 function _buildSurahHeaderHTML(line) {
    return `<div class="mushaf-line mushaf-line--surah-header"><span class="mushaf-surah-name">${_esc(line.text)}</span></div>`;

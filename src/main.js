@@ -1,5 +1,5 @@
 /**
- * Satu Ramadhan — Main JS Entry Point
+ * Main JS Entry Point
  * Bootstrap the application
  */
 

@@ -1,13 +1,6 @@
 /**
- * Tajweed Module
- * Handles data fetching, caching, and colored markup building for both
- * DOM-based (regular reader) and string-based (mushaf) rendering paths.
- *
- * Includes a Contextual Waqf Engine that dynamically adjusts static JSON
- * rules based on the presence of Waqf (stop) marks in the text.
+ * Quran Tajweed Module
  */
-
-/* ─── Rule Definitions ─── */
 
 /**
  * Maps rule keys to CSS classes and labels.
@@ -99,8 +92,6 @@ const TAJWEED_RULES = {
    }
 };
 
-/* ─── Waqf Mark Classification ─── */
-
 /**
  * Waqf (stop) marks found in Uthmani Quran text.
  * Each mark has a type that determines how contextual rules apply:
@@ -140,8 +131,6 @@ function _findWaqfPositions(text) {
    }
    return positions;
 }
-
-/* ─── Arabic Character Helpers ─── */
 
 const QALQALAH_LETTERS = new Set([
    0x0642, // Qaf  ق
@@ -216,8 +205,6 @@ function _hasWordBoundaryBetween(text, startIdx, endIdx) {
    }
    return false;
 }
-
-/* ─── Contextual Waqf Engine ─── */
 
 /**
  * Applies context-aware corrections to static tajweed rules based on
@@ -387,8 +374,6 @@ function _applyContextualRules(text, rules) {
    return finalRules;
 }
 
-/* ─── Shared Slot Builder ─── */
-
 /**
  * Builds parallel slot arrays mapping each character index to a rule key
  * (or null) and whether it's optional.
@@ -436,8 +421,6 @@ function _buildSlots(text, rules) {
    return { slots, optSlots };
 }
 
-/* ─── HTML Escape (for string-based output) ─── */
-
 function _escHtml(str) {
    return str
       .replace(/&/g, '&amp;')
@@ -445,8 +428,6 @@ function _escHtml(str) {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
 }
-
-/* ─── Run Iterator (shared by both output modes) ─── */
 
 /**
  * Iterates over the slot arrays, grouping consecutive chars with the same
@@ -485,8 +466,6 @@ function _iterateRuns(text, slots, optSlots, onPlain, onRule) {
    }
 }
 
-/* ─── Label Suffix Helper ─── */
-
 /**
  * Builds the tooltip label, appending context info for optional rules.
  */
@@ -512,8 +491,6 @@ function _buildLabel(ruleKey, ruleInfo, isOptional) {
    }
    return label;
 }
-
-/* ─── DOM-based Output (for Regular Reader) ─── */
 
 /**
  * Builds a DocumentFragment with colored tajweed spans.
@@ -553,8 +530,6 @@ export function buildTajweedFragment(arabicText, verseRules) {
    return fragment;
 }
 
-/* ─── String-based Output (for Mushaf) ─── */
-
 /**
  * Builds an HTML string with colored tajweed spans.
  * Functionally identical to buildTajweedFragment but outputs a string
@@ -589,8 +564,6 @@ export function buildTajweedHTML(arabicText, rules) {
 
    return html;
 }
-
-/* ─── Mushaf Offset Alignment ─── */
 
 /**
  * Characters that exist in Mushaf (Ottoman) text but not in the regular
@@ -688,8 +661,6 @@ export function alignRulesToMushafText(mushafWord, rules, verseOffset, lineOffse
 
    return aligned;
 }
-
-/* ─── Verse Rule Lookup ─── */
 
 /**
  * Extracts rules for a specific verse.

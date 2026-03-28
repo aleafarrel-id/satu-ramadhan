@@ -2,17 +2,11 @@
  * Qibla Map Card Component
  * Interactive Leaflet map showing geodesic route
  * from the user's location to the Ka'bah.
- *
- * Exports:
- *   renderQiblaMapCard(mapId)  — returns HTML string
- *   initQiblaMapCard(mapId, lat, lng) — initializes Leaflet after DOM ready
- *   destroyQiblaMapCard()     — cleanup to prevent memory leaks
  */
 
+// Core & Libraries
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
-/* ── Constants ── */
 
 const KAABA_LAT = 21.4225;
 const KAABA_LNG = 39.8262;
@@ -26,13 +20,9 @@ const GEODESIC_STEPS = 80;
 const FIT_BOUNDS_PADDING = [30, 30];
 const INIT_DELAY_MS = 100;
 
-/* ── Module State ── */
-
 let _mapInstance = null;
 let _userMarker = null;
 let _geodesicLine = null;
-
-/* ── Public API ── */
 
 /**
  * Initialise the Leaflet map inside the rendered container.
@@ -50,17 +40,13 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             const newContainer = document.getElementById(mapId);
             if (!newContainer) { resolve(null); return; }
 
-            // If map instance already exists, reuse it and update the markers/view.
             if (_mapInstance) {
                 const cachedContainer = _mapInstance.getContainer();
                 
-                // If the DOM was re-rendered, swap the newly created empty container
-                // with our fully intact cached Leaflet container.
                 if (newContainer !== cachedContainer && newContainer.parentNode) {
                     newContainer.parentNode.replaceChild(cachedContainer, newContainer);
                 }
 
-                // Hide loader in case it was re-rendered in the parent markup
                 const loader = document.getElementById(`${mapId}-loader`);
                 if (loader) {
                     loader.classList.add('is-hidden');
@@ -71,7 +57,6 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
                     _userMarker.setLatLng([userLat, userLng]);
                 }
 
-                // Update geodesic path
                 if (_geodesicLine) {
                     const path = _calcGeodesicPath(userLat, userLng, KAABA_LAT, KAABA_LNG, GEODESIC_STEPS);
                     _geodesicLine.setLatLngs(path);
@@ -79,7 +64,6 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
 
                 _fitView(_mapInstance, userLat, userLng);
                 
-                // Ensure map recalculates its size after being placed in the DOM
                 _mapInstance.invalidateSize();
                 
                 resolve(_mapInstance);
@@ -111,8 +95,6 @@ export function destroyQiblaMapCard() {
         _geodesicLine = null;
     }
 }
-
-/* ── Private Helpers ── */
 
 /**
  * Create an interactive Leaflet map with zoom controls hidden
@@ -161,15 +143,12 @@ function _addTileLayer(map, mapId) {
 
 /**
  * Place Ka'bah icon (with decorative ring) and user pulse-dot markers.
- * Uses divIcon for both to avoid default Leaflet marker images
- * which would conflict with Capacitor app UX.
  *
  * @param {L.Map} map
  * @param {number} userLat
  * @param {number} userLng
  */
 function _addMarkers(map, userLat, userLng) {
-    // Ka'bah marker — small image with a glowing ring, using divIcon
     const kaabaIcon = L.divIcon({
         className: 'kaaba-marker',
         html: `
@@ -181,7 +160,6 @@ function _addMarkers(map, userLat, userLng) {
         iconAnchor: [18, 18],
     });
 
-    // User marker — pulse dot, using divIcon
     const userIcon = L.divIcon({
         className: 'user-location-marker',
         html: '<div class="pulse-dot"></div>',
@@ -228,11 +206,7 @@ function _fitView(map, userLat, userLng) {
 }
 
 /**
- * Calculate interpolated points along the great-circle arc
- * using Spherical Linear Interpolation (SLERP).
- *
- * This produces a visually accurate curved line without any
- * additional library dependency.
+ * Calculate interpolated points along the great-circle arc.
  *
  * @param {number} lat1 — start latitude (degrees)
  * @param {number} lon1 — start longitude (degrees)

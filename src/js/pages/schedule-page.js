@@ -36,7 +36,9 @@ import { showLocationSearchModal } from '../components/modal/location-search-mod
 import { showShareScheduleModal } from '../components/modal/share-schedule-modal.js';
 import { downloadScheduleImage, shareScheduleImage } from '../modules/share/share-schedule-exporter.js';
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
+
 import { makeAccessibleBtn } from '../utils/a11y.js';
+import { safeClear } from '../utils/dom-utils.js';
 
 /* --- STATE --- */
 
@@ -59,10 +61,17 @@ let _animId = 0;
  * Connects the daily location API payload and bridges user's daily data.
  *
  * @param {HTMLElement} container - Active DOM payload to render upon.
+ * @param {Object} [options={}] - Navigation options (e.g., refresh: true)
  */
-export async function render(container) {
+export async function render(container, options = {}) {
     _container = container;
+
+    safeClear(container);
     renderScheduleSkeleton(_container);
+
+    if (options.refresh) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+    }
 
     const location = await getSavedLocation();
 

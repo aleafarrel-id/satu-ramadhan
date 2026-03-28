@@ -1,13 +1,5 @@
 /**
- * Share Schedule Exporter
- * ───────────────────────
- * Captures a DOM element (rendered inside an iframe) as a PNG via html-to-image,
- * then either downloads or shares the image file.
- *
- * Uses html-to-image with `fontEmbedCSS` option to ensure custom fonts
- * are properly embedded in the SVG serialization.
- *
- * @module share-schedule-exporter
+ * Share Schedule Exporter Module
  */
 
 import { toCanvas } from 'html-to-image';
@@ -17,15 +9,9 @@ import { Share } from '@capacitor/share';
 import { Media } from '@capacitor-community/media';
 import { success as notifySuccess, error as notifyError } from '../notification/notification.js';
 
-/** ── Constants ── */
-
 const TEMPLATE_WIDTH = 1240;
 const TEMPLATE_HEIGHT = 1754;
-
-/** Default filename for downloaded images */
 const DEFAULT_FILENAME = 'jadwal-imsakiyah.png';
-
-/** ── Public API ── */
 
 /**
  * Capture a DOM element as a canvas using html-to-image.

@@ -1,23 +1,26 @@
 /**
- * Reader Module
- * Manages the overlay for reading Arabic text and translation.
- * Supports reading per Surah and per Juz.
+ * Quran Reader Module
  */
 
+// UI Components
 import * as QuranDock from '../../components/quran/quran-dock.js';
 import * as QuranCard from '../../components/quran/quran-card.js';
 import * as QuranHeader from '../../components/quran/quran-header.js';
-import { renderBatchedList, createRenderContext } from './quran-utility.js';
-import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
-import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
-import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
-import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
-import { getTajweedEnabled, getTransliterationEnabled } from './quran-settings.js';
 import { openPicker, closePicker, destroyPicker } from '../../components/quran/quran-picker.js';
-import * as BookmarkManager from './bookmark-manager.js';
-import * as Notification from '../notification/notification.js';
 
-/* Internal State */
+// API & Services
+import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
+import { renderBatchedList, createRenderContext } from './quran-utility.js';
+import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
+import { getTajweedEnabled, getTransliterationEnabled } from './quran-settings.js';
+import * as BookmarkManager from './bookmark-manager.js';
+
+// Utilities & System
+import * as Notification from '../notification/notification.js';
+import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
+import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
+import { initPullToRefresh } from '../../utils/pull-to-refresh.js';
+import { safeClear } from '../../utils/dom-utils.js';
 
 let _isOpen = false;
 let _currentItem = null;
@@ -27,16 +30,13 @@ let _readerHeaderInstance = null;
 let _scrollContainer = null;
 let _quranPage = null;
 let _onCloseCallback = null;
+let _ptrCleanup = null;
 const _renderCtx = createRenderContext();
-
-/* Verse Search State */
 
 let _isReaderSearchActive = false;
 let _currentReaderData = [];
 let _searchDebounceTimer = null;
 let _targetVerseNumber = null;
-
-/* Public Interface */
 
 /**
  * Opens the reader overlay for a given item (surah or juz).
@@ -127,6 +127,11 @@ export function close() {
          _readerHeaderInstance.destroy();
          _readerHeaderInstance = null;
       }
+      // PTR cleanup
+      if (_ptrCleanup) {
+         _ptrCleanup();
+         _ptrCleanup = null;
+      }
       _scrollContainer = null;
       _currentItem = null;
       _currentType = 'surah';
@@ -149,6 +154,11 @@ export function destroy() {
       unregisterModalDismiss(_exitReaderSearch);
       dismissTooltip();
       destroyPicker();
+
+      if (_ptrCleanup) {
+         _ptrCleanup();
+         _ptrCleanup = null;
+      }
 
       if (_overlay && _overlay.parentNode) {
          _overlay.parentNode.removeChild(_overlay);
@@ -176,8 +186,6 @@ export function destroy() {
 export function isOpen() {
    return _isOpen;
 }
-
-/* DOM Construction */
 
 function _buildOverlay(item) {
    _overlay = document.createElement('div');
@@ -219,16 +227,31 @@ function _buildOverlay(item) {
    _scrollContainer.addEventListener('click', _onScrollContainerClick);
 
    // Loading state
-   QuranCard.renderLoadingState(_scrollContainer);
+   _setLoadingState();
 
    _overlay.appendChild(_readerHeaderInstance.element);
    _overlay.appendChild(_scrollContainer);
 
    // Mount into the quran-page
    _quranPage.appendChild(_overlay);
-}
 
-/* Picker Logic */
+   // Attach PTR directly to the scroll container inside the overlay so its UI
+   // is always visible to the user
+   _ptrCleanup = initPullToRefresh({
+      scrollElement: _scrollContainer,
+      theme: 'dark',
+      async onRefresh() {
+         if (!_currentItem) return;
+         _renderCtx.incrementAndGet();
+
+         await new Promise(resolve => setTimeout(resolve, 350));
+
+         _setLoadingState();
+
+         await _fetchAndRender(_currentItem);
+      }
+   });
+}
 
 function _openSurahPicker() {
    const isJuz = _currentType === 'juz';
@@ -260,9 +283,9 @@ function _changeItem(newItem) {
       }
    }
 
-   // Reset scroll container to loading state
+   // Reset scroll container to loading state (safe — preserves .custom-ptr)
    if (_scrollContainer) {
-      QuranCard.renderLoadingState(_scrollContainer);
+      _setLoadingState();
       _scrollContainer.scrollTop = 0;
    }
 
@@ -360,8 +383,6 @@ async function _fetchAndRender(item) {
    }
 }
 
-/* Ayah Data Processing */
-
 function _buildAyahList(surahData, translationData, tajweedData, latinData, surahMeta) {
    const verseObj = surahData.verse || {};
    const transObj = translationData.verse || {};
@@ -395,8 +416,6 @@ function _buildAyahList(surahData, translationData, tajweedData, latinData, sura
    return ayahList;
 }
 
-/* Surah Banner Creation */
-
 function _createSurahBannerElement(surah) {
    const surahNum = parseInt(surah.index);
    const typeText = surah.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
@@ -418,8 +437,6 @@ function _createSurahBannerElement(surah) {
 
    return banner;
 }
-
-/* Ayah DOM Creation */
 
 function _createAyahElement(ayah) {
    if (ayah.isBismillah) {
@@ -516,16 +533,44 @@ function _createRegularAyahElement(ayah) {
    return card;
 }
 
-/* Shared Render Helper */
+/**
+ * Renders the loading skeleton inside _scrollContainer while preserving
+ * the .custom-ptr node at the top (DOM Safe-Cleanup).
+ */
+function _setLoadingState() {
+   if (!_scrollContainer) return;
+   _clearScrollContainer();
+   const loadingEl = document.createElement('div');
+   loadingEl.className = 'quran-loading';
+   loadingEl.innerHTML = `<i class='bx bx-book-reader'></i><p>Memuat Al-Qur'an</p>`;
+   _scrollContainer.appendChild(loadingEl);
+}
+
+/**
+ * Clears the scroll container content while preserving the PTR element.
+ * Replacing innerHTML directly would destroy the .custom-ptr node and break PTR.
+ */
+function _clearScrollContainer() {
+   if (!_scrollContainer) return;
+   safeClear(_scrollContainer);
+}
 
 async function _renderItems(data, renderId, isInitialLoad = false) {
-   if (_scrollContainer) {
-      _scrollContainer.innerHTML = '';
-   }
+   _clearScrollContainer();
 
    if (!data.length) {
       _renderNoResults();
       return;
+   }
+
+   let targetBatchCount = 1;
+   if (_targetVerseNumber) {
+      const foundIndex = data.findIndex(
+         item => item.type === 'ayah' && item.data.number === parseInt(_targetVerseNumber, 10)
+      );
+      if (foundIndex !== -1) {
+         targetBatchCount = Math.ceil((foundIndex + 5) / 20);
+      }
    }
 
    await renderBatchedList({
@@ -534,10 +579,12 @@ async function _renderItems(data, renderId, isInitialLoad = false) {
       listCreatorFn: () => {
          const list = document.createElement('div');
          list.className = 'quran-reader-ayah-list';
+         list.style.contain = 'content';
          return list;
       },
       onCheckCancel: () => _renderCtx.shouldCancelRender(renderId),
       batchSize: 20,
+      initialBatchCount: targetBatchCount,
       createItemFn: (itemDesc, index, isInitialBatch) => {
          const el = itemDesc.type === 'banner'
             ? _createSurahBannerElement(itemDesc.surah)
@@ -562,8 +609,6 @@ function _renderNoResults() {
       </div>
    `;
 }
-
-/* Verse Search Logic */
 
 function _toggleReaderSearch() {
    if (_isReaderSearchActive) {
@@ -658,8 +703,6 @@ function _filterVerses(query) {
    _renderItems(results, renderId);
 }
 
-/* Delegated Click Handler */
-
 /**
  * Single delegated handler on _scrollContainer — replaces per-card listeners.
  * Looks up action buttons by data-action attribute and resolves the ayah
@@ -691,8 +734,6 @@ function _onScrollContainerClick(e) {
    }
 }
 
-/* Clipboard Logic */
-
 function _handleCopyAyah(ayah, btnEl) {
    const text = `${ayah.arabic}\n\n${ayah.translation}\n\n— QS. ${ayah.surahName}: ${ayah.number}`;
 
@@ -710,8 +751,6 @@ function _handleCopyAyah(ayah, btnEl) {
       console.warn('[QuranReader] Failed to copy:', err);
    });
 }
-
-/* Bookmark Logic */
 
 async function _handleToggleBookmark(ayah, btnEl) {
    const isNowBookmarked = await BookmarkManager.toggle({

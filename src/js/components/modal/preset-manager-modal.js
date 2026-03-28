@@ -1,12 +1,9 @@
 /**
  * Preset Manager Modal (Bottom-sheet)
  * Displays all Ramadhan presets with CRUD operations.
- * Follows the same animation/structure pattern as location-search-modal.js.
- *
- * Separation of Concerns: All storage operations go through ramadhan.js module.
- * This modal NEVER calls storage.js or Preferences directly.
  */
 
+// Core & Libraries
 import {
     getAllPresets,
     getSelectedOrg,
@@ -20,18 +17,19 @@ import {
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import * as notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
+
+// UI Components
 import { showConfirmModal } from './confirm-modal.js';
 import { showDatePickerModal } from './date-picker-modal.js';
+
+// Utilities & Helpers
 import { formatDateShort, formatDateVerbose, calcRamadhanEndDates } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
-/* ── State ── */
 let _overlayEl = null;
 let _onPresetsChanged = null;
 let _editingId = null;
 let _releaseFocus = null;
-
-/* ── Public API ── */
 
 /**
  * Show the preset manager modal.
@@ -63,7 +61,6 @@ export function showPresetManagerModal({ onPresetsChanged } = {}) {
         if (e.target === _overlayEl) hideModal();
     });
 
-    // ── Bind: Escape to close ──
     addEscHandler(_overlayEl, hideModal);
 
     // Handle virtual keyboard scroll behavior
@@ -98,8 +95,6 @@ export function hideModal() {
     setTimeout(removeModal, 450);
 }
 
-/* ── Internal Helpers ── */
-
 function removeModal() {
     if (_releaseFocus) {
         _releaseFocus();
@@ -119,8 +114,6 @@ function removeModal() {
 function emitChange() {
     if (_onPresetsChanged) _onPresetsChanged();
 }
-
-/* ── List Rendering ── */
 
 /**
  * Refresh the preset list inside the modal.
@@ -201,8 +194,6 @@ function renderPresetItem(preset, selectedId) {
         </div>
     `;
 }
-
-/* ── Event Binding ── */
 
 /**
  * Bind click events for all interactive elements in the list.
@@ -305,8 +296,6 @@ function bindListEvents(listEl, presets, selectedId) {
     });
 }
 
-/* ── Shared Form Helpers ── */
-
 /**
  * Bind a date-picker trigger to a field element.
  * When a date is selected it updates the field's data-date attribute and display text.
@@ -401,8 +390,6 @@ function validateDates(startDate, endDate) {
 
     return true;
 }
-
-/* ── Edit Form ── */
 
 /**
  * Show the inline edit form for a preset.
@@ -517,8 +504,6 @@ function showEditForm(id, presets) {
     });
 }
 
-/* ── Add Form ── */
-
 /**
  * Show the "add new custom preset" form at the bottom of the list.
  */
@@ -607,8 +592,6 @@ function showAddForm() {
         await refreshList();
     });
 }
-
-/* ── DOM Construction ── */
 
 /**
  * Create the modal DOM structure.
