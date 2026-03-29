@@ -4,12 +4,16 @@ import android.os.Bundle;
 
 import com.getcapacitor.BridgeActivity;
 import android.content.Intent;
+import androidx.core.view.WindowCompat;
 
 public class MainActivity extends BridgeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         registerPlugin(PrayerServicePlugin.class);
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+
         checkStopAdzanIntent(getIntent());
     }
 
