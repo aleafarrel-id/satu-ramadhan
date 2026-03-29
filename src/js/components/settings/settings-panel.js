@@ -7,6 +7,11 @@
 import { syncNotifications } from '../../modules/notification/notification-sync.js';
 import * as Notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
+import {
+    checkNotificationPermission,
+    requestNotificationPermission,
+} from '../../modules/notification/native-notification.js';
+import { showPermissionDialogPreset } from '../../modules/permission/permission-dialog-configs.js';
 
 export function render(container) {
     container.innerHTML = `
@@ -56,13 +61,48 @@ export function render(container) {
     notificationToggle?.addEventListener('change', async (e) => {
         const enabled = e.target.checked;
         await impact('medium');
-        localStorage.setItem('satu_ramadhan_notif', enabled);
-        updateAdzanRowState(enabled);
-        rescheduleNotifications();
-        Notif.show(
-            enabled ? 'Notifikasi diaktifkan' : 'Notifikasi dimatikan',
-            enabled ? 'success' : 'info'
-        );
+
+        if (!enabled) {
+            localStorage.setItem('satu_ramadhan_notif', 'false');
+            updateAdzanRowState(false);
+            rescheduleNotifications();
+            Notif.show('Notifikasi dimatikan', 'info');
+            return;
+        }
+
+        // Gate on OS permission before enabling
+        const osGranted = await checkNotificationPermission();
+
+        if (osGranted) {
+            localStorage.setItem('satu_ramadhan_notif', 'true');
+            updateAdzanRowState(true);
+            rescheduleNotifications();
+            Notif.show('Notifikasi diaktifkan', 'success');
+            return;
+        }
+
+        // OS permission not yet granted — show rationale before OS prompt
+        showPermissionDialogPreset('notification', {
+            onConfirm: async () => {
+                const granted = await requestNotificationPermission();
+                if (granted) {
+                    localStorage.setItem('satu_ramadhan_notif', 'true');
+                    updateAdzanRowState(true);
+                    rescheduleNotifications();
+                    Notif.show('Notifikasi diaktifkan', 'success');
+                } else {
+                    notificationToggle.checked = false;
+                    localStorage.setItem('satu_ramadhan_notif', 'false');
+                    updateAdzanRowState(false);
+                    Notif.show('Izin notifikasi ditolak', 'warning');
+                }
+            },
+            onCancel: () => {
+                notificationToggle.checked = false;
+                localStorage.setItem('satu_ramadhan_notif', 'false');
+                updateAdzanRowState(false);
+            },
+        });
     });
 
     adzanToggle?.addEventListener('change', async (e) => {

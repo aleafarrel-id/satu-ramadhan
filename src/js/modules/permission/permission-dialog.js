@@ -63,9 +63,11 @@ async function handleConfirm() {
     _isConfirming = true;
 
     const btn = _overlayEl?.querySelector('#perm-dialog-btn-confirm');
+    let originalHtml = '';
     if (btn) {
+        originalHtml = btn.innerHTML;
         btn.disabled = true;
-        btn.classList.add('loading');
+        btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i><span>Memproses...</span>`;
     }
 
     try {
@@ -73,6 +75,10 @@ async function handleConfirm() {
     } catch (e) {
         console.warn('[PermissionDialog] onConfirm error:', e);
     } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
         hideModal();
     }
 }

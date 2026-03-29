@@ -33,8 +33,8 @@ export const PERMISSION_CONFIGS = {
         title: 'Izin Notifikasi',
         description: 'Untuk dapat menampilkan notifikasi adzan tepat waktu, aplikasi memerlukan izin notifikasi.',
         features: [
-            { icon: 'bx-alarm', label: 'Pengingat adzan setiap hari' },
-            { icon: 'bx-bowl-hot', label: 'Notifikasi waktu sholat' },
+            { icon: 'bxs-bell-ring', label: 'Pengingat adzan setiap hari' },
+            { icon: 'bx-bell', label: 'Notifikasi waktu sholat' },
             { icon: 'bx-bell-off', label: 'Dapat dinonaktifkan kapan saja' },
         ],
         confirmText: 'Izinkan Notifikasi',
@@ -51,7 +51,7 @@ export const PERMISSION_CONFIGS = {
         title: 'Izin Penyimpanan',
         description: 'Untuk menyimpan dan membagikan gambar jadwal sholat, aplikasi memerlukan akses penyimpanan.',
         features: [
-            { icon: 'bx-download', label: 'Simpan jadwal sebagai gambar' },
+            { icon: 'bx-down-arrow-circle', label: 'Simpan jadwal sebagai gambar' },
             { icon: 'bx-share-alt', label: 'Bagikan jadwal ke media sosial' },
             { icon: 'bx-lock-alt', label: 'Hanya akses file buatan aplikasi' },
         ],

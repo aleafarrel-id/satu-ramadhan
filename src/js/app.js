@@ -41,7 +41,7 @@ import * as navBar from './components/ui/nav-bar.js';
 import * as homePage from './pages/home-page.js';
 
 const SPLASH_MIN_DURATION = 1500;
-const POST_SPLASH_DIALOG_DELAY = 600;
+const POST_SPLASH_DIALOG_DELAY = 1500;
 
 /**
  * Initialize the entire application
@@ -241,13 +241,21 @@ async function _requestNotificationIfNeeded() {
     const alreadyGranted = await checkNotificationPermission();
     if (alreadyGranted) return;
 
+    // Skip if user previously declined — respect until they re-enable via settings
+    if (localStorage.getItem('satu_ramadhan_notif') === 'false') return;
+
     showPermissionDialogPreset('notification', {
         onConfirm: async () => {
             const granted = await requestNotificationPermission();
             if (granted) {
-                // Trigger initial 30-day sync now that we have permission
+                localStorage.setItem('satu_ramadhan_notif', 'true');
                 syncNotifications();
+            } else {
+                localStorage.setItem('satu_ramadhan_notif', 'false');
             }
+        },
+        onCancel: () => {
+            localStorage.setItem('satu_ramadhan_notif', 'false');
         },
     });
 }
