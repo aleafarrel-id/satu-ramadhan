@@ -61,7 +61,7 @@
 }
 
 .location-modal__icon i {
-   font-size: 26px;
+   font-size: var(--icon-lg);
    color: var(--clr-accent-500);
 }
 

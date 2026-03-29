@@ -5,16 +5,25 @@
 
 // Core & Libraries
 import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 import { CONFIG } from './config/version-config.js';
 import { getSavedLocation } from './core/geolocation.js';
 import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
 
 // State & Core Services
 import { initBackHandler } from './modules/system/back-handler.js';
-import { initNotificationService } from './modules/notification/native-notification.js';
+import {
+    initNotificationService,
+    checkNotificationPermission,
+    requestNotificationPermission,
+} from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
 import { updateWatcher } from './modules/prayer/prayer-watcher.js';
 import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
+
+// Permission UI
+import { showPermissionDialogPreset } from './modules/permission/permission-dialog-configs.js';
+import '../css/components/modal/permission-dialog.css';
 
 // Utilities & Helpers
 import { initPullToRefresh } from './utils/pull-to-refresh.js';
@@ -32,6 +41,7 @@ import * as navBar from './components/ui/nav-bar.js';
 import * as homePage from './pages/home-page.js';
 
 const SPLASH_MIN_DURATION = 1500;
+const POST_SPLASH_DIALOG_DELAY = 600;
 
 /**
  * Initialize the entire application
@@ -133,6 +143,8 @@ export async function initApp() {
         router.prefetch('quran');
         router.prefetch('settings');
     }, 2000);
+
+    setTimeout(triggerPostSplashPermissions, POST_SPLASH_DIALOG_DELAY);
 }
 
 /**
@@ -218,4 +230,24 @@ function initAppResumeListener() {
     } catch (e) {
         console.warn('[App] Could not register appStateChange listener:', e.message);
     }
+}
+
+async function triggerPostSplashPermissions() {
+    if (!Capacitor.isNativePlatform()) return;
+    await _requestNotificationIfNeeded();
+}
+
+async function _requestNotificationIfNeeded() {
+    const alreadyGranted = await checkNotificationPermission();
+    if (alreadyGranted) return;
+
+    showPermissionDialogPreset('notification', {
+        onConfirm: async () => {
+            const granted = await requestNotificationPermission();
+            if (granted) {
+                // Trigger initial 30-day sync now that we have permission
+                syncNotifications();
+            }
+        },
+    });
 }

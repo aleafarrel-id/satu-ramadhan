@@ -36,6 +36,7 @@ import { showLocationSearchModal } from '../components/modal/location-search-mod
 import { showShareScheduleModal } from '../components/modal/share-schedule-modal.js';
 import { downloadScheduleImage, shareScheduleImage } from '../modules/share/share-schedule-exporter.js';
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
+import { showPermissionDialogPreset } from '../modules/permission/permission-dialog-configs.js';
 
 import { makeAccessibleBtn } from '../utils/a11y.js';
 import { safeClear } from '../utils/dom-utils.js';
@@ -290,23 +291,52 @@ async function renderDayView() {
 /**
  * Collect active state data and show the share schedule preview modal.
  * Guard: only callable after _scheduleData is populated.
+ *
+ * If file-system permission is not yet granted on native,
+ * shows an in-app rationale dialog first.
  */
 async function handleShareSchedule() {
     if (!_scheduleData) return;
 
-    // Request native file system permissions only when the user clicks "Buat"
     if (Capacitor.getPlatform() !== 'web') {
+        const hasStorage = await _ensureStoragePermission();
+        if (!hasStorage) return;
+    }
+    await _openShareModal();
+}
+
+function _ensureStoragePermission() {
+    return new Promise(async (resolve) => {
         try {
-            const permStatus = await Filesystem.checkPermissions();
-            if (permStatus.publicStorage !== 'granted') {
-                await Filesystem.requestPermissions();
+            const status = await Filesystem.checkPermissions();
+            if (status.publicStorage === 'granted') {
+                resolve(true);
+                return;
             }
         } catch (e) {
-            console.warn('[SchedulePage] Storage permissions request failed:', e.message);
+            resolve(false);
+            return;
         }
-    }
 
+        showPermissionDialogPreset('storage', {
+            onConfirm: async () => {
+                try {
+                    const result = await Filesystem.requestPermissions();
+                    resolve(result.publicStorage === 'granted');
+                } catch (e) {
+                    resolve(false);
+                }
+            },
+            onCancel: () => resolve(false),
+        });
+    });
+}
 
+/**
+ * Builds the share payload and opens the share schedule modal.
+ * Extracted to avoid duplication between direct-grant and dialog-confirm flows.
+ */
+async function _openShareModal() {
     const location = await getSavedLocation();
     const orgName = await getOrgDisplayNameAsync();
     const qiblaAngle = location

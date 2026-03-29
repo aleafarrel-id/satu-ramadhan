@@ -1,0 +1,289 @@
+/* =============================================
+   Permission Dialog
+   In-app rationale dialog for native permissions
+   ============================================= */
+
+/* ── Overlay Backdrop ── */
+.perm-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) + 10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.perm-dialog-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ── Dialog Card ── */
+.perm-dialog__card {
+    width: 100%;
+    max-width: 310px;
+    background: var(--gradient-cal-bg);
+    border: 1px solid var(--clr-primary-a30);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg) var(--spacing-md);
+    text-align: center;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px var(--clr-primary-a10),
+        inset 0 1px 0 var(--clr-white-a05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    transform: translateY(24px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.perm-dialog-overlay.active .perm-dialog__card {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Icon Circle ── */
+.perm-dialog__icon-wrap {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.perm-dialog__icon-wrap--accent {
+    background: linear-gradient(135deg, var(--clr-accent-a20) 0%, var(--clr-accent-a10) 100%);
+    border: 2px solid var(--clr-accent-a30);
+}
+
+.perm-dialog__icon-wrap--primary {
+    background: linear-gradient(135deg, var(--clr-primary-a20) 0%, var(--clr-primary-a10) 100%);
+    border: 2px solid var(--clr-primary-a30);
+}
+
+.perm-dialog__icon-wrap--info {
+    background: linear-gradient(135deg, rgba(0, 151, 178, 0.2) 0%, rgba(0, 151, 178, 0.08) 100%);
+    border: 2px solid rgba(0, 151, 178, 0.3);
+}
+
+/* Pulse ring */
+.perm-dialog__icon-wrap::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: var(--radius-full);
+    animation: perm-pulse 2.5s ease-in-out infinite;
+}
+
+.perm-dialog__icon-wrap--accent::after {
+    border: 1.5px solid var(--clr-accent-a25);
+}
+
+.perm-dialog__icon-wrap--primary::after {
+    border: 1.5px solid var(--clr-primary-a25);
+}
+
+.perm-dialog__icon-wrap--info::after {
+    border: 1.5px solid rgba(0, 151, 178, 0.25);
+}
+
+@keyframes perm-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 0.2;
+    }
+}
+
+/* Icon glyph */
+.perm-dialog__icon {
+    font-size: var(--icon-lg);
+}
+
+.perm-dialog__icon-wrap--accent .perm-dialog__icon {
+    color: var(--clr-accent-500);
+}
+
+.perm-dialog__icon-wrap--primary .perm-dialog__icon {
+    color: var(--clr-primary-400);
+}
+
+.perm-dialog__icon-wrap--info .perm-dialog__icon {
+    color: var(--clr-info);
+}
+
+/* ── Body Content ── */
+.perm-dialog__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    width: 100%;
+}
+
+.perm-dialog__title {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    line-height: var(--lh-snug);
+    margin: 0;
+}
+
+.perm-dialog__desc {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-regular);
+    color: var(--clr-text-secondary);
+    line-height: var(--lh-normal);
+    margin: 0;
+}
+
+/* ── Feature List ── */
+.perm-dialog__features {
+    list-style: none;
+    margin: var(--spacing-xs) 0 0;
+    padding: var(--spacing-sm) var(--sp-3) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    text-align: left;
+    border-top: 1px solid var(--clr-white-a05);
+}
+
+.perm-dialog__feature-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.perm-dialog__feature-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    background: var(--clr-primary-a10);
+    border: 1px solid var(--clr-primary-a15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.perm-dialog__feature-icon i {
+    font-size: var(--fs-sm);
+    color: var(--clr-primary-400);
+}
+
+.perm-dialog__feature-label {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-secondary);
+    line-height: var(--lh-snug);
+}
+
+/* ── Action Buttons ── */
+.perm-dialog__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+    margin-top: var(--spacing-xs);
+}
+
+/* Primary (gold gradient) */
+.perm-dialog__btn--primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+    padding: 10px var(--spacing-sm);
+    border: none;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
+    color: var(--clr-text-dark);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 12px var(--clr-accent-a30);
+}
+
+.perm-dialog__btn--primary:active {
+    transform: scale(0.97);
+    background: linear-gradient(135deg, var(--clr-accent-700) 0%, var(--clr-accent-600) 100%);
+}
+
+.perm-dialog__btn--primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--clr-secondary-600), 0 0 0 4px var(--clr-accent-500);
+}
+
+.perm-dialog__btn--primary i {
+    font-size: var(--icon-md);
+}
+
+/* Loading state */
+.perm-dialog__btn--primary.loading {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.perm-dialog__btn--primary.loading .perm-dialog__btn-icon::before {
+    content: '\eacb';
+    animation: perm-spin 0.7s linear infinite;
+    display: inline-block;
+}
+
+@keyframes perm-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Ghost / cancel */
+.perm-dialog__btn--ghost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+    padding: 10px var(--spacing-sm);
+    border: 1px solid var(--clr-primary-a30);
+    border-radius: var(--radius-full);
+    background: var(--clr-primary-a10);
+    color: var(--clr-text-secondary);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.perm-dialog__btn--ghost:active {
+    transform: scale(0.97);
+    background: var(--clr-primary-a20);
+}
+
+.perm-dialog__btn--ghost:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--clr-secondary-600), 0 0 0 4px var(--clr-accent-500);
+}

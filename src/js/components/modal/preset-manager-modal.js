@@ -415,6 +415,14 @@ function showEditForm(id, presets) {
 
     const showName = preset.isCustom;
 
+    // Snapshot of original values for dirty-checking
+    const initialState = {
+        startDate: preset.startDate,
+        endDate: preset.endDate,
+        name: preset.name,
+        description: preset.description || '',
+    };
+
     formContainer.innerHTML = `
         <div class="preset-mgr-form">
             ${showName ? `
@@ -448,10 +456,36 @@ function showEditForm(id, presets) {
             ` : ''}
             <div class="preset-mgr-form-actions" data-focus-group="preset-mgr-edit-actions" data-focus-direction="horizontal">
                 <button class="btn preset-mgr-form-btn btn--outline" id="edit-cancel-${id}" data-focus-item>Batal</button>
-                <button class="btn preset-mgr-form-btn btn--gold" id="edit-save-${id}" data-focus-item>Simpan</button>
+                <button class="btn preset-mgr-form-btn btn--gold" id="edit-save-${id}" data-focus-item disabled>Simpan</button>
             </div>
         </div>
     `;
+
+    const saveBtn = formContainer.querySelector(`#edit-save-${id}`);
+    const editStartField = formContainer.querySelector(`#edit-start-${id}`);
+    const editEndField = formContainer.querySelector(`#edit-end-${id}`);
+    const nameInput = formContainer.querySelector(`#edit-name-${id}`);
+    const descInput = formContainer.querySelector(`#edit-desc-${id}`);
+    const suggestionsContainer = formContainer.querySelector(`#edit-suggestions-${id}`);
+
+    /**
+     * Compare current form values against the initial snapshot.
+     * Enables/disables the Save button accordingly.
+     */
+    function checkChanges() {
+        const currentStart = editStartField?.dataset.date || '';
+        const currentEnd   = editEndField?.dataset.date || '';
+        const currentName  = nameInput ? nameInput.value.trim() : initialState.name;
+        const currentDesc  = descInput ? descInput.value.trim() : initialState.description;
+
+        const hasChanges =
+            currentStart !== initialState.startDate ||
+            currentEnd   !== initialState.endDate   ||
+            currentName  !== initialState.name       ||
+            currentDesc  !== initialState.description;
+
+        saveBtn.disabled = !hasChanges;
+    }
 
     // Bind save/cancel
     formContainer.querySelector(`#edit-cancel-${id}`)?.addEventListener('click', () => {
@@ -459,15 +493,18 @@ function showEditForm(id, presets) {
         formContainer.innerHTML = '';
     });
 
-    const editStartField = formContainer.querySelector(`#edit-start-${id}`);
-    const editEndField = formContainer.querySelector(`#edit-end-${id}`);
-    const suggestionsContainer = formContainer.querySelector(`#edit-suggestions-${id}`);
+    // Watch text inputs for changes
+    if (nameInput) nameInput.addEventListener('input', checkChanges);
+    if (descInput) descInput.addEventListener('input', checkChanges);
 
-    // Initial render
+    // Initial suggestions render
     renderSuggestions(editStartField?.dataset.date, suggestionsContainer, editEndField);
 
     bindDateField(editStartField, {
-        onSelectCallback: (dateStr) => renderSuggestions(dateStr, suggestionsContainer, editEndField)
+        onSelectCallback: (dateStr) => {
+            renderSuggestions(dateStr, suggestionsContainer, editEndField);
+            checkChanges();
+        }
     });
 
     bindDateField(editEndField, {
@@ -476,23 +513,41 @@ function showEditForm(id, presets) {
             if (!startStr) return {};
             const { day29, day30 } = calcRamadhanEndDates(startStr);
             return { minDate: day29, maxDate: day30 };
+        },
+        onSelectCallback: () => checkChanges(),
+    });
+
+    // Re-check after suggestion chips override the end date
+    suggestionsContainer.addEventListener('click', (e) => {
+        if (e.target.closest('.preset-mgr-date-chip')) {
+            // Small delay so the chip handler can update data-date first
+            setTimeout(checkChanges, 0);
         }
     });
 
-    formContainer.querySelector(`#edit-save-${id}`)?.addEventListener('click', async () => {
-        const startDate = editStartField?.dataset.date;
-        const endDate = editEndField?.dataset.date;
+    saveBtn?.addEventListener('click', async () => {
+        // Final guard: do nothing if save button was activated without actual changes
+        const currentStart = editStartField?.dataset.date;
+        const currentEnd   = editEndField?.dataset.date;
+        const currentName  = nameInput ? nameInput.value.trim() : initialState.name;
+        const currentDesc  = descInput ? descInput.value.trim() : initialState.description;
 
-        if (!validateDates(startDate, endDate)) return;
+        const hasChanges =
+            currentStart !== initialState.startDate ||
+            currentEnd   !== initialState.endDate   ||
+            currentName  !== initialState.name       ||
+            currentDesc  !== initialState.description;
 
-        const newData = { startDate, endDate };
+        if (!hasChanges) return;
+
+        if (!validateDates(currentStart, currentEnd)) return;
+
+        const newData = { startDate: currentStart, endDate: currentEnd };
 
         // For custom presets, also save name and description
         if (preset.isCustom) {
-            const nameInput = formContainer.querySelector(`#edit-name-${id}`);
-            const descInput = formContainer.querySelector(`#edit-desc-${id}`);
-            if (nameInput) newData.name = nameInput.value.trim() || preset.name;
-            if (descInput) newData.description = descInput.value.trim();
+            if (nameInput) newData.name = currentName || preset.name;
+            if (descInput) newData.description = currentDesc;
         }
 
         impact('light');
