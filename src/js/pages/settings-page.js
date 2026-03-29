@@ -8,8 +8,8 @@ import { CONFIG } from '../config/version-config.js';
 
 import * as settingsPanel from '../components/settings/settings-panel.js';
 import * as settingsQuranPanel from '../components/settings/settings-quran-panel.js';
-import * as settingsLocCard from '../components/card/settings-loc-card.js';
-import * as settingsPresetCard from '../components/card/settings-preset-card.js';
+import * as settingsLocCard from '../components/settings/settings-loc-card.js';
+import * as settingsPresetCard from '../components/settings/settings-preset-card.js';
 
 /* --- STATE --- */
 let _container = null;
