@@ -62,14 +62,37 @@ export function showLocationModal({ onLocationDetected, onManualSelect }) {
 }
 
 /**
+ * Check if the location modal is currently active/visible.
+ * @returns {boolean} True if the modal is currently rendered.
+ */
+export function isModalActive() {
+    return _overlayEl !== null;
+}
+
+/**
  * Hide the location modal with exit animation, then remove from DOM.
+ * @returns {Promise<void>} Resolves when the modal is fully removed from DOM.
  */
 export function hideModal() {
-    if (!_overlayEl) return;
-    _overlayEl.classList.remove('active');
-    _overlayEl.addEventListener('transitionend', removeModal, { once: true });
-    // Safety: force remove after animation duration in case event doesn't fire
-    setTimeout(removeModal, 400);
+    return new Promise((resolve) => {
+        if (!_overlayEl) {
+            resolve();
+            return;
+        }
+
+        _overlayEl.classList.remove('active');
+
+        let isRemoved = false;
+        const finalize = () => {
+            if (isRemoved) return;
+            isRemoved = true;
+            removeModal();
+            resolve();
+        };
+
+        _overlayEl.addEventListener('transitionend', finalize, { once: true });
+        setTimeout(finalize, 400);
+    });
 }
 
 function removeModal() {

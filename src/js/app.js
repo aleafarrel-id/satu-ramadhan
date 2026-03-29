@@ -23,6 +23,7 @@ import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js
 
 // Permission UI
 import { showPermissionDialogPreset } from './modules/permission/permission-dialog-configs.js';
+import { hideModal as hideLocationModal, isModalActive as isLocationModalActive } from './components/modal/location-modal.js';
 import '../css/components/modal/permission-dialog.css';
 
 // Utilities & Helpers
@@ -136,13 +137,14 @@ export async function initApp() {
     if (splashEl) splashEl.classList.add('hidden');
 
     // Background pre-fetch: download lazy route modules during idle time.
-    // Delayed to avoid competing with first meaningful paint.
+    // Delayed to avoid competing with post-splash permission dialogs and
+    // modal transitions. A heavy JS parse here causes main thread jank/glitches.
     setTimeout(() => {
         router.prefetch('schedule');
         router.prefetch('compass');
         router.prefetch('quran');
         router.prefetch('settings');
-    }, 2000);
+    }, 5000);
 
     setTimeout(triggerPostSplashPermissions, POST_SPLASH_DIALOG_DELAY);
 }
@@ -243,6 +245,13 @@ async function _requestNotificationIfNeeded() {
 
     // Skip if user previously declined — respect until they re-enable via settings
     if (localStorage.getItem('satu_ramadhan_notif') === 'false') return;
+
+    // If there is an active location modal, hide it to prevent visual glitches
+    // when the two modals stack on first launch.
+    if (isLocationModalActive()) {
+        await hideLocationModal();
+        await new Promise(resolve => setTimeout(resolve, 300));
+    }
 
     showPermissionDialogPreset('notification', {
         onConfirm: async () => {
