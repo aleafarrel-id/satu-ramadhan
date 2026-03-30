@@ -158,6 +158,8 @@ function _addTileLayer(map, card) {
         noWrap: true,
         bounds: WORLD_BOUNDS,
         attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+        updateWhenIdle: false,
+        keepBuffer: 6,
     }).addTo(map);
 
     // Remove the loader overlay once the tile layer is fully loaded
