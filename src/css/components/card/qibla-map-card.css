@@ -159,3 +159,42 @@
    visibility: hidden;
    pointer-events: none;
 }
+
+/* ── Reset Button ── */
+
+.qibla-map-card__reset {
+   position: absolute;
+   bottom: var(--spacing-sm);
+   right: var(--spacing-sm);
+   z-index: 5;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 36px;
+   height: 36px;
+   border-radius: var(--radius-circle);
+   border: 1px solid var(--clr-accent-a30);
+   background: var(--clr-bg-card);
+   color: var(--clr-accent-500);
+   cursor: pointer;
+   font-size: var(--fs-lg);
+   padding: 0;
+   box-shadow: var(--shadow-md);
+   transition: all var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+}
+
+.qibla-map-card__reset:active {
+   transform: scale(0.9);
+}
+
+.qibla-map-card__reset:hover {
+   background: var(--clr-accent-a10);
+}
+
+.qibla-map-card__reset.hidden {
+   opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
+   transform: scale(0.8);
+}

@@ -23,6 +23,10 @@ const INIT_DELAY_MS = 100;
 let _mapInstance = null;
 let _userMarker = null;
 let _geodesicLine = null;
+let _currentMapId = null;
+let _currentUserLat = null;
+let _currentUserLng = null;
+let _isProgrammaticMove = false;
 
 /**
  * Initialise the Leaflet map inside the rendered container.
@@ -35,6 +39,10 @@ let _geodesicLine = null;
  * @returns {Promise<L.Map|null>}
  */
 export function initQiblaMapCard(mapId, userLat, userLng) {
+    _currentMapId = mapId;
+    _currentUserLat = userLat;
+    _currentUserLng = userLng;
+
     return new Promise((resolve) => {
         setTimeout(() => {
             const newContainer = document.getElementById(mapId);
@@ -50,6 +58,11 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
                 const loader = document.getElementById(`${mapId}-loader`);
                 if (loader) {
                     loader.classList.add('is-hidden');
+                }
+
+                const resetBtn = document.getElementById(`${mapId}-reset`);
+                if (resetBtn) {
+                    resetBtn.classList.add('hidden');
                 }
 
                 // Update existing user marker location
@@ -75,6 +88,7 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             _addTileLayer(map, mapId);
             _addMarkers(map, userLat, userLng);
             _addGeodesicLine(map, userLat, userLng);
+            _bindResetButton(mapId);
             _fitView(map, userLat, userLng);
 
             _mapInstance = map;
@@ -93,6 +107,7 @@ export function destroyQiblaMapCard() {
         _mapInstance = null;
         _userMarker = null;
         _geodesicLine = null;
+        _currentMapId = null;
     }
 }
 
@@ -103,7 +118,7 @@ export function destroyQiblaMapCard() {
  * @returns {L.Map}
  */
 function _createMap(mapId) {
-    return L.map(mapId, {
+    const map = L.map(mapId, {
         zoomControl: false,
         minZoom: MIN_ZOOM,
         maxBounds: WORLD_BOUNDS,
@@ -117,6 +132,11 @@ function _createMap(mapId) {
         tap: true,
         attributionControl: false,
     });
+
+    map.on('dragstart', _showResetButton);
+    map.on('zoomstart', _showResetButton);
+
+    return map;
 }
 
 /**
@@ -198,11 +218,50 @@ function _addGeodesicLine(map, userLat, userLng) {
  * @param {number} userLng
  */
 function _fitView(map, userLat, userLng) {
+    _isProgrammaticMove = true;
     const bounds = L.latLngBounds(
         [userLat, userLng],
         [KAABA_LAT, KAABA_LNG],
     );
     map.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+    
+    map.once('moveend', () => {
+        setTimeout(() => {
+            _isProgrammaticMove = false;
+        }, 50);
+    });
+}
+
+/**
+ * Show the reset button if user interacted with the map.
+ */
+function _showResetButton() {
+    if (_isProgrammaticMove) return;
+    if (!_currentMapId) return;
+    const btn = document.getElementById(`${_currentMapId}-reset`);
+    if (btn) btn.classList.remove('hidden');
+}
+
+/**
+ * Bind the reset button event listener.
+ * @param {string} mapId 
+ */
+function _bindResetButton(mapId) {
+    const btn = document.getElementById(`${mapId}-reset`);
+    if (!btn) return;
+
+    btn.removeEventListener('click', _handleResetClick);
+    btn.addEventListener('click', _handleResetClick);
+}
+
+/**
+ * Handle reset button click.
+ */
+function _handleResetClick() {
+    if (!_mapInstance) return;
+    const btn = document.getElementById(`${_currentMapId}-reset`);
+    if (btn) btn.classList.add('hidden');
+    _fitView(_mapInstance, _currentUserLat, _currentUserLng);
 }
 
 /**

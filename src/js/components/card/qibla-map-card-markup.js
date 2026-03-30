@@ -15,9 +15,12 @@ export function renderQiblaMapCard(mapId = 'qibla-map') {
         <div class="card qibla-map-card">
             <div class="qibla-map-card__label">
                 <i class='bx bx-map-alt'></i>
-                <span>Peta Kiblat</span>
+                <span>Kiblat</span>
             </div>
             <div id="${mapId}" class="qibla-map-card__container"></div>
+            <button id="${mapId}-reset" class="qibla-map-card__reset hidden" aria-label="Kembalikan Tampilan Peta" data-focus-item>
+                <i class='bx bx-reset'></i>
+            </button>
             <div id="${mapId}-loader" class="qibla-map-card__loader">
                 <i class='bx bx-loader-alt bx-spin'></i>
             </div>
