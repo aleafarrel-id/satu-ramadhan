@@ -501,7 +501,7 @@
     "province_id": "13",
     "name": "Kota Padang Panjang",
     "latitude": -0.4666,
-    "longitude": 100.3980
+    "longitude": 100.398
   },
   {
     "id": "1375",
@@ -1081,8 +1081,8 @@
     "id": "3101",
     "province_id": "31",
     "name": "Administrasi Kepulauan Seribu",
-    "latitude": -5.6200,
-    "longitude": 106.6400
+    "latitude": -5.62,
+    "longitude": 106.64
   },
   {
     "id": "3171",
@@ -1831,7 +1831,7 @@
     "province_id": "35",
     "name": "Kota Mojokerto",
     "latitude": -7.4704,
-    "longitude": 112.4340
+    "longitude": 112.434
   },
   {
     "id": "3577",
@@ -2042,20 +2042,6 @@
     "name": "Kota Bima",
     "latitude": -8.450690107799948,
     "longitude": 118.76370225560007
-  },
-  {
-    "id": "5204",
-    "province_id": "52",
-    "name": "Sumbawa",
-    "latitude": -8.7312,
-    "longitude": 117.4138
-  },
-  {
-    "id": "5207",
-    "province_id": "52",
-    "name": "Sumbawa Barat",
-    "latitude": -8.7652,
-    "longitude": 116.8916
   },
   {
     "id": "5301",
@@ -2639,13 +2625,6 @@
     "longitude": 124.53760618985295
   },
   {
-    "id": "7105",
-    "province_id": "71",
-    "name": "Minahasa Selatan",
-    "latitude": 1.1539,
-    "longitude": 124.7000
-  },
-  {
     "id": "7110",
     "province_id": "71",
     "name": "Bolaang Mongondow Timur",
@@ -2679,13 +2658,6 @@
     "name": "Kepulauan Siau Tagulandang Biaro",
     "latitude": 2.5683853950667186,
     "longitude": 125.40794410420007
-  },
-  {
-    "id": "7110",
-    "province_id": "71",
-    "name": "Bolaang Mongondow Timur",
-    "latitude": 0.7078784091154338,
-    "longitude": 124.50612499246161
   },
   {
     "id": "7111",
@@ -3121,7 +3093,6 @@
     "latitude": 0.5538339828965961,
     "longitude": 123.26835173517247
   },
-
   {
     "id": "7504",
     "province_id": "75",
