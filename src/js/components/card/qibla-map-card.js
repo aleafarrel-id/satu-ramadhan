@@ -55,14 +55,17 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
                     newContainer.parentNode.replaceChild(cachedContainer, newContainer);
                 }
 
-                const loader = document.getElementById(`${mapId}-loader`);
-                if (loader) {
-                    loader.classList.add('is-hidden');
-                }
+                const card = cachedContainer.closest('.qibla-map-card');
+                if (card) {
+                    const loader = card.querySelector('.qibla-map-card__loader');
+                    if (loader) {
+                        loader.classList.add('is-hidden');
+                    }
 
-                const resetBtn = document.getElementById(`${mapId}-reset`);
-                if (resetBtn) {
-                    resetBtn.classList.add('hidden');
+                    const resetBtn = card.querySelector('.qibla-map-card__reset');
+                    if (resetBtn) {
+                        resetBtn.classList.add('hidden');
+                    }
                 }
 
                 // Update existing user marker location
@@ -77,6 +80,8 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
 
                 _fitView(_mapInstance, userLat, userLng);
                 
+                _bindResetButton(card);
+                
                 _mapInstance.invalidateSize();
                 
                 resolve(_mapInstance);
@@ -85,10 +90,13 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
 
             // Normal initialisation
             const map = _createMap(mapId);
-            _addTileLayer(map, mapId);
+            const container = map.getContainer();
+            const card = container.closest('.qibla-map-card');
+
+            _addTileLayer(map, card);
             _addMarkers(map, userLat, userLng);
             _addGeodesicLine(map, userLat, userLng);
-            _bindResetButton(mapId);
+            _bindResetButton(card);
             _fitView(map, userLat, userLng);
 
             _mapInstance = map;
@@ -142,9 +150,9 @@ function _createMap(mapId) {
 /**
  * Add CartoDB Voyager (no labels) tile layer for a clean premium look.
  * @param {L.Map} map
- * @param {string} mapId
+ * @param {HTMLElement|null} card
  */
-function _addTileLayer(map, mapId) {
+function _addTileLayer(map, card) {
     const layer = L.tileLayer(TILE_URL, {
         maxZoom: TILE_MAX_ZOOM,
         noWrap: true,
@@ -154,9 +162,11 @@ function _addTileLayer(map, mapId) {
 
     // Remove the loader overlay once the tile layer is fully loaded
     layer.on('load', () => {
-        const loader = document.getElementById(`${mapId}-loader`);
-        if (loader) {
-            loader.classList.add('is-hidden');
+        if (card) {
+            const loader = card.querySelector('.qibla-map-card__loader');
+            if (loader) {
+                loader.classList.add('is-hidden');
+            }
         }
     });
 }
@@ -237,17 +247,22 @@ function _fitView(map, userLat, userLng) {
  */
 function _showResetButton() {
     if (_isProgrammaticMove) return;
-    if (!_currentMapId) return;
-    const btn = document.getElementById(`${_currentMapId}-reset`);
-    if (btn) btn.classList.remove('hidden');
+    if (!_mapInstance) return;
+    const container = _mapInstance.getContainer();
+    const card = container.closest('.qibla-map-card');
+    if (card) {
+        const btn = card.querySelector('.qibla-map-card__reset');
+        if (btn) btn.classList.remove('hidden');
+    }
 }
 
 /**
  * Bind the reset button event listener.
- * @param {string} mapId 
+ * @param {HTMLElement|null} card 
  */
-function _bindResetButton(mapId) {
-    const btn = document.getElementById(`${mapId}-reset`);
+function _bindResetButton(card) {
+    if (!card) return;
+    const btn = card.querySelector('.qibla-map-card__reset');
     if (!btn) return;
 
     btn.removeEventListener('click', _handleResetClick);
@@ -259,8 +274,12 @@ function _bindResetButton(mapId) {
  */
 function _handleResetClick() {
     if (!_mapInstance) return;
-    const btn = document.getElementById(`${_currentMapId}-reset`);
-    if (btn) btn.classList.add('hidden');
+    const container = _mapInstance.getContainer();
+    const card = container.closest('.qibla-map-card');
+    if (card) {
+        const btn = card.querySelector('.qibla-map-card__reset');
+        if (btn) btn.classList.add('hidden');
+    }
     _fitView(_mapInstance, _currentUserLat, _currentUserLng);
 }
 

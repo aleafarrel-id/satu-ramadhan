@@ -18,10 +18,10 @@ export function renderQiblaMapCard(mapId = 'qibla-map') {
                 <span>Kiblat</span>
             </div>
             <div id="${mapId}" class="qibla-map-card__container"></div>
-            <button id="${mapId}-reset" class="qibla-map-card__reset hidden" aria-label="Kembalikan Tampilan Peta" data-focus-item>
+            <button class="qibla-map-card__reset hidden" aria-label="Kembalikan Tampilan Peta" data-focus-item>
                 <i class='bx bx-reset'></i>
             </button>
-            <div id="${mapId}-loader" class="qibla-map-card__loader">
+            <div class="qibla-map-card__loader">
                 <i class='bx bx-loader-alt bx-spin'></i>
             </div>
         </div>
