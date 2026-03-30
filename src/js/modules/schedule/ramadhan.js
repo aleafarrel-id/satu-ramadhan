@@ -5,8 +5,8 @@
 import { getRamadhanConfig } from '../../core/database.js';
 import { getPrayerTimesByCoords } from '../../core/api.js';
 import * as storage from '../../core/storage.js';
+import { store } from '../../core/store.js';
 
-const ORG_KEY = 'selected_org';
 const USER_PRESETS_KEY = 'user_presets';
 const SAVED_YEAR_KEY = 'saved_year';
 const HIJRI_OFFSET_KEY = 'hijri_offset';
@@ -173,22 +173,21 @@ export async function getActivePreset() {
     return found || null;
 }
 
-/**
- * Get the currently selected organization ID
- * @returns {Promise<string>}
- */
 export async function getSelectedOrg() {
+    const org = store.getState('settings.org');
+    if (org) return org;
+    
+    // Asuransi gagal memuat, kita raih default JSON
     const config = getRamadhanConfig();
-    const defaultId = config.presets?.[0]?.id || 'nu';
-    return (await storage.get(ORG_KEY)) || defaultId;
+    return config.presets?.[0]?.id || 'nu';
 }
 
 /**
- * Set the selected organization ID
+ * Set the selected organization ID. Store acts as broker to save to database.
  * @param {string} orgId
  */
 export async function setSelectedOrg(orgId) {
-    await storage.set(ORG_KEY, orgId);
+    store.setState('settings.org', orgId);
 }
 
 /**

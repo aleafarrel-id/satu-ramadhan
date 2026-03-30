@@ -4,9 +4,9 @@
 
 // Core & Libraries
 import { Capacitor } from '@capacitor/core';
-import { getSavedLocation } from '../../core/geolocation.js';
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { PrayerService } from './native-notification.js';
+import { store } from '../../core/store.js';
 
 /** Number of days to pre-schedule ahead (inclusive of today) */
 const ROLLING_DAYS = 30;
@@ -92,8 +92,8 @@ export async function syncNotifications() {
     _syncing = true;
 
     try {
-        const isNotifEnabled = localStorage.getItem('satu_ramadhan_notif') !== 'false';
-        const isAdzanEnabled = localStorage.getItem('satu_ramadhan_adzan') !== 'false';
+        const isNotifEnabled = store.getState('settings.notification');
+        const isAdzanEnabled = store.getState('settings.adzan');
 
         await PrayerService.cancelAll();
 
@@ -102,7 +102,7 @@ export async function syncNotifications() {
             return;
         }
 
-        const location = await getSavedLocation();
+        const location = store.getState('location');
         if (!location?.latitude || !location?.longitude) {
             console.warn('[NotifSync] No saved location available, cannot sync');
             return;
@@ -278,3 +278,8 @@ function parseDateTimeToMs(date, timeStr) {
         return null;
     }
 }
+
+// Register autonomous reactivity
+store.subscribe('settings.notification', syncNotifications);
+store.subscribe('settings.adzan', syncNotifications);
+store.subscribe('location', syncNotifications);

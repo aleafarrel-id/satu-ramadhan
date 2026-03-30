@@ -5,7 +5,7 @@ import '../../css/components/card/qibla-info-card.css';
 import '../../css/components/card/qibla-map-card.css';
 import '../../css/components/modal/compass-guide-modal.css';
 
-import { getSavedLocation } from '../core/geolocation.js';
+import { store } from '../core/store.js';
 
 import QiblaCompass from '../modules/compass/compass.js';
 
@@ -22,8 +22,8 @@ import { renderEmptyState } from '../components/ui/empty-state.js';
 
 /* --- STATE --- */
 let _container = null;
-let _location = null;
 let _compass = null;
+let _unsubscribeId = null;
 
 /* --- LIFECYCLE --- */
 
@@ -36,17 +36,28 @@ let _compass = null;
  */
 export async function render(container, options = {}) {
     _container = container;
-
-    _location = await getSavedLocation();
-    renderCompassSkeleton(_container, _location, showLocationModalForCompass);
+    
+    if (_unsubscribeId) {
+        store.unsubscribe(_unsubscribeId);
+        _unsubscribeId = null;
+    }
+    
+    const loc = store.getState('location');
+    renderCompassSkeleton(_container, loc, showLocationModalForCompass);
 
     if (options.refresh) {
         await new Promise(resolve => setTimeout(resolve, 350));
     }
 
-    await initCompass();
+    await initCompass(loc);
+    renderContent(loc);
 
-    renderContent();
+    _unsubscribeId = store.subscribe('location', async () => {
+        const newLoc = store.getState('location');
+        renderCompassSkeleton(_container, newLoc, showLocationModalForCompass);
+        await initCompass(newLoc);
+        renderContent(newLoc);
+    });
 }
 
 /**
@@ -55,10 +66,13 @@ export async function render(container, options = {}) {
  */
 export function destroy() {
     destroyQiblaMapCard();
+    if (_unsubscribeId) {
+        store.unsubscribe(_unsubscribeId);
+        _unsubscribeId = null;
+    }
     _compass?.stop();
     _compass = null;
     _container = null;
-    _location = null;
 }
 
 /* --- INITIALIZATION --- */
@@ -68,12 +82,12 @@ export function destroy() {
  * with the user's coordinates if available. Returns immediately
  * and starts tracking the device orientation.
  */
-async function initCompass() {
+async function initCompass(loc) {
     _compass?.stop();
     _compass = new QiblaCompass();
 
-    if (_location?.latitude && _location?.longitude) {
-        await _compass.init(_location.latitude, _location.longitude);
+    if (loc?.latitude && loc?.longitude) {
+        await _compass.init(loc.latitude, loc.longitude);
     }
 
     _compass.start();
@@ -92,10 +106,10 @@ async function initCompass() {
  * populates the page with actual compass and location card elements.
  * Binds required event listeners immediately after insertion.
  */
-function renderContent() {
-    if (!_location) {
+function renderContent(loc) {
+    if (!loc) {
         _container.innerHTML = `
-            ${renderLocationCard(_location)}
+            ${renderLocationCard(loc)}
             ${renderEmptyState({
             icon: 'bx-map-pin',
             title: 'Lokasi Belum Diatur',
@@ -110,11 +124,11 @@ function renderContent() {
         return;
     }
 
-    const hasData = _location?.latitude && _location?.longitude && _compass?.qiblaAngle !== null;
+    const hasData = loc?.latitude && loc?.longitude && _compass?.qiblaAngle !== null;
 
     if (!hasData) {
         _container.innerHTML = `
-            ${renderLocationCard(_location)}
+            ${renderLocationCard(loc)}
             ${renderEmptyState({
             icon: 'bx-compass',
             iconVariant: 'warning',
@@ -132,7 +146,7 @@ function renderContent() {
 
     _container.innerHTML = `
         ${renderQiblaMapCard('qibla-mini-map')}
-        ${renderLocationCard(_location)}
+        ${renderLocationCard(loc)}
         
         <div class="compass-outer-wrapper">
             ${renderCompass()}
@@ -150,8 +164,8 @@ function renderContent() {
     _container.querySelector('#btn-compass-guide')?.addEventListener('click', showCompassGuideModal);
 
     /* Initialise map card after DOM is ready */
-    if (_location?.latitude && _location?.longitude) {
-        initQiblaMapCard('qibla-mini-map', _location.latitude, _location.longitude);
+    if (loc?.latitude && loc?.longitude) {
+        initQiblaMapCard('qibla-mini-map', loc.latitude, loc.longitude);
     }
 }
 
@@ -164,19 +178,13 @@ function renderContent() {
  */
 function showLocationModalForCompass() {
     showLocationModal({
-        onLocationDetected: async (location) => {
-            _location = location;
-            renderContent();
-            await initCompass();
-            renderContent();
+        onLocationDetected: (location) => {
+            store.setState('location', location);
         },
         onManualSelect: () => {
             showLocationSearchModal({
-                onLocationSelected: async (location) => {
-                    _location = location;
-                    renderContent();
-                    await initCompass();
-                    renderContent();
+                onLocationSelected: (location) => {
+                    store.setState('location', location);
                 },
             });
         },

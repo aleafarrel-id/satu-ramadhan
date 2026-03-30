@@ -4,7 +4,7 @@
  */
 
 // Core & Libraries
-import { getSavedLocation } from '../../core/geolocation.js';
+import { store } from '../../core/store.js';
 
 // Utilities & Helpers
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
@@ -14,7 +14,7 @@ import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { showLocationSearchModal } from '../modal/location-search-modal.js';
 
 export async function render(container) {
-    const savedLocation = await getSavedLocation();
+    const savedLocation = store.getState('location');
 
     function renderStatus(loc) {
         if (loc) {
@@ -71,6 +71,7 @@ export async function render(container) {
 
     btnGps?.addEventListener('click', () => {
         handleGpsDetectionWithButton(btnGps, (location) => {
+            store.setState('location', location);
             const statusWrapper = container.querySelector('#settings-loc-status-wrapper');
             if (statusWrapper) {
                 statusWrapper.innerHTML = renderStatus(location);
@@ -85,6 +86,7 @@ export async function render(container) {
     btnManual?.addEventListener('click', () => {
         showLocationSearchModal({
             onLocationSelected: (location) => {
+                store.setState('location', location);
                 const statusWrapper = container.querySelector('#settings-loc-status-wrapper');
                 if (statusWrapper) {
                     statusWrapper.innerHTML = renderStatus(location);

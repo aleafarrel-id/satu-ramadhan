@@ -21,6 +21,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../system/back-han
 import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { initPullToRefresh } from '../../utils/pull-to-refresh.js';
 import { safeClear } from '../../utils/dom-utils.js';
+import { store } from '../../core/store.js';
 
 let _isOpen = false;
 let _currentItem = null;
@@ -37,6 +38,7 @@ let _isReaderSearchActive = false;
 let _currentReaderData = [];
 let _searchDebounceTimer = null;
 let _targetVerseNumber = null;
+let _storeSubId = null;
 
 /**
  * Opens the reader overlay for a given item (surah or juz).
@@ -63,6 +65,22 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
 
    // Register back handler
    registerModalDismiss(close);
+   
+   // Subscribe to global store for reactive settings changes
+   _storeSubId = store.subscribe('settings.quran', () => {
+      if (_isOpen && _currentReaderData.length && !_isReaderSearchActive) {
+         const renderId = _renderCtx.incrementAndGet();
+         const currentH = _scrollContainer ? _scrollContainer.scrollHeight : 0;
+         const currentScroll = _scrollContainer ? _scrollContainer.scrollTop : 0;
+         
+         _renderItems(_currentReaderData, renderId).then(() => {
+            if (_scrollContainer) {
+               // maintain approximate scroll position if DOM height changed
+               _scrollContainer.scrollTop = currentScroll;
+            }
+         });
+      }
+   });
 
    // Pre-fetch list for dropdown natively handled by API
    if (type === 'juz') {
@@ -95,6 +113,11 @@ export function close() {
 
    if (typeof _onCloseCallback === 'function') {
       _onCloseCallback();
+   }
+
+   if (_storeSubId) {
+      store.unsubscribe(_storeSubId);
+      _storeSubId = null;
    }
 
    unregisterModalDismiss(close);
@@ -149,6 +172,10 @@ export function destroy() {
       _isOpen = false;
       _isReaderSearchActive = false;
       if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
+      if (_storeSubId) {
+         store.unsubscribe(_storeSubId);
+         _storeSubId = null;
+      }
       _renderCtx.incrementAndGet();
       unregisterModalDismiss(close);
       unregisterModalDismiss(_exitReaderSearch);

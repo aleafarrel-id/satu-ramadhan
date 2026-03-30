@@ -4,6 +4,8 @@
 
 import { getCurrentPrayer } from './prayer-times.js';
 import { info } from '../notification/notification.js';
+import { store } from '../../core/store.js';
+import { getPrayerTimesByCoords } from '../../core/api.js';
 
 let _timeout = null;
 let _timings = null;
@@ -101,3 +103,27 @@ function triggerNotification(prayer, triggerTimeMs) {
     }, 1000);
 }
 
+/**
+ * Autonomous integration: Fetch timings and restart watcher
+ * when relevant store parameters (location, org) change.
+ */
+async function _evaluateAndRestart() {
+    const loc = store.getState('location');
+    if (!loc?.latitude || !loc?.longitude) return;
+
+    try {
+        const timings = await getPrayerTimesByCoords(loc.latitude, loc.longitude);
+        if (timings) {
+            updateWatcher(timings);
+        }
+    } catch {
+        // Silently fail if API/network is unavailable; the watcher will hold its last known state.
+    }
+}
+
+// Subscribe to store reactive properties
+store.subscribe('location', _evaluateAndRestart);
+store.subscribe('settings.org', _evaluateAndRestart);
+
+// Trigger initial evaluation immediately to catch early hydration hits
+_evaluateAndRestart();

@@ -20,6 +20,7 @@ import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-mod
 import { initTooltip, dismissTooltip } from '../../../utils/tooltip.js';
 import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
+import { store } from '../../../core/store.js';
 
 const TOTAL_PAGES = MushafApi.getTotalPages();
 const INITIAL_WINDOW = 4;
@@ -45,6 +46,7 @@ let _isZoomMode = false;
 let _quranPage = null;
 let _backdropEl = null;
 let _onCloseCallback = null;
+let _tajweedSubId = null;
 
 /** @type {PageFlip|null} */
 let _pageFlip = null;
@@ -115,6 +117,10 @@ function _resetState() {
 
 /** Removes all event listeners and cleans up picker. */
 function _detachListeners() {
+   if (_tajweedSubId) {
+      store.unsubscribe(_tajweedSubId);
+      _tajweedSubId = null;
+   }
    unregisterModalDismiss(close);
    window.removeEventListener('resize', _onWindowResize);
    document.removeEventListener('visibilitychange', _onVisibilityChange);
@@ -189,6 +195,14 @@ export async function open(startPage = 1, options = {}) {
    // ── Phase 1: Build the OVERLAY first (it will act as the container) ──
    _buildOverlay();
    _updateSurahHeader();
+
+   if (!_tajweedSubId) {
+      _tajweedSubId = store.subscribe('settings.quran.tajweed', () => {
+         if (_isOpen && !_isClosing && _currentPage) {
+            _reloadWindow(_currentPage);
+         }
+      });
+   }
 
    // ── Phase 2: Build BACKDROP nested inside the overlay ──
    _buildBackdrop('Memuat Mushaf', _overlay);

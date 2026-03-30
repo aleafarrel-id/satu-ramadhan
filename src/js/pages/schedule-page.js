@@ -11,7 +11,7 @@ import { Capacitor } from '@capacitor/core';
 import { Filesystem } from '@capacitor/filesystem';
 
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
-import { getSavedLocation } from '../core/geolocation.js';
+import { store } from '../core/store.js';
 
 import { getOrgDisplayNameAsync, getSelectedOrg } from '../modules/schedule/ramadhan.js';
 import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
@@ -50,8 +50,7 @@ let _todayTimings = null;
 
 let _dayCheckInterval = null;
 let _lastDateStr = null;
-let _lastLocationHash = null;
-let _lastOrgId = null;
+let _unsubscribe = [];
 
 let _animPhase = 'idle';
 let _animDirection = null;
@@ -69,55 +68,40 @@ let _animId = 0;
 export async function render(container, options = {}) {
     _container = container;
 
-    const location = await getSavedLocation();
+    if (_unsubscribe.length > 0) {
+        _unsubscribe.forEach(id => store.unsubscribe(id));
+    }
+    _unsubscribe = [];
+
+    const location = store.getState('location');
     if (!location) {
         safeClear(container);
         renderScheduleSkeleton(_container);
         renderError(false);
-        return;
-    }
+    } else {
+        const isRefresh = options?.refresh === true;
 
-    const locationHash = `${location.latitude.toFixed(4)}_${location.longitude.toFixed(4)}`;
-    const currentOrgId = await getSelectedOrg();
-    const isLocationChanged = _lastLocationHash !== locationHash;
-    const isOrgChanged = _lastOrgId !== currentOrgId;
-    const hasData = _scheduleData && _todayTimings;
-
-    if (!options.refresh && !isLocationChanged && !isOrgChanged && hasData) {
-        _currentDayIndex = findTodayIndex(_scheduleData);
-        await renderDayView();
-        return;
-    }
-
-    safeClear(_container);
-    renderScheduleSkeleton(_container);
-
-    if (options.refresh) {
-        await new Promise(resolve => setTimeout(resolve, 350));
-    }
-
-    try {
-        const [scheduleResult, todayTimingsResult] = await Promise.all([
-            fetchScheduleData(location),
-            getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
-        ]);
-
-        _scheduleData = scheduleResult;
-        _todayTimings = todayTimingsResult;
-        _lastLocationHash = locationHash;
-        _lastOrgId = currentOrgId;
-
-        if (!_scheduleData) {
-            renderError(true);
-            return;
+        if (!isRefresh && _scheduleData && _todayTimings) {
+            _currentDayIndex = findTodayIndex(_scheduleData);
+            await renderDayView();
+        } else {
+            safeClear(_container);
+            renderScheduleSkeleton(_container);
+            if (isRefresh) {
+                await new Promise(resolve => setTimeout(resolve, 350));
+            }
+            await _rehydrateAndRender();
         }
-
-        _currentDayIndex = findTodayIndex(_scheduleData);
-        await renderDayView();
-    } catch (error) {
-        console.error('[Schedule] Render failed:', error);
-        renderError(true);
     }
+
+    _unsubscribe.push(store.subscribe('location', () => {
+        renderScheduleSkeleton(_container);
+        _rehydrateAndRender();
+    }));
+    _unsubscribe.push(store.subscribe('settings.org', () => {
+        renderScheduleSkeleton(_container);
+        _rehydrateAndRender();
+    }));
 }
 
 /**
@@ -128,6 +112,8 @@ export function destroy() {
     stopDayCrossingCheck();
     offPrayerChange(handlePrayerTransition);
     unbindSwipeEvents();
+    _unsubscribe.forEach(id => store.unsubscribe(id));
+    _unsubscribe = [];
     _container = null;
 }
 
@@ -136,27 +122,38 @@ export function destroy() {
  * Exported so other modules (settings) can trigger a refresh.
  */
 export async function refreshScheduleData() {
+    renderScheduleSkeleton(_container);
+    await _rehydrateAndRender();
+}
+
+/**
+ * Perform actual silent data refetching and re-rendering operations when store triggers mutability.
+ */
+async function _rehydrateAndRender() {
     if (!_container) return;
-    const location = await getSavedLocation();
+    const location = store.getState('location');
     if (!location) return;
 
-    const [scheduleResult, todayTimingsResult] = await Promise.all([
-        fetchScheduleData(location),
-        getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
-    ]);
+    try {
+        const [scheduleResult, todayTimingsResult] = await Promise.all([
+            fetchScheduleData(location),
+            getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
+        ]);
 
-    _scheduleData = scheduleResult;
-    _todayTimings = todayTimingsResult;
-    _lastLocationHash = `${location.latitude.toFixed(4)}_${location.longitude.toFixed(4)}`;
-    _lastOrgId = await getSelectedOrg();
+        _scheduleData = scheduleResult;
+        _todayTimings = todayTimingsResult;
 
-    if (!_scheduleData) {
+        if (!_scheduleData) {
+            renderError(true);
+            return;
+        }
+
+        _currentDayIndex = findTodayIndex(_scheduleData);
+        await renderDayView();
+    } catch (error) {
+        console.error('[Schedule] Hydration Render failed:', error);
         renderError(true);
-        return;
     }
-
-    _currentDayIndex = findTodayIndex(_scheduleData);
-    await renderDayView();
 }
 
 /* --- INITIALIZATION --- */
@@ -271,15 +268,13 @@ function renderError(hasLocation) {
  */
 function showLocationModalForSchedule() {
     showLocationModal({
-        onLocationDetected: async () => {
-            renderScheduleSkeleton(_container);
-            await refreshScheduleData();
+        onLocationDetected: (location) => {
+            store.setState('location', location);
         },
         onManualSelect: () => {
             showLocationSearchModal({
-                onLocationSelected: async () => {
-                    renderScheduleSkeleton(_container);
-                    await refreshScheduleData();
+                onLocationSelected: (location) => {
+                    store.setState('location', location);
                 },
             });
         },
@@ -357,7 +352,7 @@ function _ensureStoragePermission() {
  * Extracted to avoid duplication between direct-grant and dialog-confirm flows.
  */
 async function _openShareModal() {
-    const location = await getSavedLocation();
+    const location = store.getState('location');
     const orgName = await getOrgDisplayNameAsync();
     const qiblaAngle = location
         ? await getQiblaDirection(location.latitude, location.longitude)
@@ -418,12 +413,9 @@ function bindEvents() {
 
     document.getElementById('schedule-org-toggle')?.addEventListener('click', async () => {
         await handleOrgToggle('schedule-org-toggle-label', async () => {
-            const location = await getSavedLocation();
-            if (location) {
-                _scheduleData = await fetchScheduleData(location);
-                _currentDayIndex = findTodayIndex(_scheduleData);
-                renderDayView();
-            }
+            // Note: handleOrgToggle internally triggers backend synchronization or ui bindings.
+            // When migrated, the setting 'settings.org' change will naturally be caught by the active subscription
+            // here via _rehydrateAndRender(), bypassing legacy logic.
         });
     });
 

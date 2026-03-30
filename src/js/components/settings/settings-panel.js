@@ -4,7 +4,6 @@
  */
 
 // Core & Libraries
-import { syncNotifications } from '../../modules/notification/notification-sync.js';
 import * as Notif from '../../modules/notification/notification.js';
 import { impact } from '../../modules/system/haptic.js';
 import {
@@ -12,6 +11,7 @@ import {
     requestNotificationPermission,
 } from '../../modules/notification/native-notification.js';
 import { showPermissionDialogPreset } from '../../modules/permission/permission-dialog-configs.js';
+import { store } from '../../core/store.js';
 
 export function render(container) {
     container.innerHTML = `
@@ -46,15 +46,9 @@ export function render(container) {
     const notificationToggle = document.getElementById('toggle-notification');
     const adzanToggle = document.getElementById('toggle-adzan');
 
-    const savedNotif = localStorage.getItem('satu_ramadhan_notif');
-    if (savedNotif !== null) {
-        notificationToggle.checked = savedNotif === 'true';
-    }
-
-    const savedAdzan = localStorage.getItem('satu_ramadhan_adzan');
-    if (savedAdzan !== null) {
-        adzanToggle.checked = savedAdzan === 'true';
-    }
+    // Murni membaca sinkronisasi Store Manager
+    notificationToggle.checked = store.getState('settings.notification') !== false;
+    adzanToggle.checked = store.getState('settings.adzan') !== false;
 
     updateAdzanRowState(notificationToggle.checked);
 
@@ -63,9 +57,8 @@ export function render(container) {
         await impact('medium');
 
         if (!enabled) {
-            localStorage.setItem('satu_ramadhan_notif', 'false');
+            store.setState('settings.notification', false);
             updateAdzanRowState(false);
-            rescheduleNotifications();
             Notif.show('Notifikasi dimatikan', 'info');
             return;
         }
@@ -74,9 +67,8 @@ export function render(container) {
         const osGranted = await checkNotificationPermission();
 
         if (osGranted) {
-            localStorage.setItem('satu_ramadhan_notif', 'true');
+            store.setState('settings.notification', true);
             updateAdzanRowState(true);
-            rescheduleNotifications();
             Notif.show('Notifikasi diaktifkan', 'success');
             return;
         }
@@ -86,20 +78,19 @@ export function render(container) {
             onConfirm: async () => {
                 const granted = await requestNotificationPermission();
                 if (granted) {
-                    localStorage.setItem('satu_ramadhan_notif', 'true');
+                    store.setState('settings.notification', true);
                     updateAdzanRowState(true);
-                    rescheduleNotifications();
                     Notif.show('Notifikasi diaktifkan', 'success');
                 } else {
                     notificationToggle.checked = false;
-                    localStorage.setItem('satu_ramadhan_notif', 'false');
+                    store.setState('settings.notification', false);
                     updateAdzanRowState(false);
                     Notif.show('Izin notifikasi ditolak', 'warning');
                 }
             },
             onCancel: () => {
                 notificationToggle.checked = false;
-                localStorage.setItem('satu_ramadhan_notif', 'false');
+                store.setState('settings.notification', false);
                 updateAdzanRowState(false);
             },
         });
@@ -108,8 +99,7 @@ export function render(container) {
     adzanToggle?.addEventListener('change', async (e) => {
         const enabled = e.target.checked;
         await impact('medium');
-        localStorage.setItem('satu_ramadhan_adzan', enabled);
-        rescheduleNotifications();
+        store.setState('settings.adzan', enabled);
         Notif.show(
             enabled ? 'Suara adzan diaktifkan' : 'Suara adzan dimatikan',
             enabled ? 'success' : 'info'
@@ -126,14 +116,6 @@ function updateAdzanRowState(notifEnabled) {
     const adzanRow = document.getElementById('adzan-row');
     if (!adzanRow) return;
     adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
-}
-
-/**
- * Re-syncs 30-day rolling notification schedule based on
- * current localStorage toggles and saved location.
- */
-function rescheduleNotifications() {
-    syncNotifications();
 }
 
 export function destroy() {

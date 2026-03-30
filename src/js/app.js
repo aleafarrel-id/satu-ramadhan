@@ -7,10 +7,10 @@
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { CONFIG } from './config/version-config.js';
-import { getSavedLocation } from './core/geolocation.js';
-import { getQiblaDirection, getPrayerTimesByCoords } from './core/api.js';
+import { getQiblaDirection } from './core/api.js';
 
 // State & Core Services
+import { store } from './core/store.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
     initNotificationService,
@@ -18,7 +18,7 @@ import {
     requestNotificationPermission,
 } from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
-import { updateWatcher } from './modules/prayer/prayer-watcher.js';
+// prayer-watcher is omitted here because it runs entirely autonomously after side-effect import
 import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
 
 // Permission UI
@@ -48,6 +48,9 @@ const POST_SPLASH_DIALOG_DELAY = 1500;
  * Initialize the entire application
  */
 export async function initApp() {
+    // Hydrate persistent state before anything else
+    await store.hydrate();
+
     // Set dynamic app name, version, and developer on splash screen
     const splashTitleEl = document.querySelector('.splash-title');
     if (splashTitleEl) splashTitleEl.textContent = CONFIG.appName;
@@ -96,8 +99,8 @@ export async function initApp() {
     // Animate loading bar
     animateLoadingBar(fillEl);
 
-    // Initialize global prayer watcher if location is available
-    prefetchAndInitWatcher();
+    // Explicitly import decoupled background workers so they evaluate their store subscriptions
+    import('./modules/prayer/prayer-watcher.js');
 
     // Initialize header
     const headerEl = document.getElementById('app-header');
@@ -192,28 +195,13 @@ function animateLoadingBar(fillEl) {
  */
 async function prefetchQiblaDirection() {
     try {
-        const location = await getSavedLocation();
+        const location = store.getState('location');
         if (location?.latitude && location?.longitude) {
             await getQiblaDirection(location.latitude, location.longitude);
         }
     } catch (e) {
         console.warn('[App] Qibla prefetch failed:', e.message);
     }
-}
-
-/**
- * Prefetch timings and initialize global prayer watcher
- */
-async function prefetchAndInitWatcher() {
-    try {
-        const location = await getSavedLocation();
-        if (location?.latitude && location?.longitude) {
-            const timings = await getPrayerTimesByCoords(location.latitude, location.longitude);
-            if (timings) {
-                updateWatcher(timings);
-            }
-        }
-    } catch (e) { }
 }
 
 /**
@@ -244,7 +232,7 @@ async function _requestNotificationIfNeeded() {
     if (alreadyGranted) return;
 
     // Skip if user previously declined — respect until they re-enable via settings
-    if (localStorage.getItem('satu_ramadhan_notif') === 'false') return;
+    if (store.getState('settings.notification') === false) return;
 
     // If there is an active location modal, hide it to prevent visual glitches
     // when the two modals stack on first launch.
@@ -257,14 +245,14 @@ async function _requestNotificationIfNeeded() {
         onConfirm: async () => {
             const granted = await requestNotificationPermission();
             if (granted) {
-                localStorage.setItem('satu_ramadhan_notif', 'true');
+                store.setState('settings.notification', true);
                 syncNotifications();
             } else {
-                localStorage.setItem('satu_ramadhan_notif', 'false');
+                store.setState('settings.notification', false);
             }
         },
         onCancel: () => {
-            localStorage.setItem('satu_ramadhan_notif', 'false');
+            store.setState('settings.notification', false);
         },
     });
 }

@@ -1,11 +1,10 @@
-import { getSavedLocation } from '../core/geolocation.js';
+import { store } from '../core/store.js';
 import { getPrayerTimesByCoords } from '../core/api.js';
 
 import { getCurrentPrayer } from '../modules/prayer/prayer-times.js';
 import { startCountdown, stopCountdown } from '../modules/schedule/countdown.js';
 import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 
-import { updateWatcher } from '../modules/prayer/prayer-watcher.js';
 
 import { renderPrayerCard, updatePrayerCardFills, updatePrayerCardDynamicUI } from '../components/card/prayer-card.js';
 import { renderPrayerListCard, getHomeMapId } from '../components/card/prayer-list.js';
@@ -20,7 +19,6 @@ import { renderCountdownCard } from '../components/card/countdown-card.js';
 import { safeClear } from '../utils/dom-utils.js';
 
 /* --- CONSTANTS --- */
-const STORAGE_KEY = 'home_view_mode';
 const VIEW_TUBE = 'tube';
 const VIEW_LIST = 'list';
 const FADE_OUT_MS = 200;
@@ -28,22 +26,27 @@ const FADE_OUT_MS = 200;
 /* --- STATE --- */
 let _container = null;
 let _timings = null;
-let _location = null;
 let _lastPrayerIndex = -1;
 let _viewMode = VIEW_TUBE;
+let _unsubscribe = [];
 
 /* --- LIFECYCLE --- */
 
 /**
  * Initializes and renders the home page.
- * Displays a skeleton UI initially, fetches the user's location,
- * then retrieves prayer timings and renders the actual content.
+ * Displays a skeleton UI initially, then retrieves prayer timings and renders content.
+ * Automatically refreshes seamlessly via Global Store subscriptions.
  *
  * @param {HTMLElement} container - The DOM element to render into.
  * @param {Object} [options={}] - Navigation options (e.g., refresh: true)
  */
 export async function render(container, options = {}) {
     _container = container;
+
+    if (_unsubscribe.length > 0) {
+        _unsubscribe.forEach(id => store.unsubscribe(id));
+    }
+    _unsubscribe = [];
 
     safeClear(container);
     renderSkeleton(null);
@@ -52,32 +55,39 @@ export async function render(container, options = {}) {
         await new Promise(resolve => setTimeout(resolve, 350));
     }
 
-    _location = await getSavedLocation();
-    _viewMode = localStorage.getItem(STORAGE_KEY) || VIEW_TUBE;
+    _viewMode = store.getState('home.viewMode');
+    if (_viewMode !== VIEW_TUBE && _viewMode !== VIEW_LIST) {
+        _viewMode = VIEW_TUBE;
+    }
+    const loc = store.getState('location');
 
-    if (_location) {
+    if (loc) {
         try {
-            _timings = await getPrayerTimesByCoords(_location.latitude, _location.longitude);
+            _timings = await getPrayerTimesByCoords(loc.latitude, loc.longitude);
         } catch { /* handled gracefully in renderContent */ }
         await renderContent();
     } else {
         showLocationModalForHome();
     }
+
+    _unsubscribe.push(store.subscribe('location', _rehydrateAndRender));
+    _unsubscribe.push(store.subscribe('settings.org', _rehydrateAndRender));
 }
 
 /**
- * Halts the active countdown timer and nullifies module
- * variables to prevent memory leaks during page navigation.
+ * Halts the active countdown timer, unsubscribes from Global Store,
+ * and nullifies module variables to prevent memory leaks during page navigation.
  */
 export function destroy() {
     stopCountdown();
+    _unsubscribe.forEach(id => store.unsubscribe(id));
+    _unsubscribe = [];
     _container = null;
     _timings = null;
 }
 
 /**
  * Getter for current prayer timings.
- * Used by settings-panel to re-schedule notifications on toggle change.
  * @returns {object|null} Current prayer timings or null if not loaded
  */
 export function getTimings() {
@@ -85,13 +95,14 @@ export function getTimings() {
 }
 
 /**
- * Re-render the home content after preset changes (called from Settings).
- * Exported so other modules can trigger a refresh without full page reload.
+ * Re-render the home content autonomously when store triggers changes.
  */
-export async function refreshHomeContent() {
-    if (!_container || !_location) return;
+async function _rehydrateAndRender() {
+    if (!_container) return;
+    const loc = store.getState('location');
+    if (!loc) return;
     try {
-        _timings = await getPrayerTimesByCoords(_location.latitude, _location.longitude);
+        _timings = await getPrayerTimesByCoords(loc.latitude, loc.longitude);
     } catch { /* handled in renderContent */ }
     stopCountdown();
     await renderContent();
@@ -101,8 +112,6 @@ export async function refreshHomeContent() {
 
 /**
  * Starts the global countdown timer for the next prayer.
- * Syncs UI elements (like tube levels and active prayer card) 
- * tick-by-tick so it perfectly matches the remaining time.
  */
 function startCountdownTimer() {
     const hoursEl = document.getElementById('cd-hours');
@@ -144,23 +153,20 @@ function startCountdownTimer() {
 /**
  * Renders the home skeleton layout to provide a responsive
  * feel before network requests complete.
- *
- * @param {Object} location - Optional location entity if cached.
  */
 function renderSkeleton(location) {
     renderHomeSkeleton(_container, location, showLocationModalForHome);
 }
 
 /**
- * Evaluates the current state strings (_timings, _location) and renders
- * the main content, encompassing empty states, location card, 
- * countdown timer, and dynamic tall-tubes for daily schedule tracking.
+ * Evaluates the current state strings and renders the main content.
  */
 async function renderContent() {
     let contentHtml = '';
+    const loc = store.getState('location');
 
     if (!_timings) {
-        const emptyStateProps = !_location ? {
+        const emptyStateProps = !loc ? {
             icon: 'bx-map-pin',
             title: 'Atur Lokasi Anda',
             description: 'Jadwal sholat akan ditampilkan setelah lokasi diatur melalui Pengaturan.',
@@ -210,9 +216,10 @@ async function renderContent() {
     safeClear(_container);
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
-        ${renderLocationCardShared(_location)}
+        ${renderLocationCardShared(loc)}
         ${contentHtml}
     `;
+    
     // Append all internal elements of the wrapper to the container
     while (wrapper.firstChild) {
         _container.appendChild(wrapper.firstChild);
@@ -223,16 +230,12 @@ async function renderContent() {
 
     if (_timings) {
         startCountdownTimer();
-        updateWatcher(_timings);
         await initMapIfListView();
     }
 }
 
 /**
  * Renders the schedule view content based on current _viewMode.
- * @param {object} prayerState - Current prayer state
- * @param {string} orgName     - Organization display name
- * @returns {string} HTML string
  */
 function renderScheduleView(prayerState, orgName) {
     return _viewMode === VIEW_LIST
@@ -241,8 +244,7 @@ function renderScheduleView(prayerState, orgName) {
 }
 
 /**
- * Binds event listeners for the schedule section:
- * view toggle buttons, org toggle, and kiblat navigation.
+ * Binds event listeners for the schedule section.
  */
 function bindScheduleEvents() {
     document.getElementById('home-view-tube')?.addEventListener('click', () => switchView(VIEW_TUBE));
@@ -252,7 +254,6 @@ function bindScheduleEvents() {
 
 /**
  * Binds event listeners that are specific to the current view content.
- * Called after initial render and after view switches.
  */
 function bindViewSpecificEvents() {
     document.getElementById('org-toggle')?.addEventListener('click', handleOrgToggle);
@@ -262,9 +263,7 @@ function bindViewSpecificEvents() {
 }
 
 /**
- * Switches between tube and list view modes with a smooth fade animation.
- * Only re-renders the schedule wrapper, preserving the countdown timer.
- * @param {string} mode - VIEW_TUBE or VIEW_LIST
+ * Switches between tube and list view modes.
  */
 async function switchView(mode) {
     if (mode === _viewMode) return;
@@ -273,7 +272,7 @@ async function switchView(mode) {
     if (!wrapper || !_timings) return;
 
     _viewMode = mode;
-    localStorage.setItem(STORAGE_KEY, mode);
+    store.setState('home.viewMode', mode);
 
     // Update toggle button active states
     document.getElementById('home-view-tube')?.classList.toggle('active', mode === VIEW_TUBE);
@@ -302,9 +301,7 @@ async function switchView(mode) {
 }
 
 /**
- * Updates the list view column highlights when a prayer transition occurs.
- * Avoids full re-render — just toggles CSS classes on existing columns.
- * @param {object} prayerState - Current prayer state from getCurrentPrayer()
+ * Updates the list view column highlights.
  */
 function updateListHighlights(prayerState) {
     const cols = document.querySelectorAll('.prayer-list-col');
@@ -319,43 +316,36 @@ function updateListHighlights(prayerState) {
 /* --- QIBLA MAP --- */
 
 /**
- * Lazily initialise the Qibla map if the list view is active
- * and a location is available.
+ * Lazily initialise the Qibla map if the list view is active.
  */
 async function initMapIfListView() {
-    if (_viewMode !== VIEW_LIST || !_location) return;
+    const loc = store.getState('location');
+    if (_viewMode !== VIEW_LIST || !loc) return;
 
     // Dynamic import to avoid loading Leaflet unless needed
     const { initQiblaMapCard } = await import('../components/card/qibla-map-card.js');
     await import('../../css/components/card/qibla-map-card.css');
 
-    await initQiblaMapCard(getHomeMapId(), _location.latitude, _location.longitude);
+    await initQiblaMapCard(getHomeMapId(), loc.latitude, loc.longitude);
 }
 
 
 /* --- EVENT HANDLERS --- */
 
 /**
- * Triggers the geographic selection modal directly from the 
- * home interface and fetches new prayer batches if an update takes place.
+ * Triggers the geographic selection modal directly from the home interface.
+ * No UI re-render happens here natively; the Store Observer picks up the state
+ * mutation and refreshes automatically!
  */
 function showLocationModalForHome() {
     showLocationModal({
-        onLocationDetected: async (location) => {
-            _location = location;
-            try {
-                _timings = await getPrayerTimesByCoords(location.latitude, location.longitude);
-            } catch { /* handled in renderContent */ }
-            await renderContent();
+        onLocationDetected: (location) => {
+            store.setState('location', location);
         },
         onManualSelect: () => {
             showLocationSearchModal({
-                onLocationSelected: async (location) => {
-                    _location = location;
-                    try {
-                        _timings = await getPrayerTimesByCoords(location.latitude, location.longitude);
-                    } catch { /* handled in renderContent */ }
-                    await renderContent();
+                onLocationSelected: (location) => {
+                    store.setState('location', location);
                 },
             });
         },
@@ -363,16 +353,15 @@ function showLocationModalForHome() {
 }
 
 /**
- * Switches the organizational source for fetching timings
- * (e.g. between Kemenag and Muhammadiyah or NU), then re-renders
- * content so prayer times reflect the new org.
+ * Switches the organizational source for fetching timings.
  */
 async function handleOrgToggle() {
     const labelId = _viewMode === VIEW_LIST ? 'org-toggle-label' : 'org-label';
     await handleOrgToggleShared(labelId, async () => {
-        if (_location) {
+        const loc = store.getState('location');
+        if (loc) {
             try {
-                _timings = await getPrayerTimesByCoords(_location.latitude, _location.longitude);
+                _timings = await getPrayerTimesByCoords(loc.latitude, loc.longitude);
             } catch { /* handled in renderContent */ }
             stopCountdown();
             await renderContent();

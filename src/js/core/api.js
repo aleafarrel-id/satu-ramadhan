@@ -170,6 +170,26 @@ function transformTimings(apiData, dateStr) {
     };
 }
 
+const _activeFetches = new Map();
+
+/**
+ * Helper to deduplicate concurrent requests for the same cache key.
+ * If multiple callers request the same data simultaneously, they will
+ * wait for the same promise rather than spawning duplicate network flights.
+ */
+async function withDeduplication(key, fetcher) {
+    if (_activeFetches.has(key)) {
+        return _activeFetches.get(key);
+    }
+    const promise = fetcher();
+    _activeFetches.set(key, promise);
+    try {
+        return await promise;
+    } finally {
+        _activeFetches.delete(key);
+    }
+}
+
 /**
  * Fetch prayer times by coordinates and date
  * Tries multiple API mirrors with retry & exponential backoff
@@ -178,42 +198,44 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
     const dateStr = formatDate(date);
     const cacheKey = `${CACHE_PREFIX}${latitude.toFixed(2)}_${longitude.toFixed(2)}_${dateStr}`;
 
-    // Check cache first
-    const cached = await storage.get(cacheKey);
-    if (cached) return cached;
+    return withDeduplication(cacheKey, async () => {
+        // Check cache first
+        const cached = await storage.get(cacheKey);
+        if (cached) return cached;
 
-    // Retry loop with exponential backoff
-    for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
-        if (attempt > 0) {
-            const delay = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
-            console.log(`[API] Retry attempt ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
-            await sleep(delay);
+        // Retry loop with exponential backoff
+        for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
+            if (attempt > 0) {
+                const delay = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
+                console.log(`[API] Retry attempt ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
+                await sleep(delay);
+            }
+
+            try {
+                const { data, mirror } = await tryAllMirrors(dateStr, latitude, longitude);
+
+                // Remember the working mirror for next time
+                await storage.set(MIRROR_STORAGE_KEY, mirror);
+                console.log(`[API] Success via ${mirror}`);
+
+                const result = transformTimings(data, dateStr);
+                await storage.set(cacheKey, result);
+                return result;
+            } catch (err) {
+                console.warn(`[API] Cycle ${attempt + 1} failed:`, err.message);
+            }
         }
 
-        try {
-            const { data, mirror } = await tryAllMirrors(dateStr, latitude, longitude);
-
-            // Remember the working mirror for next time
-            await storage.set(MIRROR_STORAGE_KEY, mirror);
-            console.log(`[API] Success via ${mirror}`);
-
-            const result = transformTimings(data, dateStr);
-            await storage.set(cacheKey, result);
-            return result;
-        } catch (err) {
-            console.warn(`[API] Cycle ${attempt + 1} failed:`, err.message);
+        // All retries exhausted — try stale cache as last resort
+        const fallback = await storage.get(cacheKey);
+        if (fallback) {
+            console.warn('[API] Returning stale cached data');
+            return fallback;
         }
-    }
 
-    // All retries exhausted — try stale cache as last resort
-    const fallback = await storage.get(cacheKey);
-    if (fallback) {
-        console.warn('[API] Returning stale cached data');
-        return fallback;
-    }
-
-    console.error('[API] All mirrors and retries exhausted, no cache available');
-    return null;
+        console.error('[API] All mirrors and retries exhausted, no cache available');
+        return null;
+    });
 }
 
 /**
@@ -346,40 +368,42 @@ function transformMonthlyData(apiDays) {
 export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
     const cacheKey = `${MONTHLY_CACHE_PREFIX}${latitude.toFixed(2)}_${longitude.toFixed(2)}_${year}_${month}`;
 
-    // Check cache first
-    const cached = await storage.get(cacheKey);
-    if (cached) return cached;
+    return withDeduplication(cacheKey, async () => {
+        // Check cache first
+        const cached = await storage.get(cacheKey);
+        if (cached) return cached;
 
-    // Retry loop with exponential backoff
-    for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
-        if (attempt > 0) {
-            const delay = Math.pow(2, attempt - 1) * 1000;
-            console.log(`[API] Monthly retry ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
-            await sleep(delay);
+        // Retry loop with exponential backoff
+        for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
+            if (attempt > 0) {
+                const delay = Math.pow(2, attempt - 1) * 1000;
+                console.log(`[API] Monthly retry ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
+                await sleep(delay);
+            }
+
+            try {
+                const { data, mirror } = await tryAllMirrorsMonthly(year, month, latitude, longitude);
+                await storage.set(MIRROR_STORAGE_KEY, mirror);
+                console.log(`[API] Monthly data (${year}/${month}) via ${mirror}`);
+
+                const result = transformMonthlyData(data.data);
+                await storage.set(cacheKey, result);
+                return result;
+            } catch (err) {
+                console.warn(`[API] Monthly cycle ${attempt + 1} failed:`, err.message);
+            }
         }
 
-        try {
-            const { data, mirror } = await tryAllMirrorsMonthly(year, month, latitude, longitude);
-            await storage.set(MIRROR_STORAGE_KEY, mirror);
-            console.log(`[API] Monthly data (${year}/${month}) via ${mirror}`);
-
-            const result = transformMonthlyData(data.data);
-            await storage.set(cacheKey, result);
-            return result;
-        } catch (err) {
-            console.warn(`[API] Monthly cycle ${attempt + 1} failed:`, err.message);
+        // Fallback to stale cache
+        const fallback = await storage.get(cacheKey);
+        if (fallback) {
+            console.warn('[API] Returning stale monthly cache');
+            return fallback;
         }
-    }
 
-    // Fallback to stale cache
-    const fallback = await storage.get(cacheKey);
-    if (fallback) {
-        console.warn('[API] Returning stale monthly cache');
-        return fallback;
-    }
-
-    console.error('[API] Monthly: all mirrors and retries exhausted');
-    return null;
+        console.error('[API] Monthly: all mirrors and retries exhausted');
+        return null;
+    });
 }
 
 const QIBLA_CACHE_PREFIX = 'qibla_cache_';
@@ -453,30 +477,32 @@ async function tryAllMirrorsQibla(latitude, longitude) {
 export async function getQiblaDirection(latitude, longitude) {
     const cacheKey = `${QIBLA_CACHE_PREFIX}${latitude.toFixed(2)}_${longitude.toFixed(2)}`;
 
-    // Qibla direction is static per location — cache aggressively
-    const cached = await storage.get(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    return withDeduplication(cacheKey, async () => {
+        // Qibla direction is static per location — cache aggressively
+        const cached = await storage.get(cacheKey);
+        if (cached !== null && cached !== undefined) return cached;
 
-    for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
-        if (attempt > 0) {
-            const delay = Math.pow(2, attempt - 1) * 1000;
-            console.log(`[API] Qibla retry ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
-            await sleep(delay);
+        for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
+            if (attempt > 0) {
+                const delay = Math.pow(2, attempt - 1) * 1000;
+                console.log(`[API] Qibla retry ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
+                await sleep(delay);
+            }
+
+            try {
+                const { data, mirror } = await tryAllMirrorsQibla(latitude, longitude);
+                await storage.set(MIRROR_STORAGE_KEY, mirror);
+
+                const direction = data.data.direction;
+                console.log(`[API] Qibla direction: ${direction}° via ${mirror}`);
+                await storage.set(cacheKey, direction);
+                return direction;
+            } catch (err) {
+                console.warn(`[API] Qibla cycle ${attempt + 1} failed:`, err.message);
+            }
         }
 
-        try {
-            const { data, mirror } = await tryAllMirrorsQibla(latitude, longitude);
-            await storage.set(MIRROR_STORAGE_KEY, mirror);
-
-            const direction = data.data.direction;
-            console.log(`[API] Qibla direction: ${direction}° via ${mirror}`);
-            await storage.set(cacheKey, direction);
-            return direction;
-        } catch (err) {
-            console.warn(`[API] Qibla cycle ${attempt + 1} failed:`, err.message);
-        }
-    }
-
-    console.error('[API] Qibla: all mirrors and retries exhausted');
-    return null;
+        console.error('[API] Qibla: all mirrors and retries exhausted');
+        return null;
+    });
 }
