@@ -13,7 +13,7 @@ import { Filesystem } from '@capacitor/filesystem';
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { getSavedLocation } from '../core/geolocation.js';
 
-import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
+import { getOrgDisplayNameAsync, getSelectedOrg } from '../modules/schedule/ramadhan.js';
 import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
 import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watcher.js';
 
@@ -51,6 +51,7 @@ let _todayTimings = null;
 let _dayCheckInterval = null;
 let _lastDateStr = null;
 let _lastLocationHash = null;
+let _lastOrgId = null;
 
 let _animPhase = 'idle';
 let _animDirection = null;
@@ -77,10 +78,12 @@ export async function render(container, options = {}) {
     }
 
     const locationHash = `${location.latitude.toFixed(4)}_${location.longitude.toFixed(4)}`;
+    const currentOrgId = await getSelectedOrg();
     const isLocationChanged = _lastLocationHash !== locationHash;
+    const isOrgChanged = _lastOrgId !== currentOrgId;
     const hasData = _scheduleData && _todayTimings;
 
-    if (!options.refresh && !isLocationChanged && hasData) {
+    if (!options.refresh && !isLocationChanged && !isOrgChanged && hasData) {
         _currentDayIndex = findTodayIndex(_scheduleData);
         await renderDayView();
         return;
@@ -102,6 +105,7 @@ export async function render(container, options = {}) {
         _scheduleData = scheduleResult;
         _todayTimings = todayTimingsResult;
         _lastLocationHash = locationHash;
+        _lastOrgId = currentOrgId;
 
         if (!_scheduleData) {
             renderError(true);
@@ -144,6 +148,7 @@ export async function refreshScheduleData() {
     _scheduleData = scheduleResult;
     _todayTimings = todayTimingsResult;
     _lastLocationHash = `${location.latitude.toFixed(4)}_${location.longitude.toFixed(4)}`;
+    _lastOrgId = await getSelectedOrg();
 
     if (!_scheduleData) {
         renderError(true);
