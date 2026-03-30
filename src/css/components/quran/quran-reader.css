@@ -256,8 +256,7 @@
    flex-shrink: 0;
 }
 
-.quran-ayah-action-btn.copied,
-.quran-ayah-action-btn:hover {
+.quran-ayah-action-btn.copied {
    opacity: 1;
 }
 
@@ -400,7 +399,7 @@
 
 /* ── Responsive Rules ── */
 
-@media (pointer: fine) {
+@media (hover: hover) and (pointer: fine) {
    .quran-reader-title-wrapper:hover {
       background: var(--clr-quran-bg-alt);
    }
@@ -408,6 +407,7 @@
    .quran-ayah-action-btn:hover {
       color: var(--clr-quran-accent);
       background: var(--clr-quran-bg-alt);
+      opacity: 1;
    }
 }
 

@@ -234,10 +234,11 @@
     cursor: default;
 }
 
-/* Hover */
-.date-picker-cell:not(.date-picker-cell--empty):not(.date-picker-cell--disabled):hover {
-    background: var(--clr-primary-a25);
-    border-color: var(--clr-primary-a30);
+@media (hover: hover) and (pointer: fine) {
+    .date-picker-cell:not(.date-picker-cell--empty):not(.date-picker-cell--disabled):hover {
+        background: var(--clr-primary-a25);
+        border-color: var(--clr-primary-a30);
+    }
 }
 
 /* Press */

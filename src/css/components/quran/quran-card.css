@@ -187,7 +187,7 @@
 
 /* ── Responsive Rules ── */
 
-@media (pointer: fine) {
+@media (hover: hover) and (pointer: fine) {
    .surah-card:hover {
       background: var(--clr-quran-card-hover);
    }

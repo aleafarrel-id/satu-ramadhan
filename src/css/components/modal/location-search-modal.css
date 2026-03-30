@@ -118,8 +118,10 @@
     border-radius: var(--radius-full);
 }
 
-.loc-search-results::-webkit-scrollbar-thumb:hover {
-    background: var(--clr-primary-400);
+@media (hover: hover) and (pointer: fine) {
+    .loc-search-results::-webkit-scrollbar-thumb:hover {
+        background: var(--clr-primary-400);
+    }
 }
 
 .loc-search-placeholder {

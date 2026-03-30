@@ -133,9 +133,11 @@
 }
 
 /* Hover / active */
-.cal-modal__cell:not(.cal-modal__cell--empty):hover {
-   background: var(--clr-primary-a25);
-   border-color: var(--clr-primary-a30);
+@media (hover: hover) and (pointer: fine) {
+   .cal-modal__cell:not(.cal-modal__cell--empty):hover {
+      background: var(--clr-primary-a25);
+      border-color: var(--clr-primary-a30);
+   }
 }
 
 .cal-modal__cell:not(.cal-modal__cell--empty):active {

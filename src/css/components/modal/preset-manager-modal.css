@@ -353,8 +353,10 @@
     transition: color var(--transition-fast);
 }
 
-.preset-mgr-date-input:hover i {
-    color: var(--clr-primary-400);
+@media (hover: hover) and (pointer: fine) {
+    .preset-mgr-date-input:hover i {
+        color: var(--clr-primary-400);
+    }
 }
 
 .preset-mgr-date-input:active {
@@ -406,9 +408,11 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.preset-mgr-date-chip:hover {
-    background: var(--clr-primary-a10);
-    border-color: var(--clr-primary-a30);
+@media (hover: hover) and (pointer: fine) {
+    .preset-mgr-date-chip:hover {
+        background: var(--clr-primary-a10);
+        border-color: var(--clr-primary-a30);
+    }
 }
 
 .preset-mgr-date-chip:active {

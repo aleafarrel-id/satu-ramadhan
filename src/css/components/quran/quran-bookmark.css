@@ -87,7 +87,7 @@
 
 /* ── Responsive Rules ── */
 
-@media (pointer: fine) {
+@media (hover: hover) and (pointer: fine) {
    .bookmark-delete-btn:hover {
       opacity: 1;
       color: var(--clr-danger);

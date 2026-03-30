@@ -169,7 +169,7 @@
 
 /* ── Responsive Rules ── */
 
-@media (pointer: fine) {
+@media (hover: hover) and (pointer: fine) {
    .quran-icon-btn:hover {
       color: var(--clr-quran-accent);
    }

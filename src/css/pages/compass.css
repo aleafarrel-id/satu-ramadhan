@@ -19,10 +19,16 @@
    transition: color var(--transition-fast), background var(--transition-fast);
 }
 
-.btn--compass-guide:hover,
 .btn--compass-guide:active {
    background: var(--clr-bg-hover, rgba(0, 0, 0, 0.05));
    color: var(--clr-text-primary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .btn--compass-guide:hover {
+      background: var(--clr-bg-hover, rgba(0, 0, 0, 0.05));
+      color: var(--clr-text-primary);
+   }
 }
 
 /* ── Qibla Card Skeleton ── */

@@ -188,8 +188,10 @@
    transform: scale(0.9);
 }
 
-.qibla-map-card__reset:hover {
-   background: var(--clr-accent-a10);
+@media (hover: hover) and (pointer: fine) {
+   .qibla-map-card__reset:hover {
+      background: var(--clr-accent-a10);
+   }
 }
 
 .qibla-map-card__reset.hidden {

@@ -165,8 +165,10 @@
    border-bottom-right-radius: var(--radius-pill);
 }
 
-.schedule-nav__btn:hover:not(.disabled) {
-   background: var(--clr-accent-a30);
+@media (hover: hover) and (pointer: fine) {
+   .schedule-nav__btn:hover:not(.disabled) {
+      background: var(--clr-accent-a30);
+   }
 }
 
 .schedule-nav__btn:active:not(.disabled) {

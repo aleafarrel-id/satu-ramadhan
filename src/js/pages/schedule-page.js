@@ -50,6 +50,7 @@ let _todayTimings = null;
 
 let _dayCheckInterval = null;
 let _lastDateStr = null;
+let _lastLocationHash = null;
 
 let _animPhase = 'idle';
 let _animDirection = null;
@@ -67,35 +68,52 @@ let _animId = 0;
 export async function render(container, options = {}) {
     _container = container;
 
-    safeClear(container);
+    const location = await getSavedLocation();
+    if (!location) {
+        safeClear(container);
+        renderScheduleSkeleton(_container);
+        renderError(false);
+        return;
+    }
+
+    const locationHash = `${location.latitude.toFixed(4)}_${location.longitude.toFixed(4)}`;
+    const isLocationChanged = _lastLocationHash !== locationHash;
+    const hasData = _scheduleData && _todayTimings;
+
+    if (!options.refresh && !isLocationChanged && hasData) {
+        _currentDayIndex = findTodayIndex(_scheduleData);
+        await renderDayView();
+        return;
+    }
+
+    safeClear(_container);
     renderScheduleSkeleton(_container);
 
     if (options.refresh) {
         await new Promise(resolve => setTimeout(resolve, 350));
     }
 
-    const location = await getSavedLocation();
+    try {
+        const [scheduleResult, todayTimingsResult] = await Promise.all([
+            fetchScheduleData(location),
+            getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
+        ]);
 
-    if (!location) {
-        renderError(false);
-        return;
-    }
+        _scheduleData = scheduleResult;
+        _todayTimings = todayTimingsResult;
+        _lastLocationHash = locationHash;
 
-    const [scheduleResult, todayTimingsResult] = await Promise.all([
-        fetchScheduleData(location),
-        getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
-    ]);
+        if (!_scheduleData) {
+            renderError(true);
+            return;
+        }
 
-    _scheduleData = scheduleResult;
-    _todayTimings = todayTimingsResult;
-
-    if (!_scheduleData) {
+        _currentDayIndex = findTodayIndex(_scheduleData);
+        await renderDayView();
+    } catch (error) {
+        console.error('[Schedule] Render failed:', error);
         renderError(true);
-        return;
     }
-
-    _currentDayIndex = findTodayIndex(_scheduleData);
-    await renderDayView();
 }
 
 /**
@@ -107,10 +125,6 @@ export function destroy() {
     offPrayerChange(handlePrayerTransition);
     unbindSwipeEvents();
     _container = null;
-    _scheduleData = null;
-    _todayTimings = null;
-    _currentDayIndex = 0;
-    _lastDateStr = null;
 }
 
 /**
@@ -129,6 +143,7 @@ export async function refreshScheduleData() {
 
     _scheduleData = scheduleResult;
     _todayTimings = todayTimingsResult;
+    _lastLocationHash = `${location.latitude.toFixed(4)}_${location.longitude.toFixed(4)}`;
 
     if (!_scheduleData) {
         renderError(true);

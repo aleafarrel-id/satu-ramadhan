@@ -134,8 +134,10 @@
     transform: scale(0.9);
 }
 
-.schedule-nav__today:hover {
-    background: var(--clr-accent-a30);
+@media (hover: hover) and (pointer: fine) {
+    .schedule-nav__today:hover {
+        background: var(--clr-accent-a30);
+    }
 }
 
 .schedule-nav__today.hidden {

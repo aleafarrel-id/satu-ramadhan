@@ -47,9 +47,11 @@
    background: var(--clr-accent-700);
 }
 
-.btn--gold:hover {
-   box-shadow: var(--shadow-glow);
-   transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+   .btn--gold:hover {
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-1px);
+   }
 }
 
 .btn--danger {
