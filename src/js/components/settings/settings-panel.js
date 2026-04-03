@@ -12,6 +12,7 @@ import {
 } from '../../modules/notification/native-notification.js';
 import { showPermissionDialogPreset } from '../../modules/permission/permission-dialog-configs.js';
 import { store } from '../../core/store.js';
+import { isWeb } from '../../modules/system/platform.js';
 
 export function render(container) {
     container.innerHTML = `
@@ -19,38 +20,45 @@ export function render(container) {
             <div class="settings-card-header">
                 <div class="settings-card-title">NOTIFIKASI</div>
             </div>
-            <label class="settings-item" for="toggle-notification" data-focus-item>
+            <label class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
                     <span>Notifikasi Waktu</span>
                 </div>
                 <div class="switch-toggle">
-                    <input type="checkbox" id="toggle-notification" checked>
+                    <input type="checkbox" id="toggle-notification" checked ${isWeb ? 'disabled' : ''}>
                     <span class="slider"></span>
                 </div>
             </label>
             <div class="settings-divider"></div>
-            <label class="settings-item" id="adzan-row" for="toggle-adzan" data-focus-item>
+            <label class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="adzan-row" for="toggle-adzan" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-volume-full'></i>
                     <span>Suara Adzan</span>
                 </div>
                 <div class="switch-toggle">
-                    <input type="checkbox" id="toggle-adzan" checked>
+                    <input type="checkbox" id="toggle-adzan" checked ${isWeb ? 'disabled' : ''}>
                     <span class="slider"></span>
                 </div>
             </label>
+            ${isWeb ? '<div class="settings-platform-notice">Fitur ini tidak tersedia di web dan hanya tersedia di aplikasi native.</div>' : ''}
         </div>
     `;
 
     const notificationToggle = document.getElementById('toggle-notification');
     const adzanToggle = document.getElementById('toggle-adzan');
 
-    // Murni membaca sinkronisasi Store Manager
-    notificationToggle.checked = store.getState('settings.notification') !== false;
-    adzanToggle.checked = store.getState('settings.adzan') !== false;
+    // Read directly from Store Manager synchronization
+    if (isWeb) {
+        notificationToggle.checked = false;
+        adzanToggle.checked = false;
+    } else {
+        notificationToggle.checked = store.getState('settings.notification') !== false;
+        adzanToggle.checked = store.getState('settings.adzan') !== false;
+        updateAdzanRowState(notificationToggle.checked);
+    }
 
-    updateAdzanRowState(notificationToggle.checked);
+    if (isWeb) return;
 
     notificationToggle?.addEventListener('change', async (e) => {
         const enabled = e.target.checked;

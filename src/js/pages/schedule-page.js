@@ -7,8 +7,8 @@ import '../../css/components/modal/share-schedule-modal.css';
 import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
 
-import { Capacitor } from '@capacitor/core';
 import { Filesystem } from '@capacitor/filesystem';
+import { isNative } from '../modules/system/platform.js';
 
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { store } from '../core/store.js';
@@ -313,7 +313,7 @@ async function renderDayView() {
 async function handleShareSchedule() {
     if (!_scheduleData) return;
 
-    if (Capacitor.getPlatform() !== 'web') {
+    if (isNative) {
         const hasStorage = await _ensureStoragePermission();
         if (!hasStorage) return;
     }

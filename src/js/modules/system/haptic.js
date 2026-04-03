@@ -4,23 +4,14 @@
 
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
-/**
- * Check if haptics are available (native only)
- */
-function isNative() {
-    try {
-        return typeof window !== 'undefined' && window.Capacitor?.isNativePlatform();
-    } catch {
-        return false;
-    }
-}
+import { isNative } from './platform.js';
 
 /**
  * Trigger impact haptic feedback
  * @param {'light'|'medium'|'heavy'} style
  */
 export async function impact(style = 'light') {
-    if (!isNative()) return;
+    if (!isNative) return;
     try {
         const styleMap = {
             light: ImpactStyle.Light,
@@ -38,7 +29,7 @@ export async function impact(style = 'light') {
  * @param {'success'|'warning'|'error'} type
  */
 export async function notification(type = 'success') {
-    if (!isNative()) return;
+    if (!isNative) return;
     try {
         const typeMap = {
             success: NotificationType.Success,
@@ -55,7 +46,7 @@ export async function notification(type = 'success') {
  * Trigger selection haptic (for selection changes)
  */
 export async function selectionChanged() {
-    if (!isNative()) return;
+    if (!isNative) return;
     try {
         await Haptics.selectionChanged();
     } catch (e) {
@@ -68,7 +59,7 @@ export async function selectionChanged() {
  * @param {number} duration - duration in ms (default 300)
  */
 export async function vibrate(duration = 300) {
-    if (!isNative()) return;
+    if (!isNative) return;
     try {
         await Haptics.vibrate({ duration });
     } catch (e) {
@@ -81,7 +72,7 @@ export async function vibrate(duration = 300) {
  * Uses Capacitor Haptics on native, falls back to Web Vibration API on browser.
  */
 export async function doubleVibrate() {
-    if (isNative()) {
+    if (isNative) {
         try {
             await Haptics.vibrate({ duration: 100 });
             await new Promise(r => setTimeout(r, 150));

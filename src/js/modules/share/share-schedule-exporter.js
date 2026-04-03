@@ -3,8 +3,8 @@
  */
 
 import { toCanvas } from 'html-to-image';
-import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { isNative, isWeb } from '../system/platform.js';
 import { Share } from '@capacitor/share';
 import { Media } from '@capacitor-community/media';
 import { success as notifySuccess, error as notifyError } from '../notification/notification.js';
@@ -62,7 +62,7 @@ export async function captureScheduleImage(element) {
 export async function downloadScheduleImage(canvas, filename = DEFAULT_FILENAME) {
     if (!canvas) throw new Error('downloadScheduleImage: canvas is required');
 
-    if (Capacitor.getPlatform() !== 'web') {
+    if (isNative) {
         try {
             const dataUrl = canvas.toDataURL('image/png');
 
@@ -136,7 +136,7 @@ export async function shareScheduleImage(canvas) {
     if (!canvas) throw new Error('shareScheduleImage: canvas is required');
 
     try {
-        if (Capacitor.getPlatform() === 'web') {
+        if (isWeb) {
             try {
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 if (blob) {

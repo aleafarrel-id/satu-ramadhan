@@ -177,7 +177,7 @@ export async function getSelectedOrg() {
     const org = store.getState('settings.org');
     if (org) return org;
     
-    // Asuransi gagal memuat, kita raih default JSON
+    // Fallback to default JSON on failure
     const config = getRamadhanConfig();
     return config.presets?.[0]?.id || 'nu';
 }

@@ -3,7 +3,7 @@
  */
 
 // Core & Libraries
-import { Capacitor } from '@capacitor/core';
+import { isNative } from '../system/platform.js';
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { PrayerService } from './native-notification.js';
 import { store } from '../../core/store.js';
@@ -78,7 +78,7 @@ let _syncing = false;
  *   • Settings toggle change (notification / adzan)
  */
 export async function syncNotifications() {
-    if (!Capacitor.isNativePlatform()) {
+    if (!isNative) {
         console.log('[NotifSync] Skipping — not running on native platform');
         return;
     }

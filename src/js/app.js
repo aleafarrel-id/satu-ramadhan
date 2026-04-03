@@ -5,9 +5,9 @@
 
 // Core & Libraries
 import { App } from '@capacitor/app';
-import { Capacitor } from '@capacitor/core';
 import { CONFIG } from './config/version-config.js';
 import { getQiblaDirection } from './core/api.js';
+import { isNative } from './modules/system/platform.js';
 
 // State & Core Services
 import { store } from './core/store.js';
@@ -223,7 +223,7 @@ function initAppResumeListener() {
 }
 
 async function triggerPostSplashPermissions() {
-    if (!Capacitor.isNativePlatform()) return;
+    if (!isNative) return;
     await _requestNotificationIfNeeded();
 }
 

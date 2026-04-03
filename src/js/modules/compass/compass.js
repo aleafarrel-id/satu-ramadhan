@@ -38,7 +38,7 @@ export default class QiblaCompass {
         this._orientationHandler = null;
         this._started = false;
 
-        /** @type {boolean|null} null = belum terdeteksi */
+        /** @type {boolean|null} null = pending */
         this._hasGyroscope = _globalHasGyroscope;
         this._gyroDetectTimer = null;
         this._receivedOrientation = false;

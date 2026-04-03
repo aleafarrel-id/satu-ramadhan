@@ -381,6 +381,14 @@
    Responsive Overrides
    ============================================= */
 
+.settings-platform-notice {
+   font-size: var(--fs-xs);
+   color: var(--clr-text-muted);
+   text-align: center;
+   padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-md);
+   line-height: var(--lh-normal);
+}
+
 @media (max-width: 360px) {
 
    .settings-item-info {
@@ -409,7 +417,8 @@
    .settings-loc-province,
    .settings-loc-desc,
    .settings-preset-dates,
-   .settings-preset-desc {
+   .settings-preset-desc,
+   .settings-platform-notice {
       font-size: var(--fs-2xs);
    }
 }

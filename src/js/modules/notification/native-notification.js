@@ -3,21 +3,22 @@
  */
 
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { Capacitor, registerPlugin } from '@capacitor/core';
+import { registerPlugin } from '@capacitor/core';
+import { isNative } from '../system/platform.js';
 
 export const PrayerService = registerPlugin('PrayerService');
 
 let _initialized = false;
 
 export async function initNotificationService() {
-    if (!Capacitor.isNativePlatform() || _initialized) return;
+    if (!isNative || _initialized) return;
 
     const granted = await checkNotificationPermission();
     if (granted) _initialized = true;
 }
 
 export async function checkNotificationPermission() {
-    if (!Capacitor.isNativePlatform()) return false;
+    if (!isNative) return false;
     try {
         const status = await LocalNotifications.checkPermissions();
         return status.display === 'granted';
@@ -27,7 +28,7 @@ export async function checkNotificationPermission() {
 }
 
 export async function requestNotificationPermission() {
-    if (!Capacitor.isNativePlatform()) return false;
+    if (!isNative) return false;
     try {
         const result = await LocalNotifications.requestPermissions();
         const granted = result.display === 'granted';
@@ -39,7 +40,7 @@ export async function requestNotificationPermission() {
 }
 
 export async function cancelAllPrayerNotifications() {
-    if (!Capacitor.isNativePlatform()) return;
+    if (!isNative) return;
     try {
         await PrayerService.cancelAll();
     } catch (e) {}
