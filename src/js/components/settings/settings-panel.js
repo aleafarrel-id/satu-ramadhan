@@ -41,7 +41,7 @@ export function render(container) {
                     <span class="slider"></span>
                 </div>
             </label>
-            ${isWeb ? '<div class="settings-platform-notice">Fitur ini tidak tersedia di web dan hanya tersedia di aplikasi native.</div>' : ''}
+            ${isWeb ? '<div class="settings-platform-notice">Fitur ini hanya tersedia di aplikasi mobile.</div>' : ''}
         </div>
     `;
 

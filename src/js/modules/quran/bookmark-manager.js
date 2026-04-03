@@ -77,7 +77,7 @@ export function isBookmarkedSync(surahIndex, verseNumber) {
 
 /**
  * Saves an ayah to bookmarks.
- * @param {Object} ayahData - Must contain: surahIndex, surahName, surahTitleAr, verseNumber, type
+ * @param {Object} ayahData
  * @returns {Promise<boolean>} true if added, false if already existed
  */
 export async function save(ayahData) {
@@ -93,10 +93,11 @@ export async function save(ayahData) {
       surahTitleAr: ayahData.surahTitleAr || '',
       verseNumber: ayahData.verseNumber,
       type: ayahData.type || '',
+      readMode: ayahData.readMode || 'surah',
+      juzIndex: ayahData.juzIndex || null,
       timestamp: Math.floor(Date.now() / 1000)
    };
 
-   // Prepend (newest first)
    _cache.unshift(entry);
    await _persist();
    return true;

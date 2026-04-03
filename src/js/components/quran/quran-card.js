@@ -190,19 +190,22 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
    card.dataset.bookmarkKey = bookmark.key;
 
    const typeText = bookmark.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
-   const titleLatin = surah ? surah.title : bookmark.surahTitle;
-   const titleAr = surah ? surah.titleAr : bookmark.surahTitleAr;
-   const surahNum = bookmark.surahIndex;
+   const isJuzMode = bookmark.readMode === 'juz' && bookmark.juzIndex;
+
+   const titleLatin = isJuzMode ? `Juz ${bookmark.juzIndex}` : (surah ? surah.title : bookmark.surahTitle);
+   const titleAr = isJuzMode ? `الجزء ${_toArabicNumeral(parseInt(bookmark.juzIndex))}` : (surah ? surah.titleAr : bookmark.surahTitleAr);
+   const topNumber = isJuzMode ? bookmark.juzIndex : bookmark.surahIndex;
+   const primaryBadge = isJuzMode ? (surah ? surah.title : bookmark.surahTitle) : typeText;
 
    card.innerHTML = `
       <div class="surah-number-wrapper">
          <div class="surah-number-ornament"></div>
-         <span class="surah-number-text">${surahNum}</span>
+         <span class="surah-number-text">${topNumber}</span>
       </div>
       <div class="surah-info">
          <div class="surah-title-latin">${titleLatin}</div>
          <div class="surah-details">
-            <span class="surah-type surah-type-pill">${typeText}</span>
+            <span class="surah-type surah-type-pill">${primaryBadge}</span>
             <span class="surah-detail-dot"></span>
             <span class="bookmark-verse-badge">
                <i class='bx bxs-bookmark-alt'></i>

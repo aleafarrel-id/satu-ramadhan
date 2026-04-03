@@ -381,13 +381,16 @@ async function _fetchAndRender(item) {
 
       // Deep-link: scroll to target verse if requested
       if (_targetVerseNumber && _scrollContainer) {
-         const targetNum = _targetVerseNumber;
+         const tVerse = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.verseNumber : _targetVerseNumber;
+         const tSurah = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.surahIndex : null;
+         
          _targetVerseNumber = null;
          requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-               const targetCard = _scrollContainer.querySelector(
-                  `.quran-ayah-card[data-ayah-number="${targetNum}"]`
-               );
+               let selector = `.quran-ayah-card[data-ayah-number="${tVerse}"]`;
+               if (tSurah) selector += `[data-surah-index="${tSurah}"]`;
+               
+               const targetCard = _scrollContainer.querySelector(selector);
                if (targetCard) {
                   const header = _overlay?.querySelector('.quran-unified-header');
                   const headerHeight = header ? header.offsetHeight : 0;
@@ -592,9 +595,16 @@ async function _renderItems(data, renderId, isInitialLoad = false) {
 
    let targetBatchCount = 1;
    if (_targetVerseNumber) {
-      const foundIndex = data.findIndex(
-         item => item.type === 'ayah' && item.data.number === parseInt(_targetVerseNumber, 10)
-      );
+      const tVerse = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.verseNumber : _targetVerseNumber;
+      const tSurah = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.surahIndex : null;
+
+      const foundIndex = data.findIndex(item => {
+         if (item.type !== 'ayah') return false;
+         const isMatchVerse = item.data.number === parseInt(tVerse, 10);
+         const isMatchSurah = tSurah ? item.data.surahIndex === parseInt(tSurah, 10) : true;
+         return isMatchVerse && isMatchSurah;
+      });
+
       if (foundIndex !== -1) {
          targetBatchCount = Math.ceil((foundIndex + 5) / 20);
       }
@@ -785,7 +795,9 @@ async function _handleToggleBookmark(ayah, btnEl) {
       surahName: ayah.surahName,
       surahTitleAr: ayah.surahTitleAr,
       verseNumber: ayah.number,
-      type: ayah.surahType
+      type: ayah.surahType,
+      readMode: _currentType,
+      juzIndex: _currentType === 'juz' ? _currentItem.index : null
    });
 
    const icon = btnEl.querySelector('i');

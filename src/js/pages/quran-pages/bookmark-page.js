@@ -8,7 +8,7 @@ import * as QuranCard from '../../components/quran/quran-card.js';
 import * as BookmarkManager from '../../modules/quran/bookmark-manager.js';
 import * as QuranReader from '../../modules/quran/quran-reader.js';
 import * as Notification from '../../modules/notification/notification.js';
-import { getSurahList } from '../../modules/quran/quran-api.js';
+import { getSurahList, getJuzList } from '../../modules/quran/quran-api.js';
 import { renderBatchedList } from '../../modules/quran/quran-utility.js';
 
 let _container = null;
@@ -124,9 +124,24 @@ export function onSearchExit() {
 /**
  * Opens the reader at the bookmarked verse.
  */
-function _openBookmarkedVerse(bookmark, surah) {
+async function _openBookmarkedVerse(bookmark, surah) {
    if (!surah) return;
-   QuranReader.open(surah, 'surah', bookmark.verseNumber, {
+
+   let targetItem = surah;
+   const readMode = bookmark.readMode || 'surah';
+
+   if (readMode === 'juz' && bookmark.juzIndex) {
+      const juzList = await getJuzList();
+      const juz = juzList.find(j => j.index == bookmark.juzIndex);
+      if (juz) targetItem = juz;
+   }
+
+   const targetObj = { 
+      verseNumber: bookmark.verseNumber, 
+      surahIndex: bookmark.surahIndex 
+   };
+
+   QuranReader.open(targetItem, readMode, targetObj, {
       onClose: () => {
          // Refresh list when reader is closed
          if (_container) {
