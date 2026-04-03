@@ -84,7 +84,6 @@
    align-items: center;
    justify-content: space-between;
    padding: var(--sp-2) var(--sp-3);
-   padding-top: max(var(--sp-2), env(safe-area-inset-top, var(--sp-2)));
    background: var(--clr-quran-card-bg);
    flex-shrink: 0;
    min-height: var(--size-touch-target);
@@ -95,6 +94,7 @@
 .mushaf-header-left {
    display: flex;
    align-items: center;
+   justify-content: center;
    gap: var(--sp-1);
 }
 
@@ -108,7 +108,7 @@
    border-radius: var(--radius-circle);
    background: transparent;
    color: var(--clr-mushaf-text);
-   font-size: 1.6rem;
+   font-size: var(--fs-2xl);
    cursor: pointer;
    transition: opacity var(--transition-fast);
    flex-shrink: 0;
@@ -120,6 +120,11 @@
 
 .mushaf-info-btn {
    opacity: 0.65;
+   font-size: var(--fs-xl);
+}
+
+.mushaf-info-btn i {
+   color: var(--clr-quran-accent);
 }
 
 .mushaf-info-btn:active {
@@ -159,8 +164,15 @@
 }
 
 @keyframes mushafZoomPulse {
-   0%, 100% { opacity: 1; }
-   50% { opacity: 0.55; }
+
+   0%,
+   100% {
+      opacity: 1;
+   }
+
+   50% {
+      opacity: 0.55;
+   }
 }
 
 /* Subtle top-border indicator when zoom mode is on */
@@ -276,7 +288,6 @@
    backface-visibility: hidden;
    -webkit-backface-visibility: hidden;
    will-change: transform;
-   contain: layout style paint;
 }
 
 .mushaf-page-empty {
@@ -451,6 +462,12 @@
       font-size: 1.4rem;
    }
 
+   .mushaf-info-btn {
+      width: 30px;
+      height: 30px;
+      font-size: var(--fs-base);
+   }
+
    .mushaf-page-counter {
       font-size: var(--fs-md);
    }
@@ -465,6 +482,12 @@
       width: 30px;
       height: 30px;
       font-size: 1.3rem;
+   }
+
+   .mushaf-info-btn {
+      width: 28px;
+      height: 28px;
+      font-size: var(--fs-base);
    }
 
    .mushaf-page-counter {
@@ -510,6 +533,10 @@
       width: 28px;
       height: 28px;
       font-size: 1.2rem;
+   }
+
+   .mushaf-info-btn {
+      font-size: var(--fs-sm);
    }
 
    .mushaf-page-counter {

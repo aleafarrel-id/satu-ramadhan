@@ -87,7 +87,7 @@ function createModalDOM() {
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-zoom-in'></i>
-                    <span>Tekan ikon zoom untuk memperbesar dan tekan lagi untuk memperkecil</span>
+                    <span>Tekan ikon zoom untuk memperbesar tanpa berpindah halaman dan tekan lagi untuk kembali</span>
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-menu'></i>

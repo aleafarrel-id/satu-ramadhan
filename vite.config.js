@@ -31,6 +31,9 @@ export default defineConfig({
                     // Capacitor SDK → isolated native bridge chunk
                     if (id.includes('node_modules/@capacitor')) return 'capacitor';
 
+                    // Mushaf-only vendor libs → lazy-loaded with mushaf
+                    if (id.includes('node_modules/page-flip') || id.includes('node_modules/panzoom')) return 'mushaf-vendor';
+
                     // All other vendor libraries → single vendor chunk
                     if (id.includes('node_modules')) return 'vendor';
                 }

@@ -395,11 +395,18 @@ function _onPointerDown(e) {
 
 function _promoteAdjacentPages() {
    if (!_bookContainer) return;
-   const pages = _bookContainer.querySelectorAll('.mushaf-page:not(.mushaf-page-empty)');
-   pages.forEach(p => { p.style.willChange = 'transform'; });
+   const pagesToPromote = [];
+   for (let delta = -1; delta <= 1; delta++) {
+      const target = _currentPage + delta;
+      if (target < _windowStart || target > _windowEnd) continue;
+      const el = _bookContainer.querySelector(`.mushaf-page[data-page="${target}"]`);
+      if (el) pagesToPromote.push(el);
+   }
+
+   pagesToPromote.forEach(p => { p.style.willChange = 'transform'; });
    const schedule = window.requestIdleCallback || ((cb) => setTimeout(cb, 0));
    schedule(() => {
-      pages.forEach(p => { p.style.willChange = ''; });
+      pagesToPromote.forEach(p => { p.style.willChange = ''; });
    }, { timeout: 1200 });
 }
 
@@ -705,19 +712,22 @@ async function _buildAndMountPageFlip(targetPage) {
 
 function _onPageFlip(e) {
    dismissTooltip();
-   if (_isExpanding) return;
    const flipIndex = e.data;
    _currentPage = _windowEnd - (flipIndex / 2);
    _updatePageCounter();
    _updateSurahHeader();
 
-   setTimeout(() => _checkAndExpand(flipIndex), 360);
+   if (_isExpanding) return;
+
+   setTimeout(_checkAndExpand, 500);
    _prefetchAdjacent();
 }
 
-async function _checkAndExpand(flipIndex) {
+async function _checkAndExpand() {
    if (_isExpanding || !_pageFlip || !_isOpen) return;
 
+   // Compute flipIndex from live state so it's always accurate
+   const flipIndex = (_windowEnd - _currentPage) * 2;
    const pagesInWindow = _windowEnd - _windowStart + 1;
    const distFromHighest = flipIndex / 2;
    const distFromLowest = pagesInWindow - 1 - distFromHighest;
@@ -743,13 +753,13 @@ async function _checkAndExpand(flipIndex) {
       }
       _bookContainer.insertAdjacentHTML('afterbegin', html);
 
+      // Re-compute flipIndex after DOM change for accurate positioning
+      const newFlipIndex = (_windowEnd - _currentPage) * 2;
       _windowEnd = newEnd;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));
-      _pageFlip.turnToPage(flipIndex + addedPairs * 2);
+      _pageFlip.turnToPage(newFlipIndex + addedPairs * 2);
 
-      // Hold the lock until the flip animation finishes so spurious flip events
-      // emitted by updateFromHtml/turnToPage don't schedule a second expand.
-      setTimeout(() => { _isExpanding = false; }, 360);
+      setTimeout(() => { _isExpanding = false; }, 400);
       return;
    }
 
@@ -774,7 +784,7 @@ async function _checkAndExpand(flipIndex) {
 
       _windowStart = newStart;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));
-      setTimeout(() => { _isExpanding = false; }, 360);
+      setTimeout(() => { _isExpanding = false; }, 400);
    }
 }
 

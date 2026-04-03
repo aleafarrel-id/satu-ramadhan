@@ -63,7 +63,7 @@ function _adjustTooltipPosition(triggerEl, e) {
 
    // Position the global tooltip explicitly
    tooltip.style.left = `${targetRect.left + (targetRect.width / 2)}px`;
-   tooltip.style.top = `${targetRect.top - 6}px`;
+   tooltip.style.top = `${targetRect.top - 8}px`;
 
    // Best-effort estimation of tooltip width
    const estimatedWidth = (label.length * 7) + 24; // approx char width + padding width
@@ -134,7 +134,7 @@ export function initTooltip(container, triggerSelector = '[data-tooltip]') {
                   dismissTooltip();
                } else {
                   dismissTooltip(); // Cleanly dismiss any previous tooltip
-                  
+
                   // Calculate and position
                   _adjustTooltipPosition(triggerEl, e);
                   triggerEl.classList.add('active');
@@ -169,7 +169,7 @@ export function initTooltip(container, triggerSelector = '[data-tooltip]') {
    container.addEventListener('mouseout', (e) => {
       if (isTouch) return;
       const triggerEl = e.target.closest(triggerSelector);
-      
+
       // Ensure we only dismiss if leaving the currently active trigger
       if (triggerEl && _activeTooltipTrigger === triggerEl) {
          dismissTooltip();

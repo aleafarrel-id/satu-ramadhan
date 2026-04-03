@@ -1,5 +1,6 @@
 /**
  * Qibla Compass Module
+ * True North heading via magnetic declination correction on Web API.
  */
 
 // Core Services
@@ -11,27 +12,21 @@ import { updateQiblaInfoCard } from '../../components/card/qibla-info-card.js';
 
 // Utilities & Modules
 import { doubleVibrate } from '../system/haptic.js';
+import { getMagneticDeclination } from './magnetic-declination.js';
 
 const QIBLA_TOLERANCE_DEG = 2;
 const HAPTIC_COOLDOWN_MS = 2000;
 const GYRO_DETECT_TIMEOUT_MS = 1000;
 
-/**
- * Low-pass filter smoothing factor (0–1).
- * Lower = smoother but more laggy, higher = more responsive but jittery.
- */
+/** EMA smoothing factor (0–1). Lower = smoother, higher = responsive. */
 const SMOOTHING_FACTOR = 0.25;
 
-/**
- * Minimum heading change (in degrees) to actually push a DOM update.
- * Skips imperceptible sub-degree changes that would waste paint cycles.
- */
+/** Minimum heading delta to trigger DOM repaint. */
 const MIN_CHANGE_DEG = 0.1;
 
 /**
- * Global cache for gyroscope detection state to prevent re-detecting
- * every time the user navigates back to the compass page.
- * null = not detected yet, true = has gyro, false = no gyro
+ * Global gyroscope detection cache.
+ * null = pending, true = available, false = absent
  */
 let _globalHasGyroscope = null;
 
@@ -39,7 +34,7 @@ export default class QiblaCompass {
     constructor() {
         this._qiblaAngle = null;
         this._heading = 0;
-        this._smoothedHeading = null; // null until first reading
+        this._smoothedHeading = null;
         this._orientationHandler = null;
         this._started = false;
 
@@ -54,10 +49,13 @@ export default class QiblaCompass {
         /** rAF throttle state */
         this._rafId = null;
         this._lastRenderedHeading = null;
+
+        /** Magnetic declination (computed once per location) */
+        this._declination = 0;
     }
 
     /**
-     * Fetch qibla direction for the given coordinates
+     * Fetch qibla direction and compute magnetic declination.
      * @param {number} latitude
      * @param {number} longitude
      */
@@ -68,44 +66,36 @@ export default class QiblaCompass {
             this._qiblaAngle = direction;
         }
 
-        // Apply immediately with current heading
+        this._declination = getMagneticDeclination(latitude, longitude);
         this._update();
     }
 
     /**
-     * Start listening to device orientation for live compass heading
+     * Start listening to device orientation for live compass heading.
      */
     start() {
         if (this._started) return;
         this._started = true;
 
-        // Fast-fail if we already know device lacks a gyroscope
         if (_globalHasGyroscope === false) {
             this._markNoGyroscope();
             return;
         }
 
         this._orientationHandler = (event) => {
-            // On desktop browsers the event fires but all axes are null — not a real sensor
             const hasWebkit = typeof event.webkitCompassHeading === 'number';
             const hasAlpha = typeof event.alpha === 'number';
 
             if (!hasWebkit && !hasAlpha) return;
 
-            // A compass requires absolute orientation (relative to Earth's magnetic north).
-            // If the reading is relative (e.g. standard deviceorientation on some Androids)
-            // and lacks webkitCompassHeading, it's useless for a compass and we must ignore it
-            // to avoid jitter and wrong directions.
             const isAbsoluteEvent = event.type === 'deviceorientationabsolute' || event.absolute === true;
             if (!hasWebkit && !isAbsoluteEvent) return;
 
-            // webkitCompassHeading = iOS, alpha = Android/others (0-360 from True North)
+            // iOS webkitCompassHeading = True North, Android alpha = Magnetic North
             const rawHeading = hasWebkit ? event.webkitCompassHeading : (360 - event.alpha);
 
-            // Ignore invalid readings during sensor warm-up
             if (!Number.isFinite(rawHeading)) return;
 
-            // Mark gyroscope as available on first valid reading
             if (!this._receivedOrientation) {
                 this._receivedOrientation = true;
                 this._hasGyroscope = true;
@@ -113,8 +103,10 @@ export default class QiblaCompass {
                 this._clearGyroDetectTimer();
             }
 
-            // Apply circular low-pass filter to smooth jittery sensor data
-            this._heading = this._smoothHeading(rawHeading);
+            // Apply declination only for alpha-based (Android); iOS already True North
+            const trueHeading = hasWebkit ? rawHeading : this._applyDeclination(rawHeading);
+
+            this._heading = this._smoothHeading(trueHeading);
             this._scheduleUpdate();
         };
 
@@ -131,14 +123,11 @@ export default class QiblaCompass {
                 })
                 .catch(() => this._markNoGyroscope());
         } else if (typeof DeviceOrientationEvent !== 'undefined') {
-            // Android & desktop — try absolute first, regular as fallback
             this._listenOrientation();
         } else {
-            // No DeviceOrientationEvent API at all
             this._markNoGyroscope();
         }
 
-        // Fallback: if no orientation event fires within timeout, declare no gyro
         this._gyroDetectTimer = setTimeout(() => {
             if (!this._receivedOrientation) {
                 this._markNoGyroscope();
@@ -147,7 +136,7 @@ export default class QiblaCompass {
     }
 
     /**
-     * Stop listening and reset state
+     * Stop listening and reset state.
      */
     stop() {
         if (!this._started) return;
@@ -166,34 +155,40 @@ export default class QiblaCompass {
         }
     }
 
-    /** @returns {number} qibla bearing in degrees from True North */
+    /** @returns {number} qibla bearing from True North */
     get qiblaAngle() {
         return this._qiblaAngle;
     }
 
-    /** @returns {number} current device heading (smoothed) */
+    /** @returns {number} smoothed device heading (True North) */
     get heading() {
         return this._heading;
     }
 
-    /** @returns {boolean|null} true/false after detection, null while pending */
+    /** @returns {boolean|null} */
     get hasGyroscope() {
         return this._hasGyroscope;
     }
 
+    /* ── Heading Processing ── */
+
     /**
-     * Subscribe to device orientation events
+     * Convert magnetic heading to true heading.
+     * @param {number} magneticDeg
+     * @returns {number} 0–360
      * @private
      */
+    _applyDeclination(magneticDeg) {
+        return ((magneticDeg + this._declination) % 360 + 360) % 360;
+    }
+
+    /** @private */
     _listenOrientation() {
         window.addEventListener('deviceorientationabsolute', this._orientationHandler, true);
         window.addEventListener('deviceorientation', this._orientationHandler, true);
     }
 
-    /**
-     * Mark device as lacking gyroscope and refresh UI
-     * @private
-     */
+    /** @private */
     _markNoGyroscope() {
         this._hasGyroscope = false;
         _globalHasGyroscope = false;
@@ -201,10 +196,7 @@ export default class QiblaCompass {
         this._update();
     }
 
-    /**
-     * Clear the gyroscope detection timeout
-     * @private
-     */
+    /** @private */
     _clearGyroDetectTimer() {
         if (this._gyroDetectTimer) {
             clearTimeout(this._gyroDetectTimer);
@@ -213,11 +205,9 @@ export default class QiblaCompass {
     }
 
     /**
-     * Apply circular exponential moving average (EMA) to smooth heading.
-     * Standard EMA breaks at the 0°/360° wraparound; this uses sin/cos
-     * decomposition to handle it correctly.
-     * @param {number} rawDeg — raw heading in degrees
-     * @returns {number} smoothed heading in degrees (0-360)
+     * Circular EMA via sin/cos decomposition. Handles 0°/360° wraparound.
+     * @param {number} rawDeg
+     * @returns {number} smoothed heading (0–360)
      * @private
      */
     _smoothHeading(rawDeg) {
@@ -230,7 +220,6 @@ export default class QiblaCompass {
         const rawRad = rawDeg * toRad;
         const prevRad = this._smoothedHeading * toRad;
 
-        // EMA on the unit-circle components avoids wraparound glitches
         const smoothX = (1 - SMOOTHING_FACTOR) * Math.cos(prevRad) + SMOOTHING_FACTOR * Math.cos(rawRad);
         const smoothY = (1 - SMOOTHING_FACTOR) * Math.sin(prevRad) + SMOOTHING_FACTOR * Math.sin(rawRad);
 
@@ -241,18 +230,15 @@ export default class QiblaCompass {
         return smoothDeg;
     }
 
-    /**
-     * Schedule a single DOM update on the next animation frame.
-     * Coalesces rapid sensor events into one paint per vsync.
-     * @private
-     */
+    /* ── Render Scheduling ── */
+
+    /** @private */
     _scheduleUpdate() {
-        if (this._rafId) return; // already scheduled
+        if (this._rafId) return;
 
         this._rafId = requestAnimationFrame(() => {
             this._rafId = null;
 
-            // Skip if heading hasn't changed enough to be visible
             if (
                 this._lastRenderedHeading !== null &&
                 this._angleDiff(this._heading, this._lastRenderedHeading) < MIN_CHANGE_DEG
@@ -266,20 +252,13 @@ export default class QiblaCompass {
         });
     }
 
-    /**
-     * Push current heading + qibla to the compass UI
-     * @private
-     */
+    /** @private */
     _update() {
         updateCompassUI(this._heading, this._qiblaAngle);
         updateQiblaInfoCard(this._heading, this._qiblaAngle, this._hasGyroscope);
     }
 
-    /**
-     * Check if device is currently pointing at qibla within tolerance
-     * and trigger haptic feedback with cooldown.
-     * @private
-     */
+    /** @private */
     _checkQiblaAlignment() {
         if (this._qiblaAngle === null) return;
 
@@ -295,10 +274,9 @@ export default class QiblaCompass {
     }
 
     /**
-     * Compute the smallest angular difference between two angles (0-360)
      * @param {number} a
      * @param {number} b
-     * @returns {number} difference in degrees (0-180)
+     * @returns {number} 0–180
      * @private
      */
     _angleDiff(a, b) {

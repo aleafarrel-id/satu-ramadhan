@@ -281,9 +281,9 @@
    --clr-tajweed-opt-madd-silah-thawilah: #006054;
 
    /* Mushaf Rendering Context */
-   --clr-mushaf-bg-start: #f7eed7;
-   --clr-mushaf-bg-mid: #f0e2c0;
-   --clr-mushaf-bg-end: #e8d5ab;
+   --clr-mushaf-bg-start: #fffef8;
+   --clr-mushaf-bg-mid: #fefcf5;
+   --clr-mushaf-bg-end: #fdf8ec;
    --clr-mushaf-page-start: #fffef8;
    --clr-mushaf-page-end: #fdf8ec;
    --clr-mushaf-header-bg: rgba(253, 248, 236, 0.85);

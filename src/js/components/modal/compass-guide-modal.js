@@ -1,6 +1,6 @@
 /**
  * Compass Guide Modal Component
- * Shows compass calibration instructions.
+ * Shows compass calibration and usage instructions.
  */
 
 // Core & Libraries
@@ -79,11 +79,25 @@ function createModalDOM() {
             <div class="compass-guide-modal__icon">
                 <i class='bx bx-compass'></i>
             </div>
-            <h2 class="compass-guide-modal__title">Panduan Kalibrasi</h2>
-            <p class="compass-guide-modal__desc">
-                Orientasikan perangkat secara mendatar untuk akurasi terbaik. 
-                Kompas memerlukan sensor <strong>Gyroscope</strong>.
-            </p>
+            <h2 class="compass-guide-modal__title">Panduan Kompas</h2>
+            <div class="compass-guide-modal__items">
+                <div class="compass-guide-item">
+                    <i class='bx bx-infinite'></i>
+                    <span>Gerakkan perangkat membentuk angka 8 untuk kalibrasi sensor</span>
+                </div>
+                <div class="compass-guide-item">
+                    <i class='bx bx-mobile-landscape'></i>
+                    <span>Orientasikan perangkat secara mendatar untuk akurasi terbaik</span>
+                </div>
+                <div class="compass-guide-item">
+                    <i class='bx bx-magnet'></i>
+                    <span>Jauhkan dari magnet, logam, dan perangkat elektronik lain</span>
+                </div>
+                <div class="compass-guide-item">
+                    <i class='bx bx-target-lock'></i>
+                    <span>Kompas menggunakan deklinasi magnetik untuk arah yang presisi</span>
+                </div>
+            </div>
             <div class="compass-guide-modal__buttons">
                 <button class="compass-guide-modal__btn-close" id="compass-guide-close">
                     Tutup
