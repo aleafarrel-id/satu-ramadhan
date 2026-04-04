@@ -26,6 +26,7 @@ let _releaseFocus = null;
  * @param {boolean} [config.isDanger=true] - If true, confirm button will be red
  * @param {Function} config.onConfirm - Callback executed when user confirms
  * @param {Function} [config.onCancel] - Optional callback executed when user cancels/dismisses
+ * @param {string} [config.theme='default'] - Visual theme constraint, e.g. 'quran'
  */
 export function showConfirmModal({
     title,
@@ -33,6 +34,7 @@ export function showConfirmModal({
     confirmText = 'Hapus',
     cancelText = 'Batal',
     isDanger = true,
+    theme = 'default',
     onConfirm,
     onCancel
 }) {
@@ -45,7 +47,7 @@ export function showConfirmModal({
     _onConfirmCallback = onConfirm;
     _onCancelCallback = onCancel || null;
 
-    _overlayEl = createModalDOM(title, message, confirmText, cancelText, isDanger);
+    _overlayEl = createModalDOM(title, message, confirmText, cancelText, isDanger, theme);
     document.body.appendChild(_overlayEl);
 
     // Register hardware back button to trigger cancel
@@ -135,9 +137,13 @@ function removeModal() {
 /**
  * Constructs the DOM string for the modal.
  */
-function createModalDOM(title, message, confirmText, cancelText, isDanger) {
+function createModalDOM(title, message, confirmText, cancelText, isDanger, theme) {
     const overlay = document.createElement('div');
     overlay.className = 'confirm-overlay';
+
+    if (theme === 'quran') {
+        overlay.classList.add('confirm-overlay--quran');
+    }
 
     const confirmBtnClass = isDanger ? 'btn--danger' : 'btn--gold';
 

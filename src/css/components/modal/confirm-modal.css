@@ -71,3 +71,28 @@
     min-height: 36px;
     border-radius: var(--radius-pill);
 }
+
+/* ── Quran Theme Extension ── */
+.confirm-overlay--quran .confirm-dialog {
+    background: var(--clr-quran-card-bg);
+    border-color: var(--clr-mushaf-header-border);
+    box-shadow: var(--shadow-modal);
+}
+
+.confirm-overlay--quran .confirm-title {
+    color: var(--clr-mushaf-text-dark);
+}
+
+.confirm-overlay--quran .confirm-message {
+    color: var(--clr-quran-text-secondary);
+}
+
+.confirm-overlay--quran .confirm-btn.btn--outline {
+    border-color: var(--clr-mushaf-line-border);
+    color: var(--clr-mushaf-text-dark);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.confirm-overlay--quran .confirm-btn.btn--outline:active {
+    background: rgba(0, 0, 0, 0.06);
+}

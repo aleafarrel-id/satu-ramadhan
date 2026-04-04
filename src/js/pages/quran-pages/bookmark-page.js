@@ -10,6 +10,7 @@ import * as QuranReader from '../../modules/quran/quran-reader.js';
 import * as Notification from '../../modules/notification/notification.js';
 import { getSurahList, getJuzList } from '../../modules/quran/quran-api.js';
 import { renderBatchedList } from '../../modules/quran/quran-utility.js';
+import { showConfirmModal } from '../../components/modal/confirm-modal.js';
 
 let _container = null;
 let _callbacks = null;
@@ -154,20 +155,30 @@ async function _openBookmarkedVerse(bookmark, surah) {
 /**
  * Handles deleting a bookmark with smooth card exit animation.
  */
-async function _handleDeleteBookmark(bookmark, cardEl) {
-   cardEl.classList.add('bookmark-card-exit');
+function _handleDeleteBookmark(bookmark, cardEl) {
+   showConfirmModal({
+      title: 'Hapus Bookmark',
+      message: `Apakah Anda yakin ingin menghapus bookmark untuk QS. ${bookmark.surahTitle} ayat ${bookmark.verseNumber}?`,
+      confirmText: 'Hapus',
+      cancelText: 'Batal',
+      isDanger: true,
+      theme: 'quran',
+      onConfirm: () => {
+         cardEl.classList.add('bookmark-card-exit');
 
-   cardEl.addEventListener('animationend', async () => {
-      cardEl.remove();
-      await BookmarkManager.remove(bookmark.surahIndex, bookmark.verseNumber);
-      Notification.info(`QS. ${bookmark.surahTitle}: ${bookmark.verseNumber} dihapus`);
+         cardEl.addEventListener('animationend', async () => {
+            cardEl.remove();
+            await BookmarkManager.remove(bookmark.surahIndex, bookmark.verseNumber);
+            Notification.info(`QS. ${bookmark.surahTitle}: ${bookmark.verseNumber} dihapus`);
 
-      // Show empty state if no more cards remain
-      const remainingCards = _container?.querySelector('.surah-card');
-      if (!remainingCards) {
-         _renderEmptyState();
+            // Show empty state if no more cards remain
+            const remainingCards = _container?.querySelector('.surah-card');
+            if (!remainingCards) {
+               _renderEmptyState();
+            }
+         }, { once: true });
       }
-   }, { once: true });
+   });
 }
 
 /**
