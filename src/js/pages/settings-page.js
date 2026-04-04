@@ -10,6 +10,7 @@ import * as settingsPanel from '../components/settings/settings-panel.js';
 import * as settingsQuranPanel from '../components/settings/settings-quran-panel.js';
 import * as settingsLocCard from '../components/settings/settings-loc-card.js';
 import * as settingsPresetCard from '../components/settings/settings-preset-card.js';
+import * as settingsDisplayPanel from '../components/settings/settings-display-panel.js';
 
 /* --- STATE --- */
 let _container = null;
@@ -30,6 +31,7 @@ export function render(container) {
             <h2 class="settings-title">Pengaturan</h2>
             <div id="settings-loc-card-container"></div>
             <div id="settings-preset-card-container"></div>
+            <div id="settings-display-panel-container"></div>
             <div id="settings-panel-container"></div>
             <div id="settings-quran-panel-container"></div>
             
@@ -45,6 +47,11 @@ export function render(container) {
     const presetCardContainer = document.getElementById('settings-preset-card-container');
     if (presetCardContainer) {
         settingsPresetCard.render(presetCardContainer);
+    }
+
+    const displayPanelContainer = document.getElementById('settings-display-panel-container');
+    if (displayPanelContainer) {
+        settingsDisplayPanel.render(displayPanelContainer);
     }
 
     const panelContainer = document.getElementById('settings-panel-container');
@@ -65,6 +72,7 @@ export function render(container) {
 export function destroy() {
     settingsLocCard.destroy();
     settingsPresetCard.destroy();
+    settingsDisplayPanel.destroy();
     settingsPanel.destroy();
     settingsQuranPanel.destroy();
     _container = null;

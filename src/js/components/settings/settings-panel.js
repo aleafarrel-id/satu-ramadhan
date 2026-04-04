@@ -16,7 +16,7 @@ import { isWeb } from '../../modules/system/platform.js';
 
 export function render(container) {
     container.innerHTML = `
-        <div class="card settings-card" data-focus-group="settings-list" data-focus-direction="vertical">
+        <div class="card settings-card settings-card-spacing" data-focus-group="settings-list" data-focus-direction="vertical">
             <div class="settings-card-header">
                 <div class="settings-card-title">NOTIFIKASI</div>
             </div>
