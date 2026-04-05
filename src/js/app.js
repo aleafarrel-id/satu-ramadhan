@@ -11,6 +11,7 @@ import { isNative } from './modules/system/platform.js';
 
 // State & Core Services
 import { store } from './core/store.js';
+import { initI18n, changeLanguage } from './core/i18n.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
     initNotificationService,
@@ -50,6 +51,26 @@ const POST_SPLASH_DIALOG_DELAY = 1500;
 export async function initApp() {
     // Hydrate persistent state before anything else
     await store.hydrate();
+
+    // Initialize i18n — must run after hydrate (reads saved language)
+    // and before any render (components may call t())
+    await initI18n();
+
+    // Global language-switch listener:
+    // When the user changes language in Settings, re-render the global shell
+    // (header + nav bar) and soft-reload the active page so every visible
+    // string updates without a full app restart.
+    store.subscribe('settings.language', async (lang) => {
+        await changeLanguage(lang);
+
+        const headerEl = document.getElementById('app-header');
+        if (headerEl) header.render(headerEl);
+
+        const navEl = document.getElementById('bottom-nav');
+        if (navEl) navBar.render(navEl, handleNavigation);
+
+        await refreshCurrentPage();
+    });
 
     // Set dynamic app name, version, and developer on splash screen
     const splashTitleEl = document.querySelector('.splash-title');

@@ -14,6 +14,7 @@ const initialState = {
     },
     settings: {
         org: 'nu',
+        language: 'auto',
         notification: true,
         adzan: true,
         quran: {
@@ -194,6 +195,9 @@ class Store {
         const quranLang = localStorage.getItem('satu_ramadhan_quran_lang');
         if (quranLang) this.setState('settings.quran.translationLanguage', quranLang);
 
+        const appLang = localStorage.getItem('satu_ramadhan_language');
+        if (appLang) this.setState('settings.language', appLang);
+
         // Cleanup
         await storage.remove('user_location');
         await storage.remove('selected_org');
@@ -205,7 +209,8 @@ class Store {
             'satu_ramadhan_adzan', 
             'satu_ramadhan_tajweed', 
             'satu_ramadhan_transliteration', 
-            'satu_ramadhan_quran_lang'
+            'satu_ramadhan_quran_lang',
+            'satu_ramadhan_language'
         ];
         legacyLocalKeys.forEach(k => localStorage.removeItem(k));
 
