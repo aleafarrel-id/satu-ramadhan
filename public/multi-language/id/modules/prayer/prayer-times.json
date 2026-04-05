@@ -1,0 +1,23 @@
+{
+    "imsak": "Imsak",
+    "subuh": "Subuh",
+    "terbit": "Terbit",
+    "dzuhur": "Dzuhur",
+    "ashar": "Ashar",
+    "magrib": "Magrib",
+    "isya": "Isya",
+    "notif_imsak_title": "Waktu Imsak",
+    "notif_imsak_body": "Waktunya untuk mulai berpuasa",
+    "notif_subuh_title": "Waktu Subuh",
+    "notif_subuh_body": "Saatnya menunaikan sholat Subuh",
+    "notif_terbit_title": "Matahari Terbit",
+    "notif_terbit_body": "Waktu Syuruq — Matahari telah terbit",
+    "notif_dzuhur_title": "Waktu Dzuhur",
+    "notif_dzuhur_body": "Saatnya menunaikan sholat Dzuhur",
+    "notif_ashar_title": "Waktu Ashar",
+    "notif_ashar_body": "Saatnya menunaikan sholat Ashar",
+    "notif_magrib_title": "Waktu Magrib",
+    "notif_magrib_body": "Saatnya menunaikan sholat Magrib",
+    "notif_isya_title": "Waktu Isya",
+    "notif_isya_body": "Saatnya menunaikan sholat Isya"
+}

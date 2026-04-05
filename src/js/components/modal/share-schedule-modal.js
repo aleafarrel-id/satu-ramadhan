@@ -14,6 +14,7 @@ import { captureScheduleImage } from '../../modules/share/share-schedule-exporte
 
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlayEl = null;
 let _canvas = null;
@@ -39,6 +40,8 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
         unregisterModalDismiss(handleCancel);
         removeModal();
     }
+
+    await loadNS('components/modal/share-schedule-modal');
 
     _onShareCb = onShare;
     _onDownloadCb = onDownload;
@@ -215,18 +218,18 @@ function createModalDOM() {
             <div class="ss-modal__preview-wrapper" id="ss-modal-preview">
                 <div class="ss-modal__loading">
                     <i class='bx bx-loader-alt bx-spin'></i>
-                    <span class="ss-modal__loading-text">Memuat jadwal</span>
+                    <span class="ss-modal__loading-text">${t('components/modal/share-schedule-modal:state_loading')}</span>
                 </div>
             </div>
 
             <div class="ss-modal__actions">
                 <button class="btn btn--gold ss-modal__btn" id="ss-modal-btn-share" disabled>
                     <i class='bx bx-share'></i>
-                    <span>Bagikan</span>
+                    <span>${t('components/modal/share-schedule-modal:btn_share')}</span>
                 </button>
                 <button class="btn btn--outline ss-modal__btn" id="ss-modal-btn-download" disabled>
                     <i class='bx bx-down-arrow-circle'></i>
-                    <span>Unduh</span>
+                    <span>${t('components/modal/share-schedule-modal:btn_download')}</span>
                 </button>
             </div>
         </div>
@@ -249,7 +252,7 @@ function showPreviewImage(canvas) {
     const img = document.createElement('img');
     img.className = 'ss-modal__preview-img';
     img.src = canvas.toDataURL('image/png');
-    img.alt = 'Preview jadwal imsakiyah';
+    img.alt = t('components/modal/share-schedule-modal:title');
 
     previewWrapper.innerHTML = '';
     previewWrapper.appendChild(img);
@@ -273,7 +276,7 @@ function showErrorState() {
     previewWrapper.innerHTML = `
         <div class="ss-modal__loading">
             <i class='bx bx-error-circle ss-modal__error-icon'></i>
-            <span class="ss-modal__loading-text">Gagal membuat preview</span>
+            <span class="ss-modal__loading-text">${t('components/modal/share-schedule-modal:state_error')}</span>
         </div>
     `;
 }

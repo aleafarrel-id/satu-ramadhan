@@ -5,7 +5,7 @@
  */
 
 // Core & Libraries
-import { PRAYER_LIST } from '../../modules/prayer/prayer-times.js';
+import { PRAYER_LIST, getPrayerName } from '../../modules/prayer/prayer-times.js';
 
 // Utilities & Helpers
 import { SCHEDULE_PRAYERS, cleanTimeStr } from '../../utils/datetime.js';
@@ -75,7 +75,7 @@ function renderPrayerColumns(timings, prayerState) {
 
         return `
             <div class="prayer-list-col${activeClass}">
-                <span class="prayer-list-col__name">${prayer.name}</span>
+                <span class="prayer-list-col__name">${getPrayerName(prayer.key)}</span>
                 <span class="prayer-list-col__time">${time}</span>
             </div>
         `;

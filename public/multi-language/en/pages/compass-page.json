@@ -1,0 +1,6 @@
+{
+    "error_no_location_title": "Location Not Set",
+    "error_no_location_desc": "Qibla direction will appear after you set a location.",
+    "error_no_compass_title": "Compass Unavailable",
+    "error_no_compass_desc": "Qibla direction could not be calculated or the gyroscope sensor is unavailable."
+}

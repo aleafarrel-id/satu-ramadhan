@@ -22,6 +22,7 @@ import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { initPullToRefresh } from '../../utils/pull-to-refresh.js';
 import { safeClear } from '../../utils/dom-utils.js';
 import { store } from '../../core/store.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _isOpen = false;
 let _currentItem = null;
@@ -57,6 +58,10 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
    _quranPage = document.querySelector('.quran-page');
    if (!_quranPage) return;
 
+   // Ensure translations are loaded
+   await loadNS('modules/quran/quran-reader');
+   await loadNS('utils/pull-to-refresh');
+
    // Hide dock
    QuranDock.hide();
 
@@ -65,14 +70,14 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
 
    // Register back handler
    registerModalDismiss(close);
-   
+
    // Subscribe to global store for reactive settings changes
    _storeSubId = store.subscribe('settings.quran', () => {
       if (_isOpen && _currentReaderData.length && !_isReaderSearchActive) {
          const renderId = _renderCtx.incrementAndGet();
          const currentH = _scrollContainer ? _scrollContainer.scrollHeight : 0;
          const currentScroll = _scrollContainer ? _scrollContainer.scrollTop : 0;
-         
+
          _renderItems(_currentReaderData, renderId).then(() => {
             if (_scrollContainer) {
                // maintain approximate scroll position if DOM height changed
@@ -224,10 +229,10 @@ function _buildOverlay(item) {
    let ariaLabelStr = '';
    if (_currentType === 'juz') {
       titleStr = `Juz ${parseInt(item.index)}`;
-      ariaLabelStr = `Pilih Juz (Saat ini Juz ${parseInt(item.index)})`;
+      ariaLabelStr = t('modules/quran/quran-reader:current_juz', { index: parseInt(item.index) });
    } else {
       titleStr = `${parseInt(item.index)}. ${item.title}`;
-      ariaLabelStr = `Pilih Surah (Saat ini Surah ${item.title})`;
+      ariaLabelStr = t('modules/quran/quran-reader:current_surah', { title: item.title });
    }
 
    _readerHeaderInstance = QuranHeader.createHeader({
@@ -237,12 +242,12 @@ function _buildOverlay(item) {
       onTitleClick: _openSurahPicker,
       titleAriaLabel: ariaLabelStr,
       hasSearchInput: true,
-      searchPlaceholder: 'Nomor ayat...',
+      searchPlaceholder: t('modules/quran/quran-reader:search_verse'),
       searchInputType: 'number',
       searchInputMode: 'numeric',
       onSearchInput: _onSearchInput,
       rightBtnIcon: 'bx-search',
-      rightBtnAriaLabel: 'Cari ayat',
+      rightBtnAriaLabel: t('modules/quran/quran-reader:search_aria'),
       onRightBtnClick: _toggleReaderSearch
    });
 
@@ -267,6 +272,9 @@ function _buildOverlay(item) {
    _ptrCleanup = initPullToRefresh({
       scrollElement: _scrollContainer,
       theme: 'dark',
+      textPull: t('utils/pull-to-refresh:text_pull'),
+      textRelease: t('utils/pull-to-refresh:text_release'),
+      textRefreshing: t('utils/pull-to-refresh:text_refreshing'),
       async onRefresh() {
          if (!_currentItem) return;
          _renderCtx.incrementAndGet();
@@ -284,7 +292,7 @@ function _openSurahPicker() {
    const isJuz = _currentType === 'juz';
 
    openPicker({
-      title: isJuz ? 'Pilih Juz' : 'Pilih Surah',
+      title: isJuz ? t('modules/quran/quran-reader:select_juz') : t('modules/quran/quran-reader:select_surah'),
       data: isJuz ? getJuzList() : getSurahList(),
       createCardFn: isJuz ? QuranCard.createJuzCard : QuranCard.createSurahCard,
       isActiveFn: (item) => item.index === _currentItem.index,
@@ -383,13 +391,13 @@ async function _fetchAndRender(item) {
       if (_targetVerseNumber && _scrollContainer) {
          const tVerse = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.verseNumber : _targetVerseNumber;
          const tSurah = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.surahIndex : null;
-         
+
          _targetVerseNumber = null;
          requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                let selector = `.quran-ayah-card[data-ayah-number="${tVerse}"]`;
                if (tSurah) selector += `[data-surah-index="${tSurah}"]`;
-               
+
                const targetCard = _scrollContainer.querySelector(selector);
                if (targetCard) {
                   const header = _overlay?.querySelector('.quran-unified-header');
@@ -408,7 +416,7 @@ async function _fetchAndRender(item) {
    } catch (error) {
       console.error('[QuranReader] Error loading data:', error);
       if (!_renderCtx.shouldCancelRender(renderId) && _scrollContainer) {
-         QuranCard.renderErrorState(_scrollContainer, "Gagal Memuat Data");
+         QuranCard.renderErrorState(_scrollContainer, t('modules/quran/quran-reader:error_load'));
       }
    }
 }
@@ -448,7 +456,7 @@ function _buildAyahList(surahData, translationData, tajweedData, latinData, sura
 
 function _createSurahBannerElement(surah) {
    const surahNum = parseInt(surah.index);
-   const typeText = surah.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
+   const typeText = surah.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
 
    const banner = document.createElement('div');
    banner.className = 'quran-reader-surah-info';
@@ -460,7 +468,7 @@ function _createSurahBannerElement(surah) {
       <div class="quran-reader-surah-meta">
          <span>${typeText}</span>
          <span class="quran-reader-meta-dot"></span>
-         <span>${surah.count} Ayat</span>
+         <span>${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
       </div>
       <div class="quran-reader-divider"></div>
    `;
@@ -508,14 +516,14 @@ function _createRegularAyahElement(ayah) {
    // Copy button — no inline listener, handled via delegation
    const copyBtn = document.createElement('button');
    copyBtn.className = 'quran-ayah-action-btn';
-   copyBtn.setAttribute('aria-label', 'Salin ayat');
+   copyBtn.setAttribute('aria-label', t('modules/quran/quran-reader:copy_ayah'));
    copyBtn.dataset.action = 'copy';
    copyBtn.innerHTML = `<i class='bx bx-copy-alt'></i>`;
 
    // Bookmark button — no inline listener, handled via delegation
    const bookmarkBtn = document.createElement('button');
    bookmarkBtn.className = 'quran-ayah-action-btn';
-   bookmarkBtn.setAttribute('aria-label', 'Tandai ayat');
+   bookmarkBtn.setAttribute('aria-label', t('modules/quran/quran-reader:bookmark_ayah'));
    bookmarkBtn.dataset.action = 'bookmark';
 
    // Set initial bookmark icon state
@@ -572,7 +580,7 @@ function _setLoadingState() {
    _clearScrollContainer();
    const loadingEl = document.createElement('div');
    loadingEl.className = 'quran-loading';
-   loadingEl.innerHTML = `<i class='bx bx-book-reader'></i><p>Memuat Al-Qur'an</p>`;
+   loadingEl.innerHTML = `<i class='bx bx-book-reader'></i><p>${t('modules/quran/quran-reader:loading')}</p>`;
    _scrollContainer.appendChild(loadingEl);
 }
 
@@ -642,7 +650,7 @@ function _renderNoResults() {
    _scrollContainer.innerHTML = `
       <div class="quran-reader-no-results">
          <i class='bx bx-search-alt'></i>
-         <p>Ayat tidak ditemukan</p>
+         <p>${t('modules/quran/quran-reader:not_found')}</p>
       </div>
    `;
 }
@@ -805,10 +813,10 @@ async function _handleToggleBookmark(ayah, btnEl) {
    if (isNowBookmarked) {
       btnEl.classList.add('bookmarked');
       if (icon) icon.className = 'bx bxs-bookmark-alt';
-      Notification.success(`QS. ${ayah.surahName}: ${ayah.number} ditandai`);
+      Notification.success(t('modules/quran/quran-reader:bookmark_added', { surahName: ayah.surahName, verseNumber: ayah.number }));
    } else {
       btnEl.classList.remove('bookmarked');
       if (icon) icon.className = 'bx bx-bookmark-alt';
-      Notification.info(`Tanda dihapus`);
+      Notification.info(t('modules/quran/quran-reader:bookmark_removed'));
    }
 }

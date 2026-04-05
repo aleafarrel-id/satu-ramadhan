@@ -5,7 +5,7 @@
  */
 
 // Core & Libraries
-import { PRAYER_LIST, getTubeFillPercent, parseTimeToDate } from '../../modules/prayer/prayer-times.js';
+import { PRAYER_LIST, getTubeFillPercent, parseTimeToDate, getPrayerName } from '../../modules/prayer/prayer-times.js';
 
 // UI Components
 import { renderFeaturedCard as renderFeaturedCardShared } from '../prayer/prayer-widgets.js';
@@ -110,7 +110,7 @@ export function updatePrayerCardFills(timings, prayerState) {
 export function updatePrayerCardDynamicUI(timings, prayerState) {
     const nameEl = document.getElementById('cd-prayer-name');
     if (nameEl) {
-        nameEl.textContent = prayerState.next?.name || '--';
+        nameEl.textContent = prayerState.next ? getPrayerName(prayerState.next.key) : '--';
     }
 
     const featuredContainer = document.getElementById('featured-prayer-container');
@@ -242,7 +242,7 @@ function renderStackedTube(keys, timings, prayerState, extraClass = '') {
             ${i > 0 ? '<div class="tube__stack-divider"></div>' : ''}
             <div class="tube__stack-item">
                 <div class="tube__icon">${prayer.icon}</div>
-                <div class="tube__name">${prayer.name}</div>
+                <div class="tube__name">${getPrayerName(prayer.key)}</div>
                 <div class="tube__time">${cleanTime(time)}</div>
             </div>
         `;
@@ -273,7 +273,7 @@ function renderSingleTube(key, timings, prayerState) {
     return `
         <div class="${classes}" data-prayer="${key}">
             <div class="tube__icon">${prayer.icon}</div>
-            <div class="tube__name">${prayer.name}</div>
+            <div class="tube__name">${getPrayerName(prayer.key)}</div>
             <div class="tube__time">${cleanTime(time)}</div>
             ${renderLiquidHTML()}
         </div>

@@ -1,0 +1,11 @@
+{
+    "section_notif": "NOTIFIKASI",
+    "notif_time": "Notifikasi Waktu",
+    "adzan_sound": "Suara Adzan",
+    "web_only_notice": "Fitur ini hanya tersedia di aplikasi mobile.",
+    "notif_on": "Notifikasi diaktifkan",
+    "notif_off": "Notifikasi dimatikan",
+    "adzan_on": "Suara adzan diaktifkan",
+    "adzan_off": "Suara adzan dimatikan",
+    "perm_denied": "Izin notifikasi ditolak"
+}

@@ -5,6 +5,7 @@
 // UI Components
 import { renderLocationCard, bindLocationCardEvents } from '../card/location-card.js';
 import { renderPrayerCardSkeleton } from '../card/prayer-card.js';
+import { t } from '../../core/i18n.js';
 
 /**
  * Render skeleton loading state for home page
@@ -40,7 +41,7 @@ export function renderHomeSkeleton(container, location, onLocationAction) {
 
         <!-- Schedule Section Skeleton -->
         <div class="home-schedule-header">
-            <div class="schedule-title">Jadwal Hari Ini</div>
+            <div class="schedule-title">${t('pages/home-page:schedule_today')}</div>
             <div class="schedule-nav__arrows shadow-sm">
                 <div class="skeleton skeleton--toggle-btn"></div>
                 <div class="skeleton skeleton--toggle-btn"></div>

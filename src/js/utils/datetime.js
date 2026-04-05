@@ -1,77 +1,38 @@
 /**
  * Datetime Utilities
- * Centralized localization data and formatting functions for dates.
- * DRY implementation for consistent month/day names across components.
+ * Centralized date/time formatting functions (language-neutral).
+ *
+ * All localized name data (months, days, Hijri months) has been moved
+ * to the i18n JSON files under public/multi-language/{lang}/components/ui/header.json.
+ * Components should obtain translated names via t() and pass them
+ * into these utility functions as parameters where needed.
  */
 
-// Full localized Gregorian month names (0-indexed in array)
-export const MONTH_NAMES = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-];
-
-// Short localized Gregorian month names
-export const MONTH_NAMES_SHORT = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
-];
-
-// 1-indexed object mapping for direct lookup (Gregorian months)
-export const MONTH_ID = {
-    1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April',
-    5: 'Mei', 6: 'Juni', 7: 'Juli', 8: 'Agustus',
-    9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember',
-};
-
-// Hijri month names (Indonesian), 1-indexed
-export const HIJRI_MONTH_NAMES = {
-    1: 'Muharram',
-    2: 'Safar',
-    3: 'Rabiul Awal',
-    4: 'Rabiul Akhir',
-    5: 'Jumadil Awal',
-    6: 'Jumadil Akhir',
-    7: 'Rajab',
-    8: "Sya'ban",
-    9: 'Ramadan',
-    10: 'Syawal',
-    11: "Dzulqa'dah",
-    12: 'Dzulhijjah',
-};
-
-// English-to-Indonesian weekday mapping (for API weekday.en → display)
-export const WEEKDAY_ID = {
-    Sunday: 'Minggu', Monday: 'Senin', Tuesday: 'Selasa',
-    Wednesday: 'Rabu', Thursday: 'Kamis', Friday: 'Jumat', Saturday: 'Sabtu',
-};
-
-// Ordered prayer time keys used in the schedule view
+// Ordered prayer time keys used in the schedule view (language-neutral)
 export const SCHEDULE_PRAYERS = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'magrib', 'isya'];
-
-// Weekday headers (Monday-first or Sunday-first)
-export const WEEKDAY_HEADERS_SUN_FIRST = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-export const WEEKDAY_HEADERS_MON_FIRST = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
 /**
  * Short date format.
  * @param {string} dateStr - YYYY-MM-DD
+ * @param {string[]} monthNames - Array of 12 short month names (0-indexed)
  * @returns {string} e.g. "19 Feb"
  */
-export function formatDateShort(dateStr) {
+export function formatDateShort(dateStr, monthNames) {
     if (!dateStr) return '-';
     const [, m, d] = dateStr.split('-');
-    return `${parseInt(d)} ${MONTH_NAMES_SHORT[parseInt(m) - 1]}`;
+    return `${parseInt(d)} ${monthNames[parseInt(m) - 1]}`;
 }
 
 /**
  * Verbose date format.
  * @param {string} dateStr - YYYY-MM-DD
+ * @param {string[]} monthNames - Array of 12 full month names (0-indexed)
  * @returns {string} e.g. "19 Februari 2024"
  */
-export function formatDateVerbose(dateStr) {
+export function formatDateVerbose(dateStr, monthNames) {
     if (!dateStr) return '';
     const [y, m, d] = dateStr.split('-');
-    return `${parseInt(d)} ${MONTH_NAMES[parseInt(m) - 1]} ${y}`;
+    return `${parseInt(d)} ${monthNames[parseInt(m) - 1]} ${y}`;
 }
 
 /**

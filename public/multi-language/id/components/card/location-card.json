@@ -1,0 +1,14 @@
+{
+    "header": "LOKASI ANDA",
+    "not_set": "Lokasi belum diatur",
+    "hint": "Ketuk untuk mengatur lokasi",
+    "btn_set": "Atur",
+    "btn_change": "Ubah",
+    "detecting": "Mendeteksi Lokasi...",
+    "gps_off": "GPS belum diaktifkan",
+    "detected": "Lokasi terdeteksi: {{name}}",
+    "fail_retry": "Gagal mendeteksi lokasi, silakan coba lagi",
+    "fail_gps": "Gagal mendeteksi lokasi, pastikan GPS aktif",
+    "set_success": "Lokasi diatur: {{name}}",
+    "unknown_location": "Lokasi Tidak Diketahui"
+}

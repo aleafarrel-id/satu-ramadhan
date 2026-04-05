@@ -1,0 +1,7 @@
+{
+    "close_search": "Close Search",
+    "placeholder": "Search...",
+    "start_typing": "Start typing to search...",
+    "not_found": "No results for \"{{query}}\"",
+    "not_found_basic": "Not found"
+}

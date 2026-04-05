@@ -1,0 +1,7 @@
+{
+    "empty": "No bookmarked verses yet",
+    "error_load": "Failed to load bookmarks",
+    "confirm_delete_title": "Remove Bookmark",
+    "confirm_delete_msg": "Are you sure you want to remove the bookmark for Surah {{surah}} verse {{verse}}?",
+    "deleted_notif": "Surah {{surah}}: {{verse}} removed"
+}

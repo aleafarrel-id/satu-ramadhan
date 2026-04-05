@@ -4,10 +4,11 @@
  */
 
 // Core & Libraries
-import { getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
+import { getCurrentPrayer, getPrayerName } from '../../modules/prayer/prayer-times.js';
 import { toggleOrg, getOrgDisplayNameAsync } from '../../modules/schedule/ramadhan.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as notif from '../../modules/notification/notification.js';
+import { t } from '../../core/i18n.js';
 
 /**
  * Remove timezone notes, e.g. "04:12 (WIB)" → "04:12".
@@ -32,10 +33,10 @@ export function renderFeaturedCard(timings, prayerState = null) {
         <div class="card card--inner prayer-featured">
             <div class="prayer-featured__icon">${current.icon}</div>
             <div class="prayer-featured__info">
-                <div class="prayer-featured__name">${current.name}</div>
+                <div class="prayer-featured__name">${getPrayerName(current.key)}</div>
                 <div class="prayer-featured__time">${cleanTime(current.time)}</div>
             </div>
-            <span class="prayer-featured__badge">Sekarang</span>
+            <span class="prayer-featured__badge">${t('components/prayer/prayer-widgets:now')}</span>
         </div>
     `;
 }
@@ -68,7 +69,7 @@ export async function handleOrgToggle(labelId = 'org-toggle-label', onToggle) {
     const label = document.getElementById(labelId);
     if (label) label.textContent = displayName;
 
-    notif.success(`Organisasi Diubah: ${displayName}`);
+    notif.success(t('components/prayer/prayer-widgets:org_changed', { name: displayName }));
 
     if (onToggle) onToggle();
 }
@@ -82,7 +83,7 @@ export function renderKiblatButton(id = 'btn-kiblat') {
     return `
         <button class="kiblat-btn" id="${id}">
             <span class="kiblat-btn__icon-circle"><i class='bx bx-compass'></i></span>
-            <span class="kiblat-btn__label">Kiblat</span>
+            <span class="kiblat-btn__label">${t('components/prayer/prayer-widgets:qibla')}</span>
         </button>
     `;
 }

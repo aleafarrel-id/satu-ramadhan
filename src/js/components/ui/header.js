@@ -3,13 +3,9 @@
  * Renders app logo, digital clock, and date
  */
 
-const logoUrl = '/favicon/favicon.png';
+import { t, loadNS } from '../../core/i18n.js';
 
-const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-const MONTHS = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-];
+const logoUrl = '/favicon/favicon.png';
 
 let _container = null;
 let _clockEl = null;
@@ -19,8 +15,10 @@ let _interval = null;
 /**
  * Render the header into the container
  */
-export function render(container) {
+export async function render(container) {
     _container = container;
+
+    await loadNS('components/ui/header');
 
     _container.innerHTML = `
         <img src="${logoUrl}" alt="Satu Ramadhan" class="header-logo" />
@@ -50,9 +48,12 @@ function updateTime() {
     if (_clockEl) _clockEl.textContent = `${h}:${m}:${s}`;
 
     // Date: Senin, 23 Februari 2026
-    const day = DAYS[now.getDay()];
+    // Date: Senin, 23 Februari 2026
+    const days = t('components/ui/header:days', { returnObjects: true }) || [];
+    const months = t('components/ui/header:months', { returnObjects: true }) || [];
+    const day = days[now.getDay()];
     const date = now.getDate();
-    const month = MONTHS[now.getMonth()];
+    const month = months[now.getMonth()];
     const year = now.getFullYear();
     if (_dateEl) _dateEl.textContent = `${day}, ${date} ${month} ${year}`;
 }

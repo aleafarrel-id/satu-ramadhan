@@ -1,0 +1,7 @@
+{
+    "empty": "Belum ada ayat yang ditandai",
+    "error_load": "Gagal memuat bookmark",
+    "confirm_delete_title": "Hapus Bookmark",
+    "confirm_delete_msg": "Apakah Anda yakin ingin menghapus bookmark untuk QS. {{surah}} ayat {{verse}}?",
+    "deleted_notif": "QS. {{surah}}: {{verse}} dihapus"
+}

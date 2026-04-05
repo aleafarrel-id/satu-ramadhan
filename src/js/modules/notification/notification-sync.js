@@ -7,6 +7,7 @@ import { isNative } from '../system/platform.js';
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { PrayerService } from './native-notification.js';
 import { store } from '../../core/store.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 /** Number of days to pre-schedule ahead (inclusive of today) */
 const ROLLING_DAYS = 30;
@@ -28,41 +29,13 @@ const PRAYER_KEYS = [
  * Maps prayer key → { title, body, isAdzan }
  */
 const PRAYER_NOTIFICATION_MAP = {
-    imsak: {
-        title: 'Waktu Imsak',
-        body: 'Waktunya untuk mulai berpuasa',
-        isAdzan: false,
-    },
-    subuh: {
-        title: 'Waktu Subuh',
-        body: 'Saatnya menunaikan sholat Subuh',
-        isAdzan: true,
-    },
-    terbit: {
-        title: 'Matahari Terbit',
-        body: 'Waktu Syuruq — Matahari telah terbit',
-        isAdzan: false,
-    },
-    dzuhur: {
-        title: 'Waktu Dzuhur',
-        body: 'Saatnya menunaikan sholat Dzuhur',
-        isAdzan: true,
-    },
-    ashar: {
-        title: 'Waktu Ashar',
-        body: 'Saatnya menunaikan sholat Ashar',
-        isAdzan: true,
-    },
-    magrib: {
-        title: 'Waktu Magrib',
-        body: 'Saatnya menunaikan sholat Magrib',
-        isAdzan: true,
-    },
-    isya: {
-        title: "Waktu Isya'",
-        body: "Saatnya menunaikan sholat Isya'",
-        isAdzan: true,
-    },
+    imsak: { isAdzan: false },
+    subuh: { isAdzan: true },
+    terbit: { isAdzan: false },
+    dzuhur: { isAdzan: true },
+    ashar: { isAdzan: true },
+    magrib: { isAdzan: true },
+    isya: { isAdzan: true },
 };
 
 /** Guard to prevent concurrent sync operations */
@@ -92,6 +65,8 @@ export async function syncNotifications() {
     _syncing = true;
 
     try {
+        await loadNS('modules/prayer/prayer-times');
+        
         const isNotifEnabled = store.getState('settings.notification');
         const isAdzanEnabled = store.getState('settings.adzan');
 
@@ -142,8 +117,8 @@ export async function syncNotifications() {
                 alarmsToSchedule.push({
                     id: ALARM_BASE_ID + (dayOffset * 10) + prayerIndex,
                     key,
-                    title: config.title,
-                    body: config.body,
+                    title: t(`modules/prayer/prayer-times:notif_${key}_title`),
+                    body: t(`modules/prayer/prayer-times:notif_${key}_body`),
                     isAdzan: shouldPlayAdzan,
                     timestamp,
                 });
@@ -282,4 +257,5 @@ function parseDateTimeToMs(date, timeStr) {
 // Register autonomous reactivity
 store.subscribe('settings.notification', syncNotifications);
 store.subscribe('settings.adzan', syncNotifications);
+store.subscribe('settings.language', syncNotifications);
 store.subscribe('location', syncNotifications);

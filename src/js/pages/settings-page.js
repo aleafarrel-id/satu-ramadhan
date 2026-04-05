@@ -11,6 +11,7 @@ import * as settingsQuranPanel from '../components/settings/settings-quran-panel
 import * as settingsLocCard from '../components/settings/settings-loc-card.js';
 import * as settingsPresetCard from '../components/settings/settings-preset-card.js';
 import * as settingsDisplayPanel from '../components/settings/settings-display-panel.js';
+import { t, loadNS } from '../core/i18n.js';
 
 /* --- STATE --- */
 let _container = null;
@@ -23,19 +24,27 @@ let _container = null;
  *
  * @param {HTMLElement} container - The DOM element to render into.
  */
-export function render(container) {
+export async function render(container) {
     _container = container;
+
+    await loadNS('pages/settings-page');
+    await loadNS('components/settings/settings-loc-card');
+    await loadNS('components/settings/settings-preset-card');
+    await loadNS('components/settings/settings-display-panel');
+    await loadNS('components/settings/settings-panel');
+    await loadNS('components/settings/settings-quran-panel');
+    await loadNS('components/ui/header');
 
     _container.innerHTML = `
         <div class="settings-page">
-            <h2 class="settings-title">Pengaturan</h2>
+            <h2 class="settings-title">${t('pages/settings-page:title')}</h2>
             <div id="settings-loc-card-container"></div>
             <div id="settings-preset-card-container"></div>
             <div id="settings-display-panel-container"></div>
             <div id="settings-panel-container"></div>
             <div id="settings-quran-panel-container"></div>
             
-            <p class="settings-version">${CONFIG.appName} v ${CONFIG.version}</p>
+            <p class="settings-version">${t('pages/settings-page:version_info', { appName: t('common:app_name'), version: CONFIG.version })}</p>
         </div>
     `;
 

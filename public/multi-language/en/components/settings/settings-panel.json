@@ -1,0 +1,11 @@
+{
+    "section_notif": "NOTIFICATIONS",
+    "notif_time": "Prayer Time Notifications",
+    "adzan_sound": "Adhan Sound",
+    "web_only_notice": "This feature is only available in the mobile app.",
+    "notif_on": "Notifications enabled",
+    "notif_off": "Notifications disabled",
+    "adzan_on": "Adhan sound enabled",
+    "adzan_off": "Adhan sound disabled",
+    "perm_denied": "Notification permission denied"
+}

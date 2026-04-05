@@ -13,17 +13,18 @@ import {
 import { showPermissionDialogPreset } from '../../modules/permission/permission-dialog-configs.js';
 import { store } from '../../core/store.js';
 import { isWeb } from '../../modules/system/platform.js';
+import { t } from '../../core/i18n.js';
 
 export function render(container) {
     container.innerHTML = `
         <div class="card settings-card settings-card-spacing" data-focus-group="settings-list" data-focus-direction="vertical">
             <div class="settings-card-header">
-                <div class="settings-card-title">NOTIFIKASI</div>
+                <div class="settings-card-title">${t('components/settings/settings-panel:section_notif')}</div>
             </div>
             <label class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
-                    <span>Notifikasi Waktu</span>
+                    <span>${t('components/settings/settings-panel:notif_time')}</span>
                 </div>
                 <div class="switch-toggle">
                     <input type="checkbox" id="toggle-notification" checked ${isWeb ? 'disabled' : ''}>
@@ -34,14 +35,14 @@ export function render(container) {
             <label class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="adzan-row" for="toggle-adzan" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-volume-full'></i>
-                    <span>Suara Adzan</span>
+                    <span>${t('components/settings/settings-panel:adzan_sound')}</span>
                 </div>
                 <div class="switch-toggle">
                     <input type="checkbox" id="toggle-adzan" checked ${isWeb ? 'disabled' : ''}>
                     <span class="slider"></span>
                 </div>
             </label>
-            ${isWeb ? '<div class="settings-platform-notice">Fitur ini hanya tersedia di aplikasi mobile.</div>' : ''}
+            ${isWeb ? `<div class="settings-platform-notice">${t('components/settings/settings-panel:web_only_notice')}</div>` : ''}
         </div>
     `;
 
@@ -67,7 +68,7 @@ export function render(container) {
         if (!enabled) {
             store.setState('settings.notification', false);
             updateAdzanRowState(false);
-            Notif.show('Notifikasi dimatikan', 'info');
+            Notif.show(t('components/settings/settings-panel:notif_off'), 'info');
             return;
         }
 
@@ -77,7 +78,7 @@ export function render(container) {
         if (osGranted) {
             store.setState('settings.notification', true);
             updateAdzanRowState(true);
-            Notif.show('Notifikasi diaktifkan', 'success');
+            Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
             return;
         }
 
@@ -88,12 +89,12 @@ export function render(container) {
                 if (granted) {
                     store.setState('settings.notification', true);
                     updateAdzanRowState(true);
-                    Notif.show('Notifikasi diaktifkan', 'success');
+                    Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
                 } else {
                     notificationToggle.checked = false;
                     store.setState('settings.notification', false);
                     updateAdzanRowState(false);
-                    Notif.show('Izin notifikasi ditolak', 'warning');
+                    Notif.show(t('components/settings/settings-panel:perm_denied'), 'warning');
                 }
             },
             onCancel: () => {
@@ -109,7 +110,7 @@ export function render(container) {
         await impact('medium');
         store.setState('settings.adzan', enabled);
         Notif.show(
-            enabled ? 'Suara adzan diaktifkan' : 'Suara adzan dimatikan',
+            enabled ? t('components/settings/settings-panel:adzan_on') : t('components/settings/settings-panel:adzan_off'),
             enabled ? 'success' : 'info'
         );
     });

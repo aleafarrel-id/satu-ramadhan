@@ -8,7 +8,8 @@ import { getActivePreset } from '../../modules/schedule/ramadhan.js';
 
 // Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
-import { MONTH_NAMES_SHORT } from '../../utils/datetime.js';
+import { formatDateShort } from '../../utils/datetime.js';
+import { t } from '../../core/i18n.js';
 
 // UI Components
 import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
@@ -16,13 +17,13 @@ import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
 let _container = null;
 
 /**
- * Format a YYYY-MM-DD date string for display.
+ * Format a YYYY-MM-DD date string for display using translated short month names.
  * @param {string} dateStr - e.g. "2026-02-19"
  * @returns {string} e.g. "19 Feb 2026"
  */
 function formatDate(dateStr) {
-    const [y, m, d] = dateStr.split('-');
-    return `${parseInt(d)} ${MONTH_NAMES_SHORT[parseInt(m) - 1]} ${y}`;
+    const monthsShort = t('components/ui/header:months_short', { returnObjects: true }) || [];
+    return formatDateShort(dateStr, monthsShort);
 }
 
 /**
@@ -56,14 +57,14 @@ export function destroy() {
 async function renderCardContent() {
     const preset = await getActivePreset();
 
-    const name = preset?.name || 'Tidak diketahui';
+    const name = preset?.name || t('components/settings/settings-preset-card:unknown');
     const startStr = preset?.startDate ? formatDate(preset.startDate) : '-';
     const endStr = preset?.endDate ? formatDate(preset.endDate) : '-';
 
     _container.innerHTML = `
         <div class="card settings-preset-card">
             <div class="settings-preset-header" id="settings-preset-header">
-                <div class="settings-preset-title">JADWAL RAMADAN</div>
+                <div class="settings-preset-title">${t('components/settings/settings-preset-card:title')}</div>
                 <div class="settings-preset-icon-wrapper">
                     <i class='bx bx-calendar settings-preset-calendar-icon'></i>
                     <div class="settings-preset-status-wrapper">
@@ -78,12 +79,12 @@ async function renderCardContent() {
             <div class="settings-card-collapse">
                 <div class="settings-card-collapse-inner">
                     <p class="settings-preset-desc">
-                        Kelola organisasi serta tanggal awal-akhir Ramadhan
+                        ${t('components/settings/settings-preset-card:desc')}
                     </p>
                     <div class="settings-preset-actions">
                         <button class="btn btn--gold" id="btn-manage-presets">
                             <i class='bx bx-cog'></i>
-                            <span>Kelola Preset</span>
+                            <span>${t('components/settings/settings-preset-card:btn_manage')}</span>
                         </button>
                     </div>
                 </div>

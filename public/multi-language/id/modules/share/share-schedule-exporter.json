@@ -1,0 +1,18 @@
+{
+    "save_success": "Jadwal berhasil disimpan ke Galeri",
+    "save_error": "Gagal menyimpan jadwal ke Galeri",
+    "share_error": "Gagal membagikan jadwal",
+    "share_unsupported": "Perangkat tidak mendukung, silakan gunakan tombol Unduh.",
+    "tpl_title": "Jadwal Imsakiyah & Waktu Sholat",
+    "tpl_qibla": "Arah Kiblat",
+    "tpl_th_hari": "Hari",
+    "tpl_th_tanggal": "Tanggal",
+    "tpl_th_imsak": "Imsak",
+    "tpl_th_subuh": "Subuh",
+    "tpl_th_dzuhur": "Dzuhur",
+    "tpl_th_ashar": "Ashar",
+    "tpl_th_maghrib": "Maghrib",
+    "tpl_th_isya": "Isya",
+    "tpl_note_1": "* Waktu sholat berdasarkan perhitungan astronomis oleh sumber data terkait",
+    "tpl_note_2": "* Jadwal dibuat secara otomatis oleh aplikasi {{appName}}"
+}

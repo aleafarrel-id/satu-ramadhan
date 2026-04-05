@@ -8,6 +8,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -15,7 +16,9 @@ let _releaseFocus = null;
 /**
  * Show the mushaf guide modal.
  */
-export function showMushafGuideModal() {
+export async function showMushafGuideModal() {
+    await loadNS('components/modal/mushaf-guide-modal');
+    
     // Prevent duplicates
     if (_overlayEl) removeModal();
 
@@ -79,24 +82,24 @@ function createModalDOM() {
             <div class="mushaf-guide-modal__icon">
                 <i class='bx bx-book-reader'></i>
             </div>
-            <h2 class="mushaf-guide-modal__title">Panduan Mushaf</h2>
+            <h2 class="mushaf-guide-modal__title">${t('components/modal/mushaf-guide-modal:title')}</h2>
             <div class="mushaf-guide-modal__items">
                 <div class="mushaf-guide-item">
                     <i class='bx bx-navigation'></i>
-                    <span>Geser atau tekan sisi layar untuk berpindah halaman</span>
+                    <span>${t('components/modal/mushaf-guide-modal:item_1')}</span>
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-zoom-in'></i>
-                    <span>Tekan ikon zoom untuk memperbesar tanpa berpindah halaman dan tekan lagi untuk kembali</span>
+                    <span>${t('components/modal/mushaf-guide-modal:item_2')}</span>
                 </div>
                 <div class="mushaf-guide-item">
                     <i class='bx bx-menu'></i>
-                    <span>Klik ikon menu untuk pindah surah dengan mudah</span>
+                    <span>${t('components/modal/mushaf-guide-modal:item_3')}</span>
                 </div>
             </div>
             <div class="mushaf-guide-modal__buttons">
                 <button class="mushaf-guide-modal__btn-close" id="mushaf-guide-close">
-                    Tutup
+                    ${t('components/modal/mushaf-guide-modal:close')}
                 </button>
             </div>
         </div>

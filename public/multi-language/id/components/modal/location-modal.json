@@ -1,0 +1,6 @@
+{
+    "title": "Izinkan Akses Lokasi",
+    "desc": "Untuk menampilkan jadwal sholat yang akurat sesuai lokasi Anda, aplikasi memerlukan akses GPS perangkat.",
+    "btn_gps": "Akses Lokasi",
+    "btn_manual": "Pilih Manual"
+}

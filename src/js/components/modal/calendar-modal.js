@@ -7,7 +7,7 @@
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 
 // Utilities & Helpers
-import { MONTH_ID, WEEKDAY_HEADERS_MON_FIRST } from '../../utils/datetime.js';
+import { t, loadNS } from '../../core/i18n.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 
 let _overlayEl = null;
@@ -20,8 +20,11 @@ let _releaseFocus = null;
  * @param {number}   options.currentIndex   - currently viewed day index (0-based)
  * @param {Function} options.onSelectDay    - callback(index) when a day is selected
  */
-export function showCalendarModal({ scheduleData, currentIndex, onSelectDay }) {
+export async function showCalendarModal({ scheduleData, currentIndex, onSelectDay }) {
     if (_overlayEl) removeModal();
+    
+    await loadNS('components/ui/header');
+    await loadNS('components/modal/calendar-modal');
 
     _overlayEl = createModalDOM(scheduleData, currentIndex, onSelectDay);
     document.body.appendChild(_overlayEl);
@@ -81,7 +84,8 @@ function getMondayBasedDay(date) {
  * Format a gregorian date's day/month for the subtitle.
  */
 function formatGregorianShort(date) {
-    return `${date.getDate()} ${MONTH_ID[date.getMonth() + 1]}`;
+    const months = t('components/ui/header:months', { returnObjects: true }) || [];
+    return `${date.getDate()} ${months[date.getMonth()]}`;
 }
 
 /**
@@ -92,7 +96,7 @@ function buildCalendarGrid(scheduleData, currentIndex) {
     if (!scheduleData || scheduleData.length === 0) return '';
 
     const firstDate = scheduleData[0].date;
-    const hijriMonthName = scheduleData[0].hijriMonthName || 'Hijriah';
+    const hijriMonthName = scheduleData[0].hijriMonthName || t('components/modal/calendar-modal:hijriah');
     const hijriYear = scheduleData[0].hijriYear || '';
 
     // Determine Gregorian month range for the subtitle
@@ -107,8 +111,11 @@ function buildCalendarGrid(scheduleData, currentIndex) {
         </div>
     `;
 
-    // Weekday row
-    const weekdayRow = WEEKDAY_HEADERS_MON_FIRST.map((d, i) =>
+    // Weekday row (Monday-first)
+    const daysShort = t('components/ui/header:days_short', { returnObjects: true }) || [];
+    const reorderedDays = [...daysShort.slice(1), daysShort[0]];
+    
+    const weekdayRow = reorderedDays.map((d, i) =>
         `<div class="cal-modal__weekday" data-weekday="${i}">${d}</div>`
     ).join('');
 
@@ -121,8 +128,9 @@ function buildCalendarGrid(scheduleData, currentIndex) {
     ).join('');
 
     const dayCells = scheduleData.map((entry, index) => {
+        const monthsShort = t('components/ui/header:months_short', { returnObjects: true }) || [];
         const gregDay = entry.date.getDate();
-        const gregMonth = MONTH_ID[entry.date.getMonth() + 1]?.substring(0, 3) || '';
+        const gregMonth = monthsShort[entry.date.getMonth()] || '';
         const today = isToday(entry.date);
         const weekday = getMondayBasedDay(entry.date);
         const selected = index === currentIndex;

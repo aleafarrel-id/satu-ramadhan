@@ -6,10 +6,11 @@
  */
 
 // Core & Libraries
-import { PRAYER_LIST, getCurrentPrayer } from '../../modules/prayer/prayer-times.js';
+import { PRAYER_LIST, getCurrentPrayer, getPrayerName } from '../../modules/prayer/prayer-times.js';
 
 // Utilities & Helpers
-import { SCHEDULE_PRAYERS, WEEKDAY_ID, MONTH_ID } from '../../utils/datetime.js';
+import { SCHEDULE_PRAYERS } from '../../utils/datetime.js';
+import { t } from '../../core/i18n.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
@@ -50,7 +51,7 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, total
                 </div>
                 <div class="schedule-swipe-hint">
                     <i class='bx bx-chevron-left schedule-swipe-hint__arrow schedule-swipe-hint__arrow--left'></i>
-                    <span class="schedule-swipe-hint__text">Geser untuk lainnya</span>
+                    <span class="schedule-swipe-hint__text">${t('components/card/schedule-card:swipe_hint')}</span>
                     <i class='bx bx-chevron-right schedule-swipe-hint__arrow schedule-swipe-hint__arrow--right'></i>
                 </div>
             </div>
@@ -87,10 +88,11 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
         titleEl.textContent = `${entry.hijriDay} ${entry.hijriMonthName} ${entry.hijriYear}`;
     }
     if (subtitleEl) {
-        const weekdayEn = entry.timings?.weekday?.en || entry.date.toLocaleDateString('en', { weekday: 'long' });
-        const weekdayId = WEEKDAY_ID[weekdayEn] || weekdayEn;
-        const dateFormatted = entry.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        subtitleEl.textContent = `${weekdayId}, ${dateFormatted}`;
+        const days = t('components/ui/header:days', { returnObjects: true }) || [];
+        const months = t('components/ui/header:months', { returnObjects: true }) || [];
+        const dayOfWeek = days[entry.date.getDay()];
+        const dateFormatted = formatGregorianDateFromObj(entry.date, months);
+        subtitleEl.textContent = `${dayOfWeek}, ${dateFormatted}`;
     }
 
     const todayBtn = document.getElementById('schedule-today');
@@ -245,11 +247,13 @@ export function renderScheduleCardBottomSkeleton() {
 function renderDateNav(entry, dayIndex, totalDays = 30) {
     const { hijriDay, hijriMonthName, hijriYear, date, isToday: today, timings } = entry;
 
-    const weekdayEn = timings?.weekday?.en || date.toLocaleDateString('en', { weekday: 'long' });
-    const weekdayId = WEEKDAY_ID[weekdayEn] || weekdayEn;
+    const days = t('components/ui/header:days', { returnObjects: true }) || [];
+    const months = t('components/ui/header:months', { returnObjects: true }) || [];
+    const dayOfWeek = days[date.getDay()];
+
     const dateFormatted = timings?.gregorian
-        ? formatGregorianDate(timings.gregorian)
-        : date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        ? formatGregorianDate(timings.gregorian, months)
+        : formatGregorianDateFromObj(date, months);
 
     const isPrevDisabled = dayIndex <= 0;
     const isNextDisabled = dayIndex >= totalDays - 1;
@@ -261,7 +265,7 @@ function renderDateNav(entry, dayIndex, totalDays = 30) {
                     <span class="schedule-nav__badge-icon"><i class='bx bxs-calendar'></i></span>
                     <span class="schedule-nav__title">${hijriDay} ${hijriMonthName} ${hijriYear}</span>
                 </div>
-                <span class="schedule-nav__subtitle">${weekdayId}, ${dateFormatted}</span>
+                <span class="schedule-nav__subtitle">${dayOfWeek}, ${dateFormatted}</span>
             </div>
             <div class="schedule-nav__controls">
                 <button class="schedule-nav__today${today ? ' hidden' : ''}" id="schedule-today" data-focus-item>
@@ -302,7 +306,7 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
     return `
         <div class="schedule-prayer-row${isActive ? ' schedule-prayer-row--active' : ''}">
             <div class="schedule-prayer-row__icon">${prayer?.icon || ''}</div>
-            <span class="schedule-prayer-row__name">${prayer?.name || key}</span>
+            <span class="schedule-prayer-row__name">${prayer ? getPrayerName(prayer.key) : key}</span>
             <span class="schedule-prayer-row__time">${time}</span>
         </div>
     `;
@@ -316,10 +320,23 @@ function cleanTime(timeStr) {
 }
 
 /**
- * Format gregorian date object from API into Indonesian locale string.
+ * Format gregorian date object from API using translated month names.
+ * @param {Object} greg - API gregorian object { day, month: { number, en }, year }
+ * @param {string[]} months - Array of 12 translated month names (0-indexed)
+ * @returns {string} e.g. "19 Februari 2026"
  */
-function formatGregorianDate(greg) {
+function formatGregorianDate(greg, months) {
     const day = parseInt(greg.day, 10);
-    const monthName = MONTH_ID[greg.month.number] || greg.month.en;
+    const monthName = months[greg.month.number - 1] || greg.month.en;
     return `${day} ${monthName} ${greg.year}`;
+}
+
+/**
+ * Format a Date object using translated month names.
+ * @param {Date} date - Date object
+ * @param {string[]} months - Array of 12 translated month names (0-indexed)
+ * @returns {string} e.g. "19 Februari 2026"
+ */
+function formatGregorianDateFromObj(date, months) {
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }

@@ -5,6 +5,7 @@
 
 // Core & Libraries
 import { store } from '../../core/store.js';
+import { t } from '../../core/i18n.js';
 
 // Utilities & Helpers
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
@@ -23,13 +24,13 @@ export async function render(container) {
                 : loc.regencyName;
             return `<div class="settings-loc-body"><div class="settings-loc-regency">${displayName}</div>${loc.provinceName ? `<div class="settings-loc-province">${loc.provinceName}</div>` : ''}</div>`;
         }
-        return `<span class="settings-loc-status">Lokasi belum diatur</span>`;
+        return `<span class="settings-loc-status">${t('components/settings/settings-loc-card:not_set')}</span>`;
     }
 
     container.innerHTML = `
         <div class="card settings-loc-card">
             <div class="settings-loc-header" id="settings-loc-header">
-                <div class="settings-loc-title">LOKASI</div>
+                <div class="settings-loc-title">${t('components/settings/settings-loc-card:title')}</div>
                 <div class="settings-loc-icon-wrapper">
                     <i class='bx bx-map settings-loc-map-icon ${savedLocation ? '' : 'unset'}'></i>
                     <div id="settings-loc-status-wrapper" class="settings-loc-status-wrapper">
@@ -41,16 +42,16 @@ export async function render(container) {
             <div class="settings-card-collapse">
                 <div class="settings-card-collapse-inner">
                     <p class="settings-loc-desc">
-                        Sesuaikan lokasi untuk mendapatkan jadwal yang akurat
+                        ${t('components/settings/settings-loc-card:desc')}
                     </p>
                     <div class="settings-loc-actions">
                         <button class="btn btn--gold" id="btn-settings-gps">
                             <i class='bx bx-current-location'></i>
-                            <span>Akses Lokasi</span>
+                            <span>${t('components/settings/settings-loc-card:btn_gps')}</span>
                         </button>
                         <button class="btn btn--outline" id="btn-settings-manual">
                             <i class='bx bx-search'></i>
-                            <span>Pilih Manual</span>
+                            <span>${t('components/settings/settings-loc-card:btn_manual')}</span>
                         </button>
                     </div>
                 </div>

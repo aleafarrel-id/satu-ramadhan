@@ -1,0 +1,7 @@
+{
+    "title": "LOCATION",
+    "not_set": "Location not set",
+    "desc": "Set your location to get accurate prayer schedules",
+    "btn_gps": "Use GPS",
+    "btn_manual": "Select Manually"
+}

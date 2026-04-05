@@ -19,6 +19,7 @@ import { showLocationSearchModal } from '../components/modal/location-search-mod
 import { showCompassGuideModal } from '../components/modal/compass-guide-modal.js';
 import { renderCompassSkeleton, getCompassSkeletonInner } from '../components/skeleton/skeleton-compass.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
+import { t, loadNS } from '../core/i18n.js';
 
 /* --- STATE --- */
 let _container = null;
@@ -42,6 +43,13 @@ export async function render(container, options = {}) {
         _unsubscribeId = null;
     }
     
+    await loadNS('pages/compass-page');
+    await loadNS('components/card/location-card');
+    await loadNS('components/card/qibla-info-card');
+    await loadNS('components/card/qibla-map-card');
+    await loadNS('components/compass/compass-dial');
+    await loadNS('components/ui/header');
+
     const loc = store.getState('location');
     renderCompassSkeleton(_container, loc, showLocationModalForCompass);
 
@@ -50,13 +58,13 @@ export async function render(container, options = {}) {
     }
 
     await initCompass(loc);
-    renderContent(loc);
+    await renderContent(loc);
 
     _unsubscribeId = store.subscribe('location', async () => {
         const newLoc = store.getState('location');
         renderCompassSkeleton(_container, newLoc, showLocationModalForCompass);
         await initCompass(newLoc);
-        renderContent(newLoc);
+        await renderContent(newLoc);
     });
 }
 
@@ -106,14 +114,14 @@ async function initCompass(loc) {
  * populates the page with actual compass and location card elements.
  * Binds required event listeners immediately after insertion.
  */
-function renderContent(loc) {
+async function renderContent(loc) {
     if (!loc) {
         _container.innerHTML = `
             ${renderLocationCard(loc)}
             ${renderEmptyState({
             icon: 'bx-map-pin',
-            title: 'Lokasi Belum Diatur',
-            description: 'Arah kiblat akan ditampilkan setelah lokasi Anda diatur.',
+            title: t('pages/compass-page:error_no_location_title'),
+            description: t('pages/compass-page:error_no_location_desc'),
             compact: true,
         })}
             <div class="compass-skeleton-placeholder">
@@ -132,8 +140,8 @@ function renderContent(loc) {
             ${renderEmptyState({
             icon: 'bx-compass',
             iconVariant: 'warning',
-            title: 'Kompas Tidak Tersedia',
-            description: 'Arah kiblat tidak dapat dihitung atau sensor gyroscope tidak tersedia.',
+            title: t('pages/compass-page:error_no_compass_title'),
+            description: t('pages/compass-page:error_no_compass_desc'),
             compact: true,
         })}
             <div class="compass-skeleton-placeholder">

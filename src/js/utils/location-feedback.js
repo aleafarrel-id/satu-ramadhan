@@ -1,6 +1,7 @@
 import { checkGpsEnabled, detectLocation, openLocationSettings } from '../core/geolocation.js';
 
 import * as notif from '../modules/notification/notification.js';
+import { t } from '../core/i18n.js';
 
 /**
  * Handles the button loading state and location detection flow.
@@ -15,7 +16,7 @@ export async function handleGpsDetectionWithButton(button, onSuccess) {
     // Save original state & set loading
     const originalHtml = button.innerHTML;
     button.disabled = true;
-    button.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i><span>Mendeteksi Lokasi...</span>`;
+    button.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i><span>${t('components/card/location-card:detecting') || 'Mendeteksi Lokasi...'}</span>`;
 
     const location = await detectLocationWithFeedback(true);
     if (location) {
@@ -39,7 +40,7 @@ export async function handleGpsDetectionWithButton(button, onSuccess) {
 export async function detectLocationWithFeedback(forceRefresh = true) {
     const isGpsOn = await checkGpsEnabled();
     if (!isGpsOn) {
-        notif.error('GPS belum diaktifkan');
+        notif.error(t('components/card/location-card:gps_off') || 'GPS belum diaktifkan');
         openLocationSettings();
         return null;
     }
@@ -50,14 +51,14 @@ export async function detectLocationWithFeedback(forceRefresh = true) {
             const displayName = location.districtName
                 ? `${location.districtName}, ${location.regencyName}`
                 : location.regencyName;
-            notif.success(`Lokasi terdeteksi: ${displayName}`);
+            notif.success(t('components/card/location-card:detected', { name: displayName }));
             return location;
         } else {
-            notif.error('Gagal mendeteksi lokasi, silakan coba lagi');
+            notif.error(t('components/card/location-card:fail_retry') || 'Gagal mendeteksi lokasi, silakan coba lagi');
             return null;
         }
     } catch {
-        notif.error('Gagal mendeteksi lokasi, pastikan GPS aktif');
+        notif.error(t('components/card/location-card:fail_gps') || 'Gagal mendeteksi lokasi, pastikan GPS aktif');
         return null;
     }
 }
@@ -74,6 +75,6 @@ export async function handleManualLocationSelection(location) {
     const displayName = location.districtName
         ? `${location.districtName}, ${location.regencyName}`
         : location.regencyName;
-    notif.success(`Lokasi diatur: ${displayName}`);
+    notif.success(t('components/card/location-card:set_success', { name: displayName }));
     return location;
 }

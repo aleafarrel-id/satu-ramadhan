@@ -23,6 +23,7 @@ import * as QuranReader from '../modules/quran/quran-reader.js';
 // Utilities
 import { initPullToRefresh } from '../utils/pull-to-refresh.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
+import { t, loadNS } from '../core/i18n.js';
 
 /* Module State */
 let _container = null;
@@ -42,6 +43,11 @@ const _dismissSearchAction = () => toggleSearchMode(false);
 export async function render(container) {
    _container = container;
 
+   await loadNS('pages/quran-page');
+   await loadNS('components/quran/quran-card');
+   await loadNS('components/quran/quran-dock');
+   await loadNS('components/quran/quran-search');
+
    container.innerHTML = `
       <div class="quran-page" id="quran-page-modal">
          <div id="quran-header-slot"></div>
@@ -55,10 +61,10 @@ export async function render(container) {
 
    const headerSlot = container.querySelector('#quran-header-slot');
    const mainHeader = QuranHeader.createHeader({
-      title: "Al-Qur'an",
+      title: t('pages/quran-page:title'),
       onBack: () => Router.goBack(),
       rightBtnIcon: 'bx-search',
-      rightBtnAriaLabel: 'Cari',
+      rightBtnAriaLabel: t('pages/quran-page:search'),
       onRightBtnClick: () => toggleSearchMode(true)
    });
    headerSlot.replaceWith(mainHeader.element);
@@ -80,12 +86,17 @@ export async function render(container) {
    await transitionPromise;
    _quranContent.classList.add('ready');
 
+   await loadNS('utils/pull-to-refresh');
+
    // Attach native PTR to the Quran content area so its UI renders inside
    // the overlay (not behind it).
    _ptrCleanup = initPullToRefresh({
       scrollElement: _quranContent,
       theme: 'dark',
       checkDisabled: () => _activePageId === 'mushaf',
+      textPull: t('utils/pull-to-refresh:text_pull'),
+      textRelease: t('utils/pull-to-refresh:text_release'),
+      textRefreshing: t('utils/pull-to-refresh:text_refreshing'),
       async onRefresh() {
          await new Promise(resolve => setTimeout(resolve, 350));
          await loadSubPage(_activePageId, true);
@@ -185,7 +196,7 @@ function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
             renderPlaceholder: placeholderRenderFn
          });
       } else {
-         placeholderRenderFn(resultsContainer, "Pencarian tidak didukung di halaman ini", "bx-info-circle");
+         placeholderRenderFn(resultsContainer, t('pages/quran-page:search_unsupported'), "bx-info-circle");
       }
    }, 300);
 }

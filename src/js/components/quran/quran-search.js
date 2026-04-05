@@ -4,6 +4,7 @@
 
 // Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlay = null;
 let _input = null;
@@ -17,12 +18,12 @@ export function renderHTML() {
    return `
       <div class="quran-search-overlay" id="quran-search-overlay">
          <div class="quran-search-header">
-            <button class="quran-search-close quran-icon-btn" aria-label="Tutup Pencarian">
+            <button class="quran-search-close quran-icon-btn" aria-label="${t('components/quran/quran-search:close_search')}">
                <i class='bx bx-chevron-left'></i>
             </button>
             <div class="quran-search-input-wrapper">
                <i class='bx bx-search quran-search-icon'></i>
-               <input type="text" class="quran-search-input" placeholder="Cari..." autocomplete="off">
+               <input type="text" class="quran-search-input" placeholder="${t('components/quran/quran-search:placeholder')}" autocomplete="off">
             </div>
          </div>
          <div class="quran-search-results" id="quran-search-results">
@@ -34,30 +35,32 @@ export function renderHTML() {
 /**
  * Initializes the search component and listeners.
  */
-export function init(container, callbacks = {}) {
+export async function init(container, callbacks = {}) {
+   await loadNS('components/quran/quran-search');
+
    _callbacks = callbacks;
    _overlay = container.querySelector('#quran-search-overlay');
    if (!_overlay) return;
 
    _input = _overlay.querySelector('.quran-search-input');
    _results = _overlay.querySelector('#quran-search-results');
-   
+
    // Initial placeholder state
    renderSearchPlaceholder(_results);
-   
+
    const closeBtn = _overlay.querySelector('.quran-search-close');
    if (closeBtn) {
-       makeAccessibleBtn(closeBtn, () => {
-           if (_callbacks.onClose) _callbacks.onClose();
-       });
+      makeAccessibleBtn(closeBtn, () => {
+         if (_callbacks.onClose) _callbacks.onClose();
+      });
    }
-   
+
    if (_input) {
-       _input.addEventListener('input', (e) => {
-           if (_callbacks.onInput) {
-               _callbacks.onInput(e.target.value, _results, renderSearchPlaceholder);
-           }
-       });
+      _input.addEventListener('input', (e) => {
+         if (_callbacks.onInput) {
+            _callbacks.onInput(e.target.value, _results, renderSearchPlaceholder);
+         }
+      });
    }
 }
 
@@ -68,7 +71,7 @@ export function show() {
    if (!_overlay) return;
    _overlay.classList.add('active');
    if (_input) {
-       setTimeout(() => _input.focus(), 350);
+      setTimeout(() => _input.focus(), 350);
    }
 }
 
@@ -85,12 +88,13 @@ export function hide() {
 /**
  * Renders a visual placeholder in the results area.
  */
-export function renderSearchPlaceholder(container, message = "Mulai ketik pencarian...", icon = "bx-search") {
+export function renderSearchPlaceholder(container, message = null, icon = "bx-search") {
+   const msg = message || t('components/quran/quran-search:start_typing');
    if (!container) return;
    container.innerHTML = `
       <div class="quran-search-placeholder">
          <i class='bx ${icon} quran-search-placeholder-icon'></i>
-         <span>${message}</span>
+         <span>${msg}</span>
       </div>
    `;
 }

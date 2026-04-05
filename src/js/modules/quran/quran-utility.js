@@ -4,6 +4,7 @@
 
 import * as QuranCard from '../../components/quran/quran-card.js';
 import { safeClear } from '../../utils/dom-utils.js';
+import { t } from '../../core/i18n.js';
 
 /**
  * Renders items in batches to prevent UI blocking.
@@ -196,7 +197,7 @@ export function createQuranSubpage({
 
          if (filtered.length === 0) {
             if (searchCallbacks.renderPlaceholder) {
-               searchCallbacks.renderPlaceholder(resultsContainer, `Tidak ditemukan "${query}"`, "bx-info-circle");
+               searchCallbacks.renderPlaceholder(resultsContainer, t('components/quran/quran-search:not_found', { query }), "bx-info-circle");
             }
             return;
          }

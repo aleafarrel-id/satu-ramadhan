@@ -1,0 +1,7 @@
+{
+    "title": "Prayer Schedule",
+    "state_loading": "Loading schedule",
+    "state_error": "Failed to create preview",
+    "btn_share": "Share",
+    "btn_download": "Download"
+}

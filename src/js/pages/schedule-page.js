@@ -40,6 +40,7 @@ import { showPermissionDialogPreset } from '../modules/permission/permission-dia
 
 import { makeAccessibleBtn } from '../utils/a11y.js';
 import { safeClear } from '../utils/dom-utils.js';
+import { t, loadNS } from '../core/i18n.js';
 
 /* --- STATE --- */
 
@@ -73,11 +74,21 @@ export async function render(container, options = {}) {
     }
     _unsubscribe = [];
 
+    await loadNS('pages/schedule-page');
+    await loadNS('components/card/location-card');
+    await loadNS('components/card/schedule-card');
+    await loadNS('components/card/share-schedule-card');
+    await loadNS('modules/prayer/prayer-times');
+    await loadNS('components/prayer/prayer-widgets');
+    await loadNS('components/ui/header');
+    await loadNS('components/modal/location-modal');
+    await loadNS('modules/share/share-schedule-exporter');
+
     const location = store.getState('location');
     if (!location) {
         safeClear(container);
         renderScheduleSkeleton(_container);
-        renderError(false);
+        await renderError(false);
     } else {
         const isRefresh = options?.refresh === true;
 
@@ -144,7 +155,7 @@ async function _rehydrateAndRender() {
         _todayTimings = todayTimingsResult;
 
         if (!_scheduleData) {
-            renderError(true);
+            await renderError(true);
             return;
         }
 
@@ -152,7 +163,7 @@ async function _rehydrateAndRender() {
         await renderDayView();
     } catch (error) {
         console.error('[Schedule] Hydration Render failed:', error);
-        renderError(true);
+        await renderError(true);
     }
 }
 
@@ -223,14 +234,14 @@ function stopDayCrossingCheck() {
  *
  * @param {boolean} hasLocation - Deciphers which warning layout to mount.
  */
-function renderError(hasLocation) {
+async function renderError(hasLocation) {
     if (!hasLocation) {
         _container.innerHTML = `
             ${renderLocationCard(null)}
             ${renderEmptyState({
             icon: 'bx-map-pin',
-            title: 'Lokasi Belum Diatur',
-            description: 'Jadwal akan ditampilkan setelah lokasi Anda diatur.',
+            title: t('pages/schedule-page:error_no_location_title'),
+            description: t('pages/schedule-page:error_no_location_desc'),
             compact: true,
         })}
             <div class="schedule-skeleton-placeholder" style="margin-top: var(--spacing-lg); pointer-events: none;">
@@ -242,8 +253,8 @@ function renderError(hasLocation) {
     }
 
     const icon = 'bx-wifi-off';
-    const title = 'Gagal Memuat Jadwal';
-    const desc = 'Periksa koneksi internet Anda dan coba lagi.';
+    const title = t('pages/schedule-page:error_offline_title');
+    const desc = t('pages/schedule-page:error_offline_desc');
 
     _container.innerHTML = `
         <div class="schedule-page">
@@ -253,7 +264,7 @@ function renderError(hasLocation) {
         title,
         description: desc,
         action: {
-            label: 'Coba Lagi',
+            label: t('retry'),
             icon: 'bx-refresh',
             onclick: 'location.reload()',
         },

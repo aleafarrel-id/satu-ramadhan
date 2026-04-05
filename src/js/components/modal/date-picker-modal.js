@@ -8,8 +8,9 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import { impact } from '../../modules/system/haptic.js';
 
 // Utilities & Helpers
-import { WEEKDAY_HEADERS_MON_FIRST, MONTH_NAMES, formatDateToYYYYMMDD } from '../../utils/datetime.js';
+import { formatDateToYYYYMMDD } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 const SWIPE_THRESHOLD_PX = 50;
 const WHEEL_COOLDOWN_MS  = 600;
@@ -124,7 +125,8 @@ function animateSlide(direction, onMiddle) {
  * @param {string|Date}    [options.minDate]    - Minimum selectable date
  * @param {string|Date}    [options.maxDate]    - Maximum selectable date
  */
-export function showDatePickerModal({ initialDate, onSelect, minDate, maxDate }) {
+export async function showDatePickerModal({ initialDate, onSelect, minDate, maxDate }) {
+    await loadNS('components/modal/date-picker-modal');
     if (_overlayEl) {
         unregisterModalDismiss(hideDatePickerModal);
         removeModal();
@@ -309,28 +311,30 @@ function createModalDOM() {
     overlay.innerHTML = `
         <div class="date-picker-sheet">
             <div class="date-picker-header">
-                <button class="date-picker-nav-btn" id="dp-prev" aria-label="Bulan sebelumnya">
+                <button class="date-picker-nav-btn" id="dp-prev" aria-label="${t('components/modal/date-picker-modal:prev_month')}">
                     <i class='bx bx-chevron-left'></i>
                 </button>
                 <div class="date-picker-title" id="dp-title"></div>
-                <button class="date-picker-nav-btn" id="dp-next" aria-label="Bulan berikutnya">
+                <button class="date-picker-nav-btn" id="dp-next" aria-label="${t('components/modal/date-picker-modal:next_month')}">
                     <i class='bx bx-chevron-right'></i>
                 </button>
             </div>
             <div class="date-picker-grid">
                 <div class="date-picker-weekdays">
-                    ${WEEKDAY_HEADERS_MON_FIRST.map((w, i) =>
-                        `<div data-weekday="${i}">${w}</div>`
-                    ).join('')}
+                    ${(() => {
+                        const daysShort = t('components/ui/header:days_short', { returnObjects: true }) || [];
+                        const reorderedDays = [...daysShort.slice(1), daysShort[0]];
+                        return reorderedDays.map((w, i) => `<div data-weekday="${i}">${w}</div>`).join('');
+                    })()}
                 </div>
                 <div class="date-picker-days" id="dp-days"></div>
             </div>
             <div class="date-picker-footer">
                 <div class="date-picker-hint">
                     <i class='bx bx-swipe'></i>
-                    <span>Geser untuk lainnya</span>
+                    <span>${t('components/modal/date-picker-modal:swipe_hint')}</span>
                 </div>
-                <button class="date-picker-today-btn" id="dp-today">Hari ini</button>
+                <button class="date-picker-today-btn" id="dp-today">${t('components/modal/date-picker-modal:today')}</button>
             </div>
         </div>
     `;
@@ -379,7 +383,8 @@ function renderCalendar() {
     const year  = _viewDate.getFullYear();
     const month = _viewDate.getMonth();
 
-    titleEl.textContent = `${MONTH_NAMES[month]} ${year}`;
+    const months = t('components/ui/header:months', { returnObjects: true }) || [];
+    titleEl.textContent = `${months[month]} ${year}`;
 
     const startOffset = getMondayBasedDay(new Date(year, month, 1));
     const today       = new Date();

@@ -7,6 +7,7 @@
  * Generates the HTML string for the compass.
  * @returns {string} HTML string of the compass
  */
+import { t } from '../../core/i18n.js';
 export function renderCompass() {
     let ticksHtml = '';
     // 360 degrees / 5 degrees = 72 ticks
@@ -24,13 +25,13 @@ export function renderCompass() {
 
         if (angle === 0) {
             classes.push('north');
-            labelHtml = '<span class="compass-label north-label">U</span>';
+            labelHtml = `<span class="compass-label north-label">${t('components/compass/compass-dial:north') || 'U'}</span>`;
         } else if (angle === 90) {
-            labelHtml = '<span class="compass-label">T</span>';
+            labelHtml = `<span class="compass-label">${t('components/compass/compass-dial:east') || 'T'}</span>`;
         } else if (angle === 180) {
-            labelHtml = '<span class="compass-label">S</span>';
+            labelHtml = `<span class="compass-label">${t('components/compass/compass-dial:south') || 'S'}</span>`;
         } else if (angle === 270) {
-            labelHtml = '<span class="compass-label">B</span>';
+            labelHtml = `<span class="compass-label">${t('components/compass/compass-dial:west') || 'B'}</span>`;
         }
 
         ticksHtml += `<div class="${classes.join(' ')}" style="transform: rotate(${angle}deg)">

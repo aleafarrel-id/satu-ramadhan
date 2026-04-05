@@ -1,0 +1,16 @@
+{
+    "select_juz": "Select Juz",
+    "select_surah": "Select Surah",
+    "search_verse": "Verse number...",
+    "search_aria": "Search verse",
+    "loading": "Loading Al-Qur'an",
+    "not_found": "Verse not found",
+    "error_load": "Failed to Load Data",
+    "current_juz": "Currently Juz {{index}}",
+    "current_surah": "Currently Surah {{title}}",
+    "copy_ayah": "Copy verse",
+    "bookmark_ayah": "Bookmark verse",
+    "verse_count": "{{count}} Verses",
+    "bookmark_added": "QS. {{surahName}}: {{verseNumber}} bookmarked",
+    "bookmark_removed": "Bookmark removed"
+}

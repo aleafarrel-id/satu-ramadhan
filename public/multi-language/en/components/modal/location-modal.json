@@ -1,0 +1,6 @@
+{
+    "title": "Allow Location Access",
+    "desc": "To display accurate prayer times for your location, the app requires GPS access.",
+    "btn_gps": "Use GPS",
+    "btn_manual": "Select Manually"
+}

@@ -1,0 +1,10 @@
+{
+    "verse_count": "{{count}} Ayat",
+    "loading": "Memuat Al-Qur'an",
+    "not_found": "Surah tidak ditemukan",
+    "error_load": "Gagal Memuat Al-Qur'an",
+    "delete_bookmark": "Hapus penanda",
+    "ayat": "Ayat {{verseNumber}}",
+    "makkiyah": "Makkiyah",
+    "madaniyah": "Madaniyah"
+}

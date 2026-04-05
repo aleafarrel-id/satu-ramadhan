@@ -1,0 +1,10 @@
+{
+    "title": "Cari Lokasi",
+    "search_placeholder": "Cari kota atau lokasi...",
+    "state_init": "Mulai ketik nama lokasi...",
+    "state_loading": "Mencari lokasi...",
+    "state_error": "Pencarian gagal. Periksa koneksi internet.",
+    "state_empty": "Tidak ada hasil untuk \"{{query}}\"",
+    "badge_local": "Lokal",
+    "badge_online": "Online"
+}

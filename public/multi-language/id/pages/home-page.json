@@ -1,0 +1,7 @@
+{
+    "schedule_today": "Jadwal Hari Ini",
+    "error_no_location_title": "Atur Lokasi Anda",
+    "error_no_location_desc": "Jadwal sholat akan ditampilkan setelah lokasi diatur melalui Pengaturan.",
+    "error_offline_title": "Gagal Memuat Jadwal",
+    "error_offline_desc": "Periksa koneksi internet Anda dan coba lagi."
+}

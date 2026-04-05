@@ -1,0 +1,7 @@
+{
+    "schedule_today": "Today's Schedule",
+    "error_no_location_title": "Set Your Location",
+    "error_no_location_desc": "Prayer times will appear after you set a location in Settings.",
+    "error_offline_title": "Failed to Load Schedule",
+    "error_offline_desc": "Check your internet connection and try again."
+}

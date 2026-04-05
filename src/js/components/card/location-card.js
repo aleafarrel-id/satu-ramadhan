@@ -3,8 +3,22 @@
  * Reusable across Home and Compass pages.
  */
 
+import { t, loadNS } from '../../core/i18n.js';
+
+const NS = 'components/card/location-card';
+
+/** Ensure namespace is loaded before any render call. */
+async function ensureNS() {
+    await loadNS(NS);
+}
+
 /**
- * Render the full location card with "LOKASI ANDA" header
+ * Render the full location card with header (synchronous).
+ *
+ * Safe to call only AFTER the namespace has already been loaded
+ * (i.e., after `await loadNS('components/card/location-card')` has been
+ * called in the page's render() function).
+ *
  * @param {object|null} location - saved location object { regencyName, provinceName, ... }
  * @returns {string} HTML string
  */
@@ -12,13 +26,28 @@ export function renderLocationCard(location) {
     return `
         <div class="card location-card">
             <div class="location-card__header">
-                LOKASI ANDA
+                ${t('components/card/location-card:header')}
             </div>
             <div id="location-card-content">
                 ${renderLocationCardInner(location)}
             </div>
         </div>
     `;
+}
+
+/**
+ * Render the full location card with header (async version).
+ *
+ * Loads the namespace itself before rendering. Use this when you cannot
+ * guarantee that the namespace is already loaded (e.g., in components
+ * that load independently from a page lifecycle).
+ *
+ * @param {object|null} location - saved location object { regencyName, provinceName, ... }
+ * @returns {Promise<string>} HTML string
+ */
+export async function renderLocationCardAsync(location) {
+    await ensureNS();
+    return renderLocationCard(location);
 }
 
 /**
@@ -32,12 +61,12 @@ export function renderLocationCardInner(location) {
             <div class="location-card__row">
                 <i class='bx bx-map location-card__icon location-card__icon--muted'></i>
                 <div class="location-card__body">
-                    <div class="location-card__name">Lokasi belum diatur</div>
-                    <div class="location-card__hint">Ketuk untuk mengatur lokasi</div>
+                    <div class="location-card__name">${t('components/card/location-card:not_set')}</div>
+                    <div class="location-card__hint">${t('components/card/location-card:hint')}</div>
                 </div>
                 <button class="btn btn--accent-outline location-card__action" id="btn-change-location">
                     <i class='bx bx-current-location'></i>
-                    <span>Atur</span>
+                    <span>${t('components/card/location-card:btn_set')}</span>
                 </button>
             </div>
         `;
@@ -57,7 +86,7 @@ export function renderLocationCardInner(location) {
             </div>
             <button class="btn btn--accent-outline location-card__action" id="btn-change-location">
                 <i class='bx bx-cog'></i>
-                <span>Ubah</span>
+                <span>${t('components/card/location-card:btn_change')}</span>
             </button>
         </div>
     `;

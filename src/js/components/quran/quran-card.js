@@ -5,6 +5,7 @@
 // Utilities & Helpers
 import { safeClear } from '../../utils/dom-utils.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
+import { t } from '../../core/i18n.js';
 
 /**
  * Renders a single Surah card.
@@ -14,7 +15,7 @@ export function createSurahCard(surah, onClick) {
    card.className = 'surah-card';
    card.dataset.surahId = surah.index;
    card.setAttribute('data-focus-item', '');
-   const typeText = surah.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
+   const typeText = surah.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
 
    card.innerHTML = `
       <div class="surah-number-wrapper">
@@ -26,7 +27,7 @@ export function createSurahCard(surah, onClick) {
          <div class="surah-details">
             <span class="surah-type surah-type-pill">${typeText}</span>
             <span class="surah-detail-dot"></span>
-            <span class="surah-verse-count">${surah.count} Ayat</span>
+            <span class="surah-verse-count">${t('components/quran/quran-card:verse_count', { count: surah.count })}</span>
          </div>
       </div>
       <div class="surah-title-arabic">${surah.titleAr}</div>
@@ -143,7 +144,7 @@ export function renderLoadingState(container) {
    loadingEl.className = 'quran-loading';
    loadingEl.innerHTML = `
       <i class='bx bx-book-reader'></i>
-      <p>Memuat Al-Qur'an</p>
+      <p>${t('components/quran/quran-card:loading')}</p>
    `;
    container.appendChild(loadingEl);
 }
@@ -157,7 +158,7 @@ export function renderEmptyState(container) {
    emptyEl.className = 'quran-empty';
    emptyEl.innerHTML = `
       <i class='bx bx-bookmark-alt-minus'></i>   
-      <p>Surah tidak ditemukan</p>
+      <p>${t('components/quran/quran-card:not_found')}</p>
    `;
    container.appendChild(emptyEl);
 }
@@ -165,13 +166,14 @@ export function renderEmptyState(container) {
 /**
  * Renders the error state.
  */
-export function renderErrorState(container, message = "Gagal Memuat Al-Qur'an") {
+export function renderErrorState(container, message = null) {
+   const errMsg = message || t('components/quran/quran-card:error_load');
    safeClear(container);
    const errorEl = document.createElement('div');
    errorEl.className = 'quran-empty';
    errorEl.innerHTML = `
       <i class='bx bx-error-circle'></i>
-      <p>${message}</p>
+      <p>${errMsg}</p>
    `;
    container.appendChild(errorEl);
 }
@@ -189,7 +191,7 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
    card.setAttribute('data-focus-item', '');
    card.dataset.bookmarkKey = bookmark.key;
 
-   const typeText = bookmark.type === 'Makkiyah' ? 'Makkiyah' : 'Madaniyah';
+   const typeText = bookmark.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
    const isJuzMode = bookmark.readMode === 'juz' && bookmark.juzIndex;
 
    const titleLatin = isJuzMode ? `Juz ${bookmark.juzIndex}` : (surah ? surah.title : bookmark.surahTitle);
@@ -209,7 +211,7 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
             <span class="surah-detail-dot"></span>
             <span class="bookmark-verse-badge">
                <i class='bx bxs-bookmark-alt'></i>
-               Ayat ${bookmark.verseNumber}
+               ${t('components/quran/quran-card:ayat', { verseNumber: bookmark.verseNumber })}
             </span>
          </div>
       </div>
@@ -224,7 +226,7 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
    if (onDelete) {
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'bookmark-delete-btn';
-      deleteBtn.setAttribute('aria-label', 'Hapus bookmark');
+      deleteBtn.setAttribute('aria-label', t('components/quran/quran-card:delete_bookmark'));
       deleteBtn.innerHTML = `<i class='bx bx-trash'></i>`;
       deleteBtn.addEventListener('click', (e) => {
          e.stopPropagation();

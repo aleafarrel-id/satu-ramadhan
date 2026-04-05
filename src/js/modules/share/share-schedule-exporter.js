@@ -8,6 +8,7 @@ import { isNative, isWeb } from '../system/platform.js';
 import { Share } from '@capacitor/share';
 import { Media } from '@capacitor-community/media';
 import { success as notifySuccess, error as notifyError } from '../notification/notification.js';
+import { t } from '../../core/i18n.js';
 
 const TEMPLATE_WIDTH = 1240;
 const TEMPLATE_HEIGHT = 1754;
@@ -94,11 +95,11 @@ export async function downloadScheduleImage(canvas, filename = DEFAULT_FILENAME)
                 albumIdentifier: album?.identifier
             });
 
-            notifySuccess(`Jadwal berhasil disimpan ke Galeri`, 3500);
+            notifySuccess(t('modules/share/share-schedule-exporter:save_success') || 'Jadwal berhasil disimpan ke Galeri', 3500);
             return;
         } catch (error) {
             console.error('[share-schedule-exporter] Native download failed:', error);
-            notifyError('Gagal menyimpan jadwal ke Galeri', 3500);
+            notifyError(t('modules/share/share-schedule-exporter:save_error') || 'Gagal menyimpan jadwal ke Galeri', 3500);
             return;
         }
     }
@@ -154,12 +155,12 @@ export async function shareScheduleImage(canvas) {
                     return;
                 }
                 console.warn('[share-schedule-exporter] Web Share failed:', err);
-                notifyError('Gagal membagikan jadwal', 3500);
+                notifyError(t('modules/share/share-schedule-exporter:share_error') || 'Gagal membagikan jadwal', 3500);
                 return;
             }
 
             // If browser does not support sharing files via Web Share API
-            notifyError('Silakan gunakan tombol Unduh.', 3500);
+            notifyError(t('modules/share/share-schedule-exporter:share_unsupported') || 'Silakan gunakan tombol Unduh.', 3500);
             return;
         }
 
@@ -196,6 +197,6 @@ export async function shareScheduleImage(canvas) {
             return;
         }
         console.warn('[share-schedule-exporter] Capacitor Share failed:', err);
-        notifyError('Gagal membagikan jadwal', 3500);
+        notifyError(t('modules/share/share-schedule-exporter:share_error') || 'Gagal membagikan jadwal', 3500);
     }
 }

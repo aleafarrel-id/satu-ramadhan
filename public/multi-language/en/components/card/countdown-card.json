@@ -1,0 +1,6 @@
+{
+    "heading": "Until <span class=\"countdown__prayer-name\" id=\"cd-prayer-name\">{{name}}</span>",
+    "hours": "HRS",
+    "minutes": "MIN",
+    "seconds": "SEC"
+}

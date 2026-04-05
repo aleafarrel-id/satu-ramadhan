@@ -11,6 +11,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 // Utilities & Helpers
 import { handleManualLocationSelection } from '../../utils/location-feedback.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlayEl = null;
 let _debounceTimer = null;
@@ -25,8 +26,10 @@ const DEBOUNCE_MS = 600;
  * @param {object} [options]
  * @param {Function} [options.onLocationSelected] - Called with the selected location object
  */
-export function showLocationSearchModal({ onLocationSelected } = {}) {
+export async function showLocationSearchModal({ onLocationSelected } = {}) {
     if (_overlayEl) removeModal();
+
+    await loadNS('components/modal/location-search-modal');
 
     _onLocationSelected = onLocationSelected || null;
     _overlayEl = createModalDOM();
@@ -167,7 +170,7 @@ function renderPlaceholder() {
     return `
         <div class="loc-search-placeholder">
             <i class='bx bx-search loc-search-placeholder-icon'></i>
-            <span>Mulai ketik nama lokasi...</span>
+            <span>${t('components/modal/location-search-modal:state_init')}</span>
         </div>
     `;
 }
@@ -176,7 +179,7 @@ function renderLoading() {
     return `
         <div class="loc-search-loading">
             <i class='bx bx-loader-alt bx-spin'></i>
-            <span>Mencari lokasi...</span>
+            <span>${t('components/modal/location-search-modal:state_loading')}</span>
         </div>
     `;
 }
@@ -185,7 +188,7 @@ function renderEmpty(query) {
     return `
         <div class="loc-search-placeholder">
             <i class='bx bx-map-alt loc-search-placeholder-icon'></i>
-            <span>Tidak ada hasil untuk "${query}"</span>
+            <span>${t('components/modal/location-search-modal:state_empty', { query })}</span>
         </div>
     `;
 }
@@ -194,7 +197,7 @@ function renderError() {
     return `
         <div class="loc-search-placeholder">
             <i class='bx bx-error-circle loc-search-placeholder-icon'></i>
-            <span>Pencarian gagal. Periksa koneksi internet.</span>
+            <span>${t('components/modal/location-search-modal:state_error')}</span>
         </div>
     `;
 }
@@ -207,8 +210,8 @@ function renderError() {
 function renderResultItem(location) {
     const icon = location.source === 'local' ? 'bx-map-pin' : 'bx-globe';
     const badge = location.source === 'local'
-        ? '<span class="loc-search-badge loc-search-badge--local">Lokal</span>'
-        : '<span class="loc-search-badge loc-search-badge--online">Online</span>';
+        ? `<span class="loc-search-badge loc-search-badge--local">${t('components/modal/location-search-modal:badge_local')}</span>`
+        : `<span class="loc-search-badge loc-search-badge--online">${t('components/modal/location-search-modal:badge_online')}</span>`;
 
     const displayName = location.districtName
         ? `${location.districtName}, ${location.regencyName}`
@@ -236,11 +239,11 @@ function createModalDOM() {
     overlay.innerHTML = `
         <div class="loc-search-sheet">
             <div class="loc-search-header">
-                <h3 class="loc-search-title">Cari Lokasi</h3>
+                <h3 class="loc-search-title">${t('components/modal/location-search-modal:title')}</h3>
             </div>
             <div class="loc-search-input-wrapper">
                 <i class='bx bx-search loc-search-icon'></i>
-                <input type="text" class="loc-search-input" placeholder="Cari kota atau lokasi..." autocomplete="off">
+                <input type="text" class="loc-search-input" placeholder="${t('components/modal/location-search-modal:search_placeholder')}" autocomplete="off">
             </div>
             <div class="loc-search-results" data-focus-group="loc-search-results" data-focus-direction="vertical">
                 ${renderPlaceholder()}

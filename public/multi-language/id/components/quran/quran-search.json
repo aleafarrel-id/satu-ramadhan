@@ -1,0 +1,7 @@
+{
+    "close_search": "Tutup Pencarian",
+    "placeholder": "Cari...",
+    "start_typing": "Mulai ketik pencarian...",
+    "not_found": "Tidak ditemukan \"{{query}}\"",
+    "not_found_basic": "Tidak ditemukan"
+}

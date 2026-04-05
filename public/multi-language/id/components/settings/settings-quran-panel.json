@@ -1,0 +1,11 @@
+{
+    "section": "AL-QUR'AN",
+    "tajweed": "Tajwid",
+    "transliteration": "Transliterasi Latin",
+    "translation": "Terjemahan",
+    "tajweed_on": "Tajwid diaktifkan",
+    "tajweed_off": "Tajwid dimatikan",
+    "translit_on": "Transliterasi Latin diaktifkan",
+    "translit_off": "Transliterasi Latin dimatikan",
+    "translation_changed": "Al-Qur'an Terjemahan: {{label}}"
+}

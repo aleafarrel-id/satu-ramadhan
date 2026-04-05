@@ -1,0 +1,10 @@
+{
+    "verse_count": "{{count}} Verses",
+    "loading": "Loading Al-Qur'an",
+    "not_found": "Surah not found",
+    "error_load": "Failed to Load Al-Qur'an",
+    "delete_bookmark": "Delete bookmark",
+    "ayat": "Verse {{verseNumber}}",
+    "makkiyah": "Makki",
+    "madaniyah": "Madani"
+}

@@ -1,0 +1,10 @@
+{
+    "title": "Search Location",
+    "search_placeholder": "Search city or location...",
+    "state_init": "Start typing location name...",
+    "state_loading": "Searching location...",
+    "state_error": "Search failed. Check your internet connection.",
+    "state_empty": "No results for \"{{query}}\"",
+    "badge_local": "Local",
+    "badge_online": "Online"
+}

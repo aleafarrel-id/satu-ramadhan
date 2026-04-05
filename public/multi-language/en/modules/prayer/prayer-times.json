@@ -1,0 +1,23 @@
+{
+    "imsak": "Imsak",
+    "subuh": "Fajr",
+    "terbit": "Sunrise",
+    "dzuhur": "Dhuhr",
+    "ashar": "Asr",
+    "magrib": "Maghrib",
+    "isya": "Isha",
+    "notif_imsak_title": "Imsak Time",
+    "notif_imsak_body": "It's time to start fasting",
+    "notif_subuh_title": "Fajr Time",
+    "notif_subuh_body": "It's time for Fajr prayer",
+    "notif_terbit_title": "Sunrise",
+    "notif_terbit_body": "Syuruq time — The sun has risen",
+    "notif_dzuhur_title": "Dhuhr Time",
+    "notif_dzuhur_body": "It's time for Dhuhr prayer",
+    "notif_ashar_title": "Asr Time",
+    "notif_ashar_body": "It's time for Asr prayer",
+    "notif_magrib_title": "Maghrib Time",
+    "notif_magrib_body": "It's time for Maghrib prayer",
+    "notif_isya_title": "Isha Time",
+    "notif_isya_body": "It's time for Isha prayer"
+}

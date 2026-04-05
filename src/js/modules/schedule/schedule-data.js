@@ -4,8 +4,8 @@
 
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { getRamadhanConfig } from '../../core/database.js';
-import { HIJRI_MONTH_NAMES } from '../../utils/datetime.js';
 import { getActivePreset, getHijriOffset } from './ramadhan.js';
+import { t } from '../../core/i18n.js';
 
 /**
  * Fetch the full prayer schedule for the current Hijri month.
@@ -143,11 +143,12 @@ function computeRamadhanFromPreset(preset) {
         dates.push(d);
     }
 
+    const hijriMonths = t('components/ui/header:hijri_months', { returnObjects: true }) || [];
     return {
         dates,
         hijriMeta: {
             monthNumber: 9,
-            monthName: HIJRI_MONTH_NAMES[9],
+            monthName: hijriMonths[8] || 'Ramadan',
             year: config.tahunHijriah,
             totalDays,
             offset: 0,
@@ -249,7 +250,8 @@ async function computeCurrentHijriMonth(location) {
         dates.push(d);
     }
 
-    const monthName = HIJRI_MONTH_NAMES[effectiveMonth] || `Bulan ${effectiveMonth}`;
+    const hijriMonths = t('components/ui/header:hijri_months', { returnObjects: true }) || [];
+    const monthName = hijriMonths[effectiveMonth - 1] || `Bulan ${effectiveMonth}`;
 
     return {
         dates,

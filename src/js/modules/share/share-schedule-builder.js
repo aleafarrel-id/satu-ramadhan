@@ -2,7 +2,8 @@
  * Share Schedule Builder Module
  */
 
-import { MONTH_NAMES_SHORT, cleanTimeStr } from '../../utils/datetime.js';
+import { cleanTimeStr } from '../../utils/datetime.js';
+import { t } from '../../core/i18n.js';
 
 /** Template URL served by Vite or compiled by Rollup */
 const TEMPLATE_URL = import.meta.env.DEV 
@@ -246,6 +247,22 @@ function injectMetadata(el, payload) {
     setText('share-schedule-org', payload.orgName || '—');
     setText('share-schedule-hijri-title', `${payload.hijriMonthName || 'Ramadan'} ${payload.hijriYear || ''} H`);
     setText('share-schedule-qibla', payload.qiblaAngle != null ? `${payload.qiblaAngle.toFixed(1)}°` : '—');
+
+    // i18n Injections
+    setText('share-schedule-title-head', t('modules/share/share-schedule-exporter:tpl_title'));
+    setText('share-schedule-title', t('modules/share/share-schedule-exporter:tpl_title'));
+    setText('share-schedule-qibla-label', t('modules/share/share-schedule-exporter:tpl_qibla'));
+    setText('share-schedule-th-hari', t('modules/share/share-schedule-exporter:tpl_th_hari'));
+    setText('share-schedule-th-tanggal', t('modules/share/share-schedule-exporter:tpl_th_tanggal'));
+    setText('share-schedule-th-imsak', t('modules/share/share-schedule-exporter:tpl_th_imsak'));
+    setText('share-schedule-th-subuh', t('modules/share/share-schedule-exporter:tpl_th_subuh'));
+    setText('share-schedule-th-dzuhur', t('modules/share/share-schedule-exporter:tpl_th_dzuhur'));
+    setText('share-schedule-th-ashar', t('modules/share/share-schedule-exporter:tpl_th_ashar'));
+    setText('share-schedule-th-maghrib', t('modules/share/share-schedule-exporter:tpl_th_maghrib'));
+    setText('share-schedule-th-isya', t('modules/share/share-schedule-exporter:tpl_th_isya'));
+    setText('share-schedule-footer-note-1', t('modules/share/share-schedule-exporter:tpl_note_1'));
+    setText('share-schedule-footer-note-2', t('modules/share/share-schedule-exporter:tpl_note_2', { appName: t('common:app_name') }));
+    setText('share-schedule-branding-name', t('common:app_name'));
 }
 
 /**
@@ -267,23 +284,24 @@ function injectTableRows(tbody, scheduleData) {
         if (isFriday) hijriCellClass += ' share-schedule__cell-hijri--friday';
         if (isSunday) hijriCellClass += ' share-schedule__cell-hijri--sunday';
 
+        const monthsShort = t('components/ui/header:months_short', { returnObjects: true }) || [];
         const hijriDisplay = `${entry.hijriDay} ${entry.hijriMonthName || ''}`;
         const dateGregorian = entry.date instanceof Date
-            ? `${entry.date.getDate()} ${MONTH_NAMES_SHORT[entry.date.getMonth()]}`
+            ? `${entry.date.getDate()} ${monthsShort[entry.date.getMonth()] || ''}`
             : '—';
 
-        const t = entry.timings || {};
+        const tm = entry.timings || {};
 
         html +=
             '<tr class="share-schedule__row">' +
                 `<td class="${hijriCellClass}">${hijriDisplay}</td>` +
                 `<td class="share-schedule__cell-date">${dateGregorian}</td>` +
-                `<td class="share-schedule__cell-time share-schedule__cell-imsak">${cleanTimeStr(t.imsak) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(t.subuh) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(t.dzuhur) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(t.ashar) || '—'}</td>` +
-                `<td class="share-schedule__cell-time share-schedule__cell-maghrib">${cleanTimeStr(t.magrib) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(t.isya) || '—'}</td>` +
+                `<td class="share-schedule__cell-time share-schedule__cell-imsak">${cleanTimeStr(tm.imsak) || '—'}</td>` +
+                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.subuh) || '—'}</td>` +
+                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.dzuhur) || '—'}</td>` +
+                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.ashar) || '—'}</td>` +
+                `<td class="share-schedule__cell-time share-schedule__cell-maghrib">${cleanTimeStr(tm.magrib) || '—'}</td>` +
+                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.isya) || '—'}</td>` +
             '</tr>';
     }
 

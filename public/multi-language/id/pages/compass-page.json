@@ -1,0 +1,6 @@
+{
+    "error_no_location_title": "Lokasi Belum Diatur",
+    "error_no_location_desc": "Arah kiblat akan ditampilkan setelah lokasi Anda diatur.",
+    "error_no_compass_title": "Kompas Tidak Tersedia",
+    "error_no_compass_desc": "Arah kiblat tidak dapat dihitung atau sensor gyroscope tidak tersedia."
+}

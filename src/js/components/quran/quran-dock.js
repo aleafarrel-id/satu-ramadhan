@@ -2,15 +2,20 @@
  * Dock Navigation Component
  */
 
-const DOCK_ITEMS = [
-   { id: 'surah', icon: 'bx-book-content', label: 'Surah' },
-   { id: 'juz', icon: 'bx-book-open', label: 'Juz' },
-   { id: 'mushaf', icon: 'bx-book-reader', label: 'Mushaf' },
-   { id: 'bookmark', icon: 'bxs-book-bookmark', label: 'Bookmark' }
+import { t, loadNS } from '../../core/i18n.js';
+
+const DOCK_ITEMS = () => [
+   { id: 'surah', icon: 'bx-book-content', label: t('components/quran/quran-dock:surah') },
+   { id: 'juz', icon: 'bx-book-open', label: t('components/quran/quran-dock:juz') },
+   { id: 'mushaf', icon: 'bx-book-reader', label: t('components/quran/quran-dock:mushaf') },
+   { id: 'bookmark', icon: 'bxs-book-bookmark', label: t('components/quran/quran-dock:bookmark') }
 ];
 
 let _container = null;
 let _dockEl = null;
+
+//... skip initialization of items directly to ensure NS is loaded first ...
+
 let _slider = null;
 let _onNavigate = null;
 let _currentItem = 'surah';
@@ -18,7 +23,9 @@ let _currentItem = 'surah';
 /**
  * Initializes and renders the dock.
  */
-export function render(container, onNavigate) {
+export async function render(container, onNavigate) {
+   await loadNS('components/quran/quran-dock');
+
    _container = container;
    _onNavigate = onNavigate;
    _dockEl = document.createElement('div');
@@ -38,7 +45,7 @@ export function render(container, onNavigate) {
    _slider.className = 'quran-dock-slider';
    list.appendChild(_slider);
 
-   DOCK_ITEMS.forEach(item => {
+   DOCK_ITEMS().forEach(item => {
       const btn = document.createElement('button');
       btn.className = 'quran-dock-item';
       btn.dataset.item = item.id;

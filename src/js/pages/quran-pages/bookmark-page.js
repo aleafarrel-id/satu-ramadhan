@@ -11,6 +11,7 @@ import * as Notification from '../../modules/notification/notification.js';
 import { getSurahList, getJuzList } from '../../modules/quran/quran-api.js';
 import { renderBatchedList } from '../../modules/quran/quran-utility.js';
 import { showConfirmModal } from '../../components/modal/confirm-modal.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _container = null;
 let _callbacks = null;
@@ -24,6 +25,7 @@ export async function render(container, callbacks = {}) {
    _container = container;
    _callbacks = callbacks;
 
+   await loadNS('pages/quran-pages/bookmark-page');
    QuranCard.renderLoadingState(container);
 
    try {
@@ -60,7 +62,7 @@ export async function render(container, callbacks = {}) {
    } catch (error) {
       console.error('[BookmarkPage] Error loading bookmarks:', error);
       if (_container) {
-         QuranCard.renderErrorState(_container, 'Gagal memuat bookmark');
+         QuranCard.renderErrorState(_container, t('pages/quran-pages/bookmark-page:error_load'));
       }
    }
 }
@@ -83,7 +85,7 @@ export async function onSearch(query, resultsContainer, searchCallbacks = {}) {
 
    if (!filtered.length) {
       if (searchCallbacks.renderPlaceholder) {
-         searchCallbacks.renderPlaceholder(resultsContainer, `Tidak ditemukan "${query}"`, 'bx-info-circle');
+         searchCallbacks.renderPlaceholder(resultsContainer, t('components/quran/quran-search:not_found', { query }), 'bx-info-circle');
       }
       return;
    }
@@ -137,9 +139,9 @@ async function _openBookmarkedVerse(bookmark, surah) {
       if (juz) targetItem = juz;
    }
 
-   const targetObj = { 
-      verseNumber: bookmark.verseNumber, 
-      surahIndex: bookmark.surahIndex 
+   const targetObj = {
+      verseNumber: bookmark.verseNumber,
+      surahIndex: bookmark.surahIndex
    };
 
    QuranReader.open(targetItem, readMode, targetObj, {
@@ -157,10 +159,10 @@ async function _openBookmarkedVerse(bookmark, surah) {
  */
 function _handleDeleteBookmark(bookmark, cardEl) {
    showConfirmModal({
-      title: 'Hapus Bookmark',
-      message: `Apakah Anda yakin ingin menghapus bookmark untuk QS. ${bookmark.surahTitle} ayat ${bookmark.verseNumber}?`,
-      confirmText: 'Hapus',
-      cancelText: 'Batal',
+      title: t('pages/quran-pages/bookmark-page:confirm_delete_title'),
+      message: t('pages/quran-pages/bookmark-page:confirm_delete_msg', { surah: bookmark.surahTitle, verse: bookmark.verseNumber }),
+      confirmText: t('common:delete'),
+      cancelText: t('common:cancel'),
       isDanger: true,
       theme: 'quran',
       onConfirm: () => {
@@ -169,7 +171,7 @@ function _handleDeleteBookmark(bookmark, cardEl) {
          cardEl.addEventListener('animationend', async () => {
             cardEl.remove();
             await BookmarkManager.remove(bookmark.surahIndex, bookmark.verseNumber);
-            Notification.info(`QS. ${bookmark.surahTitle}: ${bookmark.verseNumber} dihapus`);
+            Notification.info(t('pages/quran-pages/bookmark-page:deleted_notif', { surah: bookmark.surahTitle, verse: bookmark.verseNumber }));
 
             // Show empty state if no more cards remain
             const remainingCards = _container?.querySelector('.surah-card');
@@ -189,7 +191,7 @@ function _renderEmptyState() {
    _container.innerHTML = `
       <div class="quran-empty">
          <i class='bx bx-bookmark-alt'></i>
-         <p>Belum ada ayat yang ditandai</p>
+         <p>${t('pages/quran-pages/bookmark-page:empty')}</p>
       </div>
    `;
 }

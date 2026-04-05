@@ -12,6 +12,7 @@ import {
    getTransliterationEnabled, setTransliterationEnabled,
    getTranslationLanguage, setTranslationLanguage
 } from '../../modules/quran/quran-settings.js';
+import { t } from '../../core/i18n.js';
 
 // UI Components
 import { showLanguageSelectorModal } from '../modal/language-selector-modal.js';
@@ -29,12 +30,12 @@ export function render(container) {
    container.innerHTML = `
       <div class="card settings-card settings-card-spacing" data-focus-group="quran-settings" data-focus-direction="vertical">
          <div class="settings-card-header">
-            <div class="settings-card-title">AL-QUR'AN</div>
+            <div class="settings-card-title">${t('components/settings/settings-quran-panel:section')}</div>
          </div>
          <label class="settings-item" for="toggle-tajweed" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-font-color'></i>
-               <span>Tajwid</span>
+               <span>${t('components/settings/settings-quran-panel:tajweed')}</span>
             </div>
             <div class="switch-toggle">
                <input type="checkbox" id="toggle-tajweed"${tajweedChecked ? ' checked' : ''}>
@@ -45,7 +46,7 @@ export function render(container) {
          <label class="settings-item" for="toggle-transliteration" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-italic'></i>
-               <span>Transliterasi Latin</span>
+               <span>${t('components/settings/settings-quran-panel:transliteration')}</span>
             </div>
             <div class="switch-toggle">
                <input type="checkbox" id="toggle-transliteration"${transliterationChecked ? ' checked' : ''}>
@@ -56,7 +57,7 @@ export function render(container) {
          <div class="settings-item" id="quran-translation-item" data-focus-item style="cursor: pointer;">
             <div class="settings-item-info">
                <i class='bx bx-transfer-alt'></i>
-               <span>Terjemahan</span>
+               <span>${t('components/settings/settings-quran-panel:translation')}</span>
             </div>
             
             <div class="settings-select-trigger" style="pointer-events: none;">
@@ -72,7 +73,7 @@ export function render(container) {
       await impact('medium');
       setTajweedEnabled(enabled);
       Notif.show(
-         enabled ? 'Tajwid diaktifkan' : 'Tajwid dimatikan',
+         enabled ? t('components/settings/settings-quran-panel:tajweed_on') : t('components/settings/settings-quran-panel:tajweed_off'),
          enabled ? 'success' : 'info'
       );
    });
@@ -83,7 +84,7 @@ export function render(container) {
       await impact('medium');
       setTransliterationEnabled(enabled);
       Notif.show(
-         enabled ? 'Transliterasi Latin diaktifkan' : 'Transliterasi Latin dimatikan',
+         enabled ? t('components/settings/settings-quran-panel:translit_on') : t('components/settings/settings-quran-panel:translit_off'),
          enabled ? 'success' : 'info'
       );
    });
@@ -107,7 +108,7 @@ export function render(container) {
 
                   // Save & Notify
                   setTranslationLanguage(value);
-                  Notif.show(`Al-Qur'an Terjemahan: ${langData.label}`, 'success');
+                  Notif.show(t('components/settings/settings-quran-panel:translation_changed', { label: langData.label }), 'success');
                }
             }
          });

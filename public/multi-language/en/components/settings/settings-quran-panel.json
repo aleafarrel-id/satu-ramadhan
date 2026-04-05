@@ -1,0 +1,11 @@
+{
+    "section": "AL-QUR'AN",
+    "tajweed": "Tajweed",
+    "transliteration": "Latin Transliteration",
+    "translation": "Translation",
+    "tajweed_on": "Tajweed enabled",
+    "tajweed_off": "Tajweed disabled",
+    "translit_on": "Latin transliteration enabled",
+    "translit_off": "Latin transliteration disabled",
+    "translation_changed": "Quran Translation: {{label}}"
+}

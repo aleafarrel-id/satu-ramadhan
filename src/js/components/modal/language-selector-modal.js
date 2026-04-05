@@ -10,6 +10,7 @@ import { impact } from '../../modules/system/haptic.js';
 
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlayEl = null;
 let _onSelectCallback = null;
@@ -22,7 +23,7 @@ let _releaseFocus = null;
  * @param {string} config.currentLang - The currently selected language code
  * @param {Function} config.onSelect - Callback executed when a language is selected, passed the language code
  */
-export function showLanguageSelectorModal({
+export async function showLanguageSelectorModal({
     currentLang,
     onSelect
 } = {}) {
@@ -31,6 +32,8 @@ export function showLanguageSelectorModal({
         unregisterModalDismiss(handleCancel);
         removeModal();
     }
+
+    await loadNS('components/modal/language-selector-modal');
 
     _onSelectCallback = onSelect;
 
@@ -149,12 +152,12 @@ function createModalDOM(currentLang) {
 
     overlay.innerHTML = `
         <div class="confirm-dialog language-selector-dialog" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
-            <h3 class="confirm-title" id="lang-modal-title">Bahasa Terjemahan</h3>
+            <h3 class="confirm-title" id="lang-modal-title">${t('components/modal/language-selector-modal:title')}</h3>
             <div class="lang-options-container">
                 ${langListHTML}
             </div>
             <div class="confirm-actions">
-                <button class="btn btn--outline confirm-btn w-100" id="lang-btn-cancel">Tutup</button>
+                <button class="btn btn--outline confirm-btn w-100" id="lang-btn-cancel">${t('close')}</button>
             </div>
         </div>
     `;

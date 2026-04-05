@@ -3,12 +3,14 @@
  * Renders bottom nav with 4 tabs and sliding active indicator
  */
 
-const TABS = [
-    { id: 'home', icon: 'bx-home-alt', label: 'Home' },
-    { id: 'schedule', icon: 'bx-calendar', label: 'Jadwal' },
-    { id: 'compass', icon: 'bx-compass', label: 'Kompas' },
-    { id: 'quran', icon: 'bx-book-reader', label: 'Al-Quran' },
-    { id: 'settings', icon: 'bx-cog', label: 'Setelan' },
+import { t, loadNS } from '../../core/i18n.js';
+
+const TAB_DEFS = [
+    { id: 'home',     icon: 'bx-home-alt',    labelKey: 'home' },
+    { id: 'schedule', icon: 'bx-calendar',     labelKey: 'schedule' },
+    { id: 'compass',  icon: 'bx-compass',      labelKey: 'compass' },
+    { id: 'quran',    icon: 'bx-book-reader',  labelKey: 'quran' },
+    { id: 'settings', icon: 'bx-cog',          labelKey: 'settings' },
 ];
 
 let _container = null;
@@ -18,10 +20,12 @@ let _slider = null;
 /**
  * Render the navigation bar
  */
-export function render(container, onNavigate) {
+export async function render(container, onNavigate, initialActiveTabId = 'home') {
     _container = container;
     _onNavigate = onNavigate;
     _container.innerHTML = '';
+
+    await loadNS('components/ui/nav-bar');
 
     // Background oval
     const bgOval = document.createElement('div');
@@ -37,13 +41,16 @@ export function render(container, onNavigate) {
     // Sliding indicator (single element that moves)
     _slider = document.createElement('span');
     _slider.className = 'nav-slider';
+    // Temporarily disable transition during initial mount to prevent animated visual glitch
+    _slider.style.transition = 'none';
     list.appendChild(_slider);
 
-    TABS.forEach(tab => {
+    TAB_DEFS.forEach(tab => {
+        const label = t(`components/ui/nav-bar:${tab.labelKey}`);
         const item = document.createElement('button');
         item.className = 'nav-item';
         item.dataset.tab = tab.id;
-        item.setAttribute('aria-label', tab.label);
+        item.setAttribute('aria-label', label);
         item.setAttribute('data-focus-item', 'true');
 
         const icon = document.createElement('i');
@@ -55,7 +62,14 @@ export function render(container, onNavigate) {
     });
 
     _container.appendChild(list);
-    setActive('home');
+    setActive(initialActiveTabId);
+
+    // Restore transition after the very first paint so subsequent clicks animate
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            if (_slider) _slider.style.transition = '';
+        });
+    });
 }
 
 /**

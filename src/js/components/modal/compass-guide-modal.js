@@ -5,6 +5,7 @@
 
 // Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
@@ -15,9 +16,11 @@ let _releaseFocus = null;
 /**
  * Show the compass guide modal.
  */
-export function showCompassGuideModal() {
+export async function showCompassGuideModal() {
     // Prevent duplicates
     if (_overlayEl) removeModal();
+
+    await loadNS('components/modal/compass-guide-modal');
 
     _overlayEl = createModalDOM();
     document.body.appendChild(_overlayEl);
@@ -79,28 +82,28 @@ function createModalDOM() {
             <div class="compass-guide-modal__icon">
                 <i class='bx bx-compass'></i>
             </div>
-            <h2 class="compass-guide-modal__title">Panduan Kompas</h2>
+            <h2 class="compass-guide-modal__title">${t('components/modal/compass-guide-modal:title')}</h2>
             <div class="compass-guide-modal__items">
                 <div class="compass-guide-item">
                     <i class='bx bx-infinite'></i>
-                    <span>Gerakkan perangkat membentuk angka 8 untuk kalibrasi sensor</span>
+                    <span>${t('components/modal/compass-guide-modal:tip_1')}</span>
                 </div>
                 <div class="compass-guide-item">
                     <i class='bx bx-mobile-landscape'></i>
-                    <span>Orientasikan perangkat secara mendatar untuk akurasi terbaik</span>
+                    <span>${t('components/modal/compass-guide-modal:tip_2')}</span>
                 </div>
                 <div class="compass-guide-item">
                     <i class='bx bx-magnet'></i>
-                    <span>Jauhkan dari magnet, logam, dan perangkat elektronik lain</span>
+                    <span>${t('components/modal/compass-guide-modal:tip_3')}</span>
                 </div>
                 <div class="compass-guide-item">
                     <i class='bx bx-target-lock'></i>
-                    <span>Kompas menggunakan deklinasi magnetik untuk arah yang presisi</span>
+                    <span>${t('components/modal/compass-guide-modal:tip_4')}</span>
                 </div>
             </div>
             <div class="compass-guide-modal__buttons">
                 <button class="compass-guide-modal__btn-close" id="compass-guide-close">
-                    Tutup
+                    ${t('close')}
                 </button>
             </div>
         </div>

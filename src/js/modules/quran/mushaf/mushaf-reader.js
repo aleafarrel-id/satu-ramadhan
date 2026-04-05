@@ -8,6 +8,7 @@ import panzoom from 'panzoom';
 
 // API & Services
 import * as MushafApi from './mushaf-api.js';
+import { t, loadNS } from '../../../core/i18n.js';
 
 // UI Components
 import * as MushafUI from './mushaf-ui.js';
@@ -180,6 +181,8 @@ export async function open(startPage = 1, options = {}) {
    _currentPage = MushafApi.clampPage(startPage);
    _onCloseCallback = options.onClose;
 
+   await loadNS('modules/quran/mushaf/mushaf-reader');
+
    // Pre-emptive cleanup of any previous residues (crucial for rapid navigation)
    _transitionManager.clear();
    _removeOverlays();
@@ -205,7 +208,7 @@ export async function open(startPage = 1, options = {}) {
    }
 
    // ── Phase 2: Build BACKDROP nested inside the overlay ──
-   _buildBackdrop('Memuat Mushaf', _overlay);
+   _buildBackdrop(t('modules/quran/mushaf/mushaf-reader:loading'), _overlay);
    if (_backdropEl) {
       _backdropEl.classList.add('active'); // Hidden because overlay is at 100% Y
    }
@@ -829,7 +832,7 @@ function _openPicker() {
    if (!_mushafIndex) return;
 
    openPicker({
-      title: 'Pilih Surah',
+      title: t('modules/quran/mushaf/mushaf-reader:select_surah') || 'Pilih Surah',
       data: _mushafIndex,
       createCardFn: createSurahCard,
       isActiveFn: (item) => item.surah === _currentSurahIndex,

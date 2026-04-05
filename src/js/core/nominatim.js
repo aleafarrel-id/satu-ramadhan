@@ -3,12 +3,35 @@
  */
 
 import { CONFIG } from '../config/version-config.js';
+import { SUPPORTED_CODES, FALLBACK_LANG } from '../config/languages.js';
+import { store } from './store.js';
 
 const NOMINATIM_SEARCH = 'https://nominatim.openstreetmap.org/search';
 const NOMINATIM_REVERSE = 'https://nominatim.openstreetmap.org/reverse';
 const USER_AGENT = `${CONFIG.appName.toLowerCase().replace(/\s+/g, '-')}-app/${CONFIG.version}`;
 const REQUEST_TIMEOUT_MS = 8000;
 const MAX_RESULTS = 5;
+
+/**
+ * Derives Accept-Language from store or device locale dynamically.
+ */
+function getAcceptLanguage() {
+    const setting = store.getState('settings.language') || 'auto';
+    let actualLang = setting;
+    
+    if (setting === 'auto') {
+        const sysLang = navigator.language.split('-')[0].toLowerCase();
+        actualLang = SUPPORTED_CODES.includes(sysLang) ? sysLang : FALLBACK_LANG;
+    }
+
+    const langs = new Set();
+    langs.add(actualLang);
+    langs.add(`${actualLang}-${actualLang.toUpperCase()}`);
+    langs.add('en-US');
+    langs.add('en');
+    
+    return Array.from(langs).join(',');
+}
 
 /**
  * Fetch JSON from Nominatim with timeout + abort handling.
@@ -57,7 +80,7 @@ export async function searchNominatim(query) {
         format: 'json',
         addressdetails: '1',
         limit: String(MAX_RESULTS),
-        'accept-language': 'id,en-US'
+        'accept-language': getAcceptLanguage()
     });
 
     const results = await nominatimFetch(`${NOMINATIM_SEARCH}?${params}`);
@@ -79,7 +102,7 @@ export async function reverseGeocodeNominatim(lat, lon) {
         format: 'json',
         addressdetails: '1',
         zoom: '14', // suburb/village level detail
-        'accept-language': 'id,en-US'
+        'accept-language': getAcceptLanguage()
     });
 
     const result = await nominatimFetch(`${NOMINATIM_REVERSE}?${params}`);

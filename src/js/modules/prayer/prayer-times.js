@@ -10,15 +10,33 @@ import iconSunSetSvg from '../../../assets/icon/sun-set.svg?raw';
 import iconSunFogSvg from '../../../assets/icon/sun-fog.svg?raw';
 import iconCloudSunSvg from '../../../assets/icon/cloud-sun.svg?raw';
 
+import { t } from '../../core/i18n.js';
+
+/**
+ * Central prayer definition list.
+ * `name` has been removed — use getPrayerName(key) which reads from i18n.
+ * `key` matches both the API response field and the i18n translation key.
+ */
 export const PRAYER_LIST = [
-    { key: 'imsak', name: 'Imsak', icon: iconMoonStarsSvg },
-    { key: 'subuh', name: 'Subuh', icon: iconSunFogSvg },
-    { key: 'terbit', name: 'Terbit', icon: iconSunRiseSvg },
-    { key: 'dzuhur', name: 'Dzuhur', icon: iconSunSvg },
-    { key: 'ashar', name: 'Ashar', icon: iconCloudSunSvg },
-    { key: 'magrib', name: 'Magrib', icon: iconSunSetSvg },
-    { key: 'isya', name: "Isya'", icon: iconMoonSvg },
+    { key: 'imsak',  icon: iconMoonStarsSvg },
+    { key: 'subuh',  icon: iconSunFogSvg },
+    { key: 'terbit', icon: iconSunRiseSvg },
+    { key: 'dzuhur', icon: iconSunSvg },
+    { key: 'ashar',  icon: iconCloudSunSvg },
+    { key: 'magrib', icon: iconSunSetSvg },
+    { key: 'isya',   icon: iconMoonSvg },
 ];
+
+/**
+ * Get a translated prayer name from the i18n system.
+ * The namespace 'modules/prayer/prayer-times' must be loaded by the parent component.
+ *
+ * @param {string} key - Prayer key (e.g. 'subuh', 'dzuhur')
+ * @returns {string} Translated name (e.g. 'Subuh' in ID, 'Fajr' in EN)
+ */
+export function getPrayerName(key) {
+    return t(`modules/prayer/prayer-times:${key}`);
+}
 
 export function parseTimeToDate(timeStr) {
     if (!timeStr) return null;

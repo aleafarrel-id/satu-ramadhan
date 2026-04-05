@@ -1,0 +1,14 @@
+{
+    "header": "YOUR LOCATION",
+    "not_set": "Location not set",
+    "hint": "Tap to set location",
+    "btn_set": "Set",
+    "btn_change": "Change",
+    "detecting": "Detecting Location...",
+    "gps_off": "GPS is not enabled",
+    "detected": "Location detected: {{name}}",
+    "fail_retry": "Failed to detect location, please try again",
+    "fail_gps": "Failed to detect location, ensure GPS is active",
+    "set_success": "Location set: {{name}}",
+    "unknown_location": "Unknown Location"
+}

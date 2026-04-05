@@ -9,6 +9,7 @@ import { impact } from '../../modules/system/haptic.js';
 
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlayEl = null;
 let _onConfirmCallback = null;
@@ -28,16 +29,22 @@ let _releaseFocus = null;
  * @param {Function} [config.onCancel] - Optional callback executed when user cancels/dismisses
  * @param {string} [config.theme='default'] - Visual theme constraint, e.g. 'quran'
  */
-export function showConfirmModal({
+export async function showConfirmModal({
     title,
     message,
-    confirmText = 'Hapus',
-    cancelText = 'Batal',
+    confirmText,
+    cancelText,
     isDanger = true,
     theme = 'default',
     onConfirm,
     onCancel
 }) {
+    // Load common namespace before rendering
+    await loadNS('common');
+
+    // Use translated defaults after namespace is loaded
+    if (confirmText === undefined) confirmText = t('delete');
+    if (cancelText === undefined) cancelText = t('cancel');
     // If a modal is already open, remove it immediately to prevent overlap issues
     if (_overlayEl) {
         unregisterModalDismiss(handleCancel);

@@ -15,6 +15,7 @@ import { handleOrgToggle as handleOrgToggleShared } from '../components/prayer/p
 import { renderHomeSkeleton } from '../components/skeleton/skeleton-home.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { renderCountdownCard } from '../components/card/countdown-card.js';
+import { t, loadNS } from '../core/i18n.js';
 
 import { safeClear } from '../utils/dom-utils.js';
 
@@ -47,6 +48,13 @@ export async function render(container, options = {}) {
         _unsubscribe.forEach(id => store.unsubscribe(id));
     }
     _unsubscribe = [];
+
+    await loadNS('pages/home-page');
+    await loadNS('components/card/location-card');
+    await loadNS('components/card/countdown-card');
+    await loadNS('modules/prayer/prayer-times');
+    await loadNS('components/prayer/prayer-widgets');
+    await loadNS('components/card/qibla-map-card');
 
     safeClear(container);
     renderSkeleton(null);
@@ -168,16 +176,16 @@ async function renderContent() {
     if (!_timings) {
         const emptyStateProps = !loc ? {
             icon: 'bx-map-pin',
-            title: 'Atur Lokasi Anda',
-            description: 'Jadwal sholat akan ditampilkan setelah lokasi diatur melalui Pengaturan.',
+            title: t('pages/home-page:error_no_location_title'),
+            description: t('pages/home-page:error_no_location_desc'),
             compact: true,
         } : {
             icon: 'bx-wifi-off',
             iconVariant: 'warning',
-            title: 'Gagal Memuat Jadwal',
-            description: 'Periksa koneksi internet Anda dan coba lagi.',
+            title: t('pages/home-page:error_offline_title'),
+            description: t('pages/home-page:error_offline_desc'),
             action: {
-                label: 'Coba Lagi',
+                label: t('retry'),
                 icon: 'bx-refresh',
                 onclick: 'location.reload()',
             },
@@ -195,7 +203,7 @@ async function renderContent() {
         contentHtml = `
             ${renderCountdownCard(prayerState)}
             <div class="home-schedule-header">
-                <div class="schedule-title">Jadwal Hari Ini</div>
+                <div class="schedule-title">${t('pages/home-page:schedule_today')}</div>
                 <div class="schedule-nav__arrows shadow-sm">
                     <button class="schedule-nav__btn schedule-nav__btn--prev${tubeActive}" id="home-view-tube">
                         <i class='bx bx-grid-alt'></i>
@@ -219,7 +227,7 @@ async function renderContent() {
         ${renderLocationCardShared(loc)}
         ${contentHtml}
     `;
-    
+
     // Append all internal elements of the wrapper to the container
     while (wrapper.firstChild) {
         _container.appendChild(wrapper.firstChild);

@@ -6,6 +6,7 @@
 
 // Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 // Utilities & Helpers
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
@@ -21,9 +22,11 @@ let _releaseFocus = null;
  * @param {Function} options.onManualSelect      - called when user picks "Pilih Manual"
  * @returns {void}
  */
-export function showLocationModal({ onLocationDetected, onManualSelect }) {
+export async function showLocationModal({ onLocationDetected, onManualSelect }) {
     // Prevent duplicates
     if (_overlayEl) removeModal();
+
+    await loadNS('components/modal/location-modal');
 
     _overlayEl = createModalDOM();
     document.body.appendChild(_overlayEl);
@@ -120,19 +123,18 @@ function createModalDOM() {
             <div class="location-modal__icon">
                 <i class='bx bx-map-pin'></i>
             </div>
-            <h2 class="location-modal__title">Izinkan Akses Lokasi</h2>
+            <h2 class="location-modal__title">${t('components/modal/location-modal:title')}</h2>
             <p class="location-modal__desc">
-                Untuk menampilkan jadwal sholat yang akurat sesuai lokasi Anda,
-                aplikasi memerlukan akses GPS perangkat.
+                ${t('components/modal/location-modal:desc')}
             </p>
             <div class="location-modal__buttons" data-focus-group="location-modal-btns" data-focus-direction="vertical">
                 <button class="location-modal__btn-gps" id="loc-modal-btn-gps" data-focus-item>
                     <i class='bx bx-current-location'></i>
-                    <span>Akses Lokasi</span>
+                    <span>${t('components/modal/location-modal:btn_gps')}</span>
                 </button>
                 <button class="location-modal__btn-manual" id="loc-modal-btn-manual" data-focus-item>
                     <i class='bx bx-search'></i>
-                    <span>Pilih Manual</span>
+                    <span>${t('components/modal/location-modal:btn_manual')}</span>
                 </button>
             </div>
         </div>

@@ -1,0 +1,6 @@
+{
+    "error_no_location_title": "Lokasi Belum Diatur",
+    "error_no_location_desc": "Jadwal akan ditampilkan setelah lokasi Anda diatur.",
+    "error_offline_title": "Gagal Memuat Jadwal",
+    "error_offline_desc": "Periksa koneksi internet Anda dan coba lagi."
+}

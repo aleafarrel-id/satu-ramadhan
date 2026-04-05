@@ -3,6 +3,8 @@
  * Displays the Qibla angle from API and current device heading
  */
 
+import { t } from '../../core/i18n.js';
+
 /**
  * Render the full Qibla info card
  * @returns {string} HTML string
@@ -11,8 +13,8 @@ export function renderQiblaInfoCard() {
     return `
         <div class="card qibla-info-card">
             <div class="qibla-info-card__header">
-                <span>ARAH KIBLAT</span>
-                <button class="btn btn--compass-guide" id="btn-compass-guide" aria-label="Panduan Kalibrasi">
+                <span>${t('components/card/qibla-info-card:title')}</span>
+                <button class="btn btn--compass-guide" id="btn-compass-guide" aria-label="${t('components/card/qibla-info-card:calibration_guide')}">
                     <i class='bx bx-info-circle'></i>
                 </button>
             </div>
@@ -42,7 +44,7 @@ export function renderQiblaInfoCard() {
             
             <!-- Fallback text for devices without Gyroscope -->
             <div class="qibla-info-card__fallback" id="qibla-fallback-text">
-                Perangkat tidak memiliki sensor gyroscope.
+                ${t('components/card/qibla-info-card:no_gyroscope')}
             </div>
         </div>
     `;

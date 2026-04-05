@@ -11,7 +11,7 @@ import { isNative } from './modules/system/platform.js';
 
 // State & Core Services
 import { store } from './core/store.js';
-import { initI18n, changeLanguage } from './core/i18n.js';
+import { initI18n, changeLanguage, loadNS, t } from './core/i18n.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
     initNotificationService,
@@ -67,14 +67,19 @@ export async function initApp() {
         if (headerEl) header.render(headerEl);
 
         const navEl = document.getElementById('bottom-nav');
-        if (navEl) navBar.render(navEl, handleNavigation);
+        if (navEl) {
+            const currentPage = router.getCurrentPage() || 'home';
+            await navBar.render(navEl, handleNavigation, currentPage);
+        }
+
+        document.title = t('common:app_name');
 
         await refreshCurrentPage();
     });
 
     // Set dynamic app name, version, and developer on splash screen
     const splashTitleEl = document.querySelector('.splash-title');
-    if (splashTitleEl) splashTitleEl.textContent = CONFIG.appName;
+    if (splashTitleEl) splashTitleEl.textContent = t('common:app_name');
 
     const splashVersionEl = document.getElementById('splash-version');
     if (splashVersionEl) splashVersionEl.textContent = `v ${CONFIG.version}`;
@@ -82,8 +87,11 @@ export async function initApp() {
     const splashSubtitleEl = document.getElementById('splash-subtitle');
     if (splashSubtitleEl) splashSubtitleEl.textContent = `by ${CONFIG.developer}`;
 
+    const splashLoadingTextEl = document.getElementById('splash-loading-text');
+    if (splashLoadingTextEl) splashLoadingTextEl.textContent = t('common:app_loading');
+
     // Set document title dynamically
-    document.title = CONFIG.appName;
+    document.title = t('common:app_name');
 
     // Initialize hardware back button handler
     initBackHandler();
@@ -105,6 +113,9 @@ export async function initApp() {
     const fillEl = document.getElementById('splash-loading-fill');
     const splashStart = Date.now();
 
+    // Enable i18n for Pull to Refresh
+    await loadNS('utils/pull-to-refresh');
+
     // Initialize global pull-to-refresh
     // - Triggers soft-reload preserving the app shell and avoiding splash screen
     // - Disabled when Quran modal is active to prevent gesture collision
@@ -112,6 +123,9 @@ export async function initApp() {
         scrollElement: '#app-content',
         threshold: 80,
         disableOnQuran: true,
+        textPull: t('utils/pull-to-refresh:text_pull'),
+        textRelease: t('utils/pull-to-refresh:text_release'),
+        textRefreshing: t('utils/pull-to-refresh:text_refreshing'),
         async onRefresh() {
             await refreshCurrentPage();
         }
