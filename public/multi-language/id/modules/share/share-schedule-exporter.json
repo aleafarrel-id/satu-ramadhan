@@ -14,5 +14,9 @@
     "tpl_th_maghrib": "Maghrib",
     "tpl_th_isya": "Isya",
     "tpl_note_1": "* Waktu sholat berdasarkan perhitungan astronomis oleh sumber data terkait",
-    "tpl_note_2": "* Jadwal dibuat secara otomatis oleh aplikasi {{appName}}"
+    "tpl_note_2": "* Jadwal dibuat secara otomatis oleh aplikasi {{appName}}",
+    "default_filename": "jadwal-imsakiyah",
+    "default_filename_png": "jadwal-imsakiyah.png",
+    "share_title": "Jadwal Imsakiyah",
+    "share_dialog_title": "Bagikan Jadwal"
 }

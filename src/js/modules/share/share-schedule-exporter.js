@@ -12,7 +12,9 @@ import { t } from '../../core/i18n.js';
 
 const TEMPLATE_WIDTH = 1240;
 const TEMPLATE_HEIGHT = 1754;
-const DEFAULT_FILENAME = 'jadwal-imsakiyah.png';
+
+const getDefaultFilenamePng = () => t('modules/share/share-schedule-exporter:default_filename_png') || 'jadwal-imsakiyah.png';
+const getDefaultFilename = () => t('modules/share/share-schedule-exporter:default_filename') || 'jadwal-imsakiyah';
 
 /**
  * Capture a DOM element as a canvas using html-to-image.
@@ -60,15 +62,17 @@ export async function captureScheduleImage(element) {
  * @param {string} [filename]
  * @returns {Promise<void>}
  */
-export async function downloadScheduleImage(canvas, filename = DEFAULT_FILENAME) {
+export async function downloadScheduleImage(canvas, filename = null) {
     if (!canvas) throw new Error('downloadScheduleImage: canvas is required');
+
+    if (!filename) filename = getDefaultFilenamePng();
 
     if (isNative) {
         try {
             const dataUrl = canvas.toDataURL('image/png');
 
-            let nativeFileName = filename === DEFAULT_FILENAME
-                ? `jadwal-imsakiyah-${Date.now()}`
+            let nativeFileName = filename === getDefaultFilenamePng()
+                ? `${getDefaultFilename()}-${Date.now()}`
                 : filename.replace(/\.png$/i, '');
 
             // On Android, albumIdentifier is required.
@@ -141,11 +145,11 @@ export async function shareScheduleImage(canvas) {
             try {
                 const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 if (blob) {
-                    const file = new File([blob], 'jadwal-imsakiyah.png', { type: 'image/png' });
+                    const file = new File([blob], getDefaultFilenamePng(), { type: 'image/png' });
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
                         await navigator.share({
                             files: [file],
-                            title: 'Jadwal Imsakiyah'
+                            title: t('modules/share/share-schedule-exporter:share_title') || 'Jadwal Imsakiyah'
                         });
                         return; // Successfully shared
                     }
@@ -167,7 +171,7 @@ export async function shareScheduleImage(canvas) {
         const dataUrl = canvas.toDataURL('image/png');
         const base64Data = dataUrl.split(',')[1];
 
-        const fileName = `jadwal-${Date.now()}.png`;
+        const fileName = `${getDefaultFilename()}-${Date.now()}.png`;
 
         await Filesystem.writeFile({
             path: fileName,
@@ -181,10 +185,10 @@ export async function shareScheduleImage(canvas) {
         });
 
         await Share.share({
-            title: 'Jadwal Imsakiyah',
+            title: t('modules/share/share-schedule-exporter:share_title') || 'Jadwal Imsakiyah',
             // Omit text property to force native apps (like WhatsApp) to attach the image
             files: [uri],
-            dialogTitle: 'Bagikan Jadwal',
+            dialogTitle: t('modules/share/share-schedule-exporter:share_dialog_title') || 'Bagikan Jadwal',
         });
 
         await Filesystem.deleteFile({
