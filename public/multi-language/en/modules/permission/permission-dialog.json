@@ -1,0 +1,17 @@
+{
+    "notif_title": "Notification Permission",
+    "notif_desc": "To display accurate Adhan notifications, the application requires notification permission.",
+    "notif_f1": "Daily Adhan reminders",
+    "notif_f2": "Prayer time notifications",
+    "notif_f3": "Can be disabled anytime",
+    "notif_confirm": "Allow Notifications",
+    "notif_cancel": "Skip",
+    "storage_title": "Storage Permission",
+    "storage_desc": "To save and share prayer schedule images, the application requires storage access.",
+    "storage_f1": "Save schedules as images",
+    "storage_f2": "Share schedules to social media",
+    "storage_f3": "Only accesses app-generated files",
+    "storage_confirm": "Allow Access",
+    "storage_cancel": "Cancel",
+    "processing": "Processing..."
+}

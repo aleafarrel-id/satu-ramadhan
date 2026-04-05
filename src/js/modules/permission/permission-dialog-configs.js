@@ -13,53 +13,55 @@
  */
 
 import { showPermissionDialog } from './permission-dialog.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 /* ─────────────────────────────────────────────
    Content Registry
    ───────────────────────────────────────────── */
 
 /**
- * @type {Record<string, import('./permission-dialog.js').PermissionDialogConfig>}
+ * Returns dynamic permission dialog configurations based on the
+ * current active i18next language resolving to `modules/permission/permission-dialog`.
  */
-export const PERMISSION_CONFIGS = {
+function getPermissionConfigs() {
+    return {
+        /**
+         * Native OS notification permission rationale.
+         * Shown once on first launch if permission has not been granted.
+         */
+        notification: {
+            icon: 'bx-bell',
+            iconColor: 'accent',
+            title: t('modules/permission/permission-dialog:notif_title'),
+            description: t('modules/permission/permission-dialog:notif_desc'),
+            features: [
+                { icon: 'bxs-bell-ring', label: t('modules/permission/permission-dialog:notif_f1') },
+                { icon: 'bx-bell', label: t('modules/permission/permission-dialog:notif_f2') },
+                { icon: 'bx-bell-off', label: t('modules/permission/permission-dialog:notif_f3') },
+            ],
+            confirmText: t('modules/permission/permission-dialog:notif_confirm'),
+            cancelText: t('modules/permission/permission-dialog:notif_cancel'),
+        },
 
-    /**
-     * Native OS notification permission rationale.
-     * Shown once on first launch if permission has not been granted.
-     */
-    notification: {
-        icon: 'bx-bell',
-        iconColor: 'accent',
-        title: 'Izin Notifikasi',
-        description: 'Untuk dapat menampilkan notifikasi adzan tepat waktu, aplikasi memerlukan izin notifikasi.',
-        features: [
-            { icon: 'bxs-bell-ring', label: 'Pengingat adzan setiap hari' },
-            { icon: 'bx-bell', label: 'Notifikasi waktu sholat' },
-            { icon: 'bx-bell-off', label: 'Dapat dinonaktifkan kapan saja' },
-        ],
-        confirmText: 'Izinkan Notifikasi',
-        cancelText: 'Lewati',
-    },
-
-    /**
-     * Native OS filesystem/public storage permission rationale.
-     * Shown when the user attempts to download or share a schedule image.
-     */
-    storage: {
-        icon: 'bx-folder-open',
-        iconColor: 'primary',
-        title: 'Izin Penyimpanan',
-        description: 'Untuk menyimpan dan membagikan gambar jadwal sholat, aplikasi memerlukan akses penyimpanan.',
-        features: [
-            { icon: 'bx-down-arrow-circle', label: 'Simpan jadwal sebagai gambar' },
-            { icon: 'bx-share-alt', label: 'Bagikan jadwal ke media sosial' },
-            { icon: 'bx-lock-alt', label: 'Hanya akses file buatan aplikasi' },
-        ],
-        confirmText: 'Izinkan Akses',
-        cancelText: 'Batal',
-    },
-
-};
+        /**
+         * Native OS filesystem/public storage permission rationale.
+         * Shown when the user attempts to download or share a schedule image.
+         */
+        storage: {
+            icon: 'bx-folder-open',
+            iconColor: 'primary',
+            title: t('modules/permission/permission-dialog:storage_title'),
+            description: t('modules/permission/permission-dialog:storage_desc'),
+            features: [
+                { icon: 'bx-down-arrow-circle', label: t('modules/permission/permission-dialog:storage_f1') },
+                { icon: 'bx-share-alt', label: t('modules/permission/permission-dialog:storage_f2') },
+                { icon: 'bx-lock-alt', label: t('modules/permission/permission-dialog:storage_f3') },
+            ],
+            confirmText: t('modules/permission/permission-dialog:storage_confirm'),
+            cancelText: t('modules/permission/permission-dialog:storage_cancel'),
+        },
+    };
+}
 
 /* ─────────────────────────────────────────────
    Helper
@@ -68,13 +70,16 @@ export const PERMISSION_CONFIGS = {
 /**
  * Show a permission dialog using a named content preset.
  * The only things supplied at the call site are the async callbacks —
- * all visual content lives in PERMISSION_CONFIGS above.
+ * Wait for namespace loading prior to calling to ensure texts are populated.
  *
- * @param {keyof PERMISSION_CONFIGS} key       - Preset key (e.g. 'notification').
+ * @param {string} key       - Preset key (e.g. 'notification').
  * @param {{ onConfirm: Function, onCancel?: Function }} callbacks
  */
-export function showPermissionDialogPreset(key, { onConfirm, onCancel } = {}) {
-    const config = PERMISSION_CONFIGS[key];
+export async function showPermissionDialogPreset(key, { onConfirm, onCancel } = {}) {
+    await loadNS('modules/permission/permission-dialog');
+
+    const configs = getPermissionConfigs();
+    const config = configs[key];
 
     if (!config) {
         console.warn(`[PermissionDialogConfigs] Unknown preset key: "${key}"`);

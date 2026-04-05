@@ -19,5 +19,8 @@
     "notif_magrib_title": "Maghrib Time",
     "notif_magrib_body": "It's time for Maghrib prayer",
     "notif_isya_title": "Isha Time",
-    "notif_isya_body": "It's time for Isha prayer"
+    "notif_isya_body": "It's time for Isha prayer",
+    "system_adzan_title": "Adhan %1$s",
+    "system_adzan_body": "%1$s has arrived",
+    "system_stop_adzan": "Stop Adhan"
 }

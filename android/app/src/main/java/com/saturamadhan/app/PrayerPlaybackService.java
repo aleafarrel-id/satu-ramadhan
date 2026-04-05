@@ -171,6 +171,17 @@ public class PrayerPlaybackService extends Service {
     }
 
     private Notification buildNotification(String prayerName) {
+        // Retrieve explicit multilanguage text from preferences
+        android.content.SharedPreferences prefs = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        
+        String formatTitle = prefs.getString("system_adzan_title", null);
+        String titleStr = formatTitle != null ? String.format(formatTitle, prayerName) : getString(R.string.notification_title_adzan, prayerName);
+        
+        String formatBody = prefs.getString("system_adzan_body", null);
+        String bodyStr = formatBody != null ? String.format(formatBody, prayerName) : getString(R.string.notification_text_adzan_arrived, prayerName);
+        
+        String stopAdzanText = prefs.getString("system_stop_adzan", getString(R.string.notification_action_stop_adzan));
+
         // Stop Action
         Intent stopIntent = new Intent(this, PrayerActionReceiver.class);
         stopIntent.setAction(Constants.ACTION_STOP_PRAYER);
@@ -192,12 +203,12 @@ public class PrayerPlaybackService extends Service {
         );
 
         return new NotificationCompat.Builder(this, Constants.CHANNEL_ID_PLAYBACK)
-                .setContentTitle(getString(R.string.notification_title_adzan, prayerName))
-                .setContentText(getString(R.string.notification_text_adzan_arrived, prayerName))
+                .setContentTitle(titleStr)
+                .setContentText(bodyStr)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
-                .addAction(android.R.drawable.ic_media_pause, getString(R.string.notification_action_stop_adzan), stopPendingIntent)
+                .addAction(android.R.drawable.ic_media_pause, stopAdzanText, stopPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .build();

@@ -7,7 +7,8 @@
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { store } from '../../core/store.js';
-import { getLanguageLabel } from '../../config/languages.js';
+import { getLanguageLabel, getLanguageByCode } from '../../config/languages.js';
+import * as Notif from '../../modules/notification/notification.js';
 
 export async function render(container) {
    await loadNS('components/settings/settings-display-panel');
@@ -45,9 +46,16 @@ export async function render(container) {
             currentLang,
             onSelect: async (langCode) => {
                if (langCode !== currentLang) {
-                   // Just use the store. app.js will listen to this,
-                   // apply the language change, and softly reload the current view.
                    store.setState('settings.language', langCode);
+
+                   // Notify user of success
+                   await loadNS('components/modal/app-language-modal');
+                   const langEntry = getLanguageByCode(langCode);
+                   const label = langCode === 'auto' 
+                       ? t('components/modal/app-language-modal:auto')
+                       : (langEntry?.nativeLabel || langCode);
+
+                   Notif.show(t('components/settings/settings-display-panel:language_changed', { label }), 'success');
                }
             }
          });

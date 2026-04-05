@@ -1,0 +1,17 @@
+{
+    "notif_title": "Izin Notifikasi",
+    "notif_desc": "Untuk dapat menampilkan notifikasi adzan tepat waktu, aplikasi memerlukan izin notifikasi.",
+    "notif_f1": "Pengingat adzan setiap hari",
+    "notif_f2": "Notifikasi waktu sholat",
+    "notif_f3": "Dapat dinonaktifkan kapan saja",
+    "notif_confirm": "Izinkan Notifikasi",
+    "notif_cancel": "Lewati",
+    "storage_title": "Izin Penyimpanan",
+    "storage_desc": "Untuk menyimpan dan membagikan gambar jadwal sholat, aplikasi memerlukan akses penyimpanan.",
+    "storage_f1": "Simpan jadwal sebagai gambar",
+    "storage_f2": "Bagikan jadwal ke media sosial",
+    "storage_f3": "Hanya akses file buatan aplikasi",
+    "storage_confirm": "Izinkan Akses",
+    "storage_cancel": "Batal",
+    "processing": "Memproses..."
+}

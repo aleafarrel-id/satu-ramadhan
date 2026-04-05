@@ -130,6 +130,11 @@ export async function syncNotifications() {
                 alarms: alarmsToSchedule,
                 anchorLat: location.latitude,
                 anchorLon: location.longitude,
+                systemStrings: {
+                    adzanTitle: t('modules/prayer/prayer-times:system_adzan_title') || 'Adzan %1$s',
+                    adzanBody: t('modules/prayer/prayer-times:system_adzan_body') || '%1$s Telah Tiba',
+                    stopAdzan: t('modules/prayer/prayer-times:system_stop_adzan') || 'Hentikan Adzan'
+                }
             });
             console.log(
                 `[NotifSync] Synced ${alarmsToSchedule.length} alarms ` +

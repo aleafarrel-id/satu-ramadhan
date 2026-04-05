@@ -1,4 +1,5 @@
 {
     "section": "DISPLAY",
-    "language": "Language"
+    "language": "Language",
+    "language_changed": "App language changed to {{label}}"
 }

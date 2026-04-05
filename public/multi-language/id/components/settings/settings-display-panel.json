@@ -1,4 +1,5 @@
 {
     "section": "TAMPILAN",
-    "language": "Bahasa"
+    "language": "Bahasa",
+    "language_changed": "Bahasa aplikasi diubah ke {{label}}"
 }

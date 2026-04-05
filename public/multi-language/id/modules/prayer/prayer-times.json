@@ -19,5 +19,8 @@
     "notif_magrib_title": "Waktu Magrib",
     "notif_magrib_body": "Saatnya menunaikan sholat Magrib",
     "notif_isya_title": "Waktu Isya",
-    "notif_isya_body": "Saatnya menunaikan sholat Isya"
+    "notif_isya_body": "Saatnya menunaikan sholat Isya",
+    "system_adzan_title": "Adzan %1$s",
+    "system_adzan_body": "%1$s Telah Tiba",
+    "system_stop_adzan": "Hentikan Adzan"
 }

@@ -5,6 +5,7 @@
 
 import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 let _overlayEl    = null;
 let _onConfirm    = null;
@@ -62,12 +63,14 @@ async function handleConfirm() {
     if (_isConfirming) return;
     _isConfirming = true;
 
+    await loadNS('modules/permission/permission-dialog');
+
     const btn = _overlayEl?.querySelector('#perm-dialog-btn-confirm');
     let originalHtml = '';
     if (btn) {
         originalHtml = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i><span>Memproses...</span>`;
+        btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i><span>${t('modules/permission/permission-dialog:processing')}</span>`;
     }
 
     try {

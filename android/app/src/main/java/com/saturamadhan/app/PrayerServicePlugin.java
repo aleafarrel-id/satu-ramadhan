@@ -50,6 +50,11 @@ public class PrayerServicePlugin extends Plugin {
             saveAnchorLocation(context, anchorLat, anchorLon);
         }
 
+        JSObject systemStrings = call.getObject("systemStrings", null);
+        if (systemStrings != null) {
+            saveSystemStringsToStorage(context, systemStrings);
+        }
+
         saveAlarmsToStorage(context, alarmsArr);
         setNotificationsEnabled(context, true);
         scheduleAlarms(context, alarmsArr);
@@ -147,6 +152,16 @@ public class PrayerServicePlugin extends Plugin {
     private void saveAlarmsToStorage(Context context, JSArray alarms) {
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString("alarms_data", alarms.toString()).apply();
+    }
+
+    private void saveSystemStringsToStorage(Context context, JSObject systemStrings) {
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        if (systemStrings.has("adzanTitle")) editor.putString("system_adzan_title", systemStrings.getString("adzanTitle"));
+        if (systemStrings.has("adzanBody")) editor.putString("system_adzan_body", systemStrings.getString("adzanBody"));
+        if (systemStrings.has("stopAdzan")) editor.putString("system_stop_adzan", systemStrings.getString("stopAdzan"));
+        editor.apply();
+        Log.d(TAG, "System strings populated correctly: " + systemStrings.getString("stopAdzan"));
     }
 
     public static void rescheduleAlarmsFromStorage(Context context) {

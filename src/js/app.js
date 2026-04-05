@@ -11,7 +11,7 @@ import { isNative } from './modules/system/platform.js';
 
 // State & Core Services
 import { store } from './core/store.js';
-import { initI18n, changeLanguage, loadNS, t } from './core/i18n.js';
+import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
     initNotificationService,
@@ -45,6 +45,8 @@ import * as homePage from './pages/home-page.js';
 const SPLASH_MIN_DURATION = 1500;
 const POST_SPLASH_DIALOG_DELAY = 1500;
 
+let _cleanupPtr = null;
+
 /**
  * Initialize the entire application
  */
@@ -63,6 +65,9 @@ export async function initApp() {
     store.subscribe('settings.language', async (lang) => {
         await changeLanguage(lang);
 
+        // Dynamically update document layout language for Screen Readers
+        document.documentElement.lang = getCurrentLang();
+
         const headerEl = document.getElementById('app-header');
         if (headerEl) header.render(headerEl);
 
@@ -73,6 +78,13 @@ export async function initApp() {
         }
 
         document.title = t('common:app_name');
+
+        // Safely re-initialize Global Pull-To-Refresh to mount new translated strings
+        if (_cleanupPtr) {
+            _cleanupPtr();
+            _cleanupPtr = null;
+        }
+        await setupGlobalPullToRefresh();
 
         await refreshCurrentPage();
     });
@@ -113,23 +125,11 @@ export async function initApp() {
     const fillEl = document.getElementById('splash-loading-fill');
     const splashStart = Date.now();
 
-    // Enable i18n for Pull to Refresh
-    await loadNS('utils/pull-to-refresh');
+    // Configure HTML lang for accessibility on startup
+    document.documentElement.lang = getCurrentLang();
 
     // Initialize global pull-to-refresh
-    // - Triggers soft-reload preserving the app shell and avoiding splash screen
-    // - Disabled when Quran modal is active to prevent gesture collision
-    initPullToRefresh({
-        scrollElement: '#app-content',
-        threshold: 80,
-        disableOnQuran: true,
-        textPull: t('utils/pull-to-refresh:text_pull'),
-        textRelease: t('utils/pull-to-refresh:text_release'),
-        textRefreshing: t('utils/pull-to-refresh:text_refreshing'),
-        async onRefresh() {
-            await refreshCurrentPage();
-        }
-    });
+    await setupGlobalPullToRefresh();
 
     // Animate loading bar
     animateLoadingBar(fillEl);
@@ -221,6 +221,26 @@ function animateLoadingBar(fillEl) {
 
     // Start after a small delay
     setTimeout(nextStep, 200);
+}
+
+/**
+ * Sets up the Global Pull to Refresh mechanism.
+ * Injects translated strings securely and allows safe teardown.
+ */
+async function setupGlobalPullToRefresh() {
+    await loadNS('utils/pull-to-refresh');
+
+    _cleanupPtr = initPullToRefresh({
+        scrollElement: '#app-content',
+        threshold: 80,
+        disableOnQuran: true,
+        textPull: t('utils/pull-to-refresh:text_pull'),
+        textRelease: t('utils/pull-to-refresh:text_release'),
+        textRefreshing: t('utils/pull-to-refresh:text_refreshing'),
+        async onRefresh() {
+            await refreshCurrentPage();
+        }
+    });
 }
 
 /**
