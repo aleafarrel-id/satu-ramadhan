@@ -59,8 +59,25 @@ async function _resolveHandler(path) {
  */
 export async function navigate(path, { pushHistory = true } = {}) {
     // Avoid double navigation or pushing same page
-    if (_isNavigating || _currentPage === path) return;
+    if (_currentPage === path) {
+        // Enforce UI sync just in case
+        if (_onNavigateCallback && _currentPage) _onNavigateCallback(_currentPage);
+        return;
+    }
+
+    // If locked by another operation (e.g. language change or active navigation),
+    // reject it and force UI back to the current safe state
+    if (_isNavigating) {
+        if (_onNavigateCallback && _currentPage) _onNavigateCallback(_currentPage);
+        return;
+    }
+
     _isNavigating = true;
+
+    // Immediately notify listeners for an optimistic, sub-millisecond UI update
+    if (_onNavigateCallback) {
+        _onNavigateCallback(path);
+    }
 
     try {
         if (pushHistory && _currentPage) {
@@ -92,11 +109,12 @@ export async function navigate(path, { pushHistory = true } = {}) {
         }
 
         _currentPage = path;
-
-        // Notify listeners of navigation change
-        if (_onNavigateCallback) {
-            _onNavigateCallback(path);
+    } catch (error) {
+        // Fallback UI to valid state if navigation throws an error
+        if (_onNavigateCallback && _currentPage) {
+            _onNavigateCallback(_currentPage);
         }
+        console.error('[Router] Navigation failed:', error);
     } finally {
         _isNavigating = false;
     }
@@ -127,6 +145,8 @@ export async function refreshCurrentPage() {
  * Go back to previous page in history
  */
 export function goBack() {
+    if (_isNavigating) return null; // Protect against corrupting history during transitions
+    
     if (_history.length > 0) {
         const prev = _history.pop();
         navigate(prev, { pushHistory: false });

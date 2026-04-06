@@ -76,7 +76,6 @@ export async function render(container, onNavigate, initialActiveTabId = 'home')
  * Handle tab click with haptic feedback
  */
 function handleClick(tabId) {
-    setActive(tabId);
     if (_onNavigate) _onNavigate(tabId);
 }
 
