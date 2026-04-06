@@ -17,13 +17,26 @@ import { success, error, info } from '../notification/notification.js';
 const SESSION_DISMISS_KEY = 'offlineRecoveryDismissed';
 
 export function initOfflineUpdater() {
-    window.addEventListener('online', onNetworkRestored);
+    // Sync initial state
+    _updateNetworkState();
+
+    window.addEventListener('online', () => {
+        _updateNetworkState();
+        onNetworkRestored();
+    });
+
+    window.addEventListener('offline', () => {
+        _updateNetworkState();
+    });
 
     try {
         App.addListener('appStateChange', (state) => {
             if (state.isActive) {
-                // Short delay to let native network stack settle
-                setTimeout(onNetworkRestored, 1500);
+                _updateNetworkState();
+                // Short delay to let native network stack settle before checking for recovery
+                if (navigator.onLine) {
+                    setTimeout(onNetworkRestored, 1500);
+                }
             }
         });
     } catch (e) {
@@ -35,6 +48,10 @@ export function initOfflineUpdater() {
         // Slight delay to ensure the UI is fully mounted and won't visually clash with the splash screen
         setTimeout(onNetworkRestored, 3000);
     }
+}
+
+function _updateNetworkState() {
+    store.setState('network.isOffline', !navigator.onLine);
 }
 
 async function onNetworkRestored() {

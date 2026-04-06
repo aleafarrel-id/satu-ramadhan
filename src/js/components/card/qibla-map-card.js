@@ -7,12 +7,15 @@
 // Core & Libraries
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { store } from '../../core/store.js';
 
 const KAABA_LAT = 21.4225;
 const KAABA_LNG = 39.8262;
 
 const TILE_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png';
+const OFFLINE_TILE_URL = './assets/tiles/fallback/{z}/{x}/{y}.png';
 const TILE_MAX_ZOOM = 18;
+const OFFLINE_MAX_ZOOM = 3;
 const MIN_ZOOM = 2;
 const WORLD_BOUNDS = L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180));
 
@@ -21,12 +24,13 @@ const FIT_BOUNDS_PADDING = [30, 30];
 const INIT_DELAY_MS = 100;
 
 let _mapInstance = null;
+let _tileLayer = null;
 let _userMarker = null;
 let _geodesicLine = null;
-let _currentMapId = null;
 let _currentUserLat = null;
 let _currentUserLng = null;
 let _isProgrammaticMove = false;
+let _unsubStore = null;
 
 /**
  * Initialise the Leaflet map inside the rendered container.
@@ -39,7 +43,6 @@ let _isProgrammaticMove = false;
  * @returns {Promise<L.Map|null>}
  */
 export function initQiblaMapCard(mapId, userLat, userLng) {
-    _currentMapId = mapId;
     _currentUserLat = userLat;
     _currentUserLng = userLng;
 
@@ -78,6 +81,7 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
                     _geodesicLine.setLatLngs(path);
                 }
 
+                _handleNetworkChange();
                 _fitView(_mapInstance, userLat, userLng);
                 
                 _bindResetButton(card);
@@ -97,9 +101,16 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             _addMarkers(map, userLat, userLng);
             _addGeodesicLine(map, userLat, userLng);
             _bindResetButton(card);
+            
+            _mapInstance = map;
+            
+            _handleNetworkChange();
             _fitView(map, userLat, userLng);
 
-            _mapInstance = map;
+            _unsubStore = store.subscribe('network.isOffline', () => {
+                _handleNetworkChange();
+            });
+
             resolve(map);
         }, INIT_DELAY_MS);
     });
@@ -110,12 +121,17 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
  * Safe to call even if no map exists.
  */
 export function destroyQiblaMapCard() {
+    if (_unsubStore) {
+        store.unsubscribe(_unsubStore);
+        _unsubStore = null;
+    }
+
     if (_mapInstance) {
         _mapInstance.remove();
         _mapInstance = null;
+        _tileLayer = null;
         _userMarker = null;
         _geodesicLine = null;
-        _currentMapId = null;
     }
 }
 
@@ -153,7 +169,10 @@ function _createMap(mapId) {
  * @param {HTMLElement|null} card
  */
 function _addTileLayer(map, card) {
-    const layer = L.tileLayer(TILE_URL, {
+    const isOnline = navigator.onLine;
+    const url = isOnline ? TILE_URL : OFFLINE_TILE_URL;
+
+    _tileLayer = L.tileLayer(url, {
         maxZoom: TILE_MAX_ZOOM,
         noWrap: true,
         bounds: WORLD_BOUNDS,
@@ -162,8 +181,17 @@ function _addTileLayer(map, card) {
         keepBuffer: 6,
     }).addTo(map);
 
+    // Safeguard: If the tile layer fails to load (e.g. fake online), trigger global offline state
+    _tileLayer.on('tileerror', () => {
+        const isOffline = store.getState('network.isOffline');
+        if (!isOffline) {
+            console.warn('[Map] Tile error detected while onLine. Forcing global offline mode.');
+            store.setState('network.isOffline', true);
+        }
+    });
+
     // Remove the loader overlay once the tile layer is fully loaded
-    layer.on('load', () => {
+    _tileLayer.on('load', () => {
         if (card) {
             const loader = card.querySelector('.qibla-map-card__loader');
             if (loader) {
@@ -235,7 +263,12 @@ function _fitView(map, userLat, userLng) {
         [userLat, userLng],
         [KAABA_LAT, KAABA_LNG],
     );
-    map.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
+    
+    const maxZoomOpt = store.getState('network.isOffline') ? OFFLINE_MAX_ZOOM : null;
+    map.fitBounds(bounds, { 
+        padding: FIT_BOUNDS_PADDING,
+        maxZoom: maxZoomOpt
+    });
     
     map.once('moveend', () => {
         setTimeout(() => {
@@ -255,6 +288,35 @@ function _showResetButton() {
     if (card) {
         const btn = card.querySelector('.qibla-map-card__reset');
         if (btn) btn.classList.remove('hidden');
+    }
+}
+
+/**
+ * Handle network availability to toggle between offline and online map rendering smoothly.
+ */
+function _handleNetworkChange() {
+    if (!_mapInstance || !_tileLayer) return;
+
+    const isOffline = store.getState('network.isOffline');
+
+    if (!isOffline) {
+        _tileLayer.setUrl(TILE_URL);
+        _mapInstance.setMaxZoom(TILE_MAX_ZOOM);
+        
+        _mapInstance.touchZoom.enable();
+        _mapInstance.doubleClickZoom.enable();
+        _mapInstance.scrollWheelZoom.enable();
+    } else {
+        _tileLayer.setUrl(OFFLINE_TILE_URL);
+        _mapInstance.setMaxZoom(OFFLINE_MAX_ZOOM);
+        
+        if (_mapInstance.getZoom() > OFFLINE_MAX_ZOOM) {
+            _mapInstance.setZoom(OFFLINE_MAX_ZOOM);
+        }
+
+        _mapInstance.touchZoom.disable();
+        _mapInstance.doubleClickZoom.disable();
+        _mapInstance.scrollWheelZoom.disable();
     }
 }
 

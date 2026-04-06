@@ -9,6 +9,9 @@ const STATE_KEY = 'app_state';
 
 const initialState = {
     location: null,
+    network: {
+        isOffline: false
+    },
     home: {
         viewMode: 'tube'
     },

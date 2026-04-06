@@ -10,6 +10,7 @@ import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
 
 // Local offline fallback (no network required)
 import { calculateLocalDayTimes, calculateLocalMonthlyTimes, calculateLocalQibla } from './local-calculator.js';
+import { store } from './store.js';
 
 // UI Feedback
 import { warning } from '../modules/notification/notification.js';
@@ -55,6 +56,10 @@ function _notifyOffline(force = false) {
 async function _resolveLocalFallback(calculatorFn, cacheKey, showToast = true, logPrefix = '[API]') {
     console.warn(`${logPrefix} Fast-failing to local calculation (offline mode).`);
     if (showToast) _notifyOffline();
+
+    // Force global network state to offline to trigger fallbacks in other modules (like Map)
+    store.setState('network.isOffline', true);
+
     try {
         const result = calculatorFn();
         if (result !== null && result !== undefined) {
