@@ -151,7 +151,7 @@ async function loadSubPage(pageId, forceRefresh = false) {
          await previousPage.destroy();
       }
    } catch (error) {
-      console.error(`Gagal memuat subhalaman quran: ${pageId}`, error);
+      console.error(`[QuranPage] Failed to load quran subpage: ${pageId}`, error);
    }
 }
 
