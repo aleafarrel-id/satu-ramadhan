@@ -206,7 +206,7 @@ public class LocationDetectWorker extends Worker {
                 context, Constants.CHANNEL_ID_LOCATION)
                 .setContentTitle(context.getString(R.string.notification_title_location_changed))
                 .setContentText(context.getString(R.string.notification_text_location_changed))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);

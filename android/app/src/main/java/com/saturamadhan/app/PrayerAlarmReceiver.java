@@ -92,7 +92,7 @@ public class PrayerAlarmReceiver extends BroadcastReceiver {
         androidx.core.app.NotificationCompat.Builder builder = new androidx.core.app.NotificationCompat.Builder(context, channelId)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)

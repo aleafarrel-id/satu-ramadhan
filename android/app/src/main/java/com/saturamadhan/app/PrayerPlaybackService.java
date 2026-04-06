@@ -205,7 +205,7 @@ public class PrayerPlaybackService extends Service {
         return new NotificationCompat.Builder(this, Constants.CHANNEL_ID_PLAYBACK)
                 .setContentTitle(titleStr)
                 .setContentText(bodyStr)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .addAction(android.R.drawable.ic_media_pause, stopAdzanText, stopPendingIntent)
