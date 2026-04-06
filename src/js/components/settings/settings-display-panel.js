@@ -46,9 +46,11 @@ export async function render(container) {
             currentLang,
             onSelect: async (langCode) => {
                if (langCode !== currentLang) {
-                   store.setState('settings.language', langCode);
+                   // Wait for language resources to load and switch over
+                   const { changeLanguage } = await import('../../core/i18n.js');
+                   await changeLanguage(langCode);
 
-                   // Notify user of success
+                   // Notify user of success using the newly loaded namespace and language
                    await loadNS('components/modal/app-language-modal');
                    const langEntry = getLanguageByCode(langCode);
                    const label = langCode === 'auto' 

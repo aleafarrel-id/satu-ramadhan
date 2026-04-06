@@ -35,7 +35,8 @@ export async function render(container) {
     await loadNS('components/settings/settings-quran-panel');
     await loadNS('components/ui/header');
 
-    _container.innerHTML = `
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
         <div class="settings-page">
             <h2 class="settings-title">${t('pages/settings-page:title')}</h2>
             <div id="settings-loc-card-container"></div>
@@ -48,30 +49,24 @@ export async function render(container) {
         </div>
     `;
 
-    const locCardContainer = document.getElementById('settings-loc-card-container');
-    if (locCardContainer) {
-        settingsLocCard.render(locCardContainer);
-    }
+    const locCardContainer = wrapper.querySelector('#settings-loc-card-container');
+    const presetCardContainer = wrapper.querySelector('#settings-preset-card-container');
+    const displayPanelContainer = wrapper.querySelector('#settings-display-panel-container');
+    const panelContainer = wrapper.querySelector('#settings-panel-container');
+    const quranPanelContainer = wrapper.querySelector('#settings-quran-panel-container');
 
-    const presetCardContainer = document.getElementById('settings-preset-card-container');
-    if (presetCardContainer) {
-        settingsPresetCard.render(presetCardContainer);
-    }
+    // Render all components concurrently into the offline wrapper
+    await Promise.all([
+        locCardContainer && settingsLocCard.render(locCardContainer),
+        presetCardContainer && settingsPresetCard.render(presetCardContainer),
+        displayPanelContainer && settingsDisplayPanel.render(displayPanelContainer),
+        panelContainer && settingsPanel.render(panelContainer),
+        quranPanelContainer && settingsQuranPanel.render(quranPanelContainer)
+    ]);
 
-    const displayPanelContainer = document.getElementById('settings-display-panel-container');
-    if (displayPanelContainer) {
-        settingsDisplayPanel.render(displayPanelContainer);
-    }
-
-    const panelContainer = document.getElementById('settings-panel-container');
-    if (panelContainer) {
-        settingsPanel.render(panelContainer);
-    }
-
-    const quranPanelContainer = document.getElementById('settings-quran-panel-container');
-    if (quranPanelContainer) {
-        settingsQuranPanel.render(quranPanelContainer);
-    }
+    // Apply the fully hydrated HTML to the live DOM in one pass to prevent layout jumping
+    _container.innerHTML = '';
+    _container.appendChild(wrapper.firstElementChild);
 }
 
 /**

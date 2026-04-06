@@ -75,7 +75,7 @@ export function createHeader(options = {}) {
       const chevron = document.createElement('i');
       chevron.className = 'bx bx-chevron-down quran-header-title-chevron';
       titleWrapper.appendChild(chevron);
-      
+
       // Style the title wrapper to keep title + chevron centered
       titleWrapper.style.display = 'inline-flex';
       titleWrapper.style.alignItems = 'center';
@@ -84,7 +84,7 @@ export function createHeader(options = {}) {
       titleWrapper.style.border = 'none';
       titleWrapper.style.background = 'transparent';
       titleWrapper.style.padding = '4px 8px';
-      
+
       if (onTitleClick) titleWrapper.addEventListener('click', onTitleClick);
    }
    header.appendChild(titleWrapper);

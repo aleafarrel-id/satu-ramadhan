@@ -46,8 +46,8 @@ export function render(container) {
         </div>
     `;
 
-    const notificationToggle = document.getElementById('toggle-notification');
-    const adzanToggle = document.getElementById('toggle-adzan');
+    const notificationToggle = container.querySelector('#toggle-notification');
+    const adzanToggle = container.querySelector('#toggle-adzan');
 
     // Read directly from Store Manager synchronization
     if (isWeb) {
@@ -56,7 +56,7 @@ export function render(container) {
     } else {
         notificationToggle.checked = store.getState('settings.notification') !== false;
         adzanToggle.checked = store.getState('settings.adzan') !== false;
-        updateAdzanRowState(notificationToggle.checked);
+        updateAdzanRowState(notificationToggle.checked, container);
     }
 
     if (isWeb) return;
@@ -67,7 +67,7 @@ export function render(container) {
 
         if (!enabled) {
             store.setState('settings.notification', false);
-            updateAdzanRowState(false);
+            updateAdzanRowState(false, container);
             Notif.show(t('components/settings/settings-panel:notif_off'), 'info');
             return;
         }
@@ -77,7 +77,7 @@ export function render(container) {
 
         if (osGranted) {
             store.setState('settings.notification', true);
-            updateAdzanRowState(true);
+            updateAdzanRowState(true, container);
             Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
             return;
         }
@@ -88,19 +88,19 @@ export function render(container) {
                 const granted = await requestNotificationPermission();
                 if (granted) {
                     store.setState('settings.notification', true);
-                    updateAdzanRowState(true);
+                    updateAdzanRowState(true, container);
                     Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
                 } else {
                     notificationToggle.checked = false;
                     store.setState('settings.notification', false);
-                    updateAdzanRowState(false);
+                    updateAdzanRowState(false, container);
                     Notif.show(t('components/settings/settings-panel:perm_denied'), 'warning');
                 }
             },
             onCancel: () => {
                 notificationToggle.checked = false;
                 store.setState('settings.notification', false);
-                updateAdzanRowState(false);
+                updateAdzanRowState(false, container);
             },
         });
     });
@@ -120,9 +120,11 @@ export function render(container) {
  * Toggle visual disabled state on the adzan row.
  * When notifications are off, adzan toggle is irrelevant.
  * @param {boolean} notifEnabled
+ * @param {HTMLElement} [container]
  */
-function updateAdzanRowState(notifEnabled) {
-    const adzanRow = document.getElementById('adzan-row');
+function updateAdzanRowState(notifEnabled, container) {
+    const root = container || document;
+    const adzanRow = root.querySelector('#adzan-row');
     if (!adzanRow) return;
     adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
 }
