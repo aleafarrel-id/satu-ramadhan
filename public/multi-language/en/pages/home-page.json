@@ -3,5 +3,7 @@
     "error_no_location_title": "Set Your Location",
     "error_no_location_desc": "Prayer times will appear after you set a location in Settings.",
     "error_offline_title": "Failed to Load Schedule",
-    "error_offline_desc": "Check your internet connection and try again."
+    "error_offline_desc": "Check your internet connection and try again.",
+    "btn_search_location": "Search Location",
+    "btn_change_location_offline": "Change Location Manually"
 }

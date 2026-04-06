@@ -8,16 +8,16 @@
 import { PRAYER_LIST, getPrayerName } from '../../modules/prayer/prayer-times.js';
 
 // Utilities & Helpers
-import { SCHEDULE_PRAYERS, cleanTimeStr } from '../../utils/datetime.js';
+import { cleanTimeStr, LIST_PRAYER_KEYS } from '../../utils/datetime.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
 import { renderQiblaMapCard } from './qibla-map-card-markup.js';
 
 /**
- * The 5 main prayers shown in the compact list.
+ * Use the centralized list constraints (Subuh to Isya)
  */
-const LIST_PRAYERS = SCHEDULE_PRAYERS.filter(k => k !== 'imsak' && k !== 'terbit');
+const LIST_PRAYERS = LIST_PRAYER_KEYS;
 
 /** Unique map container ID to avoid collision with compass page */
 const HOME_MAP_ID = 'home-qibla-map';

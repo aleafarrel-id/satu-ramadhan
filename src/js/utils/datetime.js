@@ -12,6 +12,43 @@
 export const SCHEDULE_PRAYERS = ['imsak', 'subuh', 'terbit', 'dzuhur', 'ashar', 'magrib', 'isya'];
 
 /**
+ * Central mapping for prayer time key names across all data sources.
+ *
+ * This is the single source of truth for all prayer key transformations.
+ * - api:   Aladhan API field names  → app keys (used in transformTimings)
+ * - adhan: adhan library prop names → app keys (used in local-calculator)
+ *
+ * If a new prayer time is added, update SCHEDULE_PRAYERS AND this map.
+ */
+export const PRAYER_KEY_MAP = {
+    api: {
+        Imsak:   'imsak',
+        Fajr:    'subuh',
+        Sunrise: 'terbit',
+        Dhuhr:   'dzuhur',
+        Asr:     'ashar',
+        Maghrib: 'magrib',
+        Isha:    'isya',
+    },
+    adhan: {
+        fajr:    'subuh',
+        sunrise: 'terbit',
+        dhuhr:   'dzuhur',
+        asr:     'ashar',
+        maghrib: 'magrib',
+        isha:    'isya',
+    },
+};
+
+/**
+ * Prayer keys for the list/highlight view (excludes Imsak and Terbit).
+ * Replaces all hardcoded ['subuh', 'dzuhur', 'ashar', 'magrib', 'isya'] arrays.
+ */
+export const LIST_PRAYER_KEYS = SCHEDULE_PRAYERS.filter(
+    k => k !== 'imsak' && k !== 'terbit'
+);
+
+/**
  * Short date format.
  * @param {string} dateStr - YYYY-MM-DD
  * @param {string[]} monthNames - Array of 12 short month names (0-indexed)

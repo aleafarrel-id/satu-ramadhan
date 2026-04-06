@@ -28,6 +28,7 @@
     "@capacitor/share": "^8.0.1",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "8.0.1",
+    "adhan": "^4.4.3",
     "cordova.plugins.diagnostic": "^7.2.10",
     "geomagnetism": "^0.2.0",
     "html-to-image": "^1.11.13",

@@ -3,5 +3,7 @@
     "error_no_location_title": "Atur Lokasi Anda",
     "error_no_location_desc": "Jadwal sholat akan ditampilkan setelah lokasi diatur melalui Pengaturan.",
     "error_offline_title": "Gagal Memuat Jadwal",
-    "error_offline_desc": "Periksa koneksi internet Anda dan coba lagi."
+    "error_offline_desc": "Periksa koneksi internet Anda dan coba lagi.",
+    "btn_search_location": "Cari Lokasi",
+    "btn_change_location_offline": "Ganti Lokasi Manual"
 }

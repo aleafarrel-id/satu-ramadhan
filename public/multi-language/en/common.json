@@ -8,5 +8,6 @@
     "set": "Set",
     "add": "Add",
     "app_loading": "Loading",
-    "app_name": "One Ramadhan"
+    "app_name": "One Ramadhan",
+    "offline_mode_toast": "Offline, using local astronomical calculation."
 }

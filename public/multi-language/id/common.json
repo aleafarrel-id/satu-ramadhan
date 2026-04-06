@@ -8,5 +8,6 @@
     "set": "Atur",
     "add": "Tambah",
     "app_loading": "Memuat Aplikasi",
-    "app_name": "Satu Ramadhan"
+    "app_name": "Satu Ramadhan",
+    "offline_mode_toast": "Koneksi buruk, menggunakan kalkulasi lokal."
 }

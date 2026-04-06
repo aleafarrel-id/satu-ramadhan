@@ -8,6 +8,13 @@ import * as storage from './storage.js';
 // Utilities & Helpers
 import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
 
+// Local offline fallback (no network required)
+import { calculateLocalDayTimes, calculateLocalMonthlyTimes, calculateLocalQibla } from './local-calculator.js';
+
+// UI Feedback
+import { warning } from '../modules/notification/notification.js';
+import { t, loadNS } from './i18n.js';
+
 const API_MIRRORS = [
     'https://api.aladhan.com/v1',
     'https://aladhan.api.islamic.network/v1',
@@ -16,10 +23,49 @@ const API_MIRRORS = [
 
 const CACHE_PREFIX = 'prayer_cache_';
 const METHOD = 20; // Kemenag RI
-const REQUEST_TIMEOUT_MS = 8000;
-const MAX_RETRY_CYCLES = 2;
+const REQUEST_TIMEOUT_MS = 4000;
+const MAX_RETRY_CYCLES = 1;
 const MIRROR_STORAGE_KEY = 'last_working_mirror';
 const REQUIRED_KEYS = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+let _lastOfflineToastTime = 0;
+const OFFLINE_TOAST_THROTTLE_MS = 10000;
+
+/**
+ * Trigger an offline notification safely.
+ * Throttles repetitive toast messages that occur during batch API failures.
+ * @param {boolean} force - Bypass throttling
+ */
+function _notifyOffline(force = false) {
+    const now = Date.now();
+    if (force || now - _lastOfflineToastTime > OFFLINE_TOAST_THROTTLE_MS) {
+        warning(t('common:offline_mode_toast'), 5000);
+        _lastOfflineToastTime = now;
+    }
+}
+
+/**
+ * Centralized handler for calculating fallback offline data.
+ * @param {Function} calculatorFn 
+ * @param {string} cacheKey 
+ * @param {boolean} showToast 
+ * @param {string} logPrefix 
+ * @returns {Promise<any>}
+ */
+async function _resolveLocalFallback(calculatorFn, cacheKey, showToast = true, logPrefix = '[API]') {
+    console.warn(`${logPrefix} Fast-failing to local calculation (offline mode).`);
+    if (showToast) _notifyOffline();
+    try {
+        const result = calculatorFn();
+        if (result !== null && result !== undefined) {
+            await storage.set(cacheKey, result);
+        }
+        return result;
+    } catch (err) {
+        console.error(`${logPrefix} Local calculation failed:`, err.message);
+        return null;
+    }
+}
 
 /**
  * Get the mirror order, starting from the last known working mirror
@@ -203,6 +249,13 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
         const cached = await storage.get(cacheKey);
         if (cached) return cached;
 
+        await loadNS('common');
+
+        // FAST-FAIL: Intercept physical offline state immediately
+        if (!navigator.onLine) {
+            return _resolveLocalFallback(() => calculateLocalDayTimes(latitude, longitude, date), cacheKey);
+        }
+
         // Retry loop with exponential backoff
         for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
             if (attempt > 0) {
@@ -226,14 +279,18 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
             }
         }
 
-        // All retries exhausted — try stale cache as last resort
+        // All retries exhausted — try local astronomical calculation before stale cache
+        const fallbackResult = await _resolveLocalFallback(() => calculateLocalDayTimes(latitude, longitude, date), cacheKey, true, '[API]');
+        if (fallbackResult) return fallbackResult;
+
+        // Last resort — stale cache
         const fallback = await storage.get(cacheKey);
         if (fallback) {
             console.warn('[API] Returning stale cached data');
             return fallback;
         }
 
-        console.error('[API] All mirrors and retries exhausted, no cache available');
+        console.error('[API] All mirrors, local calc, and cache exhausted');
         return null;
     });
 }
@@ -373,35 +430,46 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
         const cached = await storage.get(cacheKey);
         if (cached) return cached;
 
+        await loadNS('common');
+
+        // FAST-FAIL: Intercept physical offline state immediately
+        if (!navigator.onLine) {
+            return _resolveLocalFallback(() => calculateLocalMonthlyTimes(latitude, longitude, year, month), cacheKey, true, '[API] Monthly:');
+        }
+
         // Retry loop with exponential backoff
         for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
             if (attempt > 0) {
                 const delay = Math.pow(2, attempt - 1) * 1000;
-                console.log(`[API] Monthly retry ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
+                console.log(`[API] Monthly: Retry attempt ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
                 await sleep(delay);
             }
 
             try {
                 const { data, mirror } = await tryAllMirrorsMonthly(year, month, latitude, longitude);
                 await storage.set(MIRROR_STORAGE_KEY, mirror);
-                console.log(`[API] Monthly data (${year}/${month}) via ${mirror}`);
+                console.log(`[API] Monthly: Success via ${mirror}`);
 
                 const result = transformMonthlyData(data.data);
                 await storage.set(cacheKey, result);
                 return result;
             } catch (err) {
-                console.warn(`[API] Monthly cycle ${attempt + 1} failed:`, err.message);
+                console.warn(`[API] Monthly: Cycle ${attempt + 1} failed:`, err.message);
             }
         }
 
-        // Fallback to stale cache
+        // All retries exhausted — try local astronomical calculation before stale cache
+        const fallbackResult = await _resolveLocalFallback(() => calculateLocalMonthlyTimes(latitude, longitude, year, month), cacheKey, true, '[API] Monthly:');
+        if (fallbackResult) return fallbackResult;
+
+        // Last resort — stale cache
         const fallback = await storage.get(cacheKey);
         if (fallback) {
             console.warn('[API] Returning stale monthly cache');
             return fallback;
         }
 
-        console.error('[API] Monthly: all mirrors and retries exhausted');
+        console.error('[API] Monthly: all mirrors, local calc, and cache exhausted');
         return null;
     });
 }
@@ -480,7 +548,15 @@ export async function getQiblaDirection(latitude, longitude) {
     return withDeduplication(cacheKey, async () => {
         // Qibla direction is static per location — cache aggressively
         const cached = await storage.get(cacheKey);
-        if (cached !== null && cached !== undefined) return cached;
+        if (cached) return cached;
+
+        await loadNS('common');
+
+        // FAST-FAIL: Intercept physical offline state immediately
+        if (!navigator.onLine) {
+            // Qibla doesn't need to spam Toast, so we just return silently
+            return _resolveLocalFallback(() => calculateLocalQibla(latitude, longitude), cacheKey, false, '[API] Qibla:');
+        }
 
         for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
             if (attempt > 0) {
@@ -502,7 +578,11 @@ export async function getQiblaDirection(latitude, longitude) {
             }
         }
 
-        console.error('[API] Qibla: all mirrors and retries exhausted');
+        // All retries exhausted — use local spherical calculation
+        const fallbackResult = await _resolveLocalFallback(() => calculateLocalQibla(latitude, longitude), cacheKey, false, '[API] Qibla:');
+        if (fallbackResult) return fallbackResult;
+
+        console.error('[API] Qibla: all mirrors, local calc, and cache exhausted');
         return null;
     });
 }

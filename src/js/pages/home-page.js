@@ -18,6 +18,7 @@ import { renderCountdownCard } from '../components/card/countdown-card.js';
 import { t, loadNS } from '../core/i18n.js';
 
 import { safeClear } from '../utils/dom-utils.js';
+import { LIST_PRAYER_KEYS } from '../utils/datetime.js';
 
 /* --- CONSTANTS --- */
 const VIEW_TUBE = 'tube';
@@ -189,8 +190,24 @@ async function renderContent() {
                 icon: 'bx-refresh',
                 onclick: 'location.reload()',
             },
+            secondaryAction: {
+                label: t('pages/home-page:btn_change_location_offline'),
+                icon: 'bx-search',
+                onclick: '_homeShowManualSearch()',
+            },
             compact: true,
         };
+
+        // Expose helper to global scope for the inline onclick handler
+        if (!window._homeShowManualSearch) {
+            window._homeShowManualSearch = () => {
+                showLocationSearchModal({
+                    onLocationSelected: (location) => {
+                        store.setState('location', location);
+                    },
+                });
+            };
+        }
 
         contentHtml = renderEmptyState(emptyStateProps);
     } else {
@@ -314,7 +331,7 @@ async function switchView(mode) {
 function updateListHighlights(prayerState) {
     const cols = document.querySelectorAll('.prayer-list-col');
     const activeKey = prayerState.current?.key;
-    const keys = ['subuh', 'dzuhur', 'ashar', 'magrib', 'isya'];
+    const keys = LIST_PRAYER_KEYS;
 
     cols.forEach((col, i) => {
         col.classList.toggle('prayer-list-col--active', keys[i] === activeKey);
