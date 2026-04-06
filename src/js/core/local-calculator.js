@@ -210,6 +210,7 @@ export function calculateLocalDayTimes(lat, lng, date = new Date()) {
         isya,
         date:  formatDateDDMMYYYY(date),
         hijri: generateOfflineHijri(date),
+        isOfflineFallback: true,
     };
 }
 

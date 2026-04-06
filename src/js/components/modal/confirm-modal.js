@@ -3,6 +3,9 @@
  * A reusable UI component for asking user confirmation before destructive actions.
  */
 
+// Stylesheet
+import '../../../css/components/modal/confirm-modal.css';
+
 // Core & Libraries
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';

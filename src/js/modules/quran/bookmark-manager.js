@@ -3,6 +3,7 @@
  */
 
 import * as Storage from '../../core/storage.js';
+import { impact } from '../system/haptic.js';
 
 const STORAGE_KEY = 'quran_bookmarks';
 
@@ -126,6 +127,7 @@ export async function remove(surahIndex, verseNumber) {
  * @returns {Promise<boolean>} true if now bookmarked, false if removed
  */
 export async function toggle(ayahData) {
+   impact('light');
    const key = createKey(ayahData.surahIndex, ayahData.verseNumber);
    await _ensureLoaded();
 

@@ -9,5 +9,12 @@
     "add": "Tambah",
     "app_loading": "Memuat Aplikasi",
     "app_name": "Satu Ramadhan",
-    "offline_mode_toast": "Koneksi buruk, menggunakan kalkulasi lokal."
+    "offline_mode_toast": "Koneksi buruk, menggunakan kalkulasi lokal.",
+    "offline_recovery_title": "Koneksi Terhubung",
+    "offline_recovery_message": "Saat ini Anda menggunakan jadwal offline. Ingin memuat pembaruan yang lebih akurat melalui internet?",
+    "offline_recovery_confirm": "Perbarui",
+    "offline_recovery_cancel": "Lewati",
+    "offline_recovery_success": "Jadwal berhasil diperbarui dari internet.",
+    "offline_recovery_failed": "Gagal memperbarui jadwal. Jaringan mungkin bermasalah.",
+    "offline_recovery_skipped": "Tetap menggunakan jadwal offline."
 }

@@ -9,5 +9,12 @@
     "add": "Add",
     "app_loading": "Loading",
     "app_name": "One Ramadhan",
-    "offline_mode_toast": "Offline, using local astronomical calculation."
+    "offline_mode_toast": "Offline, using local astronomical calculation.",
+    "offline_recovery_title": "Connection Restored",
+    "offline_recovery_message": "You are currently using offline schedules. Would you like to update to highly accurate data via internet?",
+    "offline_recovery_confirm": "Update",
+    "offline_recovery_cancel": "Skip",
+    "offline_recovery_success": "Schedule updated successfully via network.",
+    "offline_recovery_failed": "Failed to update schedule. Network might be unstable.",
+    "offline_recovery_skipped": "Keep using offline schedule."
 }

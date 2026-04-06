@@ -19,8 +19,10 @@ import {
     requestNotificationPermission,
 } from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
-// prayer-watcher is omitted here because it runs entirely autonomously after side-effect import
 import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
+
+// Network
+import { initOfflineUpdater } from './modules/network/offline-updater.js';
 
 // Permission UI
 import { showPermissionDialogPreset } from './modules/permission/permission-dialog-configs.js';
@@ -111,6 +113,7 @@ export async function initApp() {
     // Initialize native notification service (permissions)
     initNotificationService();
     initGlobalFocusManager();
+    initOfflineUpdater();
 
     // Fire-and-forget: 30-day rolling notification sync on startup
     syncNotifications();
