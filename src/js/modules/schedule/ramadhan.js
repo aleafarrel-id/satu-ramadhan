@@ -28,9 +28,11 @@ export async function getHijriOffset(location) {
     const preset = await getActivePreset();
     if (!preset) return 0;
 
-    const cacheKey = `${HIJRI_OFFSET_KEY}_${preset.id}`;
+    const lat = location.latitude.toFixed(1);
+    const lng = location.longitude.toFixed(1);
+    const cacheKey = `${HIJRI_OFFSET_KEY}_${preset.id}_${lat}_${lng}`;
 
-    // Try cached offset first (per-preset)
+    // Try cached offset first (per-preset and per-geom)
     const cached = await storage.get(cacheKey);
     if (cached !== null && cached !== undefined) return cached;
 
@@ -105,13 +107,9 @@ async function checkAndResetYear(jsonYear, basePresets) {
         const { customs } = await getUserPresetsData();
         await saveUserPresetsData({ overrides: {}, customs: [] });
 
-        // Clear offset cache for all presets
-        for (const preset of basePresets) {
-            await storage.remove(`${HIJRI_OFFSET_KEY}_${preset.id}`);
-        }
-        for (const custom of customs) {
-            await storage.remove(`${HIJRI_OFFSET_KEY}_${custom.id}`);
-        }
+        // Clear offset cache for all presets utilizing the new prefix method
+        // This safely purges keys that have trailing latitude/longitude values
+        await storage.removeByPrefix(`${HIJRI_OFFSET_KEY}_`);
     }
 
     // Always sync the year

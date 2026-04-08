@@ -13,7 +13,7 @@ import { isNative } from '../modules/system/platform.js';
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { store } from '../core/store.js';
 
-import { getOrgDisplayNameAsync, getSelectedOrg } from '../modules/schedule/ramadhan.js';
+import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
 import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watcher.js';
 
@@ -48,6 +48,7 @@ let _container = null;
 let _scheduleData = null;
 let _currentDayIndex = 0;
 let _todayTimings = null;
+let _cachedDepStr = null;
 
 let _dayCheckInterval = null;
 let _lastDateStr = null;
@@ -85,14 +86,19 @@ export async function render(container, options = {}) {
     await loadNS('modules/share/share-schedule-exporter');
 
     const location = store.getState('location');
+    const org = store.getState('settings.org');
+
+    const currentDepStr = location ? `${location.latitude}_${location.longitude}_${org}` : null;
+
     if (!location) {
         safeClear(container);
         renderScheduleSkeleton(_container);
         await renderError(false);
     } else {
         const isRefresh = options?.refresh === true;
+        const isStale = _cachedDepStr !== currentDepStr;
 
-        if (!isRefresh && _scheduleData && _todayTimings) {
+        if (!isRefresh && !isStale && _scheduleData && _todayTimings) {
             _currentDayIndex = findTodayIndex(_scheduleData);
             await renderDayView();
         } else {
@@ -143,6 +149,7 @@ export async function refreshScheduleData() {
 async function _rehydrateAndRender() {
     if (!_container) return;
     const location = store.getState('location');
+    const org = store.getState('settings.org');
     if (!location) return;
 
     try {
@@ -153,6 +160,7 @@ async function _rehydrateAndRender() {
 
         _scheduleData = scheduleResult;
         _todayTimings = todayTimingsResult;
+        _cachedDepStr = `${location.latitude}_${location.longitude}_${org}`;
 
         if (!_scheduleData) {
             await renderError(true);
