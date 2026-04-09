@@ -19,7 +19,6 @@
    cursor: pointer;
    transition: background var(--transition-fast), transform var(--transition-fast);
    -webkit-tap-highlight-color: transparent;
-   contain-intrinsic-size: 1px 80px;
    opacity: 1;
    transform: translateY(0);
    animation-name: cardIn;

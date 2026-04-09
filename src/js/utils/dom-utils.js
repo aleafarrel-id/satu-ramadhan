@@ -11,11 +11,10 @@
 export function safeClear(container, preserveSelector = '.custom-ptr') {
     if (!container) return;
     
-    // Clean up any stray IntersectionObserver attached to this container
-    // to prevent memory leaks during heavy DOM operations (Infinite Scroll)
-    if (container.__quranObserver) {
-        container.__quranObserver.disconnect();
-        container.__quranObserver = null;
+    // Cancel any pending deferred render (requestAnimationFrame) on this container.
+    if (typeof container.__quranRenderCancel === 'function') {
+        container.__quranRenderCancel();
+        container.__quranRenderCancel = null;
     }
 
     // Iterate over direct children from the end to the beginning.

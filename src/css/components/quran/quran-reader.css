@@ -165,8 +165,8 @@
    border-bottom: 1px solid var(--clr-quran-border);
    gap: var(--sp-3);
    animation: ayahFadeIn 0.3s ease-out backwards;
-   transform: translate3d(0, 0, 0);
-   will-change: transform, opacity;
+   content-visibility: auto;
+   contain-intrinsic-size: auto 200px;
 }
 
 .quran-ayah-card:last-child {

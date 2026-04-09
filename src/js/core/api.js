@@ -277,6 +277,9 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
                 console.log(`[API] Success via ${mirror}`);
 
                 const result = transformTimings(data, dateStr);
+                
+                // Clear old caches to prevent local storage bloat before storing the new one
+                await storage.removeByPrefix(CACHE_PREFIX);
                 await storage.set(cacheKey, result);
                 return result;
             } catch (err) {
@@ -456,6 +459,9 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
                 console.log(`[API] Monthly: Success via ${mirror}`);
 
                 const result = transformMonthlyData(data.data);
+                
+                // Clear old monthly caches to prevent storage bloat
+                await storage.removeByPrefix(MONTHLY_CACHE_PREFIX);
                 await storage.set(cacheKey, result);
                 return result;
             } catch (err) {
@@ -576,6 +582,9 @@ export async function getQiblaDirection(latitude, longitude) {
 
                 const direction = data.data.direction;
                 console.log(`[API] Qibla direction: ${direction}° via ${mirror}`);
+                
+                // Keep Qibla cache clean over time as location wiggles
+                await storage.removeByPrefix(QIBLA_CACHE_PREFIX);
                 await storage.set(cacheKey, direction);
                 return direction;
             } catch (err) {

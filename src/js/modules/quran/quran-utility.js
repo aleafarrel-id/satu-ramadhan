@@ -7,109 +7,77 @@ import { safeClear } from '../../utils/dom-utils.js';
 import { t } from '../../core/i18n.js';
 
 /**
- * Renders items in batches to prevent UI blocking.
+ * Renders items in two phases for optimal perceived performance.
+ *
+ * Synchronous pass renders `batchSize × initialBatchCount` items immediately
+ * to fill the viewport. A single rAF then appends all remaining items as one
+ * DocumentFragment — one DOM mutation, one reflow. CSS `content-visibility: auto`
+ * on list items ensures off-screen cards incur near-zero layout/paint cost.
  */
-export async function renderBatchedList({ data, container, createItemFn, onCheckCancel, batchSize = 25, listCreatorFn, initialBatchCount = 1 }) {
+export async function renderBatchedList({
+   data,
+   container,
+   createItemFn,
+   onCheckCancel,
+   batchSize = 25,
+   listCreatorFn,
+   initialBatchCount = 1,
+}) {
    if (!data || !container) return;
 
    safeClear(container, '.custom-ptr, .quran-loading');
 
-   const listContainer = listCreatorFn();
-   container.appendChild(listContainer);
+   const list = listCreatorFn();
+   container.appendChild(list);
 
    const total = data.length;
-   let currentIndex = 0;
+   const initialEnd = Math.min(batchSize * initialBatchCount, total);
 
-   // Local helper to render exactly one chunk
-   const renderNextChunk = () => {
-      if (onCheckCancel && onCheckCancel()) return false;
-      if (currentIndex >= total) return false;
-
-      const chunk = data.slice(currentIndex, currentIndex + batchSize);
-      const fragment = document.createDocumentFragment();
-
-      chunk.forEach((item, indexInChunk) => {
-         const absoluteIndex = currentIndex + indexInChunk;
-         const isInitialBatch = absoluteIndex < batchSize * 2;
-         const card = createItemFn(item, absoluteIndex, isInitialBatch);
-         fragment.appendChild(card);
-      });
-
-      listContainer.appendChild(fragment);
-      currentIndex += batchSize;
-
-      return currentIndex < total;
-   };
-
-   // Render initial batches immediately (to fill screen, or satisfy deep links)
-   let hasMore = true;
-   for (let i = 0; i < initialBatchCount; i++) {
-      if (!hasMore) break;
-      if (i > 0) await new Promise(resolve => setTimeout(resolve, 0));
-      hasMore = renderNextChunk();
+   const initFrag = document.createDocumentFragment();
+   for (let i = 0; i < initialEnd; i++) {
+      if (onCheckCancel?.()) return;
+      initFrag.appendChild(createItemFn(data[i], i, true));
    }
+   list.appendChild(initFrag);
 
-   // Attach IntersectionObserver for Infinite Scrolling if data remains
-   if (hasMore) {
-      const sentinel = document.createElement('div');
-      sentinel.className = 'quran-scroll-sentinel';
-      sentinel.style.height = '40px';
-      sentinel.style.width = '100%';
-      listContainer.appendChild(sentinel);
+   if (initialEnd >= total) return;
 
-      const observer = new IntersectionObserver((entries) => {
-         if (entries[0].isIntersecting) {
-            listContainer.removeChild(sentinel);
+   const rafId = requestAnimationFrame(() => {
+      container.__quranRenderCancel = null;
+      if (onCheckCancel?.()) return;
 
-            if (renderNextChunk()) {
-               listContainer.appendChild(sentinel);
-            } else {
-               // Finished all chunks natively
-               observer.disconnect();
-               container.__quranObserver = null;
-            }
-         }
-      }, {
-         root: container,
-         rootMargin: '1200px',
-         threshold: 0
-      });
+      const restFrag = document.createDocumentFragment();
+      for (let i = initialEnd; i < total; i++) {
+         restFrag.appendChild(createItemFn(data[i], i, false));
+      }
+      list.appendChild(restFrag);
+   });
 
-      observer.observe(sentinel);
-      container.__quranObserver = observer;
-   }
+   container.__quranRenderCancel = () => cancelAnimationFrame(rafId);
 }
 
-/**
- * Normalizes text for search indexing.
- */
+/** Normalises a string for search comparison. */
 export const normalizeSearchText = (text) => text.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 /**
- * Creates a render context to handle stale cycles.
+ * Creates a render context for stale-render cancellation via render IDs.
  */
 export function createRenderContext() {
-   let currentRenderCounter = 0;
+   let counter = 0;
    let container = null;
 
    return {
       setContainer: (el) => { container = el; },
       getContainer: () => container,
-      incrementAndGet: () => {
-         currentRenderCounter++;
-         return currentRenderCounter;
-      },
-      getCurrentId: () => currentRenderCounter,
-      shouldCancelRender: (renderId) => renderId !== currentRenderCounter || !container,
-      destroy: () => {
-         container = null;
-         currentRenderCounter++;
-      }
+      incrementAndGet: () => ++counter,
+      getCurrentId: () => counter,
+      shouldCancelRender: (id) => id !== counter || !container,
+      destroy: () => { container = null; counter++; },
    };
 }
 
 /**
- * Factory function for generic Quran subpages.
+ * Factory for generic Quran subpages (Surah list, Juz list, etc.).
  */
 export function createQuranSubpage({
    fetchDataFn,
@@ -128,14 +96,8 @@ export function createQuranSubpage({
       if (_data) return;
       if (!_dataPromise) {
          _dataPromise = fetchDataFn()
-            .then(data => {
-               _data = data;
-               _dataPromise = null;
-            })
-            .catch(err => {
-               _dataPromise = null;
-               throw err;
-            });
+            .then(data => { _data = data; _dataPromise = null; })
+            .catch(err => { _dataPromise = null; throw err; });
       }
       await _dataPromise;
    }
@@ -150,8 +112,8 @@ export function createQuranSubpage({
          onCheckCancel: () => _mainRenderCtx.shouldCancelRender(renderId),
          createItemFn: (item, absoluteIndex, isInitialBatch) => {
             const card = itemCardCreatorFn(item, (selectedItem) => {
-               if (_callbacks?.onItemSelected) _callbacks.onItemSelected();
-               if (onItemClick) onItemClick(selectedItem);
+               _callbacks?.onItemSelected?.();
+               onItemClick?.(selectedItem);
             });
 
             if (isInitialBatch) {
@@ -161,7 +123,7 @@ export function createQuranSubpage({
                card.style.opacity = '1';
             }
             return card;
-         }
+         },
       });
    }
 
@@ -169,18 +131,18 @@ export function createQuranSubpage({
       render: async (container, callbacks = {}) => {
          _mainRenderCtx.setContainer(container);
          _callbacks = callbacks;
-         const currentRenderId = _mainRenderCtx.incrementAndGet();
+         const renderId = _mainRenderCtx.incrementAndGet();
 
          QuranCard.renderLoadingState(container);
 
          try {
             await loadData();
-            if (!_mainRenderCtx.shouldCancelRender(currentRenderId)) {
-               await renderList(currentRenderId, _mainRenderCtx.getContainer(), _data);
+            if (!_mainRenderCtx.shouldCancelRender(renderId)) {
+               await renderList(renderId, _mainRenderCtx.getContainer(), _data);
             }
          } catch (error) {
             console.error('Error loading subpage data:', error);
-            if (!_mainRenderCtx.shouldCancelRender(currentRenderId)) {
+            if (!_mainRenderCtx.shouldCancelRender(renderId)) {
                QuranCard.renderErrorState(container);
             }
          }
@@ -196,9 +158,11 @@ export function createQuranSubpage({
          const filtered = filterFn(_data, query);
 
          if (filtered.length === 0) {
-            if (searchCallbacks.renderPlaceholder) {
-               searchCallbacks.renderPlaceholder(resultsContainer, t('components/quran/quran-search:not_found', { query }), "bx-info-circle");
-            }
+            searchCallbacks.renderPlaceholder?.(
+               resultsContainer,
+               t('components/quran/quran-search:not_found', { query }),
+               'bx-info-circle',
+            );
             return;
          }
 
@@ -210,25 +174,23 @@ export function createQuranSubpage({
             onCheckCancel: () => _searchRenderCtx.shouldCancelRender(searchId),
             createItemFn: (item) => {
                const card = itemCardCreatorFn(item, (selectedItem) => {
-                  if (searchCallbacks.onItemSelected) searchCallbacks.onItemSelected();
-                  if (onItemClick) onItemClick(selectedItem);
+                  searchCallbacks.onItemSelected?.();
+                  onItemClick?.(selectedItem);
                });
                card.style.opacity = '1';
                card.style.animation = 'none';
                return card;
-            }
+            },
          });
       },
 
-      onSearchExit: () => {
-         _searchRenderCtx.incrementAndGet();
-      },
+      onSearchExit: () => _searchRenderCtx.incrementAndGet(),
 
       destroy: async () => {
          _mainRenderCtx.destroy();
          _searchRenderCtx.destroy();
          _callbacks = null;
          _dataPromise = null;
-      }
+      },
    };
 }

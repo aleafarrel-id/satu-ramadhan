@@ -127,8 +127,8 @@ export function close() {
 
    unregisterModalDismiss(close);
 
-   // Cancel any in-flight renders
-   _renderCtx.incrementAndGet();
+   // Cancel any in-flight renders and free detached DOM references
+   _renderCtx.destroy();
 
    _exitReaderSearch();
    closePicker();
@@ -384,34 +384,8 @@ async function _fetchAndRender(item) {
       // Store processed data for search filtering
       _currentReaderData = itemsToRender;
 
-      // Render to DOM
+      // Render to DOM (deep-link scroll handled inside _renderItems)
       await _renderItems(itemsToRender, renderId, true);
-
-      // Deep-link: scroll to target verse if requested
-      if (_targetVerseNumber && _scrollContainer) {
-         const tVerse = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.verseNumber : _targetVerseNumber;
-         const tSurah = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.surahIndex : null;
-
-         _targetVerseNumber = null;
-         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-               let selector = `.quran-ayah-card[data-ayah-number="${tVerse}"]`;
-               if (tSurah) selector += `[data-surah-index="${tSurah}"]`;
-
-               const targetCard = _scrollContainer.querySelector(selector);
-               if (targetCard) {
-                  const header = _overlay?.querySelector('.quran-unified-header');
-                  const headerHeight = header ? header.offsetHeight : 0;
-                  const scrollTarget = targetCard.offsetTop - headerHeight - 12;
-
-                  _scrollContainer.scrollTo({
-                     top: Math.max(0, scrollTarget),
-                     behavior: 'smooth'
-                  });
-               }
-            });
-         });
-      }
 
    } catch (error) {
       console.error('[QuranReader] Error loading data:', error);
@@ -601,49 +575,114 @@ async function _renderItems(data, renderId, isInitialLoad = false) {
       return;
    }
 
-   let targetBatchCount = 1;
+   const createEl = (itemDesc, index, animated) => {
+      const el = itemDesc.type === 'banner'
+         ? _createSurahBannerElement(itemDesc.surah)
+         : _createAyahElement(itemDesc.data);
+      if (isInitialLoad && animated) {
+         el.style.animationDelay = `${index * 0.025}s`;
+      } else {
+         el.style.animation = 'none';
+         el.style.opacity = '1';
+      }
+      return el;
+   };
+
+   // Deep-link: render only items around the target verse for instant visibility.
+   // A height spacer holds position for items above. The rest fills in via rAF.
    if (_targetVerseNumber) {
       const tVerse = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.verseNumber : _targetVerseNumber;
       const tSurah = typeof _targetVerseNumber === 'object' ? _targetVerseNumber.surahIndex : null;
+      _targetVerseNumber = null;
 
-      const foundIndex = data.findIndex(item => {
-         if (item.type !== 'ayah') return false;
-         const isMatchVerse = item.data.number === parseInt(tVerse, 10);
-         const isMatchSurah = tSurah ? item.data.surahIndex === parseInt(tSurah, 10) : true;
-         return isMatchVerse && isMatchSurah;
-      });
+      const targetIdx = data.findIndex(item =>
+         item.type === 'ayah' &&
+         item.data.number === parseInt(tVerse, 10) &&
+         (tSurah ? item.data.surahIndex === parseInt(tSurah, 10) : true)
+      );
 
-      if (foundIndex !== -1) {
-         targetBatchCount = Math.ceil((foundIndex + 5) / 20);
+      if (targetIdx !== -1) {
+         const BUFFER = 25;
+         const winStart = Math.max(0, targetIdx - BUFFER);
+         const winEnd = Math.min(data.length, targetIdx + BUFFER);
+
+         const list = document.createElement('div');
+         list.className = 'quran-reader-ayah-list';
+
+         // Height spacer for items above the window
+         const spacer = winStart > 0 ? document.createElement('div') : null;
+         if (spacer) {
+            spacer.style.height = `${winStart * 200}px`;
+            list.appendChild(spacer);
+         }
+
+         // Render window items synchronously
+         const frag = document.createDocumentFragment();
+         for (let i = winStart; i < winEnd; i++) {
+            frag.appendChild(createEl(data[i], i - winStart, false));
+         }
+         list.appendChild(frag);
+
+         safeClear(_scrollContainer, '.custom-ptr, .quran-loading');
+         _scrollContainer.appendChild(list);
+
+         // Instant jump to target card
+         let selector = `.quran-ayah-card[data-ayah-number="${tVerse}"]`;
+         if (tSurah) selector += `[data-surah-index="${tSurah}"]`;
+         const targetCard = list.querySelector(selector);
+         if (targetCard) {
+            const header = _overlay?.querySelector('.quran-unified-header');
+            const headerHeight = header ? header.offsetHeight : 0;
+            _scrollContainer.style.scrollPaddingTop = `${headerHeight + 12}px`;
+            _scrollContainer.style.scrollBehavior = 'auto';
+            targetCard.scrollIntoView({ behavior: 'auto', block: 'start' });
+            _scrollContainer.style.scrollBehavior = '';
+         }
+
+         // Fill remaining items in background
+         const rafId = requestAnimationFrame(() => {
+            _scrollContainer.__quranRenderCancel = null;
+            if (_renderCtx.shouldCancelRender(renderId)) return;
+
+            if (spacer) {
+               const beforeFrag = document.createDocumentFragment();
+               for (let i = 0; i < winStart; i++) {
+                  beforeFrag.appendChild(createEl(data[i], i, false));
+               }
+               list.insertBefore(beforeFrag, spacer);
+               spacer.remove();
+            }
+
+            if (winEnd < data.length) {
+               const afterFrag = document.createDocumentFragment();
+               for (let i = winEnd; i < data.length; i++) {
+                  afterFrag.appendChild(createEl(data[i], i, false));
+               }
+               list.appendChild(afterFrag);
+            }
+         });
+
+         _scrollContainer.__quranRenderCancel = () => cancelAnimationFrame(rafId);
+         return;
       }
    }
 
+   // Normal rendering: 3-batch sync buffer, rest via rAF
    await renderBatchedList({
       data,
       container: _scrollContainer,
       listCreatorFn: () => {
          const list = document.createElement('div');
          list.className = 'quran-reader-ayah-list';
-         list.style.contain = 'content';
          return list;
       },
       onCheckCancel: () => _renderCtx.shouldCancelRender(renderId),
       batchSize: 20,
-      initialBatchCount: targetBatchCount,
-      createItemFn: (itemDesc, index, isInitialBatch) => {
-         const el = itemDesc.type === 'banner'
-            ? _createSurahBannerElement(itemDesc.surah)
-            : _createAyahElement(itemDesc.data);
-         if (isInitialLoad && isInitialBatch) {
-            el.style.animationDelay = `${index * 0.025}s`;
-         } else {
-            el.style.animation = 'none';
-            el.style.opacity = '1';
-         }
-         return el;
-      }
+      initialBatchCount: 3,
+      createItemFn: (itemDesc, index, isInitialBatch) => createEl(itemDesc, index, isInitialBatch),
    });
 }
+
 
 function _renderNoResults() {
    if (!_scrollContainer) return;
