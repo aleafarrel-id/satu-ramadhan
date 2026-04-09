@@ -30,7 +30,7 @@ export async function initI18n() {
         backend: {
             loadPath: '/multi-language/{{lng}}/{{ns}}.json',
         },
-        interpolation: { escapeValue: false },
+        interpolation: { escapeValue: true },
     });
 }
 
