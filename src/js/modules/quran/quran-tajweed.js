@@ -337,7 +337,7 @@ function _applyContextualRules(text, rules) {
          // Check if there's already a qalqalah rule at this position
          const hasQalqalah = result.some(
             r => r.rule === 'qalqalah' && !r._removed &&
-                 r.start <= lastLetterIdx && r.end > lastLetterIdx
+               r.start <= lastLetterIdx && r.end > lastLetterIdx
          );
          if (!hasQalqalah) {
             // Also check newRules to avoid duplicate injection
@@ -485,9 +485,9 @@ function _buildLabel(ruleKey, ruleInfo, isOptional) {
    ]);
 
    if (WASL_RULES.has(ruleKey)) {
-      label += ' (Jika Wasl)';
+      label += ' (Wasl)';
    } else {
-      label += ' (Jika Waqf)';
+      label += ' (Waqf)';
    }
    return label;
 }
