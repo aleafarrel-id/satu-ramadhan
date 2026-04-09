@@ -341,6 +341,17 @@ async function handleShareSchedule() {
 
 function _ensureStoragePermission() {
     return new Promise(async (resolve) => {
+        // Android 13+ (API 33) does not use the legacy WRITE_EXTERNAL_STORAGE permission.
+        // For saving photos, MediaStore is used which is permissionless for adding new files.
+        const ua = navigator.userAgent;
+        const androidMatch = ua.match(/Android\s([0-9.]+)/);
+        const androidVersion = androidMatch ? parseInt(androidMatch[1]) : 0;
+
+        if (androidVersion >= 13) {
+            resolve(true);
+            return;
+        }
+
         try {
             const status = await Filesystem.checkPermissions();
             if (status.publicStorage === 'granted') {
