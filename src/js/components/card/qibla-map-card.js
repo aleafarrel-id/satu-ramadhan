@@ -259,16 +259,31 @@ function _addGeodesicLine(map, userLat, userLng) {
  */
 function _fitView(map, userLat, userLng) {
     _isProgrammaticMove = true;
-    const bounds = L.latLngBounds(
-        [userLat, userLng],
-        [KAABA_LAT, KAABA_LNG],
-    );
+    const userPoint = L.latLng(userLat, userLng);
+    const kaabaPoint = L.latLng(KAABA_LAT, KAABA_LNG);
+    const bounds = L.latLngBounds(userPoint, kaabaPoint);
     
-    const maxZoomOpt = store.getState('network.isOffline') ? OFFLINE_MAX_ZOOM : null;
-    map.fitBounds(bounds, { 
-        padding: FIT_BOUNDS_PADDING,
-        maxZoom: maxZoomOpt
-    });
+    const isOffline = store.getState('network.isOffline');
+    const maxZoomOpt = isOffline ? OFFLINE_MAX_ZOOM : null;
+
+    // Calculate distance to determine if fitting both points is viable UX-wise
+    const distanceKm = userPoint.distanceTo(kaabaPoint) / 1000;
+    const targetZoom = map.getBoundsZoom(bounds, false, FIT_BOUNDS_PADDING) || 0;
+    
+    // If the user is very far from the Kaaba (e.g. > 3000km) or the resulting zoom is too low (< 4),
+    // mapping both will often center on vast empty spaces (like oceans).
+    // Instead, prioritize showing the user's local context to make the Qibla direction useful.
+    if (targetZoom < 4 || distanceKm > 3000) {
+        // When online, zoom 6 provides a good balance between local context and the direction of the line.
+        // When offline, we respect the limit by falling back to OFFLINE_MAX_ZOOM.
+        const focusZoom = isOffline ? OFFLINE_MAX_ZOOM : 6;
+        map.setView(userPoint, focusZoom, { animate: true });
+    } else {
+        map.fitBounds(bounds, { 
+            padding: FIT_BOUNDS_PADDING,
+            maxZoom: maxZoomOpt
+        });
+    }
     
     map.once('moveend', () => {
         setTimeout(() => {
