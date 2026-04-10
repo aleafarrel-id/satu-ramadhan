@@ -4,6 +4,7 @@
  */
 
 import { t, loadNS } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 const NS = 'components/card/location-card';
 
@@ -73,9 +74,9 @@ export function renderLocationCardInner(location) {
     }
 
     const name = location.districtName
-        ? `${location.districtName}, ${location.regencyName}`
-        : location.regencyName;
-    const province = location.provinceName || '';
+        ? `${escapeHtml(location.districtName)}, ${escapeHtml(location.regencyName)}`
+        : escapeHtml(location.regencyName);
+    const province = escapeHtml(location.provinceName || '');
 
     return `
         <div class="location-card__row">

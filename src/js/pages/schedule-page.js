@@ -274,12 +274,14 @@ async function renderError(hasLocation) {
         action: {
             label: t('retry'),
             icon: 'bx-refresh',
-            onclick: 'location.reload()',
+            id: 'schedule-btn-retry',
         },
         compact: true,
     })}
         </div>
     `;
+
+    _container.querySelector('#schedule-btn-retry')?.addEventListener('click', () => location.reload());
 }
 
 /**

@@ -26,6 +26,7 @@ import { showDatePickerModal } from './date-picker-modal.js';
 import { formatDateShort, formatDateVerbose, calcRamadhanEndDates } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
 let _onPresetsChanged = null;
@@ -178,7 +179,7 @@ function renderPresetItem(preset, selectedId) {
                 </div>
                 <div class="preset-mgr-item-info">
                     <div class="preset-mgr-item-name">
-                        ${preset.name}
+                        ${escapeHtml(preset.name)}
                         ${activeBadge}
                     </div>
                     <div class="preset-mgr-item-dates">
@@ -436,7 +437,7 @@ function showEditForm(id, presets) {
             ${showName ? `
             <div class="preset-mgr-form-group">
                 <label class="preset-mgr-form-label">${t('components/modal/preset-manager-modal:form_name')}</label>
-                <input type="text" class="preset-mgr-form-input" id="edit-name-${id}" value="${preset.name}" placeholder="${t('components/modal/preset-manager-modal:form_name_ph')}">
+                <input type="text" class="preset-mgr-form-input" id="edit-name-${id}" value="${escapeHtml(preset.name)}" placeholder="${t('components/modal/preset-manager-modal:form_name_ph')}">
             </div>
             ` : ''}
             <div class="preset-mgr-form-row">
@@ -459,7 +460,7 @@ function showEditForm(id, presets) {
             ${showName ? `
             <div class="preset-mgr-form-group">
                 <label class="preset-mgr-form-label">${t('components/modal/preset-manager-modal:form_desc')}</label>
-                <input type="text" class="preset-mgr-form-input" id="edit-desc-${id}" value="${preset.description || ''}" placeholder="${t('components/modal/preset-manager-modal:form_desc_ph')}">
+                <input type="text" class="preset-mgr-form-input" id="edit-desc-${id}" value="${escapeHtml(preset.description)}" placeholder="${t('components/modal/preset-manager-modal:form_desc_ph')}">
             </div>
             ` : ''}
             <div class="preset-mgr-form-actions" data-focus-group="preset-mgr-edit-actions" data-focus-direction="horizontal">

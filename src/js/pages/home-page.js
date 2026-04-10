@@ -188,26 +188,15 @@ async function renderContent() {
             action: {
                 label: t('retry'),
                 icon: 'bx-refresh',
-                onclick: 'location.reload()',
+                id: 'home-btn-retry',
             },
             secondaryAction: {
                 label: t('pages/home-page:btn_change_location_offline'),
                 icon: 'bx-search',
-                onclick: '_homeShowManualSearch()',
+                id: 'home-btn-manual-search',
             },
             compact: true,
         };
-
-        // Expose helper to global scope for the inline onclick handler
-        if (!window._homeShowManualSearch) {
-            window._homeShowManualSearch = () => {
-                showLocationSearchModal({
-                    onLocationSelected: (location) => {
-                        store.setState('location', location);
-                    },
-                });
-            };
-        }
 
         contentHtml = renderEmptyState(emptyStateProps);
     } else {
@@ -252,6 +241,16 @@ async function renderContent() {
 
     bindLocationCardEvents(showLocationModalForHome, _container);
     bindScheduleEvents();
+
+    // Bind empty-state action buttons (only present when _timings is null)
+    _container.querySelector('#home-btn-retry')?.addEventListener('click', () => location.reload());
+    _container.querySelector('#home-btn-manual-search')?.addEventListener('click', () => {
+        showLocationSearchModal({
+            onLocationSelected: (loc) => {
+                store.setState('location', loc);
+            },
+        });
+    });
 
     if (_timings) {
         startCountdownTimer();

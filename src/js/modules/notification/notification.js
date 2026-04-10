@@ -40,10 +40,17 @@ export function show(message, type = 'info', duration = DEFAULT_DURATION) {
 
     const icon = ICON_MAP[type] || ICON_MAP.info;
 
-    el.innerHTML = `
-        <span class="notif__icon">${icon}</span>
-        <span class="notif__message">${message}</span>
-    `;
+    // Build DOM programmatically: icon via innerHTML (trusted), message via textContent (safe)
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'notif__icon';
+    iconSpan.innerHTML = icon;
+
+    const msgSpan = document.createElement('span');
+    msgSpan.className = 'notif__message';
+    msgSpan.textContent = message;
+
+    el.appendChild(iconSpan);
+    el.appendChild(msgSpan);
 
     // Insert at top so newest is on top
     _container.prepend(el);

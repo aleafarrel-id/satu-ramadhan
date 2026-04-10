@@ -124,7 +124,9 @@ export function calcRamadhanEndDates(startDateStr) {
  */
 export function cleanTimeStr(timeStr) {
     if (!timeStr) return timeStr;
-    return timeStr.toString().replace(/\s*\(.*\)/, '').trim();
+    const cleaned = timeStr.toString().replace(/\s*\(.*\)/, '').trim();
+    // Validate cleaned value is a valid time format to reject anomalous/malicious data
+    return /^\d{1,2}:\d{2}$/.test(cleaned) ? cleaned : '';
 }
 
 /**

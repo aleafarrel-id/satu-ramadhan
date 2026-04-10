@@ -13,8 +13,18 @@ import { t } from '../../core/i18n.js';
 const TEMPLATE_WIDTH = 1240;
 const TEMPLATE_HEIGHT = 1754;
 
-const getDefaultFilenamePng = () => t('modules/share/share-schedule-exporter:default_filename_png') || 'jadwal-imsakiyah.png';
-const getDefaultFilename = () => t('modules/share/share-schedule-exporter:default_filename') || 'jadwal-imsakiyah';
+function sanitizeFilename(name) {
+    return (name || '').replace(/[^a-z0-9-]/gi, '-').replace(/-+/g, '-').toLowerCase() || 'jadwal-imsakiyah';
+}
+
+const getDefaultFilenamePng = () => {
+    const name = t('modules/share/share-schedule-exporter:default_filename_png') || 'jadwal-imsakiyah.png';
+    return sanitizeFilename(name.replace(/\.png$/i, '')) + '.png';
+};
+const getDefaultFilename = () => {
+    const name = t('modules/share/share-schedule-exporter:default_filename') || 'jadwal-imsakiyah';
+    return sanitizeFilename(name);
+};
 
 /**
  * Capture a DOM element as a canvas using html-to-image.

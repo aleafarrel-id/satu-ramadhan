@@ -6,6 +6,7 @@
 import { safeClear } from '../../utils/dom-utils.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { t } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 /**
  * Renders a single Surah card.
@@ -23,14 +24,14 @@ export function createSurahCard(surah, onClick) {
          <span class="surah-number-text">${parseInt(surah.index)}</span>
       </div>
       <div class="surah-info">
-         <div class="surah-title-latin">${surah.title}</div>
+         <div class="surah-title-latin">${escapeHtml(surah.title)}</div>
          <div class="surah-details">
             <span class="surah-type surah-type-pill">${typeText}</span>
             <span class="surah-detail-dot"></span>
             <span class="surah-verse-count">${t('components/quran/quran-card:verse_count', { count: surah.count })}</span>
          </div>
       </div>
-      <div class="surah-title-arabic">${surah.titleAr}</div>
+      <div class="surah-title-arabic">${escapeHtml(surah.titleAr)}</div>
    `;
 
    if (onClick) {
@@ -63,13 +64,13 @@ export function createJuzCard(juz, onClick) {
    let detailsHtml = '';
    if (isSameSurah) {
       detailsHtml = `
-         <span class="surah-type surah-type-pill">${juz.start.name} : ${verseStart} - ${verseEnd}</span>
+         <span class="surah-type surah-type-pill">${escapeHtml(juz.start.name)} : ${verseStart} - ${verseEnd}</span>
       `;
    } else {
       detailsHtml = `
-         <span class="surah-type surah-type-pill">${juz.start.name} : ${verseStart}</span>
+         <span class="surah-type surah-type-pill">${escapeHtml(juz.start.name)} : ${verseStart}</span>
          <span class="surah-range-dash">-</span>
-         <span class="surah-type surah-type-pill">${juz.end.name} : ${verseEnd}</span>
+         <span class="surah-type surah-type-pill">${escapeHtml(juz.end.name)} : ${verseEnd}</span>
       `;
    }
 
@@ -205,9 +206,9 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
          <span class="surah-number-text">${topNumber}</span>
       </div>
       <div class="surah-info">
-         <div class="surah-title-latin">${titleLatin}</div>
+         <div class="surah-title-latin">${escapeHtml(titleLatin)}</div>
          <div class="surah-details">
-            <span class="surah-type surah-type-pill">${primaryBadge}</span>
+            <span class="surah-type surah-type-pill">${escapeHtml(primaryBadge)}</span>
             <span class="surah-detail-dot"></span>
             <span class="bookmark-verse-badge">
                <i class='bx bxs-bookmark-alt'></i>
@@ -215,7 +216,7 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
             </span>
          </div>
       </div>
-      <div class="surah-title-arabic">${titleAr}</div>
+      <div class="surah-title-arabic">${escapeHtml(titleAr)}</div>
    `;
 
    if (onClick) {

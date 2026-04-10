@@ -332,5 +332,7 @@ function isPrayerPassed(key, prayerState) {
  * @returns {string}
  */
 function cleanTime(timeStr) {
-    return timeStr.replace(/\s*\(.*\)/, '');
+    if (!timeStr) return '--:--';
+    const cleaned = timeStr.replace(/\s*\(.*\)/, '');
+    return /^\d{1,2}:\d{2}$/.test(cleaned) ? cleaned : '--:--';
 }

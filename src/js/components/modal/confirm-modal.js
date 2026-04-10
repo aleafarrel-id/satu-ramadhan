@@ -159,14 +159,19 @@ function createModalDOM(title, message, confirmText, cancelText, isDanger, theme
 
     overlay.innerHTML = `
         <div class="confirm-dialog">
-            <h3 class="confirm-title">${title}</h3>
+            <h3 class="confirm-title"></h3>
             <p class="confirm-message">${message}</p>
             <div class="confirm-actions">
-                <button class="btn btn--outline confirm-btn" id="confirm-btn-cancel">${cancelText}</button>
-                <button class="btn ${confirmBtnClass} confirm-btn" id="confirm-btn-action">${confirmText}</button>
+                <button class="btn btn--outline confirm-btn" id="confirm-btn-cancel"></button>
+                <button class="btn ${confirmBtnClass} confirm-btn" id="confirm-btn-action"></button>
             </div>
         </div>
     `;
+
+    // Set text-only values via textContent to prevent injection
+    overlay.querySelector('.confirm-title').textContent = title;
+    overlay.querySelector('#confirm-btn-cancel').textContent = cancelText;
+    overlay.querySelector('#confirm-btn-action').textContent = confirmText;
 
     return overlay;
 }

@@ -118,8 +118,9 @@ function isValidResponse(data) {
     if (data?.code !== 200 || !data?.data?.timings) return false;
 
     const timings = data.data.timings;
+    const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)/;
     return REQUIRED_KEYS.every(key =>
-        typeof timings[key] === 'string' && timings[key].length > 0
+        typeof timings[key] === 'string' && timings[key].length > 0 && timeRegex.test(timings[key])
     );
 }
 
@@ -277,7 +278,7 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
                 console.log(`[API] Success via ${mirror}`);
 
                 const result = transformTimings(data, dateStr);
-                
+
                 // Clear old caches to prevent local storage bloat before storing the new one
                 await storage.removeByPrefix(CACHE_PREFIX);
                 await storage.set(cacheKey, result);
@@ -326,8 +327,9 @@ function isValidMonthlyResponse(data) {
 
     // Spot-check the first entry
     const first = data.data[0];
+    const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)/;
     return first?.timings && REQUIRED_KEYS.every(key =>
-        typeof first.timings[key] === 'string' && first.timings[key].length > 0
+        typeof first.timings[key] === 'string' && first.timings[key].length > 0 && timeRegex.test(first.timings[key])
     );
 }
 
@@ -459,7 +461,7 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
                 console.log(`[API] Monthly: Success via ${mirror}`);
 
                 const result = transformMonthlyData(data.data);
-                
+
                 // Clear old monthly caches to prevent storage bloat
                 await storage.removeByPrefix(MONTHLY_CACHE_PREFIX);
                 await storage.set(cacheKey, result);
@@ -582,7 +584,7 @@ export async function getQiblaDirection(latitude, longitude) {
 
                 const direction = data.data.direction;
                 console.log(`[API] Qibla direction: ${direction}° via ${mirror}`);
-                
+
                 // Keep Qibla cache clean over time as location wiggles
                 await storage.removeByPrefix(QIBLA_CACHE_PREFIX);
                 await storage.set(cacheKey, direction);

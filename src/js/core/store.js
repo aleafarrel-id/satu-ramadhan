@@ -148,11 +148,16 @@ class Store {
 
     /**
      * Safely deep merges source object into target object.
+     * Uses Object.keys() and a forbidden-key guard to prevent prototype pollution.
      */
     _mergeConfig(target, source) {
+        const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
         const result = { ...target };
-        for (const key in source) {
-            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+
+        for (const key of Object.keys(source)) {
+            if (FORBIDDEN_KEYS.has(key)) continue;
+
+            if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
                 result[key] = this._mergeConfig(target[key] || {}, source[key]);
             } else {
                 result[key] = source[key];

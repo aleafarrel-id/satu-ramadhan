@@ -12,6 +12,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import { handleManualLocationSelection } from '../../utils/location-feedback.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
 let _debounceTimer = null;
@@ -188,7 +189,7 @@ function renderEmpty(query) {
     return `
         <div class="loc-search-placeholder">
             <i class='bx bx-map-alt loc-search-placeholder-icon'></i>
-            <span>${t('components/modal/location-search-modal:state_empty', { query })}</span>
+            <span>${t('components/modal/location-search-modal:state_empty', { query: escapeHtml(query) })}</span>
         </div>
     `;
 }
@@ -214,15 +215,15 @@ function renderResultItem(location) {
         : `<span class="loc-search-badge loc-search-badge--online">${t('components/modal/location-search-modal:badge_online')}</span>`;
 
     const displayName = location.districtName
-        ? `${location.districtName}, ${location.regencyName}`
-        : location.regencyName;
+        ? `${escapeHtml(location.districtName)}, ${escapeHtml(location.regencyName)}`
+        : escapeHtml(location.regencyName);
 
     return `
         <div class="loc-search-item" data-focus-item>
             <i class='bx ${icon}'></i>
             <div class="loc-search-item-info">
                 <div class="loc-search-item-title">${displayName}</div>
-                <div class="loc-search-item-subtitle">${location.provinceName || ''}${badge}</div>
+                <div class="loc-search-item-subtitle">${escapeHtml(location.provinceName || '')}${badge}</div>
             </div>
         </div>
     `;

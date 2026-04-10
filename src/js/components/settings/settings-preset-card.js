@@ -10,6 +10,7 @@ import { getActivePreset } from '../../modules/schedule/ramadhan.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { formatDateShort } from '../../utils/datetime.js';
 import { t } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 // UI Components
 import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
@@ -69,7 +70,7 @@ async function renderCardContent() {
                     <i class='bx bx-calendar settings-preset-calendar-icon'></i>
                     <div class="settings-preset-status-wrapper">
                         <div class="settings-preset-body">
-                            <div class="settings-preset-org">${name}</div>
+                            <div class="settings-preset-org">${escapeHtml(name)}</div>
                             <div class="settings-preset-dates">${startStr} — ${endStr}</div>
                         </div>
                     </div>

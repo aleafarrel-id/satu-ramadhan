@@ -14,7 +14,7 @@ import * as storage from '../../core/storage.js';
 import { loadNS, t } from '../../core/i18n.js';
 import { success, error, info } from '../notification/notification.js';
 
-const SESSION_DISMISS_KEY = 'offlineRecoveryDismissed';
+let _recoveryDismissed = false;
 
 export function initOfflineUpdater() {
     // Sync initial state
@@ -59,7 +59,7 @@ async function onNetworkRestored() {
     if (!navigator.onLine) return;
 
     // Fast-fail if already dismissed in this session
-    if (sessionStorage.getItem(SESSION_DISMISS_KEY) === 'true') {
+    if (_recoveryDismissed) {
         return;
     }
 
@@ -138,7 +138,7 @@ async function promptUpdate() {
         },
         onCancel: () => {
             // Suppress the prompt until the app is fully restarted
-            sessionStorage.setItem(SESSION_DISMISS_KEY, 'true');
+            _recoveryDismissed = true;
             info(t('common:offline_recovery_skipped'));
         }
     });

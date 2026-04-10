@@ -6,6 +6,7 @@
 // Core & Libraries
 import { store } from '../../core/store.js';
 import { t } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 // Utilities & Helpers
 import { handleGpsDetectionWithButton } from '../../utils/location-feedback.js';
@@ -20,9 +21,9 @@ export async function render(container) {
     function renderStatus(loc) {
         if (loc) {
             const displayName = loc.districtName
-                ? `${loc.districtName}, ${loc.regencyName}`
-                : loc.regencyName;
-            return `<div class="settings-loc-body"><div class="settings-loc-regency">${displayName}</div>${loc.provinceName ? `<div class="settings-loc-province">${loc.provinceName}</div>` : ''}</div>`;
+                ? `${escapeHtml(loc.districtName)}, ${escapeHtml(loc.regencyName)}`
+                : escapeHtml(loc.regencyName);
+            return `<div class="settings-loc-body"><div class="settings-loc-regency">${displayName}</div>${loc.provinceName ? `<div class="settings-loc-province">${escapeHtml(loc.provinceName)}</div>` : ''}</div>`;
         }
         return `<span class="settings-loc-status">${t('components/settings/settings-loc-card:not_set')}</span>`;
     }

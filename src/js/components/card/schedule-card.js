@@ -11,6 +11,7 @@ import { PRAYER_LIST, getCurrentPrayer, getPrayerName } from '../../modules/pray
 // Utilities & Helpers
 import { SCHEDULE_PRAYERS } from '../../utils/datetime.js';
 import { t } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
@@ -263,7 +264,7 @@ function renderDateNav(entry, dayIndex, totalDays = 30) {
             <div class="schedule-nav__info">
                 <div class="schedule-nav__title-pill" id="btn-calendar-modal" role="button" tabindex="0" data-focus-item>
                     <span class="schedule-nav__badge-icon"><i class='bx bxs-calendar'></i></span>
-                    <span class="schedule-nav__title">${hijriDay} ${hijriMonthName} ${hijriYear}</span>
+                    <span class="schedule-nav__title">${escapeHtml(hijriDay)} ${escapeHtml(hijriMonthName)} ${escapeHtml(hijriYear)}</span>
                 </div>
                 <span class="schedule-nav__subtitle">${dayOfWeek}, ${dateFormatted}</span>
             </div>
@@ -316,7 +317,9 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
  * Strip timezone notes from time strings, e.g. "04:12 (WIB)" → "04:12".
  */
 function cleanTime(timeStr) {
-    return timeStr ? timeStr.replace(/\s*\(.*\)/, '') : '--:--';
+    if (!timeStr) return '--:--';
+    const cleaned = timeStr.replace(/\s*\(.*\)/, '');
+    return /^\d{1,2}:\d{2}$/.test(cleaned) ? cleaned : '--:--';
 }
 
 /**
