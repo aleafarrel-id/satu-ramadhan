@@ -124,6 +124,13 @@ export function show() {
    if (!_dockEl) return;
    _dockEl.classList.remove('hide');
    _dockEl.classList.add('show');
+   
+   // In case active item was changed while dock was hidden (e.g. from Mushaf Reader),
+   // update the slider position after revealing to ensure proper layout geometry.
+   requestAnimationFrame(() => {
+      const activeItem = _dockEl.querySelector('.quran-dock-item.active');
+      updateSliderPosition(activeItem);
+   });
 }
 
 /**

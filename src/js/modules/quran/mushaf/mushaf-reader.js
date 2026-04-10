@@ -169,15 +169,20 @@ export async function open(startPage = 1, options = {}) {
       // Wait for the close animation to finish completely before re-opening
       await new Promise(resolve => {
          const checkInterval = setInterval(() => {
-            if (!_isClosing && !_isOpen) {
+            if (!_isClosing) {
                clearInterval(checkInterval);
                resolve();
             }
          }, 50);
       });
+      // Safety check: if user navigated away while waiting, abort
+      const qPage = document.querySelector('.quran-page');
+      if (qPage && !qPage.classList.contains('quran-modal-active')) return;
    } else if (_isOpen) {
       return;
    }
+
+   // Set the flag after the await checks have fully passed
    _isOpen = true;
    _currentPage = MushafApi.clampPage(startPage);
    _onCloseCallback = options.onClose;
