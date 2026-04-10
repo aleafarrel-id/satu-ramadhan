@@ -2,6 +2,8 @@
  * Local JSON Database Loader
  */
 
+import { logError } from '../utils/error-boundary.js';
+
 // Data
 import ramadhanData from '../../data/ramadhan.json';
 
@@ -19,7 +21,7 @@ export async function fetchProvinces() {
         const res = await fetch('./data/province.json');
         _provinces = await res.json();
     } catch (e) {
-        console.error('[DB] Failed to load provinces:', e);
+        logError('[DB]', e);
         _provinces = [];
     }
 
@@ -37,7 +39,7 @@ export async function fetchRegencies() {
         const res = await fetch('./data/regency.json');
         _regencies = await res.json();
     } catch (e) {
-        console.error('[DB] Failed to load regencies:', e);
+        logError('[DB]', e);
         _regencies = [];
     }
 

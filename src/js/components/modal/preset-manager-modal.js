@@ -242,7 +242,7 @@ function bindListEvents(listEl, presets, selectedId) {
         el.addEventListener('click', (e) => {
             e.stopPropagation();
             const id = el.dataset.id;
-            const presetName = presets.find(p => p.id === id)?.name || t('components/modal/preset-manager-modal:this_preset');
+            const presetName = escapeHtml(presets.find(p => p.id === id)?.name || t('components/modal/preset-manager-modal:this_preset'));
 
             showConfirmModal({
                 title: t('components/modal/preset-manager-modal:reset_confirm_title'),
@@ -266,7 +266,7 @@ function bindListEvents(listEl, presets, selectedId) {
         el.addEventListener('click', (e) => {
             e.stopPropagation();
             const id = el.dataset.id;
-            const presetName = presets.find(p => p.id === id)?.name || t('components/modal/preset-manager-modal:this_preset');
+            const presetName = escapeHtml(presets.find(p => p.id === id)?.name || t('components/modal/preset-manager-modal:this_preset'));
 
             showConfirmModal({
                 title: t('components/modal/preset-manager-modal:delete_confirm_title'),

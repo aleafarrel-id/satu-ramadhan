@@ -38,6 +38,7 @@ import { downloadScheduleImage, shareScheduleImage } from '../modules/share/shar
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
 import { showPermissionDialogPreset } from '../modules/permission/permission-dialog-configs.js';
 
+import { logError } from '../utils/error-boundary.js';
 import { makeAccessibleBtn } from '../utils/a11y.js';
 import { safeClear } from '../utils/dom-utils.js';
 import { t, loadNS } from '../core/i18n.js';
@@ -170,7 +171,7 @@ async function _rehydrateAndRender() {
         _currentDayIndex = findTodayIndex(_scheduleData);
         await renderDayView();
     } catch (error) {
-        console.error('[Schedule] Hydration Render failed:', error);
+        logError('[Schedule]', error);
         await renderError(true);
     }
 }

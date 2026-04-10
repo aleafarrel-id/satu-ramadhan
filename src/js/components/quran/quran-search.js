@@ -5,6 +5,7 @@
 // Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { safeSetHTML } from '../../utils/dom-utils.js';
 
 let _overlay = null;
 let _input = null;
@@ -90,13 +91,12 @@ export function hide() {
  */
 export function renderSearchPlaceholder(container, message = null, icon = "bx-search") {
    const msg = message || t('components/quran/quran-search:start_typing');
-   if (!container) return;
-   container.innerHTML = `
+   safeSetHTML(container, `
       <div class="quran-search-placeholder">
          <i class='bx ${icon} quran-search-placeholder-icon'></i>
          <span>${msg}</span>
       </div>
-   `;
+   `);
 }
 
 /**

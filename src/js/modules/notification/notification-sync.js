@@ -8,6 +8,7 @@ import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { PrayerService } from './native-notification.js';
 import { store } from '../../core/store.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
 
 /** Number of days to pre-schedule ahead (inclusive of today) */
 const ROLLING_DAYS = 30;
@@ -151,7 +152,7 @@ export async function syncNotifications() {
             console.warn('[NotifSync] Could not start location detection:', e.message);
         }
     } catch (e) {
-        console.error('[NotifSync] Sync failed:', e);
+        logError('[NotifSync]', e);
     } finally {
         _syncing = false;
     }

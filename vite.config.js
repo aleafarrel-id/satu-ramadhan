@@ -5,9 +5,11 @@ export default defineConfig({
     // For Capacitor to load assets via relative paths.
     base: './',
 
-    // Strip console outputs in production (except errors).
+    // Strip ALL console outputs and debugger statements in production builds.
+    // This prevents information leakage (stack traces, internal paths, API details)
+    // via Logcat / browser console on production APKs.
     esbuild: {
-        pure: ['console.log', 'console.warn', 'console.info', 'console.debug'],
+        drop: ['console', 'debugger'],
     },
 
     build: {

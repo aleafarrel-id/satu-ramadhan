@@ -9,6 +9,7 @@ import { Share } from '@capacitor/share';
 import { Media } from '@capacitor-community/media';
 import { success as notifySuccess, error as notifyError } from '../notification/notification.js';
 import { t } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
 
 const TEMPLATE_WIDTH = 1240;
 const TEMPLATE_HEIGHT = 1754;
@@ -112,7 +113,7 @@ export async function downloadScheduleImage(canvas, filename = null) {
             notifySuccess(t('modules/share/share-schedule-exporter:save_success') || 'Jadwal berhasil disimpan ke Galeri', 3500);
             return;
         } catch (error) {
-            console.error('[share-schedule-exporter] Native download failed:', error);
+            logError('[ShareExporter]', error);
             notifyError(t('modules/share/share-schedule-exporter:save_error') || 'Gagal menyimpan jadwal ke Galeri', 3500);
             return;
         }

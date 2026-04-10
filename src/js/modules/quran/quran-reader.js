@@ -23,6 +23,7 @@ import { initPullToRefresh } from '../../utils/pull-to-refresh.js';
 import { safeClear } from '../../utils/dom-utils.js';
 import { store } from '../../core/store.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
 
 let _isOpen = false;
 let _currentItem = null;
@@ -388,7 +389,7 @@ async function _fetchAndRender(item) {
       await _renderItems(itemsToRender, renderId, true);
 
    } catch (error) {
-      console.error('[QuranReader] Error loading data:', error);
+      logError('[QuranReader]', error);
       if (!_renderCtx.shouldCancelRender(renderId) && _scrollContainer) {
          QuranCard.renderErrorState(_scrollContainer, t('modules/quran/quran-reader:error_load'));
       }

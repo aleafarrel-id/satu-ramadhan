@@ -13,6 +13,7 @@ import { store } from '../../core/store.js';
 import * as storage from '../../core/storage.js';
 import { loadNS, t } from '../../core/i18n.js';
 import { success, error, info } from '../notification/notification.js';
+import { logError } from '../../utils/error-boundary.js';
 
 let _recoveryDismissed = false;
 
@@ -70,7 +71,7 @@ async function onNetworkRestored() {
             await promptUpdate();
         }
     } catch (err) {
-        console.error('Error during offline recovery check:', err);
+        logError('[OfflineUpdater]', err);
     }
 }
 

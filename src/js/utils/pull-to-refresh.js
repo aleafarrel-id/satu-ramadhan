@@ -12,6 +12,8 @@
  * @param {string} [options.theme='light'] - 'light' or 'dark' theme for the indicator.
  * @returns {Function} cleanup - Call to remove all event listeners and the PTR element.
  */
+import { logError } from './error-boundary.js';
+
 export function initPullToRefresh(options) {
     const {
         scrollElement,
@@ -185,7 +187,7 @@ export function initPullToRefresh(options) {
                 try {
                     await onRefresh();
                 } catch (err) {
-                    console.error('[PTR] Refresh error:', err);
+                    logError('[PTR]', err);
                 }
             }
 

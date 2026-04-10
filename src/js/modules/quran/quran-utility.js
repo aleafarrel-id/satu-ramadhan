@@ -5,6 +5,8 @@
 import * as QuranCard from '../../components/quran/quran-card.js';
 import { safeClear } from '../../utils/dom-utils.js';
 import { t } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 /**
  * Renders items in two phases for optimal perceived performance.
@@ -137,11 +139,12 @@ export function createQuranSubpage({
 
          try {
             await loadData();
-            if (!_mainRenderCtx.shouldCancelRender(renderId)) {
-               await renderList(renderId, _mainRenderCtx.getContainer(), _data);
+            const container = _mainRenderCtx.getContainer();
+            if (container && !_mainRenderCtx.shouldCancelRender(renderId)) {
+               await renderList(renderId, container, _data);
             }
          } catch (error) {
-            console.error('Error loading subpage data:', error);
+            logError('[QuranSubpage]', error);
             if (!_mainRenderCtx.shouldCancelRender(renderId)) {
                QuranCard.renderErrorState(container);
             }
@@ -160,7 +163,7 @@ export function createQuranSubpage({
          if (filtered.length === 0) {
             searchCallbacks.renderPlaceholder?.(
                resultsContainer,
-               t('components/quran/quran-search:not_found', { query }),
+               t('components/quran/quran-search:not_found', { query: escapeHtml(query) }),
                'bx-info-circle',
             );
             return;

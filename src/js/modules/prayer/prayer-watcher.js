@@ -2,7 +2,7 @@
  * Prayer Watcher Module
  */
 
-import { getCurrentPrayer } from './prayer-times.js';
+import { getCurrentPrayer, getPrayerName } from './prayer-times.js';
 import { info } from '../notification/notification.js';
 import { store } from '../../core/store.js';
 import { getPrayerTimesByCoords } from '../../core/api.js';
@@ -90,7 +90,7 @@ function scheduleNext() {
 function triggerNotification(prayer, triggerTimeMs) {
     _lastTriggeredDateMs = triggerTimeMs;
 
-    info(`Waktu ${prayer.name} telah tiba`);
+    info(`Waktu ${getPrayerName(prayer.key)} telah tiba`);
 
     // Notify all subscribers of the prayer transition
     for (const listener of _listeners) {

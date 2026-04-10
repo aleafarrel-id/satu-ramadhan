@@ -15,6 +15,7 @@ import { captureScheduleImage } from '../../modules/share/share-schedule-exporte
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
 
 let _overlayEl = null;
 let _canvas = null;
@@ -78,7 +79,7 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
         showPreviewImage(_canvas);
 
     } catch (err) {
-        console.error('[share-schedule-modal] Failed to generate preview:', err);
+        logError('[ShareModal]', err);
         showErrorState();
     }
 }
@@ -97,7 +98,7 @@ async function handleShare() {
     try {
         await _onShareCb(_canvas);
     } catch (err) {
-        console.error('[share-schedule-modal] Share failed:', err);
+        logError('[ShareModal]', err);
     }
 
     setButtonsLoading(false);
@@ -118,7 +119,7 @@ async function handleDownload() {
     try {
         await _onDownloadCb(_canvas);
     } catch (err) {
-        console.error('[share-schedule-modal] Download failed:', err);
+        logError('[ShareModal]', err);
     }
 
     setButtonsLoading(false);

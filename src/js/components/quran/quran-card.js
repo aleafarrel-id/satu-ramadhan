@@ -3,7 +3,7 @@
  */
 
 // Utilities & Helpers
-import { safeClear } from '../../utils/dom-utils.js';
+import { safeClear, safeAppend } from '../../utils/dom-utils.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
@@ -147,7 +147,7 @@ export function renderLoadingState(container) {
       <i class='bx bx-book-reader'></i>
       <p>${t('components/quran/quran-card:loading')}</p>
    `;
-   container.appendChild(loadingEl);
+   safeAppend(container, loadingEl);
 }
 
 /**
@@ -161,7 +161,7 @@ export function renderEmptyState(container) {
       <i class='bx bx-bookmark-alt-minus'></i>   
       <p>${t('components/quran/quran-card:not_found')}</p>
    `;
-   container.appendChild(emptyEl);
+   safeAppend(container, emptyEl);
 }
 
 /**
@@ -176,7 +176,7 @@ export function renderErrorState(container, message = null) {
       <i class='bx bx-error-circle'></i>
       <p>${errMsg}</p>
    `;
-   container.appendChild(errorEl);
+   safeAppend(container, errorEl);
 }
 
 /**

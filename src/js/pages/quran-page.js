@@ -24,6 +24,7 @@ import * as QuranReader from '../modules/quran/quran-reader.js';
 import { initPullToRefresh } from '../utils/pull-to-refresh.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
 import { t, loadNS } from '../core/i18n.js';
+import { logError } from '../utils/error-boundary.js';
 
 /* Module State */
 let _container = null;
@@ -151,7 +152,7 @@ async function loadSubPage(pageId, forceRefresh = false) {
          await previousPage.destroy();
       }
    } catch (error) {
-      console.error(`[QuranPage] Failed to load quran subpage: ${pageId}`, error);
+      logError('[QuranPage]', error);
    }
 }
 

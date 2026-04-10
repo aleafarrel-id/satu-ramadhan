@@ -10,6 +10,7 @@ import { normalizeSearchText } from '../../modules/quran/quran-utility.js';
 import * as QuranHeader from './quran-header.js';
 import * as QuranCard from './quran-card.js';
 import { t } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
 
 let _pickerOverlay = null;
 let _pickerHeaderInstance = null;
@@ -70,7 +71,7 @@ export function openPicker(options) {
       _currentListData = listData;
       _renderList(listData);
    }).catch(err => {
-      console.error('[QuranPicker] Error loading data:', err);
+      logError('[QuranPicker]', err);
       QuranCard.renderErrorState(content, t('components/quran/quran-card:error_load'));
    });
 

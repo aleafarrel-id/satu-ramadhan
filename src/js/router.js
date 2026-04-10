@@ -6,6 +6,8 @@
  * (returning a Promise via dynamic import()) for on-demand module loading.
  */
 
+import { logError } from './utils/error-boundary.js';
+
 const _routes = {};
 const _routeCache = {};
 let _currentPage = null;
@@ -114,7 +116,7 @@ export async function navigate(path, { pushHistory = true } = {}) {
         if (_onNavigateCallback && _currentPage) {
             _onNavigateCallback(_currentPage);
         }
-        console.error('[Router] Navigation failed:', error);
+        logError('[Router]', error);
     } finally {
         _isNavigating = false;
     }

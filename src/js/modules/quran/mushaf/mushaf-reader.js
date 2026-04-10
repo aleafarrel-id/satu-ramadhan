@@ -22,6 +22,7 @@ import { initTooltip, dismissTooltip } from '../../../utils/tooltip.js';
 import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
 import { store } from '../../../core/store.js';
+import { logError } from '../../../utils/error-boundary.js';
 
 const TOTAL_PAGES = MushafApi.getTotalPages();
 const INITIAL_WINDOW = 4;
@@ -291,7 +292,7 @@ export async function close() {
          // Native text re-flow can sometimes cause a tiny micro-stutter
          await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
       } catch (e) {
-         console.error('Error during Mushaf close callback:', e);
+         logError('[Mushaf]', e);
       }
    }
 

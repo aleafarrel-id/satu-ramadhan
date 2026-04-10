@@ -12,6 +12,8 @@ import { getSurahList, getJuzList } from '../../modules/quran/quran-api.js';
 import { renderBatchedList } from '../../modules/quran/quran-utility.js';
 import { showConfirmModal } from '../../components/modal/confirm-modal.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { logError } from '../../utils/error-boundary.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 let _container = null;
 let _callbacks = null;
@@ -60,7 +62,7 @@ export async function render(container, callbacks = {}) {
          }
       });
    } catch (error) {
-      console.error('[BookmarkPage] Error loading bookmarks:', error);
+      logError('[BookmarkPage]', error);
       if (_container) {
          QuranCard.renderErrorState(_container, t('pages/quran-pages/bookmark-page:error_load'));
       }
@@ -85,7 +87,7 @@ export async function onSearch(query, resultsContainer, searchCallbacks = {}) {
 
    if (!filtered.length) {
       if (searchCallbacks.renderPlaceholder) {
-         searchCallbacks.renderPlaceholder(resultsContainer, t('components/quran/quran-search:not_found', { query }), 'bx-info-circle');
+         searchCallbacks.renderPlaceholder(resultsContainer, t('components/quran/quran-search:not_found', { query: escapeHtml(query) }), 'bx-info-circle');
       }
       return;
    }
@@ -160,7 +162,7 @@ async function _openBookmarkedVerse(bookmark, surah) {
 function _handleDeleteBookmark(bookmark, cardEl) {
    showConfirmModal({
       title: t('pages/quran-pages/bookmark-page:confirm_delete_title'),
-      message: t('pages/quran-pages/bookmark-page:confirm_delete_msg', { surah: bookmark.surahTitle, verse: bookmark.verseNumber }),
+      message: t('pages/quran-pages/bookmark-page:confirm_delete_msg', { surah: escapeHtml(bookmark.surahTitle), verse: bookmark.verseNumber }),
       confirmText: t('common:delete'),
       cancelText: t('common:cancel'),
       isDanger: true,

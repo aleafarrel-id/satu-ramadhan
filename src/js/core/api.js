@@ -2,6 +2,8 @@
  * Aladhan API Service
  */
 
+import { logError } from '../utils/error-boundary.js';
+
 // Core & Libraries
 import * as storage from './storage.js';
 
@@ -67,7 +69,7 @@ async function _resolveLocalFallback(calculatorFn, cacheKey, showToast = true, l
         }
         return result;
     } catch (err) {
-        console.error(`${logPrefix} Local calculation failed:`, err.message);
+        logError(logPrefix, err);
         return null;
     }
 }
@@ -299,7 +301,7 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
             return fallback;
         }
 
-        console.error('[API] All mirrors, local calc, and cache exhausted');
+        logError('[API]', 'All mirrors, local calc, and cache exhausted');
         return null;
     });
 }
@@ -482,7 +484,7 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
             return fallback;
         }
 
-        console.error('[API] Monthly: all mirrors, local calc, and cache exhausted');
+        logError('[API]', 'Monthly: all mirrors, local calc, and cache exhausted');
         return null;
     });
 }
@@ -598,7 +600,7 @@ export async function getQiblaDirection(latitude, longitude) {
         const fallbackResult = await _resolveLocalFallback(() => calculateLocalQibla(latitude, longitude), cacheKey, false, '[API] Qibla:');
         if (fallbackResult) return fallbackResult;
 
-        console.error('[API] Qibla: all mirrors, local calc, and cache exhausted');
+        logError('[API]', 'Qibla: all mirrors, local calc, and cache exhausted');
         return null;
     });
 }
