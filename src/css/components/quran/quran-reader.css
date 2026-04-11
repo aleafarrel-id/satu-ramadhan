@@ -168,7 +168,7 @@
    border-radius: var(--radius-full);
 }
 
-/* Play Audio Button */
+/* Main Action Button (Download / Play) */
 .quran-reader-surah-action-btn {
    display: flex;
    align-items: center;
@@ -184,7 +184,6 @@
    box-shadow: var(--shadow-sm);
    transition: transform var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
    flex-shrink: 0;
-   margin-left: var(--sp-3);
    -webkit-tap-highlight-color: transparent;
 }
 
@@ -200,6 +199,144 @@
 
 .quran-reader-surah-action-btn i {
    font-size: var(--icon-lg);
+}
+
+/* Container for action buttons and label */
+.quran-reader-surah-action-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: var(--sp-3);
+   z-index: 1;
+   flex-shrink: 0;
+   margin-left: var(--sp-3);
+}
+
+/* ── Banner Button State Machine ── */
+
+.quran-reader-surah-action-label {
+   font-family: var(--ff-primary);
+   font-size: 10px;
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   line-height: 1.2;
+   white-space: nowrap;
+   opacity: 0.9;
+   text-shadow: 0 1px 2px var(--clr-black-a20);
+   text-align: center;
+   max-width: 120px;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   margin-top: var(--sp-1);
+}
+
+/* ── Banner Control Groups ── */
+
+.banner-playback-controls,
+.banner-download-controls {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-1);
+}
+
+.banner-ctrl-btn {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: var(--sp-8);
+   height: var(--sp-8);
+   border: none;
+   border-radius: var(--radius-circle);
+   background: var(--clr-primary-a20);
+   color: var(--clr-text-primary);
+   cursor: pointer;
+   transition:
+      transform var(--transition-fast),
+      background var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+   flex-shrink: 0;
+}
+
+.banner-ctrl-btn:active {
+   transform: scale(0.88);
+}
+
+.banner-ctrl-btn i {
+   font-size: var(--icon-md);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+/* Primary (Play/Pause) has solid white bg */
+.banner-ctrl-btn.banner-ctrl-primary {
+   width: calc(var(--sp-8) + var(--sp-1)); /* 36px */
+   height: calc(var(--sp-8) + var(--sp-1));
+   background: var(--clr-text-primary);
+   color: var(--clr-primary-600);
+   box-shadow: var(--shadow-sm);
+}
+
+.banner-ctrl-btn.banner-ctrl-primary i {
+   font-size: var(--icon-lg);
+}
+
+/* Danger variant (cancel) */
+.banner-ctrl-btn.banner-ctrl-danger {
+   background: rgba(255, 59, 59, 0.25); /* based on var(--clr-danger) */
+   color: #ffd4d4;
+}
+
+.banner-ctrl-btn.banner-ctrl-danger:hover {
+   background: rgba(255, 59, 59, 0.4);
+}
+
+/* Downloaded state: inviting glow */
+.quran-reader-surah-action-btn.surah-downloaded {
+   box-shadow: 0 2px 8px var(--clr-primary-a20);
+}
+
+/* Progress bar on the banner content area */
+.quran-reader-surah-info-content::after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   height: 4px;
+   width: var(--download-progress, 0%);
+   background: var(--clr-quran-accent);
+   transition: width 300ms ease-out;
+   z-index: 5;
+   border-radius: 0 4px 0 0;
+}
+
+/* Only show progress bar when downloading */
+.quran-reader-surah-info-card:not(.state-downloading) .quran-reader-surah-info-content::after {
+   width: 0 !important;
+}
+
+/* Downloading state: pulsing glow on the banner card */
+.quran-reader-surah-info-card.state-downloading {
+   box-shadow: 0 8px 24px var(--clr-primary-a20), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Playing state: subtle border pulse */
+.quran-reader-surah-info-card.state-playing {
+   animation: bannerPlayingPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes bannerPlayingPulse {
+   0%, 100% { box-shadow: 0 8px 24px var(--clr-primary-a20); }
+   50% { box-shadow: 0 8px 32px var(--clr-primary-a20), 0 0 0 2px rgba(255, 255, 255, 0.15) inset; }
+}
+
+/* ── Karaoke Active Ayah ── */
+
+.quran-ayah-card.now-playing {
+   background: var(--clr-quran-bg-alt);
+   border-left: 3px solid var(--clr-quran-accent);
+   padding-left: calc(var(--sp-5) - 3px);
+   transition: background 0.3s ease, border-left 0.3s ease;
 }
 
 /* ── Ayah List Container ── */
@@ -531,6 +668,28 @@
    .quran-reader-surah-action-btn i {
       font-size: var(--icon-md);
    }
+
+   .banner-ctrl-btn {
+      width: 28px;
+      height: 28px;
+   }
+
+   .banner-ctrl-btn i {
+      font-size: var(--icon-sm);
+   }
+
+   .banner-ctrl-btn.banner-ctrl-primary {
+      width: var(--sp-8);
+      height: var(--sp-8);
+   }
+
+   .banner-ctrl-btn.banner-ctrl-primary i {
+      font-size: var(--icon-md);
+   }
+
+   .quran-reader-surah-action-label {
+      font-size: 9px;
+   }
 }
 
 @media screen and (max-width: 360px) {
@@ -615,5 +774,33 @@
       width: 36px;
       height: 36px;
       margin-left: var(--sp-2);
+   }
+
+   .banner-ctrl-btn {
+      width: 24px;
+      height: 24px;
+   }
+
+   .banner-ctrl-btn i {
+      font-size: 14px;
+   }
+
+   .banner-ctrl-btn.banner-ctrl-primary {
+      width: 28px;
+      height: 28px;
+   }
+
+   .banner-ctrl-btn.banner-ctrl-primary i {
+      font-size: var(--icon-sm);
+   }
+
+   .banner-playback-controls,
+   .banner-download-controls {
+      gap: 2px;
+   }
+
+   .quran-reader-surah-action-label {
+      font-size: 8px;
+      max-width: 100px;
    }
 }

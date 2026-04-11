@@ -15,6 +15,10 @@ import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
 import { getTajweedEnabled, getTransliterationEnabled } from './quran-settings.js';
 import * as BookmarkManager from './bookmark-manager.js';
 
+// Audio & Download
+import * as DownloadManager from './quran-download-manager.js';
+import * as AudioService from './quran-audio-service.js';
+
 // Utilities & System
 import * as Notification from '../notification/notification.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
@@ -42,6 +46,9 @@ let _searchDebounceTimer = null;
 let _targetVerseNumber = null;
 let _storeSubId = null;
 
+// ─── Murottal Event Tracking ─────────────────────────────────────────────────
+let _murottalEventHandlers = [];
+
 /**
  * Opens the reader overlay for a given item (surah or juz).
  * @param {Object} item - Data object of the surah or juz
@@ -65,6 +72,9 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
 
    // Hide dock
    QuranDock.hide();
+
+   // Subscribe to murottal events for reactive UI updates
+   _registerMurottalEvents();
 
    // Build & mount overlay
    _buildOverlay(item);
@@ -126,6 +136,9 @@ export function close() {
       _storeSubId = null;
    }
 
+   // Unsubscribe murottal events (but don't stop playback — dock handles that)
+   _unregisterMurottalEvents();
+
    unregisterModalDismiss(close);
 
    // Cancel any in-flight renders and free detached DOM references
@@ -182,6 +195,7 @@ export function destroy() {
          store.unsubscribe(_storeSubId);
          _storeSubId = null;
       }
+      _unregisterMurottalEvents();
       _renderCtx.incrementAndGet();
       unregisterModalDismiss(close);
       unregisterModalDismiss(_exitReaderSearch);
@@ -431,29 +445,188 @@ function _buildAyahList(surahData, translationData, tajweedData, latinData, sura
 
 function _createSurahBannerElement(surah) {
    const surahNum = parseInt(surah.index);
+   const totalAyahs = parseInt(surah.count) || 0;
    const typeText = surah.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
 
    const banner = document.createElement('div');
    banner.className = 'quran-reader-surah-info-card';
+   banner.dataset.surahIndex = surahNum;
+   banner.dataset.surahTitle = surah.title;
+   banner.dataset.totalAyahs = totalAyahs;
    // Additional margin to space out multiple banners inside Juz mode
    banner.style.marginTop = '1rem';
    banner.style.marginBottom = '2rem';
-   banner.innerHTML = `
-      <div class="quran-reader-surah-info-content">
-         <div class="quran-reader-surah-info-latin">${surahNum}. ${surah.title}</div>
-         <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
-         <div class="quran-reader-surah-meta">
-            <span>${typeText}</span>
-            <span class="quran-reader-meta-dot"></span>
-            <span>${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
-         </div>
+
+   // Content section
+   const content = document.createElement('div');
+   content.className = 'quran-reader-surah-info-content';
+   content.innerHTML = `
+      <div class="quran-reader-surah-info-latin">${surahNum}. ${surah.title}</div>
+      <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
+      <div class="quran-reader-surah-meta">
+         <span>${typeText}</span>
+         <span class="quran-reader-meta-dot"></span>
+         <span>${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
       </div>
-      <button class="quran-reader-surah-action-btn" aria-label="Play Surah">
-         <i class='bx bx-play-circle'></i>
-      </button>
    `;
 
+   // Action container — rebuilt dynamically based on state
+   const actionContainer = document.createElement('div');
+   actionContainer.className = 'quran-reader-surah-action-container';
+
+   _rebuildBannerActions(actionContainer, surahNum, totalAyahs);
+
+   banner.appendChild(content);
+   banner.appendChild(actionContainer);
+
    return banner;
+}
+
+/**
+ * Rebuilds the entire action container for a surah banner
+ * based on the current download/playback state.
+ * @param {HTMLElement} container - The .quran-reader-surah-action-container
+ * @param {number} surahIndex
+ * @param {number} totalAyahs
+ */
+function _rebuildBannerActions(container, surahIndex, totalAyahs) {
+   const downloadState = DownloadManager.getDownloadState();
+   const playbackState = AudioService.getPlaybackState();
+   const downloadedCount = DownloadManager.getDownloadedCount(surahIndex);
+   const isFullyDownloaded = DownloadManager.isSurahFullyDownloaded(surahIndex, totalAyahs);
+
+   // Remove previous state classes from parent banner card
+   const bannerCard = container.closest('.quran-reader-surah-info-card');
+   if (bannerCard) {
+      bannerCard.classList.remove('state-idle', 'state-downloading', 'state-downloaded', 'state-playing');
+   }
+
+   // Clear container
+   container.innerHTML = '';
+
+   if (playbackState.isPlaying && playbackState.surahIndex === surahIndex) {
+      // ── State 4: Currently Playing ──
+      if (bannerCard) bannerCard.classList.add('state-playing');
+
+      const controls = document.createElement('div');
+      controls.className = 'banner-playback-controls';
+
+      const prevBtn = _createBannerCtrlBtn('banner-prev', 'bx-skip-previous', t('modules/quran/quran-reader:prev_ayah'));
+      const playPauseBtn = _createBannerCtrlBtn(
+         'banner-play-pause',
+         playbackState.isPaused ? 'bx-play-circle' : 'bx-pause-circle',
+         playbackState.isPaused ? t('modules/quran/quran-reader:play_surah') : t('modules/quran/quran-reader:pause_playback'),
+      );
+      playPauseBtn.classList.add('banner-ctrl-primary');
+      const nextBtn = _createBannerCtrlBtn('banner-next', 'bx-skip-next', t('modules/quran/quran-reader:next_ayah'));
+      const stopBtn = _createBannerCtrlBtn('banner-stop', 'bx-stop', t('modules/quran/quran-reader:stop_playback'));
+
+      controls.appendChild(prevBtn);
+      controls.appendChild(playPauseBtn);
+      controls.appendChild(nextBtn);
+      controls.appendChild(stopBtn);
+      container.appendChild(controls);
+
+      // Info label: "Ayat 3 / 7"
+      const infoLabel = document.createElement('span');
+      infoLabel.className = 'quran-reader-surah-action-label';
+      infoLabel.textContent = t('modules/quran/quran-reader:playing_ayah', {
+         current: playbackState.ayahNumber,
+         total: totalAyahs,
+      });
+      container.appendChild(infoLabel);
+
+   } else if (downloadState.isDownloading && downloadState.surahIndex === surahIndex) {
+      // ── State 2: Downloading ──
+      if (bannerCard) bannerCard.classList.add('state-downloading');
+
+      const controls = document.createElement('div');
+      controls.className = 'banner-download-controls';
+
+      // Pause / Resume toggle
+      if (downloadState.isPaused) {
+         const resumeBtn = _createBannerCtrlBtn('banner-resume-dl', 'bx-play-circle', t('modules/quran/quran-reader:resume_download'));
+         resumeBtn.classList.add('banner-ctrl-primary');
+         controls.appendChild(resumeBtn);
+      } else {
+         const pauseBtn = _createBannerCtrlBtn('banner-pause-dl', 'bx-pause-circle', t('modules/quran/quran-reader:pause_download'));
+         pauseBtn.classList.add('banner-ctrl-primary');
+         controls.appendChild(pauseBtn);
+      }
+
+      // Cancel button
+      const cancelBtn = _createBannerCtrlBtn('banner-cancel-dl', 'bx-x', t('modules/quran/quran-reader:cancel_download'));
+      cancelBtn.classList.add('banner-ctrl-danger');
+      controls.appendChild(cancelBtn);
+
+      container.appendChild(controls);
+
+      // Progress label
+      const progress = downloadState.total > 0 ? (downloadState.current / downloadState.total) * 100 : 0;
+      const progressLabel = document.createElement('span');
+      progressLabel.className = 'quran-reader-surah-action-label';
+      progressLabel.textContent = downloadState.isPaused
+         ? t('modules/quran/quran-reader:download_paused') + ` (${downloadState.current}/${downloadState.total})`
+         : t('modules/quran/quran-reader:download_progress', { current: downloadState.current, total: downloadState.total });
+      container.appendChild(progressLabel);
+
+      // Set progress CSS custom property for the progress bar
+      if (bannerCard) {
+         bannerCard.style.setProperty('--download-progress', `${progress}%`);
+      }
+
+   } else if (isFullyDownloaded) {
+      // ── State 3: Fully Downloaded — Ready to Play ──
+      if (bannerCard) bannerCard.classList.add('state-downloaded');
+
+      const playBtn = document.createElement('button');
+      playBtn.className = 'quran-reader-surah-action-btn surah-downloaded';
+      playBtn.dataset.action = 'banner-play';
+      playBtn.setAttribute('aria-label', t('modules/quran/quran-reader:play_surah'));
+      playBtn.innerHTML = `<i class='bx bx-play-circle'></i>`;
+      container.appendChild(playBtn);
+
+      const label = document.createElement('span');
+      label.className = 'quran-reader-surah-action-label';
+      label.textContent = t('modules/quran/quran-reader:play_surah');
+      container.appendChild(label);
+
+   } else {
+      // ── State 1: Not Downloaded (or partially) ──
+      if (bannerCard) bannerCard.classList.add('state-idle');
+
+      const dlBtn = document.createElement('button');
+      dlBtn.className = 'quran-reader-surah-action-btn';
+      dlBtn.dataset.action = 'banner-download';
+      dlBtn.setAttribute('aria-label', t('modules/quran/quran-reader:download_surah'));
+      dlBtn.innerHTML = `<i class='bx bx-cloud-download'></i>`;
+      container.appendChild(dlBtn);
+
+      const label = document.createElement('span');
+      label.className = 'quran-reader-surah-action-label';
+      if (downloadedCount > 0) {
+         label.textContent = t('modules/quran/quran-reader:download_progress', { current: downloadedCount, total: totalAyahs });
+      } else {
+         label.textContent = t('modules/quran/quran-reader:download_surah');
+      }
+      container.appendChild(label);
+   }
+}
+
+/**
+ * Creates a small control button for banner action groups.
+ * @param {string} action - data-action value for delegation
+ * @param {string} iconClass - Boxicons v2 icon class (e.g. 'bx-play')
+ * @param {string} ariaLabel
+ * @returns {HTMLButtonElement}
+ */
+function _createBannerCtrlBtn(action, iconClass, ariaLabel) {
+   const btn = document.createElement('button');
+   btn.className = 'banner-ctrl-btn';
+   btn.dataset.action = action;
+   btn.setAttribute('aria-label', ariaLabel);
+   btn.innerHTML = `<i class='bx ${iconClass}'></i>`;
+   return btn;
 }
 
 function _createAyahElement(ayah) {
@@ -493,12 +666,15 @@ function _createRegularAyahElement(ayah) {
    const actions = document.createElement('div');
    actions.className = 'quran-ayah-actions';
 
-   // Play button
-   const playBtn = document.createElement('button');
-   playBtn.className = 'quran-ayah-action-btn';
-   playBtn.setAttribute('aria-label', t('modules/quran/quran-reader:play_ayah'));
-   playBtn.dataset.action = 'play';
-   playBtn.innerHTML = `<i class='bx bx-play-circle'></i>`;
+   // Play button — only rendered if the ayah audio is downloaded
+   let playBtn = null;
+   if (DownloadManager.isAyahDownloaded(ayah.surahIndex, ayah.number)) {
+      playBtn = document.createElement('button');
+      playBtn.className = 'quran-ayah-action-btn';
+      playBtn.setAttribute('aria-label', t('modules/quran/quran-reader:play_ayah'));
+      playBtn.dataset.action = 'play';
+      playBtn.innerHTML = `<i class='bx bx-play-circle'></i>`;
+   }
 
    // Copy button — no inline listener, handled via delegation
    const copyBtn = document.createElement('button');
@@ -520,7 +696,7 @@ function _createRegularAyahElement(ayah) {
       : `<i class='bx bx-bookmark-alt'></i>`;
    if (isMarked) bookmarkBtn.classList.add('bookmarked');
 
-   actions.appendChild(playBtn);
+   if (playBtn) actions.appendChild(playBtn);
    actions.appendChild(copyBtn);
    actions.appendChild(bookmarkBtn);
 
@@ -803,10 +979,18 @@ function _filterVerses(query) {
 
 /**
  * Single delegated handler on _scrollContainer — replaces per-card listeners.
- * Looks up action buttons by data-action attribute and resolves the ayah
- * from _currentReaderData using the card's data attributes.
+ * Handles both banner action buttons and per-ayah action buttons via delegation.
  */
 function _onScrollContainerClick(e) {
+   // Check for banner action buttons (new multi-button layout)
+   const bannerActionBtn = e.target.closest('.quran-reader-surah-action-container [data-action]');
+   if (bannerActionBtn) {
+      e.stopPropagation();
+      _handleBannerAction(bannerActionBtn);
+      return;
+   }
+
+   // Per-ayah action buttons
    const btn = e.target.closest('.quran-ayah-action-btn');
    if (!btn) return;
 
@@ -829,6 +1013,8 @@ function _onScrollContainerClick(e) {
       _handleCopyAyah(ayahItem.data, btn);
    } else if (action === 'bookmark') {
       _handleToggleBookmark(ayahItem.data, btn);
+   } else if (action === 'play') {
+      AudioService.playAyah(ayahItem.data.surahIndex, ayahItem.data.number, ayahItem.data.surahName);
    }
 }
 
@@ -872,4 +1058,203 @@ async function _handleToggleBookmark(ayah, btnEl) {
       if (icon) icon.className = 'bx bx-bookmark-alt';
       Notification.info(t('modules/quran/quran-reader:bookmark_removed'));
    }
+}
+
+// ─── Murottal Banner Click Handler ───────────────────────────────────────────
+
+/**
+ * Handles clicks on banner action buttons.
+ * Routes actions from the multi-button layout to the appropriate service.
+ * @param {HTMLElement} btn - The clicked button with data-action
+ */
+function _handleBannerAction(btn) {
+   const action = btn.dataset.action;
+   const bannerCard = btn.closest('.quran-reader-surah-info-card');
+   if (!bannerCard) return;
+
+   const surahIndex = parseInt(bannerCard.dataset.surahIndex, 10);
+   const surahTitle = bannerCard.dataset.surahTitle || '';
+   const totalAyahs = parseInt(bannerCard.dataset.totalAyahs, 10);
+
+   switch (action) {
+      // ── Download Actions ──
+      case 'banner-download':
+         DownloadManager.startSurahDownload(surahIndex, totalAyahs, surahTitle);
+         break;
+      case 'banner-pause-dl':
+         DownloadManager.pauseDownload();
+         break;
+      case 'banner-resume-dl':
+         DownloadManager.resumeDownload();
+         break;
+      case 'banner-cancel-dl':
+         DownloadManager.cancelDownload();
+         break;
+
+      // ── Playback Actions ──
+      case 'banner-play':
+         AudioService.playSurah(surahIndex, surahTitle, totalAyahs);
+         break;
+      case 'banner-play-pause': {
+         const state = AudioService.getPlaybackState();
+         if (state.isPaused) {
+            AudioService.resume();
+         } else {
+            AudioService.pause();
+         }
+         break;
+      }
+      case 'banner-prev':
+         AudioService.skipPrev();
+         break;
+      case 'banner-next':
+         AudioService.skipNext();
+         break;
+      case 'banner-stop':
+         AudioService.stop();
+         break;
+   }
+}
+
+// ─── Murottal Event System ───────────────────────────────────────────────────
+
+/**
+ * Registers document-level listeners for all murottal events.
+ * These drive reactive UI updates on the banner and ayah cards.
+ */
+function _registerMurottalEvents() {
+   _unregisterMurottalEvents();
+
+   const handlers = [
+      ['murottal:download-progress', _onMurottalDownloadProgress],
+      ['murottal:download-complete', _onMurottalDownloadComplete],
+      ['murottal:download-error', _onMurottalDownloadError],
+      ['murottal:download-cancelled', _onMurottalDownloadCancelled],
+      ['murottal:download-paused', _onMurottalDownloadProgress],
+      ['murottal:play-start', _onMurottalPlayStateChange],
+      ['murottal:play-pause', _onMurottalPlayStateChange],
+      ['murottal:play-resume', _onMurottalPlayStateChange],
+      ['murottal:play-stop', _onMurottalPlayStop],
+      ['murottal:ayah-change', _onMurottalAyahChange],
+   ];
+
+   handlers.forEach(([event, handler]) => {
+      document.addEventListener(event, handler);
+   });
+
+   _murottalEventHandlers = handlers;
+}
+
+/**
+ * Unregisters all murottal event listeners.
+ */
+function _unregisterMurottalEvents() {
+   _murottalEventHandlers.forEach(([event, handler]) => {
+      document.removeEventListener(event, handler);
+   });
+   _murottalEventHandlers = [];
+}
+
+/**
+ * Refreshes all banner buttons in the current view for a given surah.
+ * @param {number} surahIndex
+ */
+function _refreshBannerForSurah(surahIndex) {
+   if (!_scrollContainer) return;
+
+   // Find all banner cards for this surah and rebuild their action containers
+   const bannerCards = _scrollContainer.querySelectorAll(
+      `.quran-reader-surah-info-card[data-surah-index="${surahIndex}"]`
+   );
+
+   bannerCards.forEach(card => {
+      const totalAyahs = parseInt(card.dataset.totalAyahs, 10);
+      const actionContainer = card.querySelector('.quran-reader-surah-action-container');
+      if (actionContainer) {
+         _rebuildBannerActions(actionContainer, surahIndex, totalAyahs);
+      }
+   });
+}
+
+function _onMurottalDownloadProgress(e) {
+   _refreshBannerForSurah(e.detail.surahIndex);
+}
+
+function _onMurottalDownloadComplete(e) {
+   _refreshBannerForSurah(e.detail.surahIndex);
+
+   // Re-render ayah list so play buttons appear on newly-downloaded ayahs
+   if (_currentReaderData.length && !_isReaderSearchActive) {
+      const renderId = _renderCtx.incrementAndGet();
+      _renderItems(_currentReaderData, renderId);
+   }
+}
+
+function _onMurottalDownloadError(e) {
+   _refreshBannerForSurah(e.detail.surahIndex);
+   Notification.info(t('modules/quran/quran-reader:download_failed'));
+}
+
+function _onMurottalDownloadCancelled(e) {
+   _refreshBannerForSurah(e.detail.surahIndex);
+}
+
+function _onMurottalPlayStateChange(e) {
+   const idx = e.detail.surahIndex;
+   if (idx != null) _refreshBannerForSurah(idx);
+}
+
+function _onMurottalPlayStop() {
+   // Refresh all banners (we don't know which surah was playing)
+   if (!_scrollContainer) return;
+   const allBannerCards = _scrollContainer.querySelectorAll('.quran-reader-surah-info-card');
+   allBannerCards.forEach(card => {
+      const surahIdx = parseInt(card.dataset.surahIndex, 10);
+      const totalAyahs = parseInt(card.dataset.totalAyahs, 10);
+      const actionContainer = card.querySelector('.quran-reader-surah-action-container');
+      if (actionContainer) {
+         _rebuildBannerActions(actionContainer, surahIdx, totalAyahs);
+      }
+   });
+
+   // Remove karaoke highlight
+   _clearKaraokeHighlight();
+}
+
+/**
+ * Handles ayah change events — scrolls to and highlights the active ayah (karaoke mode).
+ */
+function _onMurottalAyahChange(e) {
+   if (!_scrollContainer) return;
+
+   const { surahIndex, ayahNumber } = e.detail;
+
+   // Refresh banner to update playing_ayah label
+   _refreshBannerForSurah(surahIndex);
+
+   // Remove previous highlight
+   _clearKaraokeHighlight();
+
+   // Find and highlight the new active card
+   const selector = `.quran-ayah-card[data-ayah-number="${ayahNumber}"][data-surah-index="${surahIndex}"]`;
+   const card = _scrollContainer.querySelector(selector);
+
+   if (card) {
+      card.classList.add('now-playing');
+
+      // Smooth scroll into view with header offset
+      const header = _overlay?.querySelector('.quran-unified-header');
+      const headerHeight = header ? header.offsetHeight : 0;
+      _scrollContainer.style.scrollPaddingTop = `${headerHeight + 16}px`;
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+   }
+}
+
+/**
+ * Removes the karaoke highlight from all ayah cards.
+ */
+function _clearKaraokeHighlight() {
+   if (!_scrollContainer) return;
+   const prev = _scrollContainer.querySelector('.quran-ayah-card.now-playing');
+   if (prev) prev.classList.remove('now-playing');
 }

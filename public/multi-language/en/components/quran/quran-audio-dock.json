@@ -1,0 +1,15 @@
+{
+    "downloading_surah": "Downloading Surah",
+    "progress_ayat": "{{current}} / {{total}} Verses",
+    "cancel_download": "Cancel",
+    "download_paused": "Paused",
+    "now_playing": "{{surahName}} - Ayah {{ayahNumber}}",
+    "now_playing_ayah": "Ayah {{ayahNumber}}",
+    "play": "Play",
+    "pause": "Pause",
+    "prev": "Previous",
+    "next": "Next",
+    "stop": "Stop",
+    "close": "Close",
+    "resume": "Resume"
+}

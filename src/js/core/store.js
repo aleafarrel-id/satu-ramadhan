@@ -23,8 +23,12 @@ const initialState = {
         quran: {
             tajweed: true,
             transliteration: true,
-            translationLanguage: 'id'
+            translationLanguage: 'id',
+            reciterId: 'alafasy'
         }
+    },
+    quran: {
+        downloads: {}
     }
 };
 

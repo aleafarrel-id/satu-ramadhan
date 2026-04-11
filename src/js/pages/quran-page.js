@@ -7,6 +7,7 @@ import '../../css/components/quran/quran-reader.css';
 import '../../css/components/quran/quran-tajweed.css';
 import '../../css/components/quran/quran-bookmark.css';
 import '../../css/components/quran/mushaf.css';
+import '../../css/components/quran/quran-audio-dock.css';
 
 // App Router
 import * as Router from '../router.js';
@@ -15,10 +16,13 @@ import * as Router from '../router.js';
 import * as QuranSearch from '../components/quran/quran-search.js';
 import * as QuranDock from '../components/quran/quran-dock.js';
 import * as QuranHeader from '../components/quran/quran-header.js';
+import * as QuranAudioDock from '../components/quran/quran-audio-dock.js';
 
 // Modules
 import * as QuranNav from '../modules/quran/quran-nav.js';
 import * as QuranReader from '../modules/quran/quran-reader.js';
+import * as DownloadManager from '../modules/quran/quran-download-manager.js';
+import * as AudioService from '../modules/quran/quran-audio-service.js';
 
 // Utilities
 import { initPullToRefresh } from '../utils/pull-to-refresh.js';
@@ -86,6 +90,12 @@ export async function render(container) {
 
    await transitionPromise;
    _quranContent.classList.add('ready');
+
+   // Initialize Audio Dock into the dock slot
+   const dockSlot = container.querySelector('#quran-dock-slot');
+   if (dockSlot) {
+      await QuranAudioDock.init(dockSlot);
+   }
 
    await loadNS('utils/pull-to-refresh');
 
@@ -215,6 +225,9 @@ export async function destroy() {
    }
 
    QuranReader.destroy();
+   QuranAudioDock.destroy();
+   DownloadManager.destroy();
+   AudioService.destroy();
 
    if (_activePage && _activePage.destroy) {
       await _activePage.destroy();

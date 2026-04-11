@@ -13,5 +13,20 @@
     "bookmark_ayah": "Bookmark verse",
     "verse_count": "{{count}} Verses",
     "bookmark_added": "QS. {{surahName}}: {{verseNumber}} bookmarked",
-    "bookmark_removed": "Bookmark removed"
+    "bookmark_removed": "Bookmark removed",
+    "download_surah": "Download Recitation",
+    "downloading": "Downloading...",
+    "download_progress": "{{current}} / {{total}} Verses",
+    "download_paused": "Download Paused",
+    "download_complete": "Download Complete",
+    "download_failed": "Download Failed",
+    "play_surah": "Play Recitation",
+    "pause_playback": "Pause Recitation",
+    "stop_playback": "Stop",
+    "cancel_download": "Cancel",
+    "resume_download": "Resume",
+    "pause_download": "Pause",
+    "prev_ayah": "Previous ayah",
+    "next_ayah": "Next ayah",
+    "playing_ayah": "Ayah {{current}} / {{total}}"
 }

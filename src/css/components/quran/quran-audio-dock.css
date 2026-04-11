@@ -1,0 +1,342 @@
+/* Audio Dock Component */
+
+/* ── Container ── */
+
+.quran-audio-dock {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 100%;
+    max-width: 430px;
+    padding: var(--sp-3) var(--sp-4);
+    padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom));
+    z-index: calc(var(--z-modal) + 2);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 300ms cubic-bezier(0.2, 0, 0, 1),
+        transform 300ms cubic-bezier(0.2, 0, 0, 1),
+        visibility 300ms;
+}
+
+.quran-audio-dock.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Inner Card ── */
+
+.quran-audio-dock::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--clr-quran-card-bg);
+    border: 1px solid var(--clr-quran-border);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    box-shadow: 0 -4px 20px var(--clr-quran-card-shadow);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: -1;
+}
+
+/* ── Layout ── */
+
+.quran-audio-dock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+}
+
+/* ── Progress Bar (bottom edge) ── */
+
+.quran-audio-dock-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--sp-1);
+    background: transparent;
+    overflow: hidden;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    z-index: 1;
+}
+
+.quran-audio-dock-progress::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--dock-progress, 0%);
+    background: linear-gradient(90deg, var(--clr-quran-accent), var(--clr-primary-400));
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    transition: width var(--transition-normal) ease-out;
+}
+
+/* ── Info Section ── */
+
+.quran-audio-dock-info {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.quran-audio-dock-info > i {
+    font-size: var(--icon-md);
+    color: var(--clr-quran-accent);
+    flex-shrink: 0;
+}
+
+/* Text wrapper for two-line layout */
+.quran-audio-dock-text-wrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 1px;
+}
+
+.quran-audio-dock-text {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.quran-audio-dock-subtext {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-medium);
+    color: var(--clr-quran-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    display: none;
+}
+
+/* ── Controls Section ── */
+
+.quran-audio-dock-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    flex-shrink: 0;
+}
+
+.quran-audio-dock-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-touch-target);
+    height: var(--size-touch-target);
+    background: transparent;
+    border: none;
+    color: var(--clr-quran-text);
+    cursor: pointer;
+    border-radius: var(--radius-circle);
+    transition:
+        color var(--transition-fast),
+        background var(--transition-fast),
+        transform var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+}
+
+.quran-audio-dock-btn:active {
+    transform: scale(0.88);
+}
+
+.quran-audio-dock-btn i {
+    font-size: var(--icon-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Play/Pause button is slightly larger */
+.quran-audio-dock-btn[data-action="play-pause"] {
+    width: var(--size-nav-item);
+    height: var(--size-nav-item);
+    background: var(--clr-quran-accent);
+    color: var(--clr-quran-card-bg);
+    border-radius: var(--radius-circle);
+}
+
+.quran-audio-dock-btn[data-action="play-pause"] i {
+    font-size: var(--fs-3xl);
+}
+
+/* Download pause/resume button is primary-styled */
+.quran-audio-dock-btn[data-action="dl-pause-resume"] {
+    width: var(--size-nav-item);
+    height: var(--size-nav-item);
+    background: var(--clr-quran-accent);
+    color: var(--clr-quran-card-bg);
+    border-radius: var(--radius-circle);
+}
+
+.quran-audio-dock-btn[data-action="dl-pause-resume"] i {
+    font-size: var(--fs-3xl);
+}
+
+/* Stop/cancel button subtle */
+.quran-audio-dock-btn[data-action="stop"],
+.quran-audio-dock-btn[data-action="dl-cancel"] {
+    opacity: 0.6;
+}
+
+/* ── Download Mode ── */
+
+/* Hide playback controls in download mode */
+.quran-audio-dock.download-mode .dock-pb-controls {
+    display: none !important;
+}
+
+/* Hide download controls in playback mode */
+.quran-audio-dock.playback-mode .dock-dl-controls {
+    display: none !important;
+}
+
+/* Hide progress bar in playback mode */
+.quran-audio-dock.playback-mode .quran-audio-dock-progress {
+    display: none !important;
+}
+
+/* Make the download icon pulse while active */
+.quran-audio-dock.download-mode:not(.download-paused) .quran-audio-dock-info > i {
+    animation: dockDownloadPulse 1.5s infinite alternate;
+}
+
+@keyframes dockDownloadPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.15); opacity: 1; color: var(--clr-primary-500); }
+}
+
+/* ── Responsive Rules ── */
+
+@media (hover: hover) and (pointer: fine) {
+    .quran-audio-dock-btn:hover {
+        color: var(--clr-quran-accent);
+        background: var(--clr-quran-bg-alt);
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"]:hover,
+    .quran-audio-dock-btn[data-action="dl-pause-resume"]:hover {
+        background: var(--clr-quran-accent);
+        color: var(--clr-quran-card-bg);
+        transform: scale(1.05);
+    }
+}
+
+@media screen and (max-width: 390px) {
+    .quran-audio-dock {
+        padding: var(--sp-2) var(--sp-3);
+        padding-bottom: calc(var(--sp-2) + env(safe-area-inset-bottom));
+    }
+
+    .quran-audio-dock-text {
+        font-size: calc(var(--fs-xs) - 1px);
+    }
+
+    .quran-audio-dock-subtext {
+        font-size: calc(var(--fs-2xs) - 1px);
+    }
+
+    .quran-audio-dock-btn {
+        width: var(--sp-8);
+        height: var(--sp-8);
+    }
+
+    .quran-audio-dock-btn i {
+        font-size: var(--icon-md);
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"],
+    .quran-audio-dock-btn[data-action="dl-pause-resume"] {
+        width: 36px;
+        height: 36px;
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"] i,
+    .quran-audio-dock-btn[data-action="dl-pause-resume"] i {
+        font-size: var(--icon-lg);
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .quran-audio-dock-info > i {
+        font-size: 16px;
+    }
+
+    .quran-audio-dock-text {
+        font-size: var(--fs-2xs);
+    }
+
+    .quran-audio-dock-subtext {
+        font-size: calc(var(--fs-2xs) - 1px);
+    }
+
+    .quran-audio-dock-controls {
+        gap: 0;
+    }
+
+    .quran-audio-dock-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .quran-audio-dock-btn i {
+        font-size: var(--icon-sm);
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"],
+    .quran-audio-dock-btn[data-action="dl-pause-resume"] {
+        width: var(--sp-8);
+        height: var(--sp-8);
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"] i,
+    .quran-audio-dock-btn[data-action="dl-pause-resume"] i {
+        font-size: var(--icon-md);
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .quran-audio-dock {
+        padding: var(--sp-2);
+        padding-bottom: calc(var(--sp-2) + env(safe-area-inset-bottom));
+        gap: var(--sp-2);
+    }
+
+    .quran-audio-dock-btn {
+        width: 26px;
+        height: 26px;
+    }
+
+    .quran-audio-dock-btn i {
+        font-size: 14px;
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"],
+    .quran-audio-dock-btn[data-action="dl-pause-resume"] {
+        width: 30px;
+        height: 30px;
+    }
+
+    .quran-audio-dock-btn[data-action="play-pause"] i,
+    .quran-audio-dock-btn[data-action="dl-pause-resume"] i {
+        font-size: var(--icon-sm);
+    }
+}

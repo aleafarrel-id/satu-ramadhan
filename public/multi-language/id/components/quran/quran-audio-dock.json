@@ -1,0 +1,15 @@
+{
+    "downloading_surah": "Mengunduh Surah",
+    "progress_ayat": "{{current}} / {{total}} Ayat",
+    "cancel_download": "Batalkan",
+    "download_paused": "Dijeda",
+    "now_playing": "{{surahName}} - Ayat {{ayahNumber}}",
+    "now_playing_ayah": "Ayat {{ayahNumber}}",
+    "play": "Putar",
+    "pause": "Jeda",
+    "prev": "Sebelumnya",
+    "next": "Selanjutnya",
+    "stop": "Berhenti",
+    "close": "Tutup",
+    "resume": "Lanjutkan"
+}
