@@ -6,6 +6,7 @@ import { getCurrentPrayer, getPrayerName } from './prayer-times.js';
 import { info } from '../notification/notification.js';
 import { store } from '../../core/store.js';
 import { getPrayerTimesByCoords } from '../../core/api.js';
+import { t } from '../../core/i18n.js';
 
 let _timeout = null;
 let _timings = null;
@@ -90,7 +91,8 @@ function scheduleNext() {
 function triggerNotification(prayer, triggerTimeMs) {
     _lastTriggeredDateMs = triggerTimeMs;
 
-    info(`Waktu ${getPrayerName(prayer.key)} telah tiba`);
+    const notifBody = t(`modules/prayer/prayer-times:notif_${prayer.key}_body`);
+    info(notifBody);
 
     // Notify all subscribers of the prayer transition
     for (const listener of _listeners) {
