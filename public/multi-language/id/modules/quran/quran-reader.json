@@ -8,6 +8,7 @@
     "error_load": "Gagal Memuat Data",
     "current_juz": "Saat ini Juz {{index}}",
     "current_surah": "Saat ini Surah {{title}}",
+    "play_ayah": "Putar audio ayat",
     "copy_ayah": "Salin ayat",
     "bookmark_ayah": "Tandai ayat",
     "verse_count": "{{count}} Ayat",

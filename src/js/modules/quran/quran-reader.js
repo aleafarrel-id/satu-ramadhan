@@ -434,18 +434,23 @@ function _createSurahBannerElement(surah) {
    const typeText = surah.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
 
    const banner = document.createElement('div');
-   banner.className = 'quran-reader-surah-info';
+   banner.className = 'quran-reader-surah-info-card';
    // Additional margin to space out multiple banners inside Juz mode
-   banner.style.marginTop = '2rem';
-   banner.style.marginBottom = '1.5rem';
+   banner.style.marginTop = '1rem';
+   banner.style.marginBottom = '2rem';
    banner.innerHTML = `
-      <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
-      <div class="quran-reader-surah-meta">
-         <span>${typeText}</span>
-         <span class="quran-reader-meta-dot"></span>
-         <span>${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
+      <div class="quran-reader-surah-info-content">
+         <div class="quran-reader-surah-info-latin">${surahNum}. ${surah.title}</div>
+         <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
+         <div class="quran-reader-surah-meta">
+            <span>${typeText}</span>
+            <span class="quran-reader-meta-dot"></span>
+            <span>${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
+         </div>
       </div>
-      <div class="quran-reader-divider"></div>
+      <button class="quran-reader-surah-action-btn" aria-label="Play Surah">
+         <i class='bx bx-play-circle'></i>
+      </button>
    `;
 
    return banner;
@@ -488,6 +493,13 @@ function _createRegularAyahElement(ayah) {
    const actions = document.createElement('div');
    actions.className = 'quran-ayah-actions';
 
+   // Play button
+   const playBtn = document.createElement('button');
+   playBtn.className = 'quran-ayah-action-btn';
+   playBtn.setAttribute('aria-label', t('modules/quran/quran-reader:play_ayah'));
+   playBtn.dataset.action = 'play';
+   playBtn.innerHTML = `<i class='bx bx-play-circle'></i>`;
+
    // Copy button — no inline listener, handled via delegation
    const copyBtn = document.createElement('button');
    copyBtn.className = 'quran-ayah-action-btn';
@@ -508,6 +520,7 @@ function _createRegularAyahElement(ayah) {
       : `<i class='bx bx-bookmark-alt'></i>`;
    if (isMarked) bookmarkBtn.classList.add('bookmarked');
 
+   actions.appendChild(playBtn);
    actions.appendChild(copyBtn);
    actions.appendChild(bookmarkBtn);
 

@@ -8,6 +8,7 @@
     "error_load": "Failed to Load Data",
     "current_juz": "Currently Juz {{index}}",
     "current_surah": "Currently Surah {{title}}",
+    "play_ayah": "Play verse audio",
     "copy_ayah": "Copy verse",
     "bookmark_ayah": "Bookmark verse",
     "verse_count": "{{count}} Verses",
