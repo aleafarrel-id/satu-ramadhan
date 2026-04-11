@@ -287,3 +287,75 @@
     outline: none;
     box-shadow: 0 0 0 2px var(--clr-secondary-600), 0 0 0 4px var(--clr-accent-500);
 }
+
+/* ── Quran Theme Extension ── */
+.perm-dialog-overlay--quran .perm-dialog__card {
+    background: var(--clr-quran-card-bg);
+    border-color: var(--clr-mushaf-header-border);
+    box-shadow: var(--shadow-modal);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__title {
+    color: var(--clr-mushaf-text-dark);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__desc {
+    color: var(--clr-quran-text-secondary);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__feature-icon {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: var(--clr-mushaf-line-border);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__feature-icon i {
+    color: var(--clr-mushaf-text-dark);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__feature-label {
+    color: var(--clr-mushaf-text-dark);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__features {
+    border-top-color: var(--clr-mushaf-line-border);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__btn--ghost {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: var(--clr-mushaf-line-border);
+    color: var(--clr-mushaf-text-dark);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__btn--ghost:active {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+/* Quran theme Icon coloring (green instead of gold) */
+.perm-dialog-overlay--quran .perm-dialog__icon-wrap--accent {
+    background: linear-gradient(135deg, var(--clr-primary-a20) 0%, var(--clr-primary-a10) 100%);
+    border-color: var(--clr-primary-a30);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__icon-wrap--accent::after {
+    border-color: var(--clr-primary-a25);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__icon-wrap--accent .perm-dialog__icon {
+    color: var(--clr-quran-accent);
+}
+
+/* Quran theme Primary Button coloring */
+.perm-dialog-overlay--quran .perm-dialog__btn--primary {
+    background: var(--clr-quran-accent);
+    color: var(--clr-text-primary);
+    box-shadow: 0 4px 12px var(--clr-primary-a30);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__btn--primary:active {
+    transform: scale(0.97);
+    filter: brightness(0.9);
+}
+
+.perm-dialog-overlay--quran .perm-dialog__btn--primary:focus-visible {
+    box-shadow: 0 0 0 2px var(--clr-quran-card-bg), 0 0 0 4px var(--clr-quran-accent);
+}

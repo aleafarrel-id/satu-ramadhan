@@ -16,6 +16,7 @@ import { NativeAudio } from '@capgo/native-audio';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { store } from '../../core/store.js';
 import { DEFAULT_RECITER_ID, getReciterUrlSegment } from '../../config/quran-audio.js';
+import { getSurahList } from './quran-api.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -43,6 +44,9 @@ let _playbackMode = 'single';
 
 /** Prevents overlapping async transitions (e.g. double completion callbacks). */
 let _isTransitioning = false;
+
+/** AbortController for orchestrating clean cancellation of async chains. */
+let _playController = new AbortController();
 
 /** @type {PluginListenerHandle|null} */
 let _completeListenerHandle = null;
@@ -124,7 +128,7 @@ async function _removeCompleteListener() {
  * @param {number} ayahNumber
  * @returns {Promise<boolean>} Resolves `true` if playback started successfully.
  */
-async function _playAyahFile(surahIndex, ayahNumber) {
+async function _playAyahFile(surahIndex, ayahNumber, signal) {
     const reciterId = _getReciterId();
 
     if (!Capacitor.isNativePlatform()) {
@@ -136,6 +140,8 @@ async function _playAyahFile(surahIndex, ayahNumber) {
         _webAudioEl = new Audio(remoteUrl);
         _webAudioEl.onended = () => _onPlaybackComplete();
         _currentAssetId = 'web';
+
+        if (signal.aborted) return false;
 
         try {
             await _webAudioEl.play();
@@ -159,6 +165,12 @@ async function _playAyahFile(surahIndex, ayahNumber) {
 
         await NativeAudio.preload({ assetId, assetPath: uri, audioChannelNum: 1, isUrl: true });
 
+        // Gatekeeper check: gracefully unload if aborted during FS/Preload IO
+        if (signal.aborted) {
+            NativeAudio.unload({ assetId }).catch(() => {});
+            return false;
+        }
+
         _currentAssetId = assetId;
 
         _completeListenerHandle = await NativeAudio.addListener('complete', (event) => {
@@ -181,7 +193,9 @@ async function _playAyahFile(surahIndex, ayahNumber) {
  * @param {number} ayahNumber - The target ayah to transition to.
  * @returns {Promise<void>}
  */
-async function _gotoAyah(ayahNumber) {
+async function _gotoAyah(ayahNumber, signal = _playController.signal) {
+    if (signal.aborted) return;
+
     _currentAyahNumber = ayahNumber;
     _isPaused = false;
 
@@ -192,10 +206,12 @@ async function _gotoAyah(ayahNumber) {
     });
 
     _isTransitioning = true;
-    const success = await _playAyahFile(_currentSurah.index, ayahNumber);
-    _isTransitioning = false;
-
-    if (!success) stop();
+    const success = await _playAyahFile(_currentSurah.index, ayahNumber, signal);
+    
+    if (!signal.aborted) {
+        _isTransitioning = false;
+        if (!success) stop();
+    }
 }
 
 /**
@@ -217,10 +233,53 @@ function _onPlaybackComplete() {
         return;
     }
 
-    _gotoAyah(nextAyah);
+    _gotoAyah(nextAyah, _playController.signal);
 }
 
 // ─── Public API ──────────────────────────────────────────────────────────────
+
+async function _cleanUpNativeResources() {
+    try {
+        if (_currentAssetId) {
+            if (!Capacitor.isNativePlatform()) {
+                if (_webAudioEl) _webAudioEl.currentTime = 0;
+            } else {
+                await NativeAudio.stop({ assetId: _currentAssetId });
+            }
+        }
+    } catch {
+        // Safe to ignore
+    }
+
+    await _unloadCurrentAsset();
+    await _removeCompleteListener();
+
+    _isTransitioning = false;
+    _currentSurah = null;
+    _currentAyahNumber = 0;
+    _playbackMode = 'single';
+}
+
+async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah) {
+    const controller = new AbortController();
+    _playController.abort();
+    _playController = controller;
+    const signal = controller.signal;
+
+    _isPlaying = false;
+    _isPaused = false;
+    await _cleanUpNativeResources();
+    
+    if (signal.aborted) return;
+
+    _playbackMode = mode;
+    _currentSurah = { index: surahIndex, name: surahName, totalAyahs };
+    _isPlaying = true;
+
+    _emit('murottal:play-start', { surahIndex, surahName, ayahNumber: startAyah, mode });
+
+    await _gotoAyah(startAyah, signal);
+}
 
 /**
  * Plays an entire surah sequentially, auto-advancing through each ayah.
@@ -228,34 +287,32 @@ function _onPlaybackComplete() {
  * @param {string} surahName
  * @param {number} totalAyahs
  */
-export async function playSurah(surahIndex, surahName, totalAyahs) {
-    await stop();
-
-    _playbackMode = 'sequential';
-    _currentSurah = { index: surahIndex, name: surahName, totalAyahs };
-    _isPlaying = true;
-
-    _emit('murottal:play-start', { surahIndex, surahName, ayahNumber: 1, mode: 'sequential' });
-
-    await _gotoAyah(1);
+export function playSurah(surahIndex, surahName, totalAyahs) {
+    return _initPlayback('sequential', surahIndex, surahName, totalAyahs, 1);
 }
 
 /**
- * Plays a single ayah and stops after it finishes.
+ * Plays a single ayah but enables sequential progression starting from it.
+ * Dynamically sets exact limits by querying the Surah registry.
  * @param {number} surahIndex
  * @param {number} ayahNumber
  * @param {string} [surahName='']
  */
 export async function playAyah(surahIndex, ayahNumber, surahName = '') {
-    await stop();
+    let totalAyahs = ayahNumber; // Safe baseline fallback
+    
+    try {
+        const surahList = await getSurahList();
+        const surahInfo = surahList.find(s => parseInt(s.index, 10) === parseInt(surahIndex, 10));
+        if (surahInfo) {
+            const count = surahInfo.count || surahInfo.numberOfAyahs;
+            if (count) totalAyahs = parseInt(count, 10);
+        }
+    } catch (err) {
+        console.warn(`[AudioService] playAyah: failed to lookup totalAyahs for surah ${surahIndex}`, err);
+    }
 
-    _playbackMode = 'single';
-    _currentSurah = { index: surahIndex, name: surahName, totalAyahs: ayahNumber };
-    _isPlaying = true;
-
-    _emit('murottal:play-start', { surahIndex, surahName, ayahNumber, mode: 'single' });
-
-    await _gotoAyah(ayahNumber);
+    return _initPlayback('sequential', surahIndex, surahName, totalAyahs, ayahNumber);
 }
 
 /**
@@ -300,54 +357,43 @@ export async function resume() {
  * Stops playback entirely and resets all internal state.
  */
 export async function stop() {
-    if (!_isPlaying && !_currentAssetId) return;
+    _playController.abort();
 
-    try {
-        if (_currentAssetId) {
-            if (!Capacitor.isNativePlatform()) {
-                if (_webAudioEl) _webAudioEl.currentTime = 0;
-            } else {
-                await NativeAudio.stop({ assetId: _currentAssetId });
-            }
-        }
-    } catch {
-        // May fail if already stopped — safe to ignore
-    }
-
-    await _unloadCurrentAsset();
-    await _removeCompleteListener();
+    if (!_isPlaying && !_currentAssetId && !_isTransitioning) return;
 
     const wasPlaying = _isPlaying;
-
+    
     _isPlaying = false;
     _isPaused = false;
-    _isTransitioning = false;
-    _currentSurah = null;
-    _currentAyahNumber = 0;
-    _playbackMode = 'single';
+
+    await _cleanUpNativeResources();
 
     if (wasPlaying) _emit('murottal:play-stop', {});
 }
 
 /**
- * Skips to the next ayah in sequential mode.
+ * Skips to the next ayah instantly, aborting any active transition.
  */
 export async function skipNext() {
-    if (!_isPlaying || !_currentSurah || _playbackMode !== 'sequential' || _isTransitioning) return;
+    if (!_isPlaying || !_currentSurah || _playbackMode !== 'sequential') return;
 
     const nextAyah = _currentAyahNumber + 1;
     if (nextAyah > _currentSurah.totalAyahs) { stop(); return; }
 
-    await _gotoAyah(nextAyah);
+    // Instant abort and jump
+    await _initPlayback('sequential', _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, nextAyah);
 }
 
 /**
- * Skips to the previous ayah in sequential mode.
+ * Skips to the previous ayah instantly, aborting any active transition.
  */
 export async function skipPrev() {
-    if (!_isPlaying || !_currentSurah || _playbackMode !== 'sequential' || _isTransitioning) return;
+    if (!_isPlaying || !_currentSurah || _playbackMode !== 'sequential') return;
 
-    await _gotoAyah(Math.max(1, _currentAyahNumber - 1));
+    const prevAyah = Math.max(1, _currentAyahNumber - 1);
+    
+    // Instant abort and jump
+    await _initPlayback('sequential', _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, prevAyah);
 }
 
 /**

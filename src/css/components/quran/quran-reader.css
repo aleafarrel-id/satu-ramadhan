@@ -281,6 +281,26 @@
    font-size: var(--icon-lg);
 }
 
+.banner-ctrl-btn.banner-ctrl-primary.is-loading {
+   position: relative;
+}
+
+.banner-ctrl-btn.banner-ctrl-primary.is-loading::before {
+   content: '';
+   position: absolute;
+   inset: -4px;
+   border: 2px solid transparent;
+   border-top-color: var(--clr-primary-500);
+   border-right-color: var(--clr-primary-300);
+   border-radius: var(--radius-full);
+   animation: bannerBtnSpin 1s linear infinite;
+   pointer-events: none;
+}
+
+@keyframes bannerBtnSpin {
+   to { transform: rotate(360deg); }
+}
+
 /* Danger variant (cancel) */
 .banner-ctrl-btn.banner-ctrl-danger {
    background: rgba(255, 59, 59, 0.25); /* based on var(--clr-danger) */
@@ -332,11 +352,19 @@
 
 /* ── Karaoke Active Ayah ── */
 
-.quran-ayah-card.now-playing {
-   background: var(--clr-quran-bg-alt);
-   border-left: 3px solid var(--clr-quran-accent);
-   padding-left: calc(var(--sp-5) - 3px);
-   transition: background 0.3s ease, border-left 0.3s ease;
+.quran-ayah-card::before {
+   content: '';
+   position: absolute;
+   inset: 0;
+   background: transparent;
+   border-radius: var(--radius-lg);
+   z-index: -1;
+   pointer-events: none;
+   transition: background var(--transition-normal);
+}
+
+.quran-ayah-card.now-playing::before {
+   background: rgba(212, 175, 55, 0.04); /* Ultra-light 4% gold matching --clr-accent */
 }
 
 /* ── Ayah List Container ── */
@@ -345,6 +373,11 @@
    display: flex;
    flex-direction: column;
    padding: 0 var(--sp-4) var(--sp-8);
+   transition: padding-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.has-audio-dock .quran-reader-ayah-list {
+   padding-bottom: calc(var(--sp-12) + 130px);
 }
 
 /* ── Bismillah Header ── */
@@ -371,8 +404,12 @@
 .quran-ayah-card {
    display: flex;
    flex-direction: column;
-   padding: var(--sp-5) 0;
+   position: relative;
+   isolation: isolate;
+   padding: var(--sp-5) var(--sp-4);
+   margin: 0 calc(var(--sp-4) * -1);
    border-bottom: 1px solid var(--clr-quran-border);
+   border-radius: var(--radius-lg);
    gap: var(--sp-3);
    animation: ayahFadeIn 0.3s ease-out backwards;
    content-visibility: auto;

@@ -7,7 +7,6 @@ import '../../css/components/modal/share-schedule-modal.css';
 import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
 
-import { Filesystem } from '@capacitor/filesystem';
 import { isNative } from '../modules/system/platform.js';
 
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
@@ -36,7 +35,7 @@ import { showLocationSearchModal } from '../components/modal/location-search-mod
 import { showShareScheduleModal } from '../components/modal/share-schedule-modal.js';
 import { downloadScheduleImage, shareScheduleImage } from '../modules/share/share-schedule-exporter.js';
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
-import { showPermissionDialogPreset } from '../modules/permission/permission-dialog-configs.js';
+import { ensureStoragePermission } from '../modules/permission/permission-dialog-configs.js';
 
 import { logError } from '../utils/error-boundary.js';
 import { makeAccessibleBtn } from '../utils/a11y.js';
@@ -343,41 +342,7 @@ async function handleShareSchedule() {
 }
 
 function _ensureStoragePermission() {
-    return new Promise(async (resolve) => {
-        // Android 13+ (API 33) does not use the legacy WRITE_EXTERNAL_STORAGE permission.
-        // For saving photos, MediaStore is used which is permissionless for adding new files.
-        const ua = navigator.userAgent;
-        const androidMatch = ua.match(/Android\s([0-9.]+)/);
-        const androidVersion = androidMatch ? parseInt(androidMatch[1]) : 0;
-
-        if (androidVersion >= 13) {
-            resolve(true);
-            return;
-        }
-
-        try {
-            const status = await Filesystem.checkPermissions();
-            if (status.publicStorage === 'granted') {
-                resolve(true);
-                return;
-            }
-        } catch (e) {
-            resolve(false);
-            return;
-        }
-
-        showPermissionDialogPreset('storage', {
-            onConfirm: async () => {
-                try {
-                    const result = await Filesystem.requestPermissions();
-                    resolve(result.publicStorage === 'granted');
-                } catch (e) {
-                    resolve(false);
-                }
-            },
-            onCancel: () => resolve(false),
-        });
-    });
+    return ensureStoragePermission('storage');
 }
 
 /**

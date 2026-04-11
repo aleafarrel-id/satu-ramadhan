@@ -35,6 +35,7 @@ export function showPermissionDialog({
     features    = [],
     confirmText = 'Izinkan',
     cancelText  = 'Lewati',
+    theme       = 'default',
     onConfirm,
     onCancel,
 }) {
@@ -44,7 +45,7 @@ export function showPermissionDialog({
     _onCancel     = onCancel ?? null;
     _isConfirming = false;
 
-    _overlayEl = buildDOM({ icon, iconColor, title, description, features, confirmText, cancelText });
+    _overlayEl = buildDOM({ icon, iconColor, title, description, features, confirmText, cancelText, theme });
     document.body.appendChild(_overlayEl);
 
     registerModalDismiss(handleCancel);
@@ -130,9 +131,14 @@ function removeModal() {
     _isConfirming = false;
 }
 
-function buildDOM({ icon, iconColor, title, description, features, confirmText, cancelText }) {
+function buildDOM({ icon, iconColor, title, description, features, confirmText, cancelText, theme }) {
     const overlay = document.createElement('div');
     overlay.className = 'perm-dialog-overlay';
+    
+    if (theme === 'quran') {
+        overlay.classList.add('perm-dialog-overlay--quran');
+    }
+
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-labelledby', 'perm-dialog-title');

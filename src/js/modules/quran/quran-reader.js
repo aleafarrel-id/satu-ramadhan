@@ -19,6 +19,10 @@ import * as BookmarkManager from './bookmark-manager.js';
 import * as DownloadManager from './quran-download-manager.js';
 import * as AudioService from './quran-audio-service.js';
 
+// Permissions
+import { Capacitor } from '@capacitor/core';
+import { ensureStoragePermission } from '../permission/permission-dialog-configs.js';
+
 // Utilities & System
 import * as Notification from '../notification/notification.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../system/back-handler.js';
@@ -550,7 +554,7 @@ function _rebuildBannerActions(container, surahIndex, totalAyahs) {
          controls.appendChild(resumeBtn);
       } else {
          const pauseBtn = _createBannerCtrlBtn('banner-pause-dl', 'bx-pause-circle', t('modules/quran/quran-reader:pause_download'));
-         pauseBtn.classList.add('banner-ctrl-primary');
+         pauseBtn.classList.add('banner-ctrl-primary', 'is-loading');
          controls.appendChild(pauseBtn);
       }
 
@@ -1079,7 +1083,7 @@ function _handleBannerAction(btn) {
    switch (action) {
       // ── Download Actions ──
       case 'banner-download':
-         DownloadManager.startSurahDownload(surahIndex, totalAyahs, surahTitle);
+         _startDownloadWithPermission(surahIndex, totalAyahs, surahTitle);
          break;
       case 'banner-pause-dl':
          DownloadManager.pauseDownload();
@@ -1114,6 +1118,20 @@ function _handleBannerAction(btn) {
          AudioService.stop();
          break;
    }
+}
+
+/**
+ * Ensures storage permission is granted before starting a murottal download.
+ * On web, downloads are handled without filesystem permission.
+ * On native Android < 13, shows a rationale dialog before requesting.
+ * If permission is denied, the banner stays in idle state (no side effects).
+ */
+async function _startDownloadWithPermission(surahIndex, totalAyahs, surahTitle) {
+   if (Capacitor.isNativePlatform()) {
+      const granted = await ensureStoragePermission('murottal_storage');
+      if (!granted) return;
+   }
+   DownloadManager.startSurahDownload(surahIndex, totalAyahs, surahTitle);
 }
 
 // ─── Murottal Event System ───────────────────────────────────────────────────

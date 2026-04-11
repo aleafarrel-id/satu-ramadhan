@@ -80,6 +80,7 @@ export function destroy() {
     _progressBarEl = null;
     _isVisible = false;
     _currentMode = null;
+    document.body.classList.remove('has-audio-dock');
 }
 
 // ─── DOM Construction ────────────────────────────────────────────────────────
@@ -206,6 +207,7 @@ function _show(mode) {
         _isVisible = true;
         requestAnimationFrame(() => {
             _dockEl.classList.add('show');
+            document.body.classList.add('has-audio-dock');
         });
     }
 }
@@ -219,6 +221,7 @@ function _hide() {
     _isVisible = false;
     _currentMode = null;
     _dockEl.classList.remove('show');
+    document.body.classList.remove('has-audio-dock');
 }
 
 // ─── State Updates ───────────────────────────────────────────────────────────

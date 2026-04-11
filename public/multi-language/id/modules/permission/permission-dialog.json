@@ -13,5 +13,12 @@
     "storage_f3": "Hanya akses file buatan aplikasi",
     "storage_confirm": "Izinkan Akses",
     "storage_cancel": "Batal",
+    "murottal_title": "Izin Penyimpanan",
+    "murottal_desc": "Untuk menyimpan audio murottal agar dapat diputar secara offline, aplikasi memerlukan akses penyimpanan.",
+    "murottal_f1": "Simpan audio murottal",
+    "murottal_f2": "Putar murottal tanpa internet",
+    "murottal_f3": "Hanya akses folder aplikasi",
+    "murottal_confirm": "Izinkan Akses",
+    "murottal_cancel": "Batal",
     "processing": "Memproses..."
 }
