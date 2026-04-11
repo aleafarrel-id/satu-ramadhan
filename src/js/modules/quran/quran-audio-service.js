@@ -312,7 +312,7 @@ export async function playAyah(surahIndex, ayahNumber, surahName = '') {
         console.warn(`[AudioService] playAyah: failed to lookup totalAyahs for surah ${surahIndex}`, err);
     }
 
-    return _initPlayback('sequential', surahIndex, surahName, totalAyahs, ayahNumber);
+    return _initPlayback('single', surahIndex, surahName, totalAyahs, ayahNumber);
 }
 
 /**
@@ -375,25 +375,25 @@ export async function stop() {
  * Skips to the next ayah instantly, aborting any active transition.
  */
 export async function skipNext() {
-    if (!_isPlaying || !_currentSurah || _playbackMode !== 'sequential') return;
+    if (!_isPlaying || !_currentSurah) return;
 
     const nextAyah = _currentAyahNumber + 1;
     if (nextAyah > _currentSurah.totalAyahs) { stop(); return; }
 
-    // Instant abort and jump
-    await _initPlayback('sequential', _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, nextAyah);
+    // Instant abort and jump, preserving current mode
+    await _initPlayback(_playbackMode, _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, nextAyah);
 }
 
 /**
  * Skips to the previous ayah instantly, aborting any active transition.
  */
 export async function skipPrev() {
-    if (!_isPlaying || !_currentSurah || _playbackMode !== 'sequential') return;
+    if (!_isPlaying || !_currentSurah) return;
 
     const prevAyah = Math.max(1, _currentAyahNumber - 1);
     
-    // Instant abort and jump
-    await _initPlayback('sequential', _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, prevAyah);
+    // Instant abort and jump, preserving current mode
+    await _initPlayback(_playbackMode, _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, prevAyah);
 }
 
 /**
