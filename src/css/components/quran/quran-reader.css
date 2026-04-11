@@ -206,7 +206,7 @@
    display: flex;
    flex-direction: column;
    align-items: center;
-   gap: var(--sp-3);
+   gap: var(--spacing-sm);
    z-index: 1;
    flex-shrink: 0;
    margin-left: var(--sp-3);
@@ -228,6 +228,39 @@
    overflow: hidden;
    text-overflow: ellipsis;
    margin-top: var(--sp-1);
+}
+
+/* Redownload Pill Button (State: Downloaded) */
+.quran-reader-redownload-pill {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: var(--spacing-xs);
+   padding: 2px var(--spacing-sm);
+   background: var(--clr-white-a15);
+   color: var(--clr-text-primary);
+   border: 1px solid var(--clr-white-a15);
+   border-radius: var(--radius-pill);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-medium);
+   cursor: pointer;
+   transition: background var(--transition-fast), transform var(--transition-fast);
+   backdrop-filter: blur(4px);
+   -webkit-backdrop-filter: blur(4px);
+   margin-bottom: var(--spacing-sm);
+}
+
+.quran-reader-redownload-pill:hover {
+   background: rgba(255, 255, 255, 0.25);
+}
+
+.quran-reader-redownload-pill:active {
+   transform: scale(0.95);
+}
+
+.quran-reader-redownload-pill i {
+   font-size: var(--icon-sm);
 }
 
 /* ── Banner Control Groups ── */
@@ -270,7 +303,7 @@
 
 /* Primary (Play/Pause) has solid white bg */
 .banner-ctrl-btn.banner-ctrl-primary {
-   width: calc(var(--sp-8) + var(--sp-1)); /* 36px */
+   width: calc(var(--sp-8) + var(--sp-1));
    height: calc(var(--sp-8) + var(--sp-1));
    background: var(--clr-text-primary);
    color: var(--clr-primary-600);
@@ -298,12 +331,14 @@
 }
 
 @keyframes bannerBtnSpin {
-   to { transform: rotate(360deg); }
+   to {
+      transform: rotate(360deg);
+   }
 }
 
 /* Danger variant (cancel) */
 .banner-ctrl-btn.banner-ctrl-danger {
-   background: rgba(255, 59, 59, 0.25); /* based on var(--clr-danger) */
+   background: rgba(255, 59, 59, 0.25);
    color: #ffd4d4;
 }
 
@@ -346,8 +381,15 @@
 }
 
 @keyframes bannerPlayingPulse {
-   0%, 100% { box-shadow: 0 8px 24px var(--clr-primary-a20); }
-   50% { box-shadow: 0 8px 32px var(--clr-primary-a20), 0 0 0 2px rgba(255, 255, 255, 0.15) inset; }
+
+   0%,
+   100% {
+      box-shadow: 0 8px 24px var(--clr-primary-a20);
+   }
+
+   50% {
+      box-shadow: 0 8px 32px var(--clr-primary-a20), 0 0 0 2px rgba(255, 255, 255, 0.15) inset;
+   }
 }
 
 /* ── Karaoke Active Ayah ── */
@@ -364,7 +406,7 @@
 }
 
 .quran-ayah-card.now-playing::before {
-   background: rgba(212, 175, 55, 0.04); /* Ultra-light 4% gold matching --clr-accent */
+   background: rgba(212, 175, 55, 0.04);
 }
 
 /* ── Ayah List Container ── */

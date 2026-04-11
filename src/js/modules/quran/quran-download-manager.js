@@ -248,6 +248,25 @@ function _cleanupState() {
     _queue = null;
 }
 
+/**
+ * Removes all Store records for a specific surah+reciter combination.
+ * After this call, every ayah of that surah will be treated as "not downloaded"
+ * so the download loop re-fetches and overwrites every file on disk.
+ *
+ * Intentionally does NOT delete files from disk:
+ *   – FileTransfer.downloadFile overwrites existing files automatically.
+ *   – Avoiding filesystem deletes keeps this operation fast and atomic.
+ *
+ * @param {string} reciterId
+ * @param {number} surahIndex
+ */
+function _clearSurahRecord(reciterId, surahIndex) {
+    const downloads = store.getState(STORE_DOWNLOADS_PATH) || {};
+    const reciterData = { ...(downloads[reciterId] || {}) };
+    delete reciterData[surahIndex];
+    store.setState(`${STORE_DOWNLOADS_PATH}.${reciterId}`, reciterData);
+}
+
 // ─── Public API ──────────────────────────────────────────────────────────────
 
 /**
@@ -327,6 +346,43 @@ export function cancelDownload() {
         _emit('murottal:download-cancelled', { surahIndex });
     }
     // Otherwise, the running loop will pick up _isCancelled on next iteration
+}
+
+/**
+ * Clears the download record for a surah and starts a full re-download.
+ *
+ * Use when files are suspected to be corrupt or incomplete.
+ * All ayahs will be re-fetched from the remote server and existing
+ * files on disk will be overwritten (not deleted first).
+ *
+ * Guards:
+ *   – Silently ignored on web (no native filesystem).
+ *   – Silently ignored if another surah is currently downloading.
+ *   – If the same surah is paused, cancels it first before re-queuing.
+ *
+ * @param {number} surahIndex
+ * @param {number} totalAyahs
+ * @param {string} [surahName='']
+ */
+export function redownloadSurah(surahIndex, totalAyahs, surahName = '') {
+    if (!Capacitor.isNativePlatform()) return;
+
+    // A different surah is actively downloading — don't interrupt it
+    if (_isDownloading && !_isPaused && _queue?.surahIndex !== surahIndex) return;
+
+    // Cancel any in-progress or paused download for this (or any) surah
+    if (_isDownloading) {
+        _isCancelled = true;
+        _cleanupState();
+    }
+
+    const reciterId = _getReciterId();
+
+    // Wipe the store record so every ayah is treated as missing
+    _clearSurahRecord(reciterId, surahIndex);
+
+    // Now kick off a clean download from ayah 1
+    startSurahDownload(surahIndex, totalAyahs, surahName);
 }
 
 /**

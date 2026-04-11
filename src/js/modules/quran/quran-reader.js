@@ -7,6 +7,7 @@ import * as QuranDock from '../../components/quran/quran-dock.js';
 import * as QuranCard from '../../components/quran/quran-card.js';
 import * as QuranHeader from '../../components/quran/quran-header.js';
 import { openPicker, closePicker, destroyPicker } from '../../components/quran/quran-picker.js';
+import { showConfirmModal } from '../../components/modal/confirm-modal.js';
 
 // API & Services
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
@@ -583,6 +584,16 @@ function _rebuildBannerActions(container, surahIndex, totalAyahs) {
       // ── State 3: Fully Downloaded — Ready to Play ──
       if (bannerCard) bannerCard.classList.add('state-downloaded');
 
+      // Only show redownload option on Native (web relies strictly on streaming)
+      // Placed FIRST so it appears above the play button
+      if (Capacitor.isNativePlatform()) {
+         const redownloadBtn = document.createElement('button');
+         redownloadBtn.className = 'quran-reader-redownload-pill';
+         redownloadBtn.dataset.action = 'banner-redownload';
+         redownloadBtn.innerHTML = `<i class='bx bx-refresh'></i> <span>${t('modules/quran/quran-reader:redownload_surah')}</span>`;
+         container.appendChild(redownloadBtn);
+      }
+
       const playBtn = document.createElement('button');
       playBtn.className = 'quran-reader-surah-action-btn surah-downloaded';
       playBtn.dataset.action = 'banner-play';
@@ -594,7 +605,6 @@ function _rebuildBannerActions(container, surahIndex, totalAyahs) {
       label.className = 'quran-reader-surah-action-label';
       label.textContent = t('modules/quran/quran-reader:play_surah');
       container.appendChild(label);
-
    } else {
       // ── State 1: Not Downloaded (or partially) ──
       if (bannerCard) bannerCard.classList.add('state-idle');
@@ -1117,6 +1127,11 @@ function _handleBannerAction(btn) {
       case 'banner-stop':
          AudioService.stop();
          break;
+
+      // ── Re-download (corrupt/missing file recovery) ──
+      case 'banner-redownload':
+         _startRedownloadWithPermission(surahIndex, totalAyahs, surahTitle);
+         break;
    }
 }
 
@@ -1132,6 +1147,38 @@ async function _startDownloadWithPermission(surahIndex, totalAyahs, surahTitle) 
       if (!granted) return;
    }
    DownloadManager.startSurahDownload(surahIndex, totalAyahs, surahTitle);
+}
+
+/**
+ * Stops any active playback for the surah, then re-downloads all its audio files.
+ * Ensures storage permission first (same guard as a normal download).
+ *
+ * Called when the user taps the re-download button on a fully-downloaded banner.
+ * Displays a multi-language confirmation modal to prevent accidental data usage.
+ */
+async function _startRedownloadWithPermission(surahIndex, totalAyahs, surahTitle) {
+   showConfirmModal({
+      title: t('modules/quran/quran-reader:redownload_confirm_title'),
+      message: t('modules/quran/quran-reader:redownload_confirm_desc'),
+      confirmText: t('modules/quran/quran-reader:redownload_confirm_btn'),
+      isDanger: true,
+      theme: 'quran',
+      onConfirm: async () => {
+         if (Capacitor.isNativePlatform()) {
+            const granted = await ensureStoragePermission('murottal_storage');
+            if (!granted) return;
+         }
+
+         // Stop playback if this surah (or any other) is currently playing,
+         // so the audio asset is not in use while files are being overwritten.
+         const playbackState = AudioService.getPlaybackState();
+         if (playbackState.isPlaying) {
+            await AudioService.stop();
+         }
+
+         DownloadManager.redownloadSurah(surahIndex, totalAyahs, surahTitle);
+      }
+   });
 }
 
 // ─── Murottal Event System ───────────────────────────────────────────────────
@@ -1153,6 +1200,7 @@ function _registerMurottalEvents() {
       ['murottal:play-pause', _onMurottalPlayStateChange],
       ['murottal:play-resume', _onMurottalPlayStateChange],
       ['murottal:play-stop', _onMurottalPlayStop],
+      ['murottal:play-error', _onMurottalPlayError],
       ['murottal:ayah-change', _onMurottalAyahChange],
    ];
 
@@ -1237,6 +1285,14 @@ function _onMurottalPlayStop() {
 
    // Remove karaoke highlight
    _clearKaraokeHighlight();
+}
+
+/**
+ * Handles audio playback errors — notifies the user that recitation could not be played.
+ * Triggered by `murottal:play-error` events from the AudioService.
+ */
+function _onMurottalPlayError() {
+   Notification.error(t('modules/quran/quran-reader:play_error'));
 }
 
 /**

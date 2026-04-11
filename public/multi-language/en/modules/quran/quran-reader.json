@@ -28,5 +28,10 @@
     "pause_download": "Pause",
     "prev_ayah": "Previous ayah",
     "next_ayah": "Next ayah",
-    "playing_ayah": "Ayah {{current}} / {{total}}"
+    "playing_ayah": "Ayah {{current}} / {{total}}",
+    "play_error": "Failed to play recitation.",
+    "redownload_surah": "Re-download",
+    "redownload_confirm_title": "Re-download Recitation",
+    "redownload_confirm_desc": "Are you sure you want to re-download? Only do this if the audio is corrupt or missing.",
+    "redownload_confirm_btn": "Re-download"
 }

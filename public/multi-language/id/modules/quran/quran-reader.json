@@ -28,5 +28,10 @@
     "pause_download": "Jeda",
     "prev_ayah": "Ayat sebelumnya",
     "next_ayah": "Ayat selanjutnya",
-    "playing_ayah": "Ayat {{current}} / {{total}}"
+    "playing_ayah": "Ayat {{current}} / {{total}}",
+    "play_error": "Gagal memutar murottal.",
+    "redownload_surah": "Unduh Ulang",
+    "redownload_confirm_title": "Unduh Ulang Murottal",
+    "redownload_confirm_desc": "Yakin ingin mengunduh ulang? Lakukan ini hanya jika file audio bermasalah atau rusak.",
+    "redownload_confirm_btn": "Unduh Ulang"
 }

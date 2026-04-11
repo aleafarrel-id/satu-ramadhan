@@ -148,6 +148,7 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
             return true;
         } catch (error) {
             console.warn(`[AudioService] Web: failed to play ayah ${ayahNumber}:`, error);
+            _emit('murottal:play-error', { surahIndex, ayahNumber });
             return false;
         }
     }
@@ -167,7 +168,7 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
 
         // Gatekeeper check: gracefully unload if aborted during FS/Preload IO
         if (signal.aborted) {
-            NativeAudio.unload({ assetId }).catch(() => {});
+            NativeAudio.unload({ assetId }).catch(() => { });
             return false;
         }
 
@@ -181,6 +182,7 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
         return true;
     } catch (error) {
         console.warn(`[AudioService] Native: failed to play ayah ${ayahNumber}:`, error);
+        _emit('murottal:play-error', { surahIndex, ayahNumber });
         return false;
     }
 }
@@ -207,7 +209,7 @@ async function _gotoAyah(ayahNumber, signal = _playController.signal) {
 
     _isTransitioning = true;
     const success = await _playAyahFile(_currentSurah.index, ayahNumber, signal);
-    
+
     if (!signal.aborted) {
         _isTransitioning = false;
         if (!success) stop();
@@ -260,16 +262,27 @@ async function _cleanUpNativeResources() {
     _playbackMode = 'single';
 }
 
-async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah) {
-    const controller = new AbortController();
-    _playController.abort();
-    _playController = controller;
+/**
+ * @param {AbortController} [existingController] - Pre-created controller (from playAyah)
+ *   to reuse instead of creating a new one. This prevents a double-abort when playAyah
+ *   has already aborted the previous controller and captured a fresh signal.
+ */
+async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah, existingController) {
+    let controller;
+    if (existingController) {
+        // playAyah already created + swapped in this controller — reuse it as-is.
+        controller = existingController;
+    } else {
+        controller = new AbortController();
+        _playController.abort();
+        _playController = controller;
+    }
     const signal = controller.signal;
 
     _isPlaying = false;
     _isPaused = false;
     await _cleanUpNativeResources();
-    
+
     if (signal.aborted) return;
 
     _playbackMode = mode;
@@ -292,17 +305,27 @@ export function playSurah(surahIndex, surahName, totalAyahs) {
 }
 
 /**
- * Plays a single ayah but enables sequential progression starting from it.
- * Dynamically sets exact limits by querying the Surah registry.
+ * Plays a single ayah in 'single' mode (stops automatically after the ayah ends).
+ * Fetches totalAyahs from the Surah registry to enable skipNext/skipPrev while playing.
+ * Aborts any in-flight playback immediately to prevent race conditions on rapid taps.
  * @param {number} surahIndex
  * @param {number} ayahNumber
  * @param {string} [surahName='']
  */
 export async function playAyah(surahIndex, ayahNumber, surahName = '') {
+    // Abort BEFORE any async work to prevent race conditions when the user
+    // taps multiple ayahs quickly before getSurahList() resolves.
+    const controller = new AbortController();
+    _playController.abort();
+    _playController = controller;
+    const signal = controller.signal;
+
     let totalAyahs = ayahNumber; // Safe baseline fallback
-    
+
     try {
         const surahList = await getSurahList();
+        if (signal.aborted) return; // A newer tap cancelled us — bail out cleanly
+
         const surahInfo = surahList.find(s => parseInt(s.index, 10) === parseInt(surahIndex, 10));
         if (surahInfo) {
             const count = surahInfo.count || surahInfo.numberOfAyahs;
@@ -310,9 +333,11 @@ export async function playAyah(surahIndex, ayahNumber, surahName = '') {
         }
     } catch (err) {
         console.warn(`[AudioService] playAyah: failed to lookup totalAyahs for surah ${surahIndex}`, err);
+        if (signal.aborted) return;
     }
 
-    return _initPlayback('single', surahIndex, surahName, totalAyahs, ayahNumber);
+    // Re-use the already-created controller instead of creating a new one inside _initPlayback
+    return _initPlayback('single', surahIndex, surahName, totalAyahs, ayahNumber, controller);
 }
 
 /**
@@ -362,7 +387,7 @@ export async function stop() {
     if (!_isPlaying && !_currentAssetId && !_isTransitioning) return;
 
     const wasPlaying = _isPlaying;
-    
+
     _isPlaying = false;
     _isPaused = false;
 
@@ -391,7 +416,7 @@ export async function skipPrev() {
     if (!_isPlaying || !_currentSurah) return;
 
     const prevAyah = Math.max(1, _currentAyahNumber - 1);
-    
+
     // Instant abort and jump, preserving current mode
     await _initPlayback(_playbackMode, _currentSurah.index, _currentSurah.name, _currentSurah.totalAyahs, prevAyah);
 }
