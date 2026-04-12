@@ -29,6 +29,7 @@ const ASSET_PREFIX = 'murottal';
 
 let _isPlaying = false;
 let _isPaused = false;
+let _isBuffering = false;
 
 /** @type {{ index: number, name: string, totalAyahs: number }|null} */
 let _currentSurah = null;
@@ -44,6 +45,11 @@ let _playbackMode = 'single';
 
 /** Prevents overlapping async transitions (e.g. double completion callbacks). */
 let _isTransitioning = false;
+
+/**
+ * True only for the first `_gotoAyah` of a new playback session.
+ */
+let _isInitialGoto = false;
 
 /** AbortController for orchestrating clean cancellation of async chains. */
 let _playController = new AbortController();
@@ -85,8 +91,13 @@ function _teardownWebAudio() {
     _webAudioEl.pause();
     _webAudioEl.src = '';
     _webAudioEl.removeAttribute('src');
+    // Clear ALL event handlers to prevent stale callbacks on a detached element
     _webAudioEl.onended = null;
     _webAudioEl.onerror = null;
+    _webAudioEl.onwaiting = null;
+    _webAudioEl.onplaying = null;
+    _webAudioEl.oncanplay = null;
+    _webAudioEl.onstalled = null;
     _webAudioEl = null;
 }
 
@@ -124,8 +135,13 @@ async function _removeCompleteListener() {
  * Loads and plays the audio file for a specific ayah.
  * Handles both the web (streaming) and native (preloaded file) environments.
  *
+ * For web: waits for the `playing` event (not just `play()` resolve) to confirm
+ * audio is truly outputting before returning. This ensures `ayah-change` is
+ * only emitted — and the screen only scrolls — when the user actually hears sound.
+ *
  * @param {number} surahIndex
  * @param {number} ayahNumber
+ * @param {AbortSignal} signal
  * @returns {Promise<boolean>} Resolves `true` if playback started successfully.
  */
 async function _playAyahFile(surahIndex, ayahNumber, signal) {
@@ -134,25 +150,70 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
     if (!Capacitor.isNativePlatform()) {
         _teardownWebAudio();
 
+        if (signal.aborted) return false;
+
         const urlSegment = getReciterUrlSegment(reciterId);
         const remoteUrl = `${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayahNumber)}.mp3`;
 
         _webAudioEl = new Audio(remoteUrl);
-        _webAudioEl.onended = () => _onPlaybackComplete();
         _currentAssetId = 'web';
 
-        if (signal.aborted) return false;
+        _webAudioEl.onended = () => _onPlaybackComplete();
 
-        try {
-            await _webAudioEl.play();
-            return true;
-        } catch (error) {
-            console.warn(`[AudioService] Web: failed to play ayah ${ayahNumber}:`, error);
-            _emit('murottal:play-error', { surahIndex, ayahNumber });
-            return false;
-        }
+        // Keep buffering events on the element — they fire throughout playback
+        // (e.g. `waiting` fires mid-playback on slow connections too).
+        _webAudioEl.onwaiting = () => _setBuffering(true);
+        _webAudioEl.onplaying = () => _setBuffering(false);
+        _webAudioEl.onstalled = () => _setBuffering(true);
+
+        return new Promise((resolve) => {
+            const el = _webAudioEl;
+
+            // `playing` fires when audio actually starts outputting sound.
+            // We resolve here instead of after `play()` to guarantee the
+            // user hears audio before we scroll the ayah card into view.
+            const onPlaying = () => {
+                cleanup();
+                resolve(true);
+            };
+
+            const onError = () => {
+                cleanup();
+                console.warn(`[AudioService] Web: failed to play ayah ${ayahNumber}`);
+                _emit('murottal:play-error', { surahIndex, ayahNumber });
+                resolve(false);
+            };
+
+            // If the signal is already aborted (rapid tap), resolve immediately.
+            const onAbort = () => {
+                cleanup();
+                resolve(false);
+            };
+
+            function cleanup() {
+                el.removeEventListener('playing', onPlaying);
+                el.removeEventListener('error', onError);
+                signal.removeEventListener('abort', onAbort);
+            }
+
+            el.addEventListener('playing', onPlaying, { once: true });
+            el.addEventListener('error', onError, { once: true });
+            signal.addEventListener('abort', onAbort, { once: true });
+
+            // `play()` initiates loading/buffering. The Promise above resolves
+            // only when the `playing` event fires, not when `play()` settles.
+            el.play().catch((err) => {
+                if (err.name === 'AbortError') {
+                    resolve(false);
+                    return;
+                }
+                console.warn(`[AudioService] Web: play() rejected for ayah ${ayahNumber}:`, err);
+                onError();
+            });
+        });
     }
 
+    // ── Native Path ──────────────────────────────────────────────────────────
     const assetId = _buildAssetId(surahIndex, ayahNumber);
 
     try {
@@ -179,12 +240,28 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
         });
 
         await NativeAudio.play({ assetId });
+        // Native audio starts immediately after play() resolves — no need to
+        // wait for a separate event. Buffering ends here.
         return true;
     } catch (error) {
         console.warn(`[AudioService] Native: failed to play ayah ${ayahNumber}:`, error);
         _emit('murottal:play-error', { surahIndex, ayahNumber });
         return false;
     }
+}
+
+/** Updates buffering state and emits events.
+ * @param {boolean} isBuffering
+ * @param {boolean} [isInitial=false] - True only on first-play of a new session.
+ */
+function _setBuffering(isBuffering, isInitial = false) {
+    if (_isBuffering === isBuffering) return;
+    _isBuffering = isBuffering;
+    _emit(isBuffering ? 'murottal:buffering-start' : 'murottal:buffering-end', {
+        surahIndex: _currentSurah?.index,
+        ayahNumber: _currentAyahNumber,
+        isInitial,
+    });
 }
 
 /**
@@ -198,21 +275,38 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
 async function _gotoAyah(ayahNumber, signal = _playController.signal) {
     if (signal.aborted) return;
 
+    // Capture and immediately consume the initial-goto flag so that only the
+    // very first ayah of a session carries `isInitial: true` in buffering events.
+    const isInitial = _isInitialGoto;
+    _isInitialGoto = false;
+
     _currentAyahNumber = ayahNumber;
     _isPaused = false;
 
-    _emit('murottal:ayah-change', {
-        surahIndex: _currentSurah.index,
-        surahName: _currentSurah.name,
-        ayahNumber,
-    });
-
     _isTransitioning = true;
+    _setBuffering(true, isInitial);
+
     const success = await _playAyahFile(_currentSurah.index, ayahNumber, signal);
 
-    if (!signal.aborted) {
-        _isTransitioning = false;
-        if (!success) stop();
+    if (signal.aborted) {
+        // A newer playback request aborted us — don't touch state.
+        return;
+    }
+
+    _isTransitioning = false;
+    // _playAyahFile is now the single authority on ending buffering for both
+    // web (via `playing` event) and native (after play() resolves).
+    _setBuffering(false);
+
+    if (success) {
+        // Emit AFTER buffering ends — guarantees UI scrolls only when audio plays.
+        _emit('murottal:ayah-change', {
+            surahIndex: _currentSurah.index,
+            surahName: _currentSurah.name,
+            ayahNumber,
+        });
+    } else {
+        stop();
     }
 }
 
@@ -291,6 +385,7 @@ async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah,
 
     _emit('murottal:play-start', { surahIndex, surahName, ayahNumber: startAyah, mode });
 
+    _isInitialGoto = true;
     await _gotoAyah(startAyah, signal);
 }
 
@@ -390,6 +485,7 @@ export async function stop() {
 
     _isPlaying = false;
     _isPaused = false;
+    _isBuffering = false;
 
     await _cleanUpNativeResources();
 
@@ -423,12 +519,13 @@ export async function skipPrev() {
 
 /**
  * Returns a snapshot of the current playback state.
- * @returns {{ isPlaying: boolean, isPaused: boolean, surahIndex: number|null, surahName: string, ayahNumber: number, mode: string }}
+ * @returns {{ isPlaying: boolean, isPaused: boolean, isBuffering: boolean, surahIndex: number|null, surahName: string, ayahNumber: number, mode: string }}
  */
 export function getPlaybackState() {
     return {
         isPlaying: _isPlaying,
         isPaused: _isPaused,
+        isBuffering: _isBuffering,
         surahIndex: _currentSurah?.index ?? null,
         surahName: _currentSurah?.name ?? '',
         ayahNumber: _currentAyahNumber,

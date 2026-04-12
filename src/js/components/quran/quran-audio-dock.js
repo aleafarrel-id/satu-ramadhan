@@ -299,6 +299,10 @@ function _syncInitialState() {
 
     if (pbState.isPlaying) {
         _updatePlayback(pbState.surahName, pbState.ayahNumber, !pbState.isPaused);
+        // Restore spinner if audio is mid-buffer when dock is created
+        if (pbState.isBuffering) {
+            _onBufferingStart({ detail: { ayahNumber: pbState.ayahNumber } });
+        }
     } else if (dlState.isDownloading) {
         _updateDownloadProgress(dlState.surahName, dlState.current, dlState.total, dlState.isPaused);
     }
@@ -375,6 +379,8 @@ function _registerEvents() {
         ['murottal:play-resume', _onPlayResume],
         ['murottal:play-stop', _onPlayStop],
         ['murottal:ayah-change', _onAyahChange],
+        ['murottal:buffering-start', _onBufferingStart],
+        ['murottal:buffering-end', _onBufferingEnd],
     ];
 
     handlers.forEach(([event, handler]) => {
@@ -461,4 +467,31 @@ function _onPlayStop() {
 function _onAyahChange(e) {
     const state = AudioService.getPlaybackState();
     _updatePlayback(e.detail.surahName, e.detail.ayahNumber, !state.isPaused);
+}
+
+function _onBufferingStart(e) {
+    if (!_dockEl) return;
+
+    // Only show the spinner on the very first play of a session.
+    // Sequential auto-advances should feel seamless, not like re-loading.
+    if (!e.detail?.isInitial) return;
+
+    if (_playPauseBtnIcon && _playPauseBtnIcon.parentNode) {
+        _playPauseBtnIcon.parentNode.classList.add('is-loading');
+    }
+
+    // Only update the subtext if the dock is already visible in playback mode,
+    // so we don't render stale text on a dock that hasn't shown yet.
+    if (_isVisible && _currentMode === 'playback' && _infoSubTextEl && e.detail?.ayahNumber) {
+        _infoSubTextEl.textContent = t(
+            'components/quran/quran-audio-dock:now_playing_ayah',
+            { ayahNumber: e.detail.ayahNumber }
+        );
+    }
+}
+
+function _onBufferingEnd() {
+    if (_playPauseBtnIcon && _playPauseBtnIcon.parentNode) {
+        _playPauseBtnIcon.parentNode.classList.remove('is-loading');
+    }
 }

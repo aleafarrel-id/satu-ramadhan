@@ -165,6 +165,31 @@
     justify-content: center;
 }
 
+/* Loading state for primary buttons (Play/Pause, DL Resume) */
+.quran-audio-dock-btn.is-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.quran-audio-dock-btn.is-loading i {
+    opacity: 0.2;
+}
+
+.quran-audio-dock-btn.is-loading::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-right-color: currentColor;
+    border-radius: 50%;
+    animation: dockBtnSpin 0.8s linear infinite;
+}
+
+@keyframes dockBtnSpin {
+    to { transform: rotate(360deg); }
+}
+
 /* Play/Pause button is slightly larger */
 .quran-audio-dock-btn[data-action="play-pause"] {
     width: var(--size-nav-item);

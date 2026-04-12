@@ -1207,6 +1207,8 @@ function _registerMurottalEvents() {
       ['murottal:play-stop', _onMurottalPlayStop],
       ['murottal:play-error', _onMurottalPlayError],
       ['murottal:ayah-change', _onMurottalAyahChange],
+      ['murottal:buffering-start', _onMurottalBufferingStart],
+      ['murottal:buffering-end', _onMurottalBufferingEnd],
    ];
 
    handlers.forEach(([event, handler]) => {
@@ -1336,4 +1338,26 @@ function _clearKaraokeHighlight() {
    if (!_scrollContainer) return;
    const prev = _scrollContainer.querySelector('.quran-ayah-card.now-playing');
    if (prev) prev.classList.remove('now-playing');
+}
+
+function _onMurottalBufferingStart(e) {
+   if (!e.detail?.isInitial) return;
+
+   const surahIndex = e.detail.surahIndex;
+   if (surahIndex == null || !_scrollContainer) return;
+
+   const activeBanner = _scrollContainer.querySelector(
+      `.quran-reader-surah-info-card[data-surah-index="${surahIndex}"] .banner-ctrl-primary`
+   );
+   if (activeBanner) activeBanner.classList.add('is-loading');
+}
+
+function _onMurottalBufferingEnd(e) {
+   const surahIndex = e.detail.surahIndex;
+   if (surahIndex == null || !_scrollContainer) return;
+
+   const activeBanner = _scrollContainer.querySelector(
+      `.quran-reader-surah-info-card[data-surah-index="${surahIndex}"] .banner-ctrl-primary`
+   );
+   if (activeBanner) activeBanner.classList.remove('is-loading');
 }
