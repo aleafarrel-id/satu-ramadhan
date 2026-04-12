@@ -248,7 +248,6 @@
    transition: background var(--transition-fast), transform var(--transition-fast);
    backdrop-filter: blur(4px);
    -webkit-backdrop-filter: blur(4px);
-   margin-bottom: var(--spacing-sm);
 }
 
 .quran-reader-redownload-pill:hover {
@@ -741,7 +740,6 @@ body.has-audio-dock .quran-reader-ayah-list {
    .quran-reader-surah-action-btn {
       width: 40px;
       height: 40px;
-      margin-left: var(--sp-2);
    }
 
    .quran-reader-surah-action-btn i {
@@ -866,7 +864,6 @@ body.has-audio-dock .quran-reader-ayah-list {
    .quran-reader-surah-action-btn {
       width: 36px;
       height: 36px;
-      margin-left: var(--sp-2);
    }
 
    .banner-ctrl-btn {
