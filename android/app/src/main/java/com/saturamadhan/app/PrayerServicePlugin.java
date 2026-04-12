@@ -184,6 +184,15 @@ public class PrayerServicePlugin extends Plugin {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
 
+        // Check exact-alarm permission once before the loop (Android 12+).
+        boolean canUseExact = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            canUseExact = alarmManager.canScheduleExactAlarms();
+            if (!canUseExact) {
+                Log.w(TAG, "SCHEDULE_EXACT_ALARM permission not granted — using setWindow() fallback");
+            }
+        }
+
         long now = System.currentTimeMillis();
         int requestCount = 0;
 
@@ -209,8 +218,8 @@ public class PrayerServicePlugin extends Plugin {
                             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                     );
 
-                    // Set Exact Alarm
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (canUseExact && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // Exact alarm via AlarmClockInfo — appears in system alarm list
                         Intent showIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
                         PendingIntent pendingShowIntent = PendingIntent.getActivity(
                                 context, 0, showIntent != null ? showIntent : new Intent(),
@@ -220,13 +229,18 @@ public class PrayerServicePlugin extends Plugin {
                                 new AlarmManager.AlarmClockInfo(timestamp, pendingShowIntent),
                                 pendingIntent
                         );
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    } else if (canUseExact && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        // Fallback: permission revoked — use ±5-min window (available API 19+)
+                        final long WINDOW_MS = 5 * 60 * 1000L;
+                        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, timestamp, WINDOW_MS, pendingIntent);
                     } else {
+                        // Fallback: very old device (API < 19)
                         alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
                     }
 
-                    Log.d(TAG, "Scheduled alarm for " + key + " at " + timestamp);
+                    Log.d(TAG, "Scheduled alarm for " + key + " at " + timestamp + " (exact=" + canUseExact + ")");
                     requestCount++;
                 }
             } catch (Exception e) {

@@ -10,11 +10,24 @@ public class PrayerBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) ||
-            "android.intent.action.QUICKBOOT_POWERON".equals(intent.getAction())) {
-            
-            Log.d(TAG, "Device rebooted. Rescheduling all Prayer alarms...");
-            PrayerServicePlugin.rescheduleAlarmsFromStorage(context);
-        }
+        if (intent == null) return;
+
+        String action = intent.getAction();
+        boolean isBootCompleted = Intent.ACTION_BOOT_COMPLETED.equals(action)
+                || "android.intent.action.QUICKBOOT_POWERON".equals(action);
+        boolean isPackageReplaced = Intent.ACTION_MY_PACKAGE_REPLACED.equals(action);
+
+        if (!isBootCompleted && !isPackageReplaced) return;
+
+        Log.d(TAG, "Trigger received [" + action + "] — rescheduling prayer alarms...");
+
+        final PendingResult pendingResult = goAsync();
+        new Thread(() -> {
+            try {
+                PrayerServicePlugin.rescheduleAlarmsFromStorage(context);
+            } finally {
+                pendingResult.finish();
+            }
+        }, "PrayerBootReceiver-Thread").start();
     }
 }

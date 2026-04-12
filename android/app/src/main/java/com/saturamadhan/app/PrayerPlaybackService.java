@@ -113,17 +113,23 @@ public class PrayerPlaybackService extends Service {
             acquireWakeLock();
             requestAudioFocus();
 
-            mediaPlayer = MediaPlayer.create(this, audioResId);
-            if (mediaPlayer == null) {
-                Log.e(TAG, "MediaPlayer creation failed for: " + prayerKey);
-                stopSelfCleanly();
-                return;
-            }
-
+            mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_ALARM)
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build());
+
+            try (android.content.res.AssetFileDescriptor afd = getResources().openRawResourceFd(audioResId)) {
+                if (afd == null) {
+                    Log.e(TAG, "Audio resource FD is null for: " + prayerKey);
+                    stopSelfCleanly();
+                    return;
+                }
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            }
+
+            // Must prepare manually since we are not using MediaPlayer.create()
+            mediaPlayer.prepare();
 
             mediaPlayer.setOnCompletionListener(mp -> {
                 Log.d(TAG, "Playback completed for: " + prayerName);
@@ -223,7 +229,7 @@ public class PrayerPlaybackService extends Service {
         releaseAudioFocus();
         isPlaying = false;
         sIsPlaying = false;
-        stopForeground(STOP_FOREGROUND_REMOVE);
+        stopForeground(true);
         stopSelf();
     }
 
