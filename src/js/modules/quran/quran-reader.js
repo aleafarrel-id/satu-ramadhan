@@ -700,9 +700,9 @@ function _createRegularAyahElement(ayah) {
    const actions = document.createElement('div');
    actions.className = 'quran-ayah-actions';
 
-   // Play button — only rendered if the ayah audio is downloaded
+   // Play button — rendered if streaming mode is enabled OR if the ayah audio is downloaded
    let playBtn = null;
-   if (DownloadManager.isAyahDownloaded(ayah.surahIndex, ayah.number)) {
+   if (!isAudioOfflineEnabled() || DownloadManager.isAyahDownloaded(ayah.surahIndex, ayah.number)) {
       playBtn = document.createElement('button');
       playBtn.className = 'quran-ayah-action-btn';
       playBtn.setAttribute('aria-label', t('modules/quran/quran-reader:play_ayah'));
