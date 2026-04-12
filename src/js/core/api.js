@@ -25,11 +25,17 @@ const API_MIRRORS = [
 ];
 
 const CACHE_PREFIX = 'prayer_cache_';
+const MONTHLY_CACHE_PREFIX = 'monthly_cache_';
 const METHOD = 20; // Kemenag RI
 const REQUEST_TIMEOUT_MS = 4000;
 const MAX_RETRY_CYCLES = 1;
 const MIRROR_STORAGE_KEY = 'last_working_mirror';
 const REQUIRED_KEYS = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+// Track last-used cache keys for precise eviction (not nuclear prefix wipes)
+let _lastDailyCacheKey = null;
+let _lastMonthlyCacheKey = null;
+let _lastQiblaCacheKey = null;
 
 let _lastOfflineToastTime = 0;
 const OFFLINE_TOAST_THROTTLE_MS = 10000;
@@ -281,8 +287,11 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
 
                 const result = transformTimings(data, dateStr);
 
-                // Clear old caches to prevent local storage bloat before storing the new one
-                await storage.removeByPrefix(CACHE_PREFIX);
+                // Evict only the previous daily cache entry (not all daily caches)
+                if (_lastDailyCacheKey && _lastDailyCacheKey !== cacheKey) {
+                    await storage.remove(_lastDailyCacheKey);
+                }
+                _lastDailyCacheKey = cacheKey;
                 await storage.set(cacheKey, result);
                 return result;
             } catch (err) {
@@ -316,7 +325,6 @@ function formatDate(date) {
     return `${dd}-${mm}-${yyyy}`;
 }
 
-const MONTHLY_CACHE_PREFIX = 'monthly_cache_';
 
 /**
  * Validate monthly calendar API response
@@ -464,8 +472,11 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
 
                 const result = transformMonthlyData(data.data);
 
-                // Clear old monthly caches to prevent storage bloat
-                await storage.removeByPrefix(MONTHLY_CACHE_PREFIX);
+                // Evict only the previous monthly cache entry (not all monthly caches)
+                if (_lastMonthlyCacheKey && _lastMonthlyCacheKey !== cacheKey) {
+                    await storage.remove(_lastMonthlyCacheKey);
+                }
+                _lastMonthlyCacheKey = cacheKey;
                 await storage.set(cacheKey, result);
                 return result;
             } catch (err) {
@@ -587,8 +598,11 @@ export async function getQiblaDirection(latitude, longitude) {
                 const direction = data.data.direction;
                 console.log(`[API] Qibla direction: ${direction}° via ${mirror}`);
 
-                // Keep Qibla cache clean over time as location wiggles
-                await storage.removeByPrefix(QIBLA_CACHE_PREFIX);
+                // Evict only the previous qibla cache entry (one per location)
+                if (_lastQiblaCacheKey && _lastQiblaCacheKey !== cacheKey) {
+                    await storage.remove(_lastQiblaCacheKey);
+                }
+                _lastQiblaCacheKey = cacheKey;
                 await storage.set(cacheKey, direction);
                 return direction;
             } catch (err) {

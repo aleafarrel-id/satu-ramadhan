@@ -177,15 +177,26 @@ export async function initApp() {
     // Hide web splash with CSS fade-out transition
     if (splashEl) splashEl.classList.add('hidden');
 
-    // Background pre-fetch: download lazy route modules during idle time.
-    // Delayed to avoid competing with post-splash permission dialogs and
-    // modal transitions. A heavy JS parse here causes main thread jank/glitches.
-    setTimeout(() => {
-        router.prefetch('schedule');
-        router.prefetch('compass');
-        router.prefetch('quran');
-        router.prefetch('settings');
-    }, 5000);
+    // Background pre-fetch: download lazy route modules sequentially.
+    // Await each chunk and inject a delay to prevent stacking JS evaluation
+    // penalties, which would otherwise drop frames and cause UI lag.
+    setTimeout(async () => {
+        const pagesToPrefetch = ['schedule', 'compass', 'settings', 'quran'];
+        for (const page of pagesToPrefetch) {
+            // Await requestIdleCallback to ensure we only fetch when browser is not animating
+            await new Promise(resolve => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => resolve(), { timeout: 1000 });
+                } else {
+                    setTimeout(resolve, 50);
+                }
+            });
+
+            await router.prefetch(page);
+            // Give main thread 500ms to breathe between parsing chunks
+            await new Promise(res => setTimeout(res, 500));
+        }
+    }, 4000);
 
     setTimeout(triggerPostSplashPermissions, POST_SPLASH_DIALOG_DELAY);
 }

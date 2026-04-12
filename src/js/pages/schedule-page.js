@@ -115,9 +115,10 @@ export async function render(container, options = {}) {
         renderScheduleSkeleton(_container);
         _rehydrateAndRender();
     }));
+
+    // Org change
     _unsubscribe.push(store.subscribe('settings.org', () => {
-        renderScheduleSkeleton(_container);
-        _rehydrateAndRender();
+        _recomputeSchedule();
     }));
 }
 
@@ -144,7 +145,8 @@ export async function refreshScheduleData() {
 }
 
 /**
- * Perform actual silent data refetching and re-rendering operations when store triggers mutability.
+ * Full data re-fetch: both schedule data AND today's prayer timings.
+ * Used when location changes (genuinely new API data needed).
  */
 async function _rehydrateAndRender() {
     if (!_container) return;
@@ -160,6 +162,39 @@ async function _rehydrateAndRender() {
 
         _scheduleData = scheduleResult;
         _todayTimings = todayTimingsResult;
+        _cachedDepStr = `${location.latitude}_${location.longitude}_${org}`;
+
+        if (!_scheduleData) {
+            await renderError(true);
+            return;
+        }
+
+        _currentDayIndex = findTodayIndex(_scheduleData);
+        await renderDayView();
+    } catch (error) {
+        logError('[Schedule]', error);
+        await renderError(true);
+    }
+}
+
+/**
+ * Org-only re-compute: re-builds schedule date boundaries from the new
+ * active preset, but does NOT re-fetch today's prayer timings (_todayTimings)
+ * since those depend only on location (unchanged).
+ *
+ * fetchScheduleData() internally calls getMonthlyPrayerTimes() which is
+ * cached by location+month — zero network hit when only the org changes.
+ */
+async function _recomputeSchedule() {
+    if (!_container) return;
+    const location = store.getState('location');
+    const org = store.getState('settings.org');
+    if (!location) return;
+
+    try {
+        const scheduleResult = await fetchScheduleData(location);
+
+        _scheduleData = scheduleResult;
         _cachedDepStr = `${location.latitude}_${location.longitude}_${org}`;
 
         if (!_scheduleData) {

@@ -190,9 +190,12 @@ export function onNavigate(callback) {
  * Pre-fetch a lazy route module in background without navigating.
  * Silently resolves and caches the handler so subsequent navigation is instant.
  * @param {string} path - route name to prefetch
+ * @returns {Promise<void>} Resolves when the chunk is successfully parsed
  */
-export function prefetch(path) {
-    _resolveHandler(path).catch(() => {
+export async function prefetch(path) {
+    try {
+        await _resolveHandler(path);
+    } catch {
         /* silent — prefetch failure is non-critical */
-    });
+    }
 }

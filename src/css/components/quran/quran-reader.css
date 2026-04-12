@@ -790,7 +790,8 @@ body.has-audio-dock .quran-reader-ayah-list {
    }
 
    .quran-ayah-card {
-      padding: var(--sp-4) 0;
+      padding: var(--sp-4) var(--sp-3);
+      margin: 0 calc(var(--sp-3) * -1);
    }
 
    .quran-reader-surah-name-ar {
@@ -808,6 +809,19 @@ body.has-audio-dock .quran-reader-ayah-list {
 }
 
 @media screen and (max-width: 320px) {
+   .quran-reader-surah-info-card {
+      padding: var(--sp-3) var(--sp-3);
+      margin: var(--sp-3) var(--sp-3) var(--sp-4);
+   }
+
+   .quran-reader-ayah-list {
+      padding: 0 var(--sp-3) var(--sp-6);
+   }
+
+   .quran-ayah-card {
+      padding: var(--sp-4) var(--sp-3);
+      margin: 0 calc(var(--sp-3) * -1);
+   }
 
    .quran-reader-surah-name-ar {
       font-size: 1.5rem;

@@ -43,8 +43,8 @@
    /* In front of quran-backdrop */
 }
 
-/* Scrollable content area between header and nav */
 .app-content {
+   position: relative;
    flex: 1;
    overflow-y: auto;
    overflow-x: hidden;
@@ -119,17 +119,45 @@
 /* =============================================
    Custom Pull-To-Refresh
    ============================================= */
+
+/**
+ * Spinner overlay — absolutely positioned above scroller children.
+ * Stays at the very top and slides in via transform (not height).
+ * opacity starts at 0 and is driven by JS as the user pulls.
+ */
 .custom-ptr {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
    display: flex;
    align-items: center;
    justify-content: center;
    gap: var(--spacing-sm);
-   height: 0;
-   overflow: hidden;
+   height: 48px;
+   transform: translateY(-48px); /* Hidden above the fold by default */
    font-size: var(--fs-sm);
    background-color: transparent;
    flex-shrink: 0;
-   will-change: height;
+   will-change: transform, opacity;
+   z-index: 10;
+   opacity: 0;
+   pointer-events: none;
+}
+
+/**
+ * GPU-accelerated offset: applied to every direct child of the scrolling container
+ * EXCEPT the spinner (.custom-ptr) and the full-screen Quran modal (#page-quran).
+ * Uses a CSS Custom Property set by JS — zero reflow, pure compositor layer.
+ */
+.ptr-animating > *:not(.custom-ptr):not(#page-quran) {
+   transform: translateY(var(--ptr-y, 0px));
+   will-change: transform;
+}
+
+/** Smooth settle-back animation when finger is released. */
+.ptr-transition > *:not(.custom-ptr):not(#page-quran) {
+   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /* Light Theme (Default - for dark backgrounds) */
