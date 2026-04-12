@@ -17,6 +17,7 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import { store } from '../../core/store.js';
 import { DEFAULT_RECITER_ID, getReciterUrlSegment } from '../../config/quran-audio.js';
 import { getSurahList } from './quran-api.js';
+import { isAudioOfflineEnabled } from './quran-settings.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -101,11 +102,15 @@ function _teardownWebAudio() {
     _webAudioEl = null;
 }
 
-/** Safely unloads the current asset from NativeAudio and clears the reference. */
+/**
+ * Safely unloads the active audio asset and clears the reference.
+ * Branches on `_currentAssetId === 'web'` (the sentinel set in `_playAyahFile`)
+ * rather than platform, so it works correctly when a native user is in streaming mode.
+ */
 async function _unloadCurrentAsset() {
     if (!_currentAssetId) return;
 
-    if (!Capacitor.isNativePlatform()) {
+    if (_currentAssetId === 'web') {
         _teardownWebAudio();
     } else {
         try {
@@ -147,7 +152,10 @@ async function _removeCompleteListener() {
 async function _playAyahFile(surahIndex, ayahNumber, signal) {
     const reciterId = _getReciterId();
 
-    if (!Capacitor.isNativePlatform()) {
+    // Use isAudioOfflineEnabled() as the single routing decision:
+    //   false → Streaming path (Web, or Native with streaming mode)
+    //   true  → Offline path (Native with local files)
+    if (!isAudioOfflineEnabled()) {
         _teardownWebAudio();
 
         if (signal.aborted) return false;
@@ -337,7 +345,9 @@ function _onPlaybackComplete() {
 async function _cleanUpNativeResources() {
     try {
         if (_currentAssetId) {
-            if (!Capacitor.isNativePlatform()) {
+            // Use _currentAssetId === 'web' so this works correctly when a
+            // native user is in streaming mode (no NativeAudio asset to stop).
+            if (_currentAssetId === 'web') {
                 if (_webAudioEl) _webAudioEl.currentTime = 0;
             } else {
                 await NativeAudio.stop({ assetId: _currentAssetId });
@@ -442,7 +452,9 @@ export async function pause() {
     if (!_isPlaying || _isPaused || !_currentAssetId) return;
 
     try {
-        if (!Capacitor.isNativePlatform()) {
+        // Branch on the active asset type, not the platform.
+        // A native user in streaming mode uses _webAudioEl.
+        if (_currentAssetId === 'web') {
             if (_webAudioEl) _webAudioEl.pause();
         } else {
             await NativeAudio.pause({ assetId: _currentAssetId });
@@ -461,7 +473,9 @@ export async function resume() {
     if (!_isPlaying || !_isPaused || !_currentAssetId) return;
 
     try {
-        if (!Capacitor.isNativePlatform()) {
+        // Branch on the active asset type, not the platform.
+        // A native user in streaming mode uses _webAudioEl.
+        if (_currentAssetId === 'web') {
             if (_webAudioEl) await _webAudioEl.play();
         } else {
             await NativeAudio.resume({ assetId: _currentAssetId });

@@ -24,7 +24,8 @@ const initialState = {
             tajweed: true,
             transliteration: true,
             translationLanguage: 'id',
-            reciterId: 'alafasy'
+            reciterId: 'alafasy',
+            audioMode: 'offline'
         }
     },
     quran: {

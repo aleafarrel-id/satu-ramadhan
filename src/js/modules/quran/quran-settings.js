@@ -10,6 +10,9 @@
 
 import { store } from '../../core/store.js';
 import { DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
+import { Capacitor } from '@capacitor/core';
+
+/** @typedef {'offline'|'streaming'} AudioMode */
 
 /**
  * Returns whether Tajweed highlighting is enabled.
@@ -60,4 +63,44 @@ export function getTranslationLanguage() {
 export function setTranslationLanguage(langCode) {
    if (!langCode || typeof langCode !== 'string') return;
    store.setState('settings.quran.translationLanguage', langCode);
+}
+
+// ─── Audio Mode ───────────────────────────────────────────────────────────────
+
+/**
+ * Returns the currently selected audio playback mode.
+ * Always returns 'streaming' on web (platform override).
+ * @returns {AudioMode}
+ */
+export function getAudioMode() {
+   if (!Capacitor.isNativePlatform()) return 'streaming';
+   return store.getState('settings.quran.audioMode') || 'offline';
+}
+
+/**
+ * Persists the audio mode preference.
+ * Only effective on Native. Web is always forced to streaming.
+ * @param {AudioMode} mode
+ */
+export function setAudioMode(mode) {
+   if (mode !== 'offline' && mode !== 'streaming') return;
+   store.setState('settings.quran.audioMode', mode);
+}
+
+/**
+ * Single gating function consumed by AudioService.
+ * Returns `true` if local files should be used for playback.
+ *
+ * Rules:
+ *   - Web: always false (streaming only, no filesystem access)
+ *   - Native + mode 'offline': true
+ *   - Native + mode 'streaming': false
+ *
+ * Note: Switching to streaming does NOT delete downloaded files.
+ * They remain available if the user switches back to offline mode.
+ *
+ * @returns {boolean}
+ */
+export function isAudioOfflineEnabled() {
+   return getAudioMode() === 'offline';
 }

@@ -3,9 +3,11 @@
     "tajweed": "Tajweed",
     "transliteration": "Latin Transliteration",
     "translation": "Translation",
+    "audio_mode": "Murottal",
     "tajweed_on": "Tajweed enabled",
     "tajweed_off": "Tajweed disabled",
     "translit_on": "Latin transliteration enabled",
     "translit_off": "Latin transliteration disabled",
-    "translation_changed": "Quran Translation: {{label}}"
+    "translation_changed": "Quran Translation: {{label}}",
+    "audio_mode_changed": "Murottal Mode: {{label}}"
 }

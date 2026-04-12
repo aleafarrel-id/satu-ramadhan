@@ -1,0 +1,7 @@
+{
+    "title": "Murottal Mode",
+    "mode_offline_label": "Download",
+    "mode_offline_desc": "Download audio and play locally.",
+    "mode_streaming_label": "Streaming",
+    "mode_streaming_desc": "Stream directly from the internet."
+}

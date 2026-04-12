@@ -1,0 +1,99 @@
+/*
+  Audio Mode Selector Modal Styles
+  Reuses base overlay and dialog styles from confirm-modal.css.
+  Follows the exact same pattern as language-selector-modal.css.
+*/
+
+.audio-mode-selector-dialog {
+    padding: var(--sp-6);
+    max-width: 320px;
+    width: 90%;
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-color);
+}
+
+.audio-mode-options-container {
+    display: flex;
+    flex-direction: column;
+    margin: var(--sp-2) calc(-1 * var(--sp-6));
+}
+
+.audio-mode-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--sp-6);
+    margin: 0;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    position: relative;
+}
+
+.audio-mode-option::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--sp-6);
+    right: var(--sp-6);
+    height: 1px;
+    background-color: var(--clr-border-light);
+}
+
+.audio-mode-option:last-child::after {
+    display: none;
+}
+
+.audio-mode-option:active {
+    background: var(--clr-white-a05);
+}
+
+.audio-mode-option:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--clr-accent-500);
+}
+
+.audio-mode-icon {
+    color: var(--clr-info);
+    font-size: var(--icon-lg);
+    flex-shrink: 0;
+}
+
+.audio-mode-option.selected .audio-mode-icon {
+    color: var(--clr-accent-500);
+}
+
+.audio-mode-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.audio-mode-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-primary);
+    line-height: var(--lh-snug);
+}
+
+.audio-mode-desc {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    margin-top: 2px;
+    line-height: var(--lh-relaxed);
+}
+
+.audio-mode-check {
+    display: none;
+    color: var(--clr-accent-500);
+    font-size: var(--icon-md);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.audio-mode-option.selected .audio-mode-check {
+    display: block;
+}

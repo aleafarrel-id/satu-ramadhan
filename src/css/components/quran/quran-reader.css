@@ -188,7 +188,6 @@
 }
 
 .quran-reader-surah-action-btn:hover {
-   transform: scale(1.05);
    box-shadow: var(--shadow-md);
    color: var(--clr-primary-500);
 }
