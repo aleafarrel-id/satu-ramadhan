@@ -14,6 +14,7 @@ let _currentPage = null;
 let _isNavigating = false;
 const _history = [];
 let _onNavigateCallback = null;
+let _targetPage = null;
 
 /**
  * Register a route.
@@ -60,21 +61,24 @@ async function _resolveHandler(path) {
  * @param {boolean} options.pushHistory - Whether to add to history stack
  */
 export async function navigate(path, { pushHistory = true } = {}) {
-    // Avoid double navigation or pushing same page
-    if (_currentPage === path) {
-        // Enforce UI sync just in case
-        if (_onNavigateCallback && _currentPage) _onNavigateCallback(_currentPage);
+    // Determine the true destination we are rendering or resting on
+    const effectivePage = _isNavigating ? _targetPage : _currentPage;
+
+    // Avoid double navigation or pushing the exact page we are already on (or heading to)
+    if (effectivePage === path) {
+        if (_onNavigateCallback && effectivePage) _onNavigateCallback(effectivePage);
         return;
     }
 
     // If locked by another operation (e.g. language change or active navigation),
-    // reject it and force UI back to the current safe state
+    // reject it and force UI back to the intended destination target
     if (_isNavigating) {
-        if (_onNavigateCallback && _currentPage) _onNavigateCallback(_currentPage);
+        if (_onNavigateCallback && effectivePage) _onNavigateCallback(effectivePage);
         return;
     }
 
     _isNavigating = true;
+    _targetPage = path;
 
     // Immediately notify listeners for an optimistic, sub-millisecond UI update
     if (_onNavigateCallback) {
@@ -119,6 +123,7 @@ export async function navigate(path, { pushHistory = true } = {}) {
         logError('[Router]', error);
     } finally {
         _isNavigating = false;
+        _targetPage = null;
     }
 }
 
@@ -131,6 +136,7 @@ export async function navigate(path, { pushHistory = true } = {}) {
 export async function refreshCurrentPage() {
     if (_isNavigating || !_currentPage) return;
     _isNavigating = true;
+    _targetPage = _currentPage;
     try {
         const handler = _routeCache[_currentPage];
         const pageEl = document.getElementById(`page-${_currentPage}`);
@@ -140,6 +146,7 @@ export async function refreshCurrentPage() {
         if (handler.render) await handler.render(pageEl, { refresh: true });
     } finally {
         _isNavigating = false;
+        _targetPage = null;
     }
 }
 
@@ -148,7 +155,7 @@ export async function refreshCurrentPage() {
  */
 export function goBack() {
     if (_isNavigating) return null; // Protect against corrupting history during transitions
-    
+
     if (_history.length > 0) {
         const prev = _history.pop();
         navigate(prev, { pushHistory: false });

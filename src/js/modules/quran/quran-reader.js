@@ -153,8 +153,12 @@ export function close() {
    closePicker();
    dismissTooltip();
 
-   if (_overlay) {
-      _overlay.classList.remove('active');
+   const overlayToRemove = _overlay;
+   const headerToDestroy = _readerHeaderInstance;
+   const ptrToCleanup = _ptrCleanup;
+
+   if (overlayToRemove) {
+      overlayToRemove.classList.remove('active');
    }
 
    if (_quranPage) {
@@ -164,27 +168,28 @@ export function close() {
    // Show dock
    QuranDock.show();
 
-   // Remove overlay after transition
+   // Remove overlay after transition targeting captured instances
    setTimeout(() => {
-      if (_overlay && _overlay.parentNode) {
-         _overlay.parentNode.removeChild(_overlay);
+      if (overlayToRemove && overlayToRemove.parentNode) {
+         overlayToRemove.parentNode.removeChild(overlayToRemove);
       }
-      _overlay = null;
-      if (_readerHeaderInstance) {
-         _readerHeaderInstance.destroy();
-         _readerHeaderInstance = null;
+      if (headerToDestroy) {
+         headerToDestroy.destroy();
       }
-      // PTR cleanup
-      if (_ptrCleanup) {
-         _ptrCleanup();
-         _ptrCleanup = null;
+      if (ptrToCleanup) {
+         ptrToCleanup();
       }
-      _scrollContainer = null;
-      _currentItem = null;
-      _currentType = 'surah';
-      _currentReaderData = [];
-      _onCloseCallback = null;
    }, 400);
+
+   // Immediately sever module ties so rapid open() spins up fresh elements cleanly
+   _overlay = null;
+   _readerHeaderInstance = null;
+   _scrollContainer = null;
+   _ptrCleanup = null;
+   _currentItem = null;
+   _currentType = 'surah';
+   _currentReaderData = [];
+   _onCloseCallback = null;
 }
 
 /**
