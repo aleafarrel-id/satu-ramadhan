@@ -45,9 +45,17 @@ export async function showCalendarModal({ scheduleData, currentIndex, onSelectDa
 export function hideCalendarModal() {
     if (!_overlayEl) return;
     _overlayEl.classList.remove('active');
-    _overlayEl.addEventListener('transitionend', removeModal, { once: true });
+
+    let isRemoved = false;
+    const finalize = () => {
+        if (isRemoved) return;
+        isRemoved = true;
+        removeModal();
+    };
+
+    _overlayEl.addEventListener('transitionend', finalize, { once: true });
     // Safety: force remove after animation
-    setTimeout(removeModal, 400);
+    setTimeout(finalize, 400);
 }
 
 function removeModal() {

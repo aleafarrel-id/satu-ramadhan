@@ -117,15 +117,22 @@ function hideModal() {
     unregisterModalDismiss(handleCancel);
     _overlayEl.classList.remove('active');
 
+    let isRemoved = false;
+    const finalize = () => {
+        if (isRemoved) return;
+        isRemoved = true;
+        removeModal();
+    };
+
     const dialog = _overlayEl.querySelector('.confirm-dialog');
     if (dialog) {
-        dialog.addEventListener('transitionend', removeModal, { once: true });
+        dialog.addEventListener('transitionend', finalize, { once: true });
     } else {
-        _overlayEl.addEventListener('transitionend', removeModal, { once: true });
+        _overlayEl.addEventListener('transitionend', finalize, { once: true });
     }
 
     // Safety fallback
-    setTimeout(removeModal, 350);
+    setTimeout(finalize, 350);
 }
 
 /**
