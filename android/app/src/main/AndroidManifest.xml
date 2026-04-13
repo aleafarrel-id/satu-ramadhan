@@ -46,10 +46,17 @@
 
         <receiver
             android:name=".PrayerBootReceiver"
+            android:directBootAware="true"
             android:exported="true">
             <intent-filter>
+                <!-- Standard boot: fired after user unlocks device (CE storage available) -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- Direct Boot: fired immediately after OS loads, before unlock (DE storage only) -->
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <!-- OEM-specific quick-boot variants -->
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <!-- App update/reinstall — reschedule immediately -->
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
@@ -70,5 +77,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-feature android:name="android.hardware.location.gps" />
 </manifest>

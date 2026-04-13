@@ -47,4 +47,5 @@ public final class Constants {
     public static final double DISTANCE_THRESHOLD_KM = 50.0;
     public static final long COOLDOWN_MS = 24 * 60 * 60 * 1000L; // 24 hours
     public static final String WORKER_TAG = "location_detect_worker";
+    public static final String WORKER_TAG_ALARM_RESCHEDULE = "alarm_reschedule_worker";
 }

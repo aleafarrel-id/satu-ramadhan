@@ -7,5 +7,6 @@
     "notif_off": "Notifications disabled",
     "adzan_on": "Adhan sound enabled",
     "adzan_off": "Adhan sound disabled",
-    "perm_denied": "Notification permission denied"
+    "perm_denied": "Notification permission denied",
+    "battery_opt": "Background Process"
 }

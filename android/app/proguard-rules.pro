@@ -19,3 +19,36 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# ─── Satu Ramadhan: Keep all native components ──────────────────────────────
+# R8/ProGuard may strip or rename classes that are only referenced from
+# AndroidManifest.xml (receivers, services, workers) because no Java code
+# directly instantiates them. This causes BOOT_COMPLETED and alarm triggers
+# to silently fail in release builds.
+
+# Keep all BroadcastReceivers (PrayerBootReceiver, PrayerAlarmReceiver, PrayerActionReceiver)
+-keep class com.saturamadhan.app.PrayerBootReceiver { *; }
+-keep class com.saturamadhan.app.PrayerAlarmReceiver { *; }
+-keep class com.saturamadhan.app.PrayerActionReceiver { *; }
+
+# Keep the Foreground Service
+-keep class com.saturamadhan.app.PrayerPlaybackService { *; }
+
+# Keep the Capacitor plugin (called reflectively by Capacitor's bridge)
+-keep class com.saturamadhan.app.PrayerServicePlugin { *; }
+
+# Keep WorkManager workers (instantiated reflectively by WorkManager)
+-keep class com.saturamadhan.app.LocationDetectWorker { *; }
+-keep class com.saturamadhan.app.AlarmRescheduleWorker { *; }
+
+# Keep the Constants class (used by all components above)
+-keep class com.saturamadhan.app.Constants { *; }
+
+# Keep the MainActivity
+-keep class com.saturamadhan.app.MainActivity { *; }
+
+# ─── General AndroidX / WorkManager rules ───────────────────────────────────
+# WorkManager's internal RescheduleReceiver and related classes must survive R8
+-keep class androidx.work.** { *; }
+-keep class * extends androidx.work.Worker { *; }
+-keep class * extends androidx.work.ListenableWorker { *; }

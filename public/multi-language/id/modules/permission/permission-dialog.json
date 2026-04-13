@@ -13,6 +13,7 @@
     "storage_f3": "Hanya akses file buatan aplikasi",
     "storage_confirm": "Izinkan Akses",
     "storage_cancel": "Batal",
+    "storage_granted": "Akses penyimpanan diizinkan",
     "murottal_title": "Izin Penyimpanan",
     "murottal_desc": "Untuk menyimpan audio murottal agar dapat diputar secara offline, aplikasi memerlukan akses penyimpanan.",
     "murottal_f1": "Simpan audio murottal",
@@ -20,5 +21,13 @@
     "murottal_f3": "Hanya akses folder aplikasi",
     "murottal_confirm": "Izinkan Akses",
     "murottal_cancel": "Batal",
+    "battery_title": "Proses Latar Belakang",
+    "battery_desc": "Beberapa perangkat membatasi aplikasi di latar belakang. Agar adzan tetap berbunyi tepat waktu bahkan setelah perangkat dimulai ulang, silakan izinkan aplikasi ini dari pembatasan baterai.",
+    "battery_f1": "Notifikasi tetap aktif setelah perangkat dihidupkan ulang",
+    "battery_f2": "Jalan stabil di latar belakang",
+    "battery_f3": "Adzan tepat waktu",
+    "battery_confirm": "Izinkan Proses",
+    "battery_cancel": "Lain Kali",
+    "battery_granted": "Proses latar belakang diizinkan",
     "processing": "Memproses..."
 }

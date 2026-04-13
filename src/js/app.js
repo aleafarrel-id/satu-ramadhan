@@ -17,6 +17,7 @@ import {
     initNotificationService,
     checkNotificationPermission,
     requestNotificationPermission,
+    PrayerService,
 } from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
 import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
@@ -26,7 +27,8 @@ import { initOfflineUpdater } from './modules/network/offline-updater.js';
 
 // Permission UI
 import { showPermissionDialogPreset } from './modules/permission/permission-dialog-configs.js';
-import { hideModal as hideLocationModal, isModalActive as isLocationModalActive } from './components/modal/location-modal.js';
+import { hideModal as hideLocationModal, isModalActive as isLocationModalActive, showLocationModal } from './components/modal/location-modal.js';
+import { showLocationSearchModal } from './components/modal/location-search-modal.js';
 import '../css/components/modal/permission-dialog.css';
 
 // Utilities & Helpers
@@ -293,24 +295,46 @@ function initAppResumeListener() {
 
 async function triggerPostSplashPermissions() {
     if (!isNative) return;
-    await _requestNotificationIfNeeded();
+    
+    const interruptedByNotif = await _requestNotificationIfNeeded();
+    const interruptedByBattery = await _requestBatteryOptIfNeeded();
+    
+    // Jika dialog lokasi ditutup paksa demi menampilkan dialog perizinan,
+    // kembalikan dialog lokasinya (jika user masih belum set lokasi)
+    if (interruptedByNotif || interruptedByBattery) {
+        if (!store.getState('location')) {
+            // Beri waktu agar dialog izin selesai tertutup
+            await new Promise(resolve => setTimeout(resolve, 400));
+            showLocationModal({
+                onLocationDetected: (location) => {
+                    store.setState('location', location);
+                },
+                onManualSelect: () => {
+                    showLocationSearchModal({
+                        onLocationSelected: (loc) => {
+                            store.setState('location', loc);
+                        }
+                    });
+                }
+            });
+        }
+    }
 }
 
 async function _requestNotificationIfNeeded() {
     const alreadyGranted = await checkNotificationPermission();
-    if (alreadyGranted) return;
+    if (alreadyGranted) return false;
 
-    // Skip if user previously declined — respect until they re-enable via settings
-    if (store.getState('settings.notification') === false) return;
+    if (store.getState('settings.notification') === false) return false;
 
-    // If there is an active location modal, hide it to prevent visual glitches
-    // when the two modals stack on first launch.
+    let interrupted = false;
     if (isLocationModalActive()) {
+        interrupted = true;
         await hideLocationModal();
         await new Promise(resolve => setTimeout(resolve, 300));
     }
 
-    showPermissionDialogPreset('notification', {
+    await showPermissionDialogPreset('notification', {
         onConfirm: async () => {
             const granted = await requestNotificationPermission();
             if (granted) {
@@ -324,4 +348,50 @@ async function _requestNotificationIfNeeded() {
             store.setState('settings.notification', false);
         },
     });
+    
+    return interrupted;
+}
+
+async function _requestBatteryOptIfNeeded() {
+    if (store.getState('settings.battery_opt_seen')) return false;
+
+    if (store.getState('settings.notification') === false) return false;
+
+    try {
+        const status = await PrayerService.isIgnoringBatteryOptimizations();
+        if (status && status.isIgnoring) {
+            store.setState('settings.battery_opt_seen', true);
+            return false;
+        }
+    } catch (e) {
+        console.warn('[App] isIgnoringBatteryOptimizations failed:', e);
+    }
+
+    let interrupted = false;
+    if (isLocationModalActive()) {
+        interrupted = true;
+        await hideLocationModal();
+        await new Promise(resolve => setTimeout(resolve, 300));
+    }
+
+    // Small delay to allow previous dialog animation to settle
+    await new Promise(resolve => setTimeout(resolve, 350));
+
+    await showPermissionDialogPreset('battery', {
+        onConfirm: async () => {
+            try {
+                store.setState('settings.battery_opt_seen', true);
+                await PrayerService.openBatteryOptimizationSettings();
+            } catch (e) {
+                console.warn('[App] Could not open battery settings:', e);
+            }
+        },
+        onCancel: () => {
+            // User chose "Lain Kali" — mark as seen so it won't auto-show again
+            // They can still open it manually from settings
+            store.setState('settings.battery_opt_seen', true);
+        },
+    });
+    
+    return interrupted;
 }

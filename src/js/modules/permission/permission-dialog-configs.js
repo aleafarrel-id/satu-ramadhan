@@ -15,6 +15,7 @@
 import { Filesystem } from '@capacitor/filesystem';
 import { showPermissionDialog } from './permission-dialog.js';
 import { t, loadNS } from '../../core/i18n.js';
+import * as Notif from '../notification/notification.js';
 
 /* ─────────────────────────────────────────────
    Content Registry
@@ -80,6 +81,25 @@ function getPermissionConfigs() {
             confirmText: t('modules/permission/permission-dialog:murottal_confirm'),
             cancelText: t('modules/permission/permission-dialog:murottal_cancel'),
         },
+
+        /**
+         * OEM Battery Optimization / Autostart rationale.
+         * Shown when notifications are enabled to ensure background reliability
+         * on devices like Huawei, Xiaomi, etc.
+         */
+        battery: {
+            icon: 'bx-battery',
+            iconColor: 'primary',
+            title: t('modules/permission/permission-dialog:battery_title'),
+            description: t('modules/permission/permission-dialog:battery_desc'),
+            features: [
+                { icon: 'bx-power-off', label: t('modules/permission/permission-dialog:battery_f1') },
+                { icon: 'bx-cog', label: t('modules/permission/permission-dialog:battery_f2') },
+                { icon: 'bx-time-five', label: t('modules/permission/permission-dialog:battery_f3') },
+            ],
+            confirmText: t('modules/permission/permission-dialog:battery_confirm'),
+            cancelText: t('modules/permission/permission-dialog:battery_cancel'),
+        },
     };
 }
 
@@ -102,11 +122,23 @@ export async function showPermissionDialogPreset(key, { onConfirm, onCancel, the
     const config = configs[key];
 
     if (!config) {
-        console.warn(`[PermissionDialogConfigs] Unknown preset key: "${key}"`);
+        console.warn(`[PermissionDialog] Unknown preset: ${key}`);
         return;
     }
 
-    showPermissionDialog({ ...config, onConfirm, onCancel, theme: theme || config.theme });
+    return new Promise((resolve) => {
+        showPermissionDialog({
+            ...config,
+            theme: theme || config.theme,
+            onConfirm: async () => {
+                if (typeof onConfirm === 'function') await onConfirm();
+            },
+            onCancel: () => {
+                if (typeof onCancel === 'function') onCancel();
+            },
+            onClose: resolve // Resolves when DOM removal is complete
+        });
+    });
 }
 
 /**
@@ -147,7 +179,11 @@ export function ensureStoragePermission(presetKey) {
             onConfirm: async () => {
                 try {
                     const result = await Filesystem.requestPermissions();
-                    resolve(result.publicStorage === 'granted');
+                    const granted = result.publicStorage === 'granted';
+                    if (granted) {
+                        Notif.show(t('modules/permission/permission-dialog:storage_granted'), 'success');
+                    }
+                    resolve(granted);
                 } catch {
                     resolve(false);
                 }

@@ -2,10 +2,14 @@ package com.saturamadhan.app;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -58,6 +62,7 @@ public class PrayerServicePlugin extends Plugin {
         saveAlarmsToStorage(context, alarmsArr);
         setNotificationsEnabled(context, true);
         scheduleAlarms(context, alarmsArr);
+        enqueueAlarmRescheduleWorker(context);
 
         call.resolve();
     }
@@ -67,7 +72,8 @@ public class PrayerServicePlugin extends Plugin {
         Context context = getContext();
         setNotificationsEnabled(context, false);
         cancelAllAlarms(context);
-        clearSavedAlarms(context);
+        clearSavedAlarms(context);  // Clears both CE and DE storage
+        cancelAlarmRescheduleWorker(context);
         call.resolve();
     }
 
@@ -147,11 +153,160 @@ public class PrayerServicePlugin extends Plugin {
         call.resolve();
     }
 
+    /**
+     * Check if this app is already exempted from battery optimizations.
+     * Uses Android's PowerManager.isIgnoringBatteryOptimizations() API.
+     *
+     * Returns: { isIgnoring: boolean }
+     */
+    @PluginMethod()
+    public void isIgnoringBatteryOptimizations(PluginCall call) {
+        Context context = getContext();
+        boolean isIgnoring = false;
+
+        try {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (pm != null) {
+                isIgnoring = pm.isIgnoringBatteryOptimizations(context.getPackageName());
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Could not check battery optimization status: " + e.getMessage());
+        }
+
+        JSObject result = new JSObject();
+        result.put("isIgnoring", isIgnoring);
+        call.resolve(result);
+    }
+
+    /**
+     * Opens the most relevant battery/autostart settings page for the current device.
+     *
+     * On Chinese OEM devices (Xiaomi, Oppo, Vivo, Huawei, Realme), these manufacturers
+     * implement proprietary "Autostart" controls that block BOOT_COMPLETED broadcasts
+     * regardless of Android permissions. This method deep-links to their specific UI
+     * so the user can whitelist the app manually.
+     *
+     * Falls back to the standard Android "Ignore Battery Optimizations" request,
+     * and then to the generic App Info page if all else fails.
+     *
+     * Returns: { opened: boolean, method: string }
+     */
+    @PluginMethod()
+    public void openBatteryOptimizationSettings(PluginCall call) {
+        Context context = getContext();
+        String manufacturer = Build.MANUFACTURER.toLowerCase();
+        String method = "unknown";
+        boolean opened = false;
+
+        // ── Tier 1: OEM-specific Autostart management screens ─────────────────
+        try {
+            Intent oemIntent = new Intent();
+            oemIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            if (manufacturer.contains("xiaomi") || manufacturer.contains("redmi") || manufacturer.contains("poco")) {
+                // MIUI / HyperOS
+                oemIntent.setComponent(new ComponentName(
+                        "com.miui.securitycenter",
+                        "com.miui.permcenter.autostart.AutoStartManagementActivity"
+                ));
+                method = "xiaomi_autostart";
+            } else if (manufacturer.contains("oppo") || manufacturer.contains("realme") || manufacturer.contains("oneplus")) {
+                // ColorOS / OxygenOS
+                oemIntent.setComponent(new ComponentName(
+                        "com.coloros.safecenter",
+                        "com.coloros.safecenter.permission.startup.FakeActivity"
+                ));
+                method = "oppo_coloros_autostart";
+            } else if (manufacturer.contains("vivo") || manufacturer.contains("iqoo")) {
+                // FunTouchOS / OriginOS
+                oemIntent.setComponent(new ComponentName(
+                        "com.vivo.permissionmanager",
+                        "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
+                ));
+                method = "vivo_startup_manager";
+            } else if (manufacturer.contains("huawei") || manufacturer.contains("honor")) {
+                // EMUI / MagicOS
+                oemIntent.setComponent(new ComponentName(
+                        "com.huawei.systemmanager",
+                        "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"
+                ));
+                method = "huawei_startup_manager";
+            } else if (manufacturer.contains("samsung")) {
+                // One UI — no dedicated autostart, but battery settings help
+                oemIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                oemIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
+                method = "samsung_app_details";
+            } else {
+                oemIntent = null; // Not a known OEM, go to Tier 2
+            }
+
+            if (oemIntent != null && oemIntent.getComponent() != null) {
+                context.startActivity(oemIntent);
+                opened = true;
+                Log.d(TAG, "Opened OEM battery settings via: " + method);
+            } else if (oemIntent != null && oemIntent.getData() != null) {
+                context.startActivity(oemIntent);
+                opened = true;
+                Log.d(TAG, "Opened app details settings via: " + method);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "OEM settings intent failed: " + e.getMessage());
+        }
+
+        // ── Tier 2: Standard Android — REQUEST_IGNORE_BATTERY_OPTIMIZATIONS ────
+        if (!opened) {
+            try {
+                Intent batteryIntent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                batteryIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
+                batteryIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(batteryIntent);
+                method = "ignore_battery_optimizations";
+                opened = true;
+                Log.d(TAG, "Opened standard battery optimization settings");
+            } catch (Exception e) {
+                Log.w(TAG, "Battery optimization settings failed: " + e.getMessage());
+            }
+        }
+
+        // ── Tier 3: Final fallback — generic App Info page ───────────────────
+        if (!opened) {
+            try {
+                Intent appInfoIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                appInfoIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
+                appInfoIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(appInfoIntent);
+                method = "app_info_fallback";
+                opened = true;
+                Log.d(TAG, "Opened generic app info settings as final fallback");
+            } catch (Exception e) {
+                Log.e(TAG, "All settings intents failed", e);
+            }
+        }
+
+        JSObject result = new JSObject();
+        result.put("opened", opened);
+        result.put("method", method);
+        call.resolve(result);
+    }
+
     // ── Internal Scheduling Logic ────────────────────────────────────
 
     private void saveAlarmsToStorage(Context context, JSArray alarms) {
+        String alarmsJson = alarms.toString();
+
+        // 1. Credential-Encrypted (CE) storage — accessible after the user unlocks the device.
+        //    This is the primary copy read during normal boot (BOOT_COMPLETED).
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
-        prefs.edit().putString("alarms_data", alarms.toString()).apply();
+        prefs.edit().putString("alarms_data", alarmsJson).apply();
+
+        // 2. Device-Protected (DE) storage — accessible even before the first unlock (Direct Boot).
+        //    PrayerBootReceiver uses this copy when triggered by LOCKED_BOOT_COMPLETED.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Context deContext = context.createDeviceProtectedStorageContext();
+            SharedPreferences dePrefs = deContext.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+            dePrefs.edit().putString("alarms_data", alarmsJson).apply();
+            Log.d(TAG, "Alarms saved to both CE and DE storage.");
+        }
     }
 
     private void saveSystemStringsToStorage(Context context, JSObject systemStrings) {
@@ -165,16 +320,31 @@ public class PrayerServicePlugin extends Plugin {
     }
 
     public static void rescheduleAlarmsFromStorage(Context context) {
+        Context ceContext = context;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && context.isDeviceProtectedStorage()) {
+            Log.d(TAG, "Direct Boot context: CE flag unavailable, trusting DE alarm data.");
+        } else {
+            // Normal context: CE storage is available. Check enabled flag.
+            SharedPreferences cePrefs = ceContext.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+            boolean notificationsEnabled = cePrefs.getBoolean(Constants.KEY_NOTIFICATIONS_ENABLED, true);
+            if (!notificationsEnabled) {
+                Log.d(TAG, "Notifications disabled by user — skipping reschedule.");
+                return;
+            }
+        }
+
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
         String alarmsStr = prefs.getString("alarms_data", null);
-        if (alarmsStr != null) {
-            try {
-                org.json.JSONArray jsonArr = new org.json.JSONArray(alarmsStr);
-                JSArray alarms = new JSArray(jsonArr.toString());
-                scheduleAlarms(context, alarms);
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to parse saved alarms", e);
-            }
+        if (alarmsStr == null) {
+            Log.w(TAG, "No saved alarm data found — nothing to reschedule.");
+            return;
+        }
+        try {
+            org.json.JSONArray jsonArr = new org.json.JSONArray(alarmsStr);
+            JSArray alarms = new JSArray(jsonArr.toString());
+            scheduleAlarms(context, alarms);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse saved alarms", e);
         }
     }
 
@@ -294,9 +464,18 @@ public class PrayerServicePlugin extends Plugin {
      * Prevents BootReceiver from rescheduling cancelled alarms.
      */
     private static void clearSavedAlarms(Context context) {
+        // Clear CE (normal) storage
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().remove("alarms_data").apply();
-        Log.d(TAG, "Saved alarm data cleared");
+
+        // Also clear DE (Device-Protected) storage so the boot receiver cannot
+        // re-schedule alarms that the user has explicitly cancelled.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Context deContext = context.createDeviceProtectedStorageContext();
+            SharedPreferences dePrefs = deContext.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+            dePrefs.edit().remove("alarms_data").apply();
+        }
+        Log.d(TAG, "Saved alarm data cleared from CE and DE storage");
     }
 
     /**
@@ -333,5 +512,41 @@ public class PrayerServicePlugin extends Plugin {
                 .putFloat(Constants.KEY_ANCHOR_LON, (float) lon)
                 .apply();
         Log.d(TAG, "Anchor location saved: " + lat + ", " + lon);
+    }
+
+    // ── Alarm Reschedule Worker (Safety Net) ─────────────────────────
+
+    /**
+     * Enqueue a periodic WorkManager task that re-checks alarm scheduling.
+     *
+     * WHY THIS IS THE KEY TO SURVIVING REBOOTS ON OEM DEVICES:
+     * WorkManager has its OWN internal boot receiver that is part of the AndroidX
+     * library and is whitelisted by most OEMs (Xiaomi, Oppo, Vivo, etc.).
+     * When the device reboots, WorkManager automatically re-enqueues all pending
+     * periodic work from its internal Room database — bypassing the OEM restrictions
+     * that block custom BOOT_COMPLETED receivers.
+     *
+     * Policy KEEP ensures we don't reset the schedule if already enqueued.
+     */
+    private void enqueueAlarmRescheduleWorker(Context context) {
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+                AlarmRescheduleWorker.class,
+                6, TimeUnit.HOURS,
+                3, TimeUnit.HOURS
+        )
+                .addTag(Constants.WORKER_TAG_ALARM_RESCHEDULE)
+                .build();
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                Constants.WORKER_TAG_ALARM_RESCHEDULE,
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
+        Log.d(TAG, "Alarm reschedule worker enqueued (6h interval, 3h flex)");
+    }
+
+    private void cancelAlarmRescheduleWorker(Context context) {
+        WorkManager.getInstance(context).cancelUniqueWork(Constants.WORKER_TAG_ALARM_RESCHEDULE);
+        Log.d(TAG, "Alarm reschedule worker cancelled");
     }
 }

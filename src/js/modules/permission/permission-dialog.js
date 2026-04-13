@@ -23,6 +23,7 @@ let _isConfirming = false;
  * @param {string}   config.description
  * @param {Array}    [config.features]    - [{icon, label}]
  * @param {string}   [config.confirmText] - Default: 'Izinkan'
+ * @param {string|boolean} [config.confirmIcon] - Default: 'bx-check'. Set to false/empty to hide.
  * @param {string}   [config.cancelText]  - Default: 'Lewati'
  * @param {Function} config.onConfirm
  * @param {Function} [config.onCancel]
@@ -34,18 +35,25 @@ export function showPermissionDialog({
     description,
     features    = [],
     confirmText = 'Izinkan',
+    confirmIcon = 'bx-check',
     cancelText  = 'Lewati',
     theme       = 'default',
     onConfirm,
     onCancel,
+    onClose,
 }) {
-    if (_overlayEl) removeModal();
+    // Safe chaining: if called while another modal is animating out, just replace it instantly
+    if (_overlayEl && _overlayEl.parentNode) {
+        _overlayEl.remove();
+    }
 
     _onConfirm    = onConfirm;
     _onCancel     = onCancel ?? null;
+    let localOnClose = onClose; // capture locally for this specific modal instance
     _isConfirming = false;
 
-    _overlayEl = buildDOM({ icon, iconColor, title, description, features, confirmText, cancelText, theme });
+    _overlayEl = buildDOM({ icon, iconColor, title, description, features, confirmText, confirmIcon, cancelText, theme });
+    _overlayEl._onClose = localOnClose; // attach for handleCancel to access
     document.body.appendChild(_overlayEl);
 
     registerModalDismiss(handleCancel);
@@ -66,7 +74,8 @@ async function handleConfirm() {
 
     await loadNS('modules/permission/permission-dialog');
 
-    const btn = _overlayEl?.querySelector('#perm-dialog-btn-confirm');
+    const currentOverlay = _overlayEl;
+    const btn = currentOverlay?.querySelector('#perm-dialog-btn-confirm');
     let originalHtml = '';
     if (btn) {
         originalHtml = btn.innerHTML;
@@ -75,7 +84,9 @@ async function handleConfirm() {
     }
 
     try {
-        if (typeof _onConfirm === 'function') await _onConfirm();
+        if (typeof _onConfirm === 'function') {
+            await _onConfirm();
+        }
     } catch (e) {
         console.warn('[PermissionDialog] onConfirm error:', e);
     } finally {
@@ -83,13 +94,20 @@ async function handleConfirm() {
             btn.disabled = false;
             btn.innerHTML = originalHtml;
         }
-        hideModal();
+        const onCloseCb = currentOverlay ? currentOverlay._onClose : null;
+        hideSpecificModal(currentOverlay, onCloseCb, true);
     }
 }
 
-function handleCancel() {
+function handleCancel(e) {
+    const currentOverlay = _overlayEl;
     if (typeof _onCancel === 'function') _onCancel();
-    hideModal();
+    // In order to get the localOnClose for cancel, we would need to capture it in bindEvents.
+    // Instead of completely refactoring to class-based, we'll extract the onClose from a weakmap or pass it.
+    // Actually, localOnClose is in the scope of `showPermissionDialog` but handleCancel is outside.
+    // So we can attach it to the DOM element!
+    const onCloseCb = currentOverlay ? currentOverlay._onClose : null;
+    hideSpecificModal(currentOverlay, onCloseCb, false);
 }
 
 function bindEvents() {
@@ -108,30 +126,42 @@ function bindEvents() {
     addEscHandler(_overlayEl, handleCancel);
 }
 
-function hideModal() {
-    if (!_overlayEl) return;
+function hideSpecificModal(targetOverlay, onCloseCallback, resultState = false) {
+    if (!targetOverlay) return;
 
     unregisterModalDismiss(handleCancel);
-    _overlayEl.classList.remove('active');
-    _overlayEl.addEventListener('transitionend', removeModal, { once: true });
-    setTimeout(removeModal, 400);
+    targetOverlay.classList.remove('active');
+    
+    // Prevent multiple executions
+    if (targetOverlay._isRemoving) return;
+    targetOverlay._isRemoving = true;
+    
+    const removeThisModal = () => {
+        if (_releaseFocus) {
+            try { _releaseFocus(); } catch (e) { console.warn('releaseFocus error', e); }
+            _releaseFocus = null;
+        }
+        try {
+            if (targetOverlay.parentNode) {
+                targetOverlay.remove();
+            }
+        } catch(e) { console.warn('remove overlay error', e); }
+        if (_overlayEl === targetOverlay) {
+            _overlayEl = null;
+            _onConfirm = null;
+            _onCancel = null;
+            _isConfirming = false;
+        }
+        if (typeof onCloseCallback === 'function') {
+            onCloseCallback(resultState);
+        }
+    };
+    
+    targetOverlay.addEventListener('transitionend', removeThisModal, { once: true });
+    setTimeout(removeThisModal, 400);
 }
 
-function removeModal() {
-    if (_releaseFocus) {
-        _releaseFocus();
-        _releaseFocus = null;
-    }
-    if (_overlayEl) {
-        _overlayEl.remove();
-        _overlayEl = null;
-    }
-    _onConfirm    = null;
-    _onCancel     = null;
-    _isConfirming = false;
-}
-
-function buildDOM({ icon, iconColor, title, description, features, confirmText, cancelText, theme }) {
+function buildDOM({ icon, iconColor, title, description, features, confirmText, confirmIcon, cancelText, theme }) {
     const overlay = document.createElement('div');
     overlay.className = 'perm-dialog-overlay';
     
@@ -164,7 +194,7 @@ function buildDOM({ icon, iconColor, title, description, features, confirmText, 
             </div>
             <div class="perm-dialog__actions">
                 <button class="perm-dialog__btn--primary" id="perm-dialog-btn-confirm">
-                    <i class="bx bx-check perm-dialog__btn-icon"></i>
+                    ${confirmIcon ? `<i class="bx ${confirmIcon} perm-dialog__btn-icon"></i>` : ''}
                     <span>${confirmText}</span>
                 </button>
                 <button class="perm-dialog__btn--ghost" id="perm-dialog-btn-cancel">

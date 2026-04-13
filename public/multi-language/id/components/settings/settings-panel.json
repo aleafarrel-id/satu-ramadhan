@@ -7,5 +7,6 @@
     "notif_off": "Notifikasi dimatikan",
     "adzan_on": "Suara adzan diaktifkan",
     "adzan_off": "Suara adzan dimatikan",
-    "perm_denied": "Izin notifikasi ditolak"
+    "perm_denied": "Izin notifikasi ditolak",
+    "battery_opt": "Proses Latar Belakang"
 }

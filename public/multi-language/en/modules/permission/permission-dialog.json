@@ -13,6 +13,7 @@
     "storage_f3": "Only accesses app-generated files",
     "storage_confirm": "Allow Access",
     "storage_cancel": "Cancel",
+    "storage_granted": "Storage access granted",
     "murottal_title": "Murottal Storage Permission",
     "murottal_desc": "To download Murottal audio for offline playback, the application requires storage access.",
     "murottal_f1": "Save Murottal audio locally",
@@ -20,5 +21,13 @@
     "murottal_f3": "Only accesses the app's folder",
     "murottal_confirm": "Allow Access",
     "murottal_cancel": "Cancel",
+    "battery_title": "Background Process",
+    "battery_desc": "Some devices restrict apps in the background. To ensure the Adhan sounds on time even after a reboot, please allow this app to run unrestricted.",
+    "battery_f1": "Notification active after reboot",
+    "battery_f2": "Stable background running",
+    "battery_f3": "Accurate Adhan alarms",
+    "battery_confirm": "Allow Process",
+    "battery_cancel": "Later",
+    "battery_granted": "Background process allowed",
     "processing": "Processing..."
 }
