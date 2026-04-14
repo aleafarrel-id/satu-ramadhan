@@ -15,6 +15,7 @@ import { handleOrgToggle as handleOrgToggleShared } from '../components/prayer/p
 import { renderHomeSkeleton } from '../components/skeleton/skeleton-home.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { renderCountdownCard } from '../components/card/countdown-card.js';
+import { renderShortcutCard } from '../components/card/shortcut-card.js';
 import { t, loadNS } from '../core/i18n.js';
 
 import { safeClear } from '../utils/dom-utils.js';
@@ -56,6 +57,7 @@ export async function render(container, options = {}) {
     await loadNS('modules/prayer/prayer-times');
     await loadNS('components/prayer/prayer-widgets');
     await loadNS('components/card/qibla-map-card');
+    await loadNS('components/card/shortcut-card');
 
     safeClear(container);
     renderSkeleton(null);
@@ -207,7 +209,20 @@ async function renderContent() {
         const listActive = _viewMode === VIEW_LIST ? ' active' : '';
 
         contentHtml = `
-            ${renderCountdownCard(prayerState)}
+            <div class="top-carousel-wrapper">
+                <div class="top-carousel" id="home-top-carousel">
+                    <div class="carousel-slide">
+                        ${renderCountdownCard(prayerState)}
+                    </div>
+                    <div class="carousel-slide">
+                        ${renderShortcutCard()}
+                    </div>
+                </div>
+                <div class="carousel-dots" id="home-carousel-dots">
+                    <span class="carousel-dot active" data-index="0"></span>
+                    <span class="carousel-dot" data-index="1"></span>
+                </div>
+            </div>
             <div class="home-schedule-header">
                 <div class="schedule-title">${t('pages/home-page:schedule_today')}</div>
                 <div class="schedule-nav__arrows shadow-sm">
@@ -241,6 +256,7 @@ async function renderContent() {
 
     bindLocationCardEvents(showLocationModalForHome, _container);
     bindScheduleEvents();
+    bindCarouselEvents();
 
     // Bind empty-state action buttons (only present when _timings is null)
     _container.querySelector('#home-btn-retry')?.addEventListener('click', () => location.reload());
@@ -274,6 +290,24 @@ function bindScheduleEvents() {
     document.getElementById('home-view-tube')?.addEventListener('click', () => switchView(VIEW_TUBE));
     document.getElementById('home-view-list')?.addEventListener('click', () => switchView(VIEW_LIST));
     bindViewSpecificEvents();
+}
+
+/**
+ * Binds event listeners for the native scroll snap carousel
+ */
+function bindCarouselEvents() {
+    const carouselWrapper = document.getElementById('home-top-carousel');
+    const dots = document.querySelectorAll('.carousel-dot');
+    
+    if (!carouselWrapper || dots.length === 0) return;
+
+    // Listen to scroll events to update dot indicators
+    carouselWrapper.addEventListener('scroll', () => {
+        const index = Math.round(carouselWrapper.scrollLeft / carouselWrapper.clientWidth);
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    }, { passive: true });
 }
 
 /**

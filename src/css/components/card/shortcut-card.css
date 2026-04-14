@@ -1,0 +1,122 @@
+/* =============================================
+   Shortcut Card Widget
+   ============================================= */
+
+.shortcut-card {
+   text-align: center;
+   /* keep centered for consistency */
+   margin-bottom: 0;
+   /* Let carousel handle margins */
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   /* Centered vertically to match perfectly */
+}
+
+
+
+.shortcut-card__menu-container {
+   /* Allow horizontal scrolling or grid. Let's use flex wrap or grid */
+   display: flex;
+   overflow-x: auto;
+   /* Matches exactly what we need, removing padding-bottom to strictly equal countdown height */
+   scrollbar-width: none;
+   align-items: flex-start;
+   justify-content: flex-start;
+}
+
+.shortcut-card__menu-container::-webkit-scrollbar {
+   display: none;
+}
+
+/* Ensure empty spaces before/after so it scrolls nicely from edges if needed, 
+   but since it's centered we justify content center initially */
+.shortcut-card__menu-flex {
+   display: flex;
+   gap: var(--spacing-sm);
+   width: 100%;
+   justify-content: space-evenly;
+   /* Evenly spaces the items so it feels full */
+   margin: 0 auto;
+}
+
+.shortcut-card__item {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: var(--spacing-xs);
+   cursor: pointer;
+   text-decoration: none;
+   transition: transform 0.2s ease, opacity 0.2s ease;
+   /* Prevent shrink */
+   flex-shrink: 0;
+   /* We use standard sizes exactly equal to countdown__column */
+   width: 48px;
+}
+
+.shortcut-card__item:hover,
+.shortcut-card__item:active {
+   transform: scale(0.95);
+   opacity: 0.8;
+}
+
+/* Match precisely with .countdown__digit-box, enhanced with Claymorphism */
+.shortcut-card__icon-box {
+   background: var(--clr-secondary-600);
+   border-radius: 50%;
+   /* Changed to circle for a more integrated, organic look */
+   padding: var(--spacing-sm) var(--spacing-sm);
+   width: 48px;
+   height: 48px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+
+   /* Extruded soft 3D effect: light inset top-left, dark inset bottom-right, soft drop shadow */
+   border: none;
+   box-shadow:
+      inset 3px 3px 6px rgba(255, 255, 255, 0.05),
+      inset -3px -3px 6px rgba(0, 0, 0, 0.4),
+      4px 4px 10px rgba(0, 0, 0, 0.2);
+
+   color: var(--clr-accent-500);
+   font-size: var(--fs-xl);
+   transition: all 0.2s ease;
+}
+
+/* Add a subtle pressed state to the icon-box down to simulate physically pressing the clay */
+.shortcut-card__item:active .shortcut-card__icon-box {
+   box-shadow:
+      inset 4px 4px 8px rgba(0, 0, 0, 0.5),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.02);
+   transform: translateY(2px);
+}
+
+/* Match precisely with .countdown__unit */
+.shortcut-card__name {
+   font-size: var(--fs-sm);
+   margin-top: var(--spacing-xs);
+   font-weight: var(--fw-light);
+   color: var(--clr-text-muted);
+   text-transform: capitalize;
+   letter-spacing: 0;
+   line-height: var(--lh-snug);
+   text-align: center;
+}
+
+@media (max-width: 360px) {
+   .shortcut-card__icon-box {
+      width: 40px;
+      height: 40px;
+      padding: var(--spacing-xs);
+      font-size: var(--fs-lg);
+   }
+
+   .shortcut-card__name {
+      font-size: var(--fs-2xs);
+   }
+
+   .shortcut-card__item {
+      width: 50px;
+   }
+}

@@ -7,7 +7,6 @@
 export function initTasbihGesture({ onOpen, getCurrentPage }) {
     const SWIPE_THRESHOLD_X = 60;  // Minimum horizontal distance to trigger
     const SWIPE_MAX_Y = 55;        // Maximum vertical drift (prevents triggering during scroll)
-    const EDGE_ZONE_PX = 40;       // Only trigger if swipe starts within left 40px (edge swipe)
 
     let _startX = 0;
     let _startY = 0;
@@ -17,11 +16,15 @@ export function initTasbihGesture({ onOpen, getCurrentPage }) {
         // Only active on home page
         if (getCurrentPage() !== 'home') return;
 
+        // Prevent gesture collision with the top carousel
+        const carousel = document.getElementById('home-top-carousel');
+        if (carousel && e.target.closest('#home-top-carousel')) {
+            if (carousel.scrollLeft > 5) {
+                return;
+            }
+        }
+
         const touch = e.changedTouches[0];
-
-        // Only initiate if the finger starts from the left-edge zone
-        if (touch.clientX > EDGE_ZONE_PX) return;
-
         _startX = touch.clientX;
         _startY = touch.clientY;
         _isTracking = true;

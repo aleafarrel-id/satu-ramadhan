@@ -1,0 +1,71 @@
+/* =============================================
+   Carousel Wrapper
+   ============================================= */
+
+.top-carousel-wrapper {
+   position: relative;
+   width: 100%;
+   margin-bottom: var(--spacing-md);
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.top-carousel {
+   display: flex;
+   flex-wrap: nowrap;
+   overflow-x: auto;
+   width: 100%;
+   gap: var(--spacing-md);
+   scroll-snap-type: x mandatory;
+   scrollbar-width: none; /* Firefox */
+   -webkit-overflow-scrolling: touch;
+   scroll-behavior: smooth;
+}
+
+.top-carousel::-webkit-scrollbar {
+   display: none; /* Safari and Chrome */
+}
+
+/* Ensure each slide takes full width and fills height for equality */
+.carousel-slide {
+   flex: 0 0 100%;
+   min-width: 100%;
+   scroll-snap-align: center;
+   display: flex;
+   align-items: stretch; 
+}
+
+/* Stretch the cards inside fully to equal bounds */
+.carousel-slide > .card {
+   width: 100%;
+   margin-bottom: 0 !important; 
+   box-sizing: border-box;
+}
+
+/* =============================================
+   Carousel Dots Indicators
+   ============================================= */
+
+.carousel-dots {
+   display: flex;
+   gap: 6px;
+   justify-content: center;
+   margin-top: var(--spacing-sm);
+}
+
+.carousel-dot {
+   width: 6px;
+   height: 6px;
+   border-radius: 50%;
+   background-color: var(--clr-secondary-600);
+   transition: background-color 0.3s ease, width 0.3s ease;
+   border: 1px solid var(--clr-border);
+}
+
+.carousel-dot.active {
+   width: 24px;
+   border-radius: 4px;
+   background-color: var(--clr-primary-500);
+   border-color: var(--clr-primary-500);
+}

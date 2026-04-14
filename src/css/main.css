@@ -24,6 +24,7 @@
 @import './components/ui/button.css';
 @import './components/ui/toggle.css';
 @import './components/ui/empty-state.css';
+@import './components/ui/carousel.css';
 
 /* Prayer (used by Home) */
 @import './components/prayer/prayer-time.css';
@@ -41,6 +42,7 @@
 /* Card (shared container, used by Home) */
 @import './components/card/card.css';
 @import './components/card/location-card.css';
+@import './components/card/shortcut-card.css';
 
 /* Modal (used by Home for location setup) */
 @import './components/modal/location-modal.css';
