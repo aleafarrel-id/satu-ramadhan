@@ -19,7 +19,7 @@ import { t, loadNS } from '../core/i18n.js';
 import { showConfirmModal } from '../components/modal/confirm-modal.js';
 import { showTasbihPresetModal } from '../components/modal/tasbih-preset-modal.js';
 import { escapeHtml } from '../utils/sanitize.js';
-import { impact } from '../modules/system/haptic.js';
+import { impact, doubleVibrate } from '../modules/system/haptic.js';
 import * as notif from '../modules/notification/notification.js';
 
 // ── Module State ───────────────────────────────────────────────────────────────
@@ -522,17 +522,25 @@ function _bindEvents() {
 // ── Counter Logic ──────────────────────────────────────────────────────────────
 
 function _increment() {
-    _count++;
-    _totalCount++;
-    _physicalCount++;
-
     const target = _activeZikir.target;
     let roundComplete = false;
 
-    if (target > 0 && _count > target) {
-        _count = 1;
+    if (target > 0 && _count === target) {
+        _count = 0;
         _round++;
         roundComplete = true;
+        _physicalCount++;
+        impact('light');
+    } else {
+        _count++;
+        _totalCount++;
+        _physicalCount++;
+
+        if (target > 0 && _count === target) {
+            doubleVibrate();
+        } else {
+            impact('light');
+        }
     }
 
     _saveState();
