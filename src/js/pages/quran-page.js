@@ -86,7 +86,13 @@ export async function render(container) {
       onNavigate: (pageId) => loadSubPage(pageId)
    });
 
-   await loadSubPage('surah');
+   const initialTab = sessionStorage.getItem('quran_tab') || 'surah';
+   sessionStorage.removeItem('quran_tab');
+
+   await loadSubPage(initialTab);
+   if (initialTab !== 'surah') {
+       QuranDock.setActive(initialTab);
+   }
 
    await transitionPromise;
    _quranContent.classList.add('ready');

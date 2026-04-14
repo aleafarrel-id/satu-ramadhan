@@ -16,6 +16,8 @@ import { renderHomeSkeleton } from '../components/skeleton/skeleton-home.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { renderCountdownCard } from '../components/card/countdown-card.js';
 import { renderShortcutCard } from '../components/card/shortcut-card.js';
+import * as TasbihPage from './tasbih-page.js';
+import * as router from '../router.js';
 import { t, loadNS } from '../core/i18n.js';
 
 import { safeClear } from '../utils/dom-utils.js';
@@ -257,6 +259,7 @@ async function renderContent() {
     bindLocationCardEvents(showLocationModalForHome, _container);
     bindScheduleEvents();
     bindCarouselEvents();
+    bindShortcutEvents();
 
     // Bind empty-state action buttons (only present when _timings is null)
     _container.querySelector('#home-btn-retry')?.addEventListener('click', () => location.reload());
@@ -316,7 +319,40 @@ function bindCarouselEvents() {
 function bindViewSpecificEvents() {
     document.getElementById('org-toggle')?.addEventListener('click', handleOrgToggle);
     document.getElementById('home-btn-kiblat')?.addEventListener('click', () => {
-        document.querySelector('.nav-item[data-tab="compass"]')?.click();
+        router.navigate('compass');
+    });
+}
+
+/**
+ * Binds event listeners for the shortcut actions.
+ */
+function bindShortcutEvents() {
+    const shortcuts = {
+        'tasbih': () => {
+            TasbihPage.open();
+        },
+        'surah': () => {
+            sessionStorage.setItem('quran_tab', 'surah');
+            router.navigate('quran');
+        },
+        'juz': () => {
+            sessionStorage.setItem('quran_tab', 'juz');
+            router.navigate('quran');
+        },
+        'mushaf': () => {
+            sessionStorage.setItem('quran_tab', 'mushaf');
+            router.navigate('quran');
+        },
+        'kiblat': () => {
+            router.navigate('compass');
+        }
+    };
+
+    Object.entries(shortcuts).forEach(([id, handler]) => {
+        const el = document.getElementById(`shortcut-${id}`);
+        if (el) {
+            el.addEventListener('click', handler);
+        }
     });
 }
 
