@@ -154,6 +154,8 @@ export async function showPermissionDialogPreset(key, { onConfirm, onCancel, the
  */
 export function ensureStoragePermission(presetKey) {
     return new Promise(async (resolve) => {
+        await loadNS('modules/permission/permission-dialog');
+        
         const ua = navigator.userAgent;
         const androidMatch = ua.match(/Android\s([0-9.]+)/);
         const androidVersion = androidMatch ? parseInt(androidMatch[1]) : 0;
@@ -181,7 +183,7 @@ export function ensureStoragePermission(presetKey) {
                     const result = await Filesystem.requestPermissions();
                     const granted = result.publicStorage === 'granted';
                     if (granted) {
-                        Notif.show(t('modules/permission/permission-dialog:storage_granted'), 'success');
+                        Notif.show(t('modules/permission/permission-dialog:storage_granted', { defaultValue: 'Akses penyimpanan diizinkan' }), 'success');
                     }
                     resolve(granted);
                 } catch {

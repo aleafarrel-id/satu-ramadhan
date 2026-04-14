@@ -84,6 +84,7 @@
    align-items: center;
    justify-content: space-between;
    padding: var(--sp-2) var(--sp-3);
+   padding-top: max(var(--sp-2), env(safe-area-inset-top));
    background: var(--clr-quran-card-bg);
    flex-shrink: 0;
    min-height: var(--size-touch-target);

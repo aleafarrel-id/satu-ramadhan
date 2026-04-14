@@ -342,6 +342,19 @@
    --gradient-loading-bar: linear-gradient(90deg, #d4af37, #e8c86e);
    --gradient-org-badge: linear-gradient(90deg, #1a5f6f 0%, #2d9e9e 50%, #1a5f6f 100%);
    --gradient-cal-bg: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
+   
+   /* --- Tasbih Variables --- */
+   --clr-tasbih-bg-start: var(--clr-primary-900);
+   --clr-tasbih-bg-end: var(--clr-primary-800);
+   --clr-tasbih-surface: rgba(255, 255, 255, 0.04);
+   --clr-tasbih-text: #ffffff;
+   --clr-tasbih-text-secondary: rgba(255, 255, 255, 0.55);
+   --clr-tasbih-accent: var(--clr-accent-500);
+   --clr-tasbih-ring: var(--clr-primary-400); 
+   --clr-tasbih-ring-track: rgba(255, 255, 255, 0.08);
+   --clr-tasbih-bead: #C4956A;
+   --clr-tasbih-bead-shadow: rgba(0, 0, 0, 0.5);
+   --transition-tasbih-slide: 0.45s cubic-bezier(0.33, 1, 0.68, 1);
 
    /* Liquid Component Refs */
    --clr-liquid-surface: #D3B969;

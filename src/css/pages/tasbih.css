@@ -1,0 +1,886 @@
+/* =============================================================================
+   Tasbih — Hidden Left Compartment
+   Design: Clean light/cream background matching reference image.
+   Beads visual handled in tasbih-beads.css
+   ============================================================================= */
+
+/* ── Panel Shell ── */
+
+.tasbih-panel {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    /* Panel is off-screen to the left by default */
+    pointer-events: none;
+}
+
+/* The actual visible page lives inside the panel */
+.tasbih-page {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--clr-quran-bg);
+    color: var(--clr-quran-text);
+    font-family: var(--ff-primary);
+
+    /* Slide from left — hidden by default */
+    transform: translateX(-100%);
+    transition: transform var(--transition-tasbih-slide);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Active state — slide in */
+.tasbih-panel.tasbih-active {
+    pointer-events: auto;
+}
+
+.tasbih-panel.tasbih-active .tasbih-page {
+    transform: translateX(0);
+    pointer-events: auto;
+    /* CRITICAL: re-enable taps when on-screen */
+}
+
+/* Exit state */
+.tasbih-panel.tasbih-exit .tasbih-page {
+    transform: translateX(-100%);
+    pointer-events: none;
+}
+
+/* Islamic Geometric Background Pattern */
+.tasbih-bg-pattern {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    background-color: var(--clr-quran-border);
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='120' height='120' patternUnits='userSpaceOnUse'%3E%3Cg fill='none' stroke='%236E4D30' stroke-opacity='0.15' stroke-width='0.75'%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='15'/%3E%3Cpath d='M60 30L73 45H47zM60 90L47 75H73zM30 60L45 47V73zM90 60L75 73V47z'/%3E%3Cpath d='M60 30L90 60L60 90L30 60z'/%3E%3Cpath d='M45 45L75 45L75 75L45 75z'/%3E%3Ccircle cx='60' cy='30' r='4'/%3E%3Ccircle cx='60' cy='90' r='4'/%3E%3Ccircle cx='30' cy='60' r='4'/%3E%3Ccircle cx='90' cy='60' r='4'/%3E%3Ccircle cx='0' cy='0' r='4'/%3E%3Ccircle cx='120' cy='0' r='4'/%3E%3Ccircle cx='0' cy='120' r='4'/%3E%3Ccircle cx='120' cy='120' r='4'/%3E%3Cpath d='M0 0L30 30M120 0L90 30M0 120L30 90M120 120L90 90'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23p)'/%3E%3C/svg%3E");
+    z-index: 0;
+}
+
+/* ─────────────────────────────────────────
+   Header
+───────────────────────────────────────── */
+
+.tasbih-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-2) var(--sp-4);
+    padding-top: max(var(--sp-2), env(safe-area-inset-top));
+    border-bottom: 1px solid var(--clr-quran-border);
+    background: var(--clr-quran-card-bg);
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.tasbih-back-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--clr-quran-text);
+    font-size: 1.6rem;
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    transition: background var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tasbih-back-btn:active {
+    background: var(--clr-quran-hover);
+}
+
+.tasbih-header-title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text);
+    letter-spacing: var(--ls-tight);
+}
+
+.tasbih-settings-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--clr-quran-text);
+    font-size: 1.6rem;
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    transition: background var(--transition-fast);
+}
+
+.tasbih-settings-btn:active {
+    background: var(--clr-quran-hover);
+}
+
+/* ─────────────────────────────────────────
+   Info Card (Dzikir Name + Counter)
+───────────────────────────────────────── */
+
+.tasbih-info-card {
+    background: var(--clr-quran-card-bg);
+    border-bottom: 1px solid var(--clr-quran-border);
+    padding: var(--sp-5);
+    position: relative;
+    z-index: 5;
+    flex-shrink: 0;
+}
+
+.tasbih-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-4);
+}
+
+.tasbih-info-name {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--clr-quran-text-secondary);
+    line-height: var(--lh-snug);
+    word-break: break-word;
+}
+
+.tasbih-add-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text-secondary);
+    border: 1px solid var(--clr-quran-border);
+    background: transparent;
+    padding: var(--sp-1) var(--sp-3);
+    height: 30px;
+    border-radius: var(--radius-pill);
+    gap: 4px;
+    transition: all var(--transition-fast);
+}
+
+.tasbih-add-btn i {
+    font-size: 15px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.tasbih-add-btn span {
+    line-height: 1;
+}
+
+.tasbih-add-btn:active {
+    background: var(--clr-quran-card-hover);
+}
+
+.tasbih-info-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: var(--sp-4) var(--sp-1);
+    min-height: 40px;
+    gap: var(--sp-4);
+}
+
+.tasbih-info-label {
+    font-family: var(--ff-mushaf-header-ar);
+    font-size: var(--fs-2xl);
+    color: var(--clr-quran-text);
+    line-height: var(--lh-tight);
+    direction: rtl;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.tasbih-info-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding-top: var(--sp-4);
+    border-top: 1px dashed var(--clr-quran-border);
+}
+
+/* ─────────────────────────────────────────
+   Floating Action Buttons (Bottom Nav)
+───────────────────────────────────────── */
+.tasbih-fab-nav {
+    position: absolute;
+    bottom: calc(var(--sp-6) + env(safe-area-inset-bottom));
+    left: var(--sp-4);
+    display: flex;
+    align-items: center;
+    background: var(--clr-quran-card-bg);
+    border: 1px solid var(--clr-quran-border);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    overflow: hidden;
+}
+
+.tasbih-fab-btn {
+    width: 48px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--clr-quran-text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tasbih-fab-btn:active {
+    background: var(--clr-quran-hover);
+    color: var(--clr-quran-text);
+}
+
+.tasbih-fab-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--clr-quran-border);
+    opacity: 0.7;
+}
+
+/* Counter row: circular spinner + count/target */
+.tasbih-counter-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+}
+
+/* Spinning circular indicator (arc progress - like reference image) */
+.tasbih-counter-spinner {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+}
+
+.tasbih-spinner-track {
+    fill: none;
+    stroke: var(--clr-quran-border);
+    stroke-width: 4;
+}
+
+.tasbih-spinner-progress {
+    fill: none;
+    stroke: var(--clr-quran-accent);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    transition: stroke-dashoffset 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tasbih-counter-display {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.tasbih-count-number {
+    font-size: var(--fs-3xl);
+    font-weight: var(--fw-bold);
+    color: var(--clr-quran-text);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tasbih-count-number.bump {
+    transform: scale(1.15);
+}
+
+.tasbih-count-separator {
+    font-size: var(--fs-lg);
+    color: var(--clr-quran-text-secondary);
+    font-weight: var(--fw-light);
+}
+
+.tasbih-count-target {
+    font-size: var(--fs-lg);
+    color: var(--clr-quran-text-secondary);
+    font-weight: var(--fw-regular);
+}
+
+/* Round + Total info row */
+.tasbih-stats-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    font-size: var(--fs-xs);
+    color: var(--clr-quran-text-secondary);
+}
+
+.tasbih-stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+}
+
+.tasbih-stat-label {
+    font-weight: var(--fw-medium);
+}
+
+.tasbih-stat-value {
+    font-weight: var(--fw-bold);
+    color: var(--clr-quran-text);
+}
+
+/* Reset + History action links */
+.tasbih-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sp-2);
+    margin-left: auto;
+}
+
+.tasbih-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    font-family: var(--ff-primary);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: all var(--transition-fast);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+}
+
+.tasbih-action-btn i {
+    font-size: 14px;
+}
+
+.tasbih-action-btn.action-reset {
+    color: var(--clr-quran-accent);
+}
+
+.tasbih-action-btn.action-reset:active {
+    background: var(--clr-quran-bg-alt);
+}
+
+.tasbih-action-btn.action-clean {
+    color: var(--clr-quran-text-secondary);
+}
+
+.tasbih-action-btn.action-clean:active {
+    background: var(--clr-quran-bg-alt);
+}
+
+/* ─────────────────────────────────────────
+   Beads Visual Area (tap zone)
+───────────────────────────────────────── */
+
+.tasbih-beads-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    /* Fullscreen tap zone */
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* The SVG beads visual */
+.tasbih-beads-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* ─────────────────────────────────────────
+   Bottom Sheet — Dzikir Selector
+───────────────────────────────────────── */
+
+.tasbih-selector-modal {
+    position: absolute;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tasbih-selector-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tasbih-selector-content {
+    background: var(--clr-quran-bg);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--sp-5);
+    padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.tasbih-selector-modal.active .tasbih-selector-content {
+    transform: translateY(0);
+}
+
+.tasbih-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--sp-6);
+}
+
+.tasbih-selector-title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--clr-quran-text);
+}
+
+/* Dzikir list — no visible scrollbar */
+.tasbih-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    max-height: 60vh;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.tasbih-list::-webkit-scrollbar {
+    display: none;
+}
+
+.tasbih-list-item {
+    background: var(--clr-quran-card-bg);
+    border: 1.5px solid var(--clr-quran-border);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+}
+
+.tasbih-list-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-4);
+    transition: background var(--transition-fast);
+}
+
+.tasbih-list-item-header:active {
+    background: var(--clr-quran-card-hover);
+}
+
+.tasbih-list-item.selected {
+    border-color: var(--clr-quran-accent);
+}
+
+.tasbih-list-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tasbih-list-item-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text);
+}
+
+.tasbih-list-item-target {
+    background: var(--clr-quran-bg-alt);
+    color: var(--clr-quran-text-secondary);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: var(--fw-medium);
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.tasbih-list-item-right {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+
+.tasbih-list-item-arabic {
+    font-family: var(--ff-mushaf-header-ar);
+    font-size: var(--fs-xl);
+    color: var(--clr-quran-text);
+    direction: rtl;
+    line-height: 1.2;
+}
+
+/* ─────────────────────────────────────────
+   Inline Edit Form
+───────────────────────────────────────── */
+
+.tb-inline-form {
+    padding: 0 var(--sp-4) var(--sp-4) var(--sp-4);
+    border-top: 1px dashed var(--clr-quran-border);
+    margin-top: 0;
+    padding-top: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    cursor: default;
+    /* Stops inheritance of pointer cursor from item container */
+}
+
+.tb-inline-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+}
+
+.tb-inline-label {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text);
+}
+
+.tb-inline-input {
+    width: 100%;
+    background: var(--clr-quran-card-bg);
+    border: 1px solid var(--clr-quran-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: var(--fs-sm);
+    color: var(--clr-quran-text);
+    font-family: var(--ff-primary);
+    transition: border var(--transition-fast);
+}
+
+.tb-inline-input:focus {
+    outline: none;
+    border-color: var(--clr-quran-accent);
+}
+
+.tb-inline-actions {
+    display: flex;
+    gap: var(--sp-2);
+    margin-top: var(--sp-1);
+}
+
+.tb-inline-btn {
+    flex: 1;
+    padding: var(--sp-2);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: background var(--transition-fast);
+}
+
+.tb-inline-btn--outline {
+    background: transparent;
+    color: var(--clr-quran-text);
+    border: 1px solid var(--clr-quran-border);
+}
+
+.tb-inline-btn--outline:active {
+    background: var(--clr-quran-border);
+}
+
+.tb-inline-btn--primary {
+    background: var(--clr-quran-accent);
+    color: var(--clr-text-primary);
+    border: 1px solid var(--clr-quran-accent);
+}
+
+.tb-inline-btn--primary:active {
+    opacity: 0.8;
+}
+
+.tb-list-action {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--clr-quran-text-secondary);
+    font-size: var(--icon-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast);
+}
+
+.tb-list-action.edit-btn:active {
+    color: var(--clr-quran-accent);
+}
+
+.tb-list-action.delete-btn:active {
+    color: var(--clr-danger);
+}
+
+/* ─────────────────────────────────────────
+   Animations
+───────────────────────────────────────── */
+
+@keyframes tasbihCountBump {
+    0% {
+        transform: scale(1);
+    }
+
+    40% {
+        transform: scale(1.18);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.tasbih-count-number.animate-bump {
+    animation: tasbihCountBump 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tasbihRoundAchieved {
+    0% {
+        transform: scale(1);
+        color: var(--clr-quran-text-secondary);
+    }
+
+    40% {
+        transform: scale(1.2);
+        color: var(--clr-quran-accent);
+    }
+
+    100% {
+        transform: scale(1);
+        color: var(--clr-quran-text-secondary);
+    }
+}
+
+.tasbih-stat-value.animate-round {
+    animation: tasbihRoundAchieved 0.5s ease;
+}
+
+/* Responsive */
+@media screen and (max-width: 380px) {
+    .tasbih-header {
+        padding: var(--sp-2) var(--sp-3);
+    }
+
+    .tasbih-header-title {
+        font-size: var(--fs-sm);
+    }
+
+    .tasbih-back-btn,
+    .tasbih-settings-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.4rem;
+    }
+
+    .tasbih-info-card {
+        padding: var(--sp-5) var(--sp-4);
+    }
+
+    .tasbih-info-label {
+        font-size: var(--fs-xl);
+    }
+
+    .tasbih-info-name {
+        font-size: var(--fs-sm);
+    }
+
+    .tasbih-count-number {
+        font-size: 2rem;
+        /* slightly smaller than 3xl */
+    }
+
+    .tasbih-add-btn {
+        font-size: 10px !important;
+        padding: 4px 10px !important;
+    }
+
+    .tasbih-fab-nav {
+        bottom: calc(var(--sp-5) + env(safe-area-inset-bottom));
+        left: var(--sp-3);
+    }
+
+    .tasbih-fab-btn {
+        width: 42px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .tasbih-stats-row {
+        font-size: 11px;
+        gap: var(--sp-2);
+    }
+
+    .tasbih-action-btn {
+        padding: 4px 8px;
+        font-size: 10px;
+        gap: 4px;
+    }
+
+    .tb-inline-input {
+        padding: var(--sp-1) var(--sp-2);
+        font-size: var(--fs-xs);
+    }
+
+    .tasbih-list-item-arabic {
+        font-size: var(--fs-lg);
+    }
+
+    /* List Item Specifics */
+    .tasbih-selector-content {
+        padding: var(--sp-4);
+    }
+
+    .tb-inline-form {
+        padding: 0 var(--sp-3) var(--sp-3) var(--sp-3);
+    }
+}
+
+@media screen and (max-width: 330px) {
+    .tasbih-header {
+        padding: var(--sp-1) var(--sp-2);
+    }
+
+    .tasbih-back-btn,
+    .tasbih-settings-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+    }
+
+    .tasbih-header-title {
+        font-size: var(--fs-xs);
+    }
+
+    .tasbih-info-card {
+        padding: var(--sp-4) var(--sp-3);
+    }
+
+    .tasbih-info-label {
+        font-size: var(--fs-lg);
+    }
+
+    .tasbih-count-number {
+        font-size: 1.8rem;
+    }
+
+    .tasbih-add-btn {
+        font-size: 9px !important;
+        padding: 4px 8px !important;
+    }
+
+    .tasbih-fab-nav {
+        bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+        left: var(--sp-2);
+    }
+
+    .tasbih-fab-btn {
+        width: 38px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .tasbih-fab-divider {
+        height: 18px;
+    }
+
+    .tasbih-counter-spinner {
+        width: 28px;
+        height: 28px;
+    }
+
+    .tasbih-spinner-track,
+    .tasbih-spinner-progress {
+        stroke-width: 3;
+    }
+
+    .tasbih-actions-row {
+        gap: var(--sp-1);
+    }
+
+    .tasbih-action-btn {
+        padding: 4px 6px;
+        font-size: 9px;
+    }
+
+    .tasbih-list-item-arabic {
+        font-size: var(--fs-base);
+    }
+
+    .tasbih-selector-content {
+        padding: var(--sp-3);
+    }
+
+    /* List Item Specifics */
+    .tasbih-list-item-header {
+        padding: 10px 12px;
+    }
+
+    .tasbih-list-item-name {
+        font-size: var(--fs-xs);
+    }
+
+    .tasbih-list-item-target {
+        font-size: 9px;
+    }
+
+    .tb-inline-form {
+        padding: 0 var(--sp-2) var(--sp-2) var(--sp-2);
+    }
+
+    .tb-list-action {
+        font-size: 14px;
+        padding: 1px 2px;
+    }
+
+    .tasbih-selector-header {
+        margin-bottom: var(--sp-4);
+    }
+
+    .tasbih-selector-title {
+        font-size: var(--fs-sm);
+    }
+}

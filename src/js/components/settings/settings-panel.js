@@ -14,7 +14,7 @@ import {
 import { showPermissionDialogPreset } from '../../modules/permission/permission-dialog-configs.js';
 import { store } from '../../core/store.js';
 import { isWeb } from '../../modules/system/platform.js';
-import { t } from '../../core/i18n.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 export function render(container) {
     container.innerHTML = `
@@ -146,10 +146,12 @@ export function render(container) {
             if (!store.getState('settings.notification')) return;
             await impact('medium');
             
+            await loadNS('modules/permission/permission-dialog');
+            
             try {
                 const status = await PrayerService.isIgnoringBatteryOptimizations();
                 if (status && status.isIgnoring) {
-                    Notif.show(t('modules/permission/permission-dialog:battery_granted'), 'success');
+                    Notif.show(t('modules/permission/permission-dialog:battery_granted', { defaultValue: 'Proses latar belakang diizinkan' }), 'success');
                     return;
                 }
             } catch (e) {

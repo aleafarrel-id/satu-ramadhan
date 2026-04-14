@@ -10,7 +10,8 @@
    align-items: center;
    justify-content: space-between;
    gap: var(--sp-2);
-   padding: var(--header-padding);
+   padding-bottom: var(--header-padding);
+   padding-top: max(var(--header-padding), env(safe-area-inset-top));
    padding-left: max(var(--header-padding), env(safe-area-inset-left));
    padding-right: max(var(--header-padding), env(safe-area-inset-right));
    background: var(--clr-quran-card-bg);
@@ -113,6 +114,7 @@
    color: var(--clr-quran-text);
    font-family: var(--ff-primary);
    font-size: clamp(12px, 3.5vw, var(--fs-sm));
+   box-sizing: border-box;
    outline: none !important;
    box-shadow: none !important;
    -moz-appearance: textfield;

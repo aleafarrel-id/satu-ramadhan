@@ -46,6 +46,10 @@ import * as navBar from './components/ui/nav-bar.js';
 // Static Pages (Critical Path)
 import * as homePage from './pages/home-page.js';
 
+// Tasbih System
+import { initTasbihGesture } from './modules/tasbih/tasbih-gesture.js';
+import * as TasbihPage from './pages/tasbih-page.js';
+
 const SPLASH_MIN_DURATION = 1500;
 const POST_SPLASH_DIALOG_DELAY = 1500;
 
@@ -164,6 +168,16 @@ export async function initApp() {
     // Navigate to home
     await router.navigate('home');
 
+    // Initialize Tasbih System
+    const tasbihPanelEl = document.getElementById('tasbih-panel');
+    if (tasbihPanelEl) {
+        TasbihPage.init(tasbihPanelEl);
+        initTasbihGesture({
+            onOpen: () => TasbihPage.open(),
+            getCurrentPage: () => router.getCurrentPage()
+        });
+    }
+
     // Prefetch qibla direction in background so compass page loads instantly
     prefetchQiblaDirection();
 
@@ -250,6 +264,7 @@ async function setupGlobalPullToRefresh() {
         scrollElement: '#app-content',
         threshold: 80,
         disableOnQuran: true,
+        checkDisabled: () => TasbihPage.isOpen(),
         textPull: t('utils/pull-to-refresh:text_pull'),
         textRelease: t('utils/pull-to-refresh:text_release'),
         textRefreshing: t('utils/pull-to-refresh:text_refreshing'),

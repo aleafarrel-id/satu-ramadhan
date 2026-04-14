@@ -1,0 +1,230 @@
+/* =============================================================================
+   Tasbih Custom Preset Editor Modal
+   ============================================================================= */
+
+.tb-preset-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: var(--clr-black-a40);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tb-preset-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tb-preset-sheet {
+    background: var(--clr-quran-bg);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--sp-5);
+    padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: var(--shadow-nav);
+}
+
+.tb-preset-overlay.active .tb-preset-sheet {
+    transform: translateY(0);
+}
+
+.tb-preset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem; /* Wider separation from title */
+}
+
+.tb-preset-title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--clr-quran-text);
+}
+
+/* Forms */
+.tb-preset-form-group {
+    margin-bottom: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.tb-preset-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text);
+    margin-bottom: 2px;
+}
+
+.tb-preset-input {
+    width: 100%;
+    background: var(--clr-quran-card-bg);
+    border: 1px solid var(--clr-quran-border);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    font-size: var(--fs-base);
+    color: var(--clr-quran-text);
+    font-family: var(--ff-primary);
+    transition: all var(--transition-fast);
+}
+
+.tb-preset-input:focus {
+    outline: none;
+    border-color: var(--clr-quran-accent);
+}
+
+/* Suggestion Pills */
+.tb-preset-suggestions-title {
+    font-size: var(--fs-xs);
+    color: var(--clr-quran-text-secondary);
+    margin-top: var(--sp-1);
+    margin-bottom: var(--sp-2);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tb-preset-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-4);
+}
+
+.tb-preset-chip {
+    background: var(--clr-quran-card-bg);
+    border: 1px solid var(--clr-quran-border);
+    border-radius: var(--radius-pill);
+    padding: var(--sp-2) var(--sp-4);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-quran-text);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tb-preset-chip:active {
+    background: var(--clr-quran-bg-alt);
+    border-color: var(--clr-quran-accent);
+}
+
+/* Actions */
+.tb-preset-actions {
+    display: flex;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+}
+
+.tb-preset-btn {
+    flex: 1;
+    padding: var(--sp-3);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: background var(--transition-fast);
+}
+
+.tb-preset-btn--outline {
+    background: transparent;
+    color: var(--clr-quran-text);
+    border: 1px solid var(--clr-quran-border);
+}
+
+.tb-preset-btn--outline:active {
+    background: var(--clr-quran-card-hover);
+}
+
+.tb-preset-btn--primary {
+    background: var(--clr-quran-accent);
+    color: var(--clr-text-primary);
+    border: 1px solid var(--clr-quran-accent);
+}
+
+.tb-preset-btn--primary:active {
+    opacity: 0.8;
+}
+
+.tb-preset-btn--danger {
+    flex: 0 0 auto;
+    width: 48px;
+    background: rgba(255, 59, 59, 0.1);
+    color: var(--clr-danger);
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--icon-md);
+}
+
+.tb-preset-btn--danger:active {
+    background: rgba(255, 59, 59, 0.2);
+}
+
+/* ─────────────────────────────────────────
+   Responsive Adjustments
+───────────────────────────────────────── */
+@media screen and (max-width: 380px) {
+    .tb-preset-sheet {
+        padding: var(--sp-4);
+        padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+    }
+    .tb-preset-header {
+        margin-bottom: var(--sp-6);
+    }
+    .tb-preset-title {
+        font-size: var(--fs-base);
+    }
+    .tb-preset-input {
+        padding: 12px 14px;
+        font-size: var(--fs-sm);
+    }
+    .tb-preset-suggestions-title {
+        margin-bottom: var(--sp-1);
+    }
+    .tb-preset-chips {
+        gap: var(--sp-2);
+        margin-bottom: var(--sp-3);
+    }
+    .tb-preset-chip {
+        padding: 8px 14px;
+        font-size: var(--fs-xs);
+    }
+    .tb-preset-actions {
+        margin-top: var(--sp-5);
+        gap: var(--sp-2);
+    }
+    .tb-preset-btn {
+        padding: var(--sp-3);
+        font-size: var(--fs-sm);
+    }
+}
+
+@media screen and (max-width: 330px) {
+    .tb-preset-sheet {
+        padding: var(--sp-4);
+        padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+    }
+    .tb-preset-header {
+        margin-bottom: var(--sp-5);
+    }
+    .tb-preset-form-group {
+        margin-bottom: var(--sp-3);
+        gap: 6px;
+    }
+    .tb-preset-input {
+        padding: 12px 14px;
+        font-size: var(--fs-sm);
+    }
+    .tb-preset-chip {
+        padding: 6px 12px;
+    }
+}

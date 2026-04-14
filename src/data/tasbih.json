@@ -1,0 +1,37 @@
+[
+    {
+        "id": "subhanallah",
+        "name": "Subhanallah",
+        "arabic": "سُبْحَانَ اللَّهِ",
+        "target": 33
+    },
+    {
+        "id": "alhamdulillah",
+        "name": "Alhamdulillah",
+        "arabic": "الْحَمْدُ لِلَّهِ",
+        "target": 33
+    },
+    {
+        "id": "allahu_akbar",
+        "name": "Allahu Akbar",
+        "arabic": "اللَّهُ أَكْبَرُ",
+        "target": 33
+    },
+    {
+        "id": "laa_ilaha_illallah",
+        "name": "Laa Ilaha Illallah",
+        "arabic": "لَا إِلَهَ إِلَّا اللَّهُ",
+        "target": 33
+    },
+    {
+        "id": "istighfar",
+        "name": "Istighfar",
+        "arabic": "أَسْتَغْفِرُ اللَّهَ",
+        "target": 100
+    },
+    {
+        "id": "custom",
+        "name": "Target Bebas",
+        "target": 0
+    }
+]

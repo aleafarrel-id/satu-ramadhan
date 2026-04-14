@@ -1,0 +1,104 @@
+/* =============================================================================
+   Tasbih Beads — Realistic Wooden Bead Visual
+   SVG-based arc arrangement with 3D wooden sphere illusion.
+   Rendered purely in CSS + inline SVG, no external assets.
+   ============================================================================= */
+
+/*
+   Bead State Classes (applied to <g class="bead-group"> elements in SVG):
+   - .bead-counted  → beads that have been "passed" (slightly darker)
+   - .bead-active   → the current/next bead (highlighted warm glow)
+   - .bead-pending  → beads not yet counted (full wood texture)
+*/
+
+/* Each bead group transitions smoothly */
+.bead-group {
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+/* The bead sphere (main fill circle) */
+.bead-sphere {
+    /* Wooden tan color — base tone */
+    fill: url(#bead-gradient-pending);
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.bead-group.bead-counted .bead-sphere {
+    fill: url(#bead-gradient-counted);
+}
+
+.bead-group.bead-active .bead-sphere {
+    fill: url(#bead-gradient-active);
+    filter: drop-shadow(0 3px 8px rgba(196, 149, 106, 0.7));
+}
+
+/* Tap / press animation */
+@keyframes beadTap {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(0.88); }
+    65%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.bead-group.bead-tapping {
+    animation: beadTap 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* The thin highlight arc on top-left of bead, creates 3D sphere feel */
+.bead-highlight {
+    fill: rgba(255, 255, 255, 0.45);
+}
+
+/* The shadow arc at bottom-right, deepens 3D feel */
+.bead-shadow {
+    fill: rgba(0, 0, 0, 0.18);
+}
+
+/* The cord / string running through beads */
+.tasbih-cord {
+    fill: none;
+    stroke: #8B6347;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    /* Slightly variable stroke to look natural */
+    opacity: 0.75;
+}
+
+/* The marker bead (the larger unique bead at the start position) */
+.bead-marker .bead-sphere {
+    fill: url(#bead-gradient-marker);
+    filter: drop-shadow(0 4px 10px rgba(80, 60, 40, 0.5));
+}
+
+/* Pulse ring animation when a full round is complete */
+@keyframes beadRoundComplete {
+    0%   { stroke-width: 2; opacity: 0.8; transform: scale(1); }
+    50%  { stroke-width: 0; opacity: 0; transform: scale(1.8); }
+    100% { stroke-width: 0; opacity: 0; transform: scale(1.8); }
+}
+
+.bead-pulse-ring {
+    fill: none;
+    stroke: var(--clr-accent-500);
+    stroke-width: 2;
+    opacity: 0;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+.bead-group.bead-round-complete .bead-pulse-ring {
+    animation: beadRoundComplete 0.6s ease-out forwards;
+}
+
+/* When tapping: the entire beads area shows a very subtle ripple */
+@keyframes areaRipple {
+    0%   { box-shadow: 0 0 0 0 rgba(196, 149, 106, 0.15); }
+    100% { box-shadow: 0 0 0 24px rgba(196, 149, 106, 0); }
+}
+
+.tasbih-beads-area.ripple-effect {
+    animation: areaRipple 0.45s ease-out;
+}
