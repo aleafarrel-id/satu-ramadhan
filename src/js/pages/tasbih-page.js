@@ -204,7 +204,7 @@ function _renderHTML() {
                 aria-label="${t('pages/tasbih-page:select_dzikir')}" aria-modal="true">
                 <div class="tasbih-selector-content">
                     <div class="tasbih-selector-header">
-                        <span class="tasbih-selector-title">${t('pages/tasbih-page:select_dzikir')}</span>
+                        <h3 class="tasbih-selector-title">${t('pages/tasbih-page:select_dzikir')}</h3>
                     </div>
                     <div class="tasbih-list" id="tb-list" role="listbox">
                         ${_buildListHTML()}

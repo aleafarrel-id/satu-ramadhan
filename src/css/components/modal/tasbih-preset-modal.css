@@ -38,7 +38,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem; /* Wider separation from title */
+    margin-bottom: 1.5rem; /* Slightly reduced separation */
 }
 
 .tb-preset-title {
