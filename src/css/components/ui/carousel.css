@@ -21,6 +21,8 @@
    scrollbar-width: none; /* Firefox */
    -webkit-overflow-scrolling: touch;
    scroll-behavior: smooth;
+   /* Declare horizontal-only scroll intent so the browser and PTR don't fight */
+   touch-action: pan-x;
 }
 
 .top-carousel::-webkit-scrollbar {

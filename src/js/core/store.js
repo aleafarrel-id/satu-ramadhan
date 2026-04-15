@@ -13,7 +13,8 @@ const initialState = {
         isOffline: false
     },
     home: {
-        viewMode: 'tube'
+        viewMode: 'tube',
+        carouselIndex: 0
     },
     settings: {
         org: 'nu',

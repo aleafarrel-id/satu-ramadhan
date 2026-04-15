@@ -209,6 +209,7 @@ async function renderContent() {
 
         const tubeActive = _viewMode === VIEW_TUBE ? ' active' : '';
         const listActive = _viewMode === VIEW_LIST ? ' active' : '';
+        const savedCarouselIndex = store.getState('home.carouselIndex') ?? 0;
 
         contentHtml = `
             <div class="top-carousel-wrapper">
@@ -221,8 +222,8 @@ async function renderContent() {
                     </div>
                 </div>
                 <div class="carousel-dots" id="home-carousel-dots">
-                    <span class="carousel-dot active" data-index="0"></span>
-                    <span class="carousel-dot" data-index="1"></span>
+                    <span class="carousel-dot${savedCarouselIndex === 0 ? ' active' : ''}" data-index="0"></span>
+                    <span class="carousel-dot${savedCarouselIndex === 1 ? ' active' : ''}" data-index="1"></span>
                 </div>
             </div>
             <div class="home-schedule-header">
@@ -296,21 +297,45 @@ function bindScheduleEvents() {
 }
 
 /**
- * Binds event listeners for the native scroll snap carousel
+ * Binds event listeners for the native scroll snap carousel.
+ * Persists the active slide index to the store so the position
+ * is restored when the user returns to the home page.
  */
 function bindCarouselEvents() {
     const carouselWrapper = document.getElementById('home-top-carousel');
     const dots = document.querySelectorAll('.carousel-dot');
-    
+
     if (!carouselWrapper || dots.length === 0) return;
 
-    // Listen to scroll events to update dot indicators
+    /** Update dot indicators to match the currently visible slide. */
+    function _syncDots(index) {
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+
+    // Save index to store and sync dots on every scroll-snap settle
     carouselWrapper.addEventListener('scroll', () => {
         const index = Math.round(carouselWrapper.scrollLeft / carouselWrapper.clientWidth);
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === index);
-        });
+        _syncDots(index);
+        store.setState('home.carouselIndex', index);
     }, { passive: true });
+
+    // Restore persisted carousel position instantly (no slide animation on restore).
+    // Uses getBoundingClientRect instead of clientWidth * index to correctly account
+    // for the CSS gap between slides — keeps this logic immune to layout changes.
+    const savedIndex = store.getState('home.carouselIndex') ?? 0;
+    if (savedIndex > 0) {
+        // requestAnimationFrame ensures slides have been painted and have real dimensions
+        requestAnimationFrame(() => {
+            const slides = carouselWrapper.querySelectorAll('.carousel-slide');
+            const targetSlide = slides[savedIndex];
+            if (!targetSlide) return;
+
+            const containerRect = carouselWrapper.getBoundingClientRect();
+            const slideRect = targetSlide.getBoundingClientRect();
+            // Current scrollLeft + distance from container edge to slide edge = exact snap position
+            carouselWrapper.scrollLeft = carouselWrapper.scrollLeft + (slideRect.left - containerRect.left);
+        });
+    }
 }
 
 /**

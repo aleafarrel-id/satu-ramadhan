@@ -21,12 +21,12 @@ const SHORTCUT_MENUS = [
 
 export function renderShortcutCard() {
     const menusHtml = SHORTCUT_MENUS.map(menu => `
-        <a class="shortcut-card__item" id="shortcut-${menu.id}">
+        <button class="shortcut-card__item" id="shortcut-${menu.id}" type="button" aria-label="${t(`${TRANSLATION_NS}:${menu.labelKey}`)}">
             <div class="shortcut-card__icon-box">
-                <i class="${menu.icon}"></i>
+                <i class="${menu.icon}" aria-hidden="true"></i>
             </div>
             <span class="shortcut-card__name">${t(`${TRANSLATION_NS}:${menu.labelKey}`)}</span>
-        </a>
+        </button>
     `).join('');
 
     return `

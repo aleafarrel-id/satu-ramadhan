@@ -49,8 +49,10 @@ export function initPullToRefresh(options) {
     const _textEl = ptrEl.querySelector('.custom-ptr-text');
 
     let startY = 0;
+    let startX = 0;
     let currentY = 0;
     let visualDy = 0;
+    let isHorizontalGesture = false;
 
     // State Machine Architecture
     const STATE = {
@@ -159,10 +161,12 @@ export function initPullToRefresh(options) {
         }
 
         // Suppress on nested touch-sensitive components (Maps/Carousels)
-        if (e.target.closest('.qibla-map-card') || e.target.closest('.leaflet-container')) return;
+        if (e.target.closest('.qibla-map-card') || e.target.closest('.leaflet-container') || e.target.closest('.top-carousel')) return;
 
         startY = e.touches[0].clientY;
+        startX = e.touches[0].clientX;
         isTouchDown = true;
+        isHorizontalGesture = false;
         state = STATE.PULLING;
         visualDy = 0;
 
@@ -179,7 +183,20 @@ export function initPullToRefresh(options) {
         if (!isTouchDown || state === STATE.REFRESHING || state === STATE.RESTORING) return;
 
         currentY = e.touches[0].clientY;
+        const currentX = e.touches[0].clientX;
         const physicalDy = currentY - startY;
+        const physicalDx = currentX - startX;
+
+        // Deteksi intent gesture: jika lebih horizontal dari vertikal, lepaskan ke browser
+        // Threshold 5px mencegah false-positive dari micro-jitter saat tap
+        if (!isHorizontalGesture && Math.abs(physicalDx) > Math.abs(physicalDy) && Math.abs(physicalDx) > 5) {
+            isHorizontalGesture = true;
+        }
+
+        if (isHorizontalGesture) {
+            visualDy = 0;
+            return;
+        }
 
         if (physicalDy > 0 && scroller.scrollTop <= 5) {
             if (e.cancelable) e.preventDefault();
