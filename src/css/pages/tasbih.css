@@ -165,10 +165,13 @@
     font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
     color: var(--clr-quran-text-secondary);
+    color: var(--clr-quran-text-secondary);
     border: 1px solid var(--clr-quran-border);
     background: transparent;
-    padding: var(--sp-1) var(--sp-3);
+    padding: 6px 18px;
     height: 30px;
+    min-height: 30px;
+    min-width: auto;
     border-radius: var(--radius-pill);
     gap: 4px;
     transition: all var(--transition-fast);
@@ -598,20 +601,21 @@
 
 .tb-inline-actions {
     display: flex;
+    justify-content: flex-end;
     gap: var(--sp-2);
-    margin-top: var(--sp-1);
+    margin-top: var(--sp-2);
 }
 
 .tb-inline-btn {
-    flex: 1;
-    padding: var(--sp-2);
+    padding: 0 20px;
     border-radius: var(--radius-pill);
     font-size: var(--fs-xs);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold);
     text-align: center;
     cursor: pointer;
     border: none;
     transition: background var(--transition-fast);
+    min-height: 34px;
 }
 
 .tb-inline-btn--outline {
@@ -735,7 +739,7 @@
 
     .tasbih-add-btn {
         font-size: 10px !important;
-        padding: 4px 10px !important;
+        padding: 4px 16px !important;
     }
 
     .tasbih-fab-nav {
@@ -776,6 +780,12 @@
 
     .tb-inline-form {
         padding: 0 var(--sp-3) var(--sp-3) var(--sp-3);
+    }
+
+    .tb-inline-btn {
+        padding: 0 14px;
+        min-height: 32px;
+        font-size: var(--fs-2xs);
     }
 }
 

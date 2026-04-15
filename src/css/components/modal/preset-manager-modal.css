@@ -470,8 +470,14 @@
     .preset-mgr-item-name {
         font-size: var(--fs-xs);
     }
-
+    .preset-mgr-item-dates {
+        font-size: var(--fs-2xs);
+    }
     .preset-mgr-form-row {
         grid-template-columns: 1fr;
+    }
+    .preset-mgr-form-input {
+        padding: 10px 12px;
+        font-size: var(--fs-sm);
     }
 }

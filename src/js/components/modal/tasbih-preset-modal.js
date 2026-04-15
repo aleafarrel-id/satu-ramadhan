@@ -32,7 +32,7 @@ const generateId = () => 'custom_' + Date.now().toString(36) + Math.random().toS
 export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
     await loadNS('pages/tasbih-page');
     await loadNS('common');
-    
+
     if (_overlayEl) {
         unregisterModalDismiss(hideModal);
         removeModal();
@@ -40,7 +40,7 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
 
     const customPresets = store.getState('tasbih.customPresets') || [];
     let preset = presetId ? customPresets.find(p => p.id === presetId) : null;
-    
+
     _overlayEl = createModalDOM(preset);
     document.body.appendChild(_overlayEl);
 
@@ -53,12 +53,12 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
     _releaseFocus = trapFocus(_overlayEl);
 
     addEscHandler(_overlayEl, hideModal);
-    
+
     // Bind Events
     _overlayEl.addEventListener('click', (e) => {
         if (e.target === _overlayEl) hideModal();
     });
-    
+
     // Handle virtual keyboard scroll behavior
     _overlayEl.addEventListener('focusin', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
@@ -72,7 +72,7 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
     const targetInput = _overlayEl.querySelector('#tb-preset-target');
     const saveBtn = _overlayEl.querySelector('#tb-preset-save');
     const cancelBtn = _overlayEl.querySelector('#tb-preset-cancel');
-    
+
     // Suggestion pills
     _overlayEl.querySelectorAll('.tb-preset-chip').forEach(chip => {
         chip.addEventListener('click', () => {
@@ -80,7 +80,7 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
             impact('light');
         });
     });
-    
+
     cancelBtn.addEventListener('click', () => {
         hideModal();
     });
@@ -88,15 +88,15 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
     saveBtn.addEventListener('click', () => {
         const nameText = nameInput.value.trim();
         const targetVal = parseInt(targetInput.value.trim() || '0', 10);
-        
+
         if (!nameText) {
             notif.warning(t('pages/tasbih-page:err_name_empty'));
             return;
         }
-        
+
         impact('light');
         const finalTarget = isNaN(targetVal) || targetVal < 0 ? 0 : targetVal;
-        
+
         if (preset) {
             // Edit Mode
             preset.name = nameText;
@@ -116,7 +116,7 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
             store.setState('tasbih.activeZikir', newPreset.id);
             notif.success(t('pages/tasbih-page:preset_created', { defaultValue: 'Preset berhasil dibuat' }));
         }
-        
+
         hideModal();
         if (onComplete) onComplete();
     });
@@ -150,7 +150,7 @@ function removeModal() {
 
 function createModalDOM(preset) {
     const isEdit = !!preset;
-    
+
     const title = isEdit ? t('pages/tasbih-page:modal_edit_title') : t('pages/tasbih-page:modal_create_title');
     const defaultName = isEdit ? escapeHtml(preset.name) : '';
     const defaultTarget = isEdit ? preset.target : '';

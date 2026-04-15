@@ -67,8 +67,8 @@
     background: var(--clr-quran-card-bg);
     border: 1px solid var(--clr-quran-border);
     border-radius: var(--radius-lg);
-    padding: 14px 16px;
-    font-size: var(--fs-base);
+    padding: 12px 14px;
+    font-size: var(--fs-sm);
     color: var(--clr-quran-text);
     font-family: var(--ff-primary);
     transition: all var(--transition-fast);
@@ -117,20 +117,21 @@
 /* Actions */
 .tb-preset-actions {
     display: flex;
+    justify-content: flex-end;
     gap: var(--sp-3);
     margin-top: var(--sp-6);
 }
 
 .tb-preset-btn {
-    flex: 1;
-    padding: var(--sp-3);
+    padding: 0 24px;
     border-radius: var(--radius-pill);
     font-size: var(--fs-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold);
     text-align: center;
     cursor: pointer;
     border: none;
     transition: background var(--transition-fast);
+    min-height: 38px;
 }
 
 .tb-preset-btn--outline {
@@ -155,7 +156,7 @@
 
 .tb-preset-btn--danger {
     flex: 0 0 auto;
-    width: 48px;
+    width: 42px;
     background: rgba(255, 59, 59, 0.1);
     color: var(--clr-danger);
     border: 1px solid transparent;
@@ -163,6 +164,7 @@
     align-items: center;
     justify-content: center;
     font-size: var(--icon-md);
+    border-radius: var(--radius-pill);
 }
 
 .tb-preset-btn--danger:active {
@@ -173,58 +175,17 @@
    Responsive Adjustments
 ───────────────────────────────────────── */
 @media screen and (max-width: 380px) {
-    .tb-preset-sheet {
-        padding: var(--sp-4);
-        padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
-    }
-    .tb-preset-header {
-        margin-bottom: var(--sp-6);
-    }
-    .tb-preset-title {
-        font-size: var(--fs-base);
-    }
     .tb-preset-input {
-        padding: 12px 14px;
+        padding: 10px 12px;
         font-size: var(--fs-sm);
     }
-    .tb-preset-suggestions-title {
-        margin-bottom: var(--sp-1);
-    }
-    .tb-preset-chips {
-        gap: var(--sp-2);
-        margin-bottom: var(--sp-3);
-    }
     .tb-preset-chip {
-        padding: 8px 14px;
+        padding: 8px 12px;
         font-size: var(--fs-xs);
     }
-    .tb-preset-actions {
-        margin-top: var(--sp-5);
-        gap: var(--sp-2);
-    }
     .tb-preset-btn {
-        padding: var(--sp-3);
-        font-size: var(--fs-sm);
-    }
-}
-
-@media screen and (max-width: 330px) {
-    .tb-preset-sheet {
-        padding: var(--sp-4);
-        padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
-    }
-    .tb-preset-header {
-        margin-bottom: var(--sp-5);
-    }
-    .tb-preset-form-group {
-        margin-bottom: var(--sp-3);
-        gap: 6px;
-    }
-    .tb-preset-input {
-        padding: 12px 14px;
-        font-size: var(--fs-sm);
-    }
-    .tb-preset-chip {
-        padding: 6px 12px;
+        padding: 0 16px;
+        min-height: 34px;
+        font-size: var(--fs-xs);
     }
 }

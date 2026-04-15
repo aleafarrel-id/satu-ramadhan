@@ -240,7 +240,18 @@
 }
 
 @media (max-width: 380px) {
+    .loc-search-input {
+        padding: 10px 12px 10px 36px;
+        font-size: var(--fs-sm);
+    }
     .loc-search-item-title {
+        font-size: var(--fs-sm);
+    }
+    .loc-search-item-subtitle {
         font-size: var(--fs-xs);
+    }
+    .loc-search-badge {
+        font-size: var(--fs-2xs);
+        padding: 2px 6px;
     }
 }

@@ -135,7 +135,7 @@ function _renderHTML() {
             <div class="tasbih-info-card">
                 <div class="tasbih-info-header">
                     <div class="tasbih-info-name" id="tb-name"></div>
-                    <button class="btn btn--outline tasbih-add-btn" id="tb-edit" aria-label="${t('pages/tasbih-page:change_dzikir')}">
+                    <button class="tasbih-add-btn" id="tb-edit" aria-label="${t('pages/tasbih-page:change_dzikir')}">
                         <i class="bx bx-plus"></i>
                         <span>${t('pages/tasbih-page:add', { defaultValue: 'Tambah' })}</span>
                     </button>
