@@ -12,6 +12,13 @@ export default defineConfig({
         drop: ['console', 'debugger'],
     },
 
+    // CSS processing: cssnano (via postcss.config.js) handles structural
+    // optimizations in production (merge rules, optimize shorthands, reduce
+    // duplicates). esbuild then handles final whitespace minification.
+    css: {
+        devSourcemap: true,
+    },
+
     build: {
         // Matches 'webDir' in capacitor.config.json.
         outDir: 'dist',
