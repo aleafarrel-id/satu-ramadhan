@@ -70,7 +70,9 @@ export async function showAudioModeSelectorModal({ currentMode, onSelect } = {})
     registerModalDismiss(_handleCancel);
 
     // Entrance animation
-    requestAnimationFrame(() => _overlayEl.classList.add('active'));
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => _overlayEl.classList.add('active'));
+    });
 
     // Accessibility
     _releaseFocus = trapFocus(_overlayEl);
@@ -127,12 +129,12 @@ function _hideModal() {
     unregisterModalDismiss(_handleCancel);
     _overlayEl.classList.remove('active');
 
-    const dialog = _overlayEl.querySelector('.audio-mode-selector-dialog');
-    const target = dialog || _overlayEl;
+    const sheet = _overlayEl.querySelector('.audio-mode-selector-sheet');
+    const target = sheet || _overlayEl;
     target.addEventListener('transitionend', _removeModal, { once: true });
 
     // Fallback if transition event fails to fire
-    setTimeout(_removeModal, 350);
+    setTimeout(_removeModal, 450);
 }
 
 function _removeModal() {
@@ -149,7 +151,7 @@ function _removeModal() {
 
 function _createModalDOM(currentMode) {
     const overlay = document.createElement('div');
-    overlay.className = 'confirm-overlay language-selector-overlay';
+    overlay.className = 'audio-mode-selector-overlay';
 
     const modesHTML = _getModes().map(({ value, icon, labelKey, descKey }) => {
         const isSelected = value === currentMode;
@@ -166,13 +168,15 @@ function _createModalDOM(currentMode) {
     }).join('');
 
     overlay.innerHTML = `
-        <div class="confirm-dialog audio-mode-selector-dialog" role="dialog" aria-modal="true" aria-labelledby="audio-mode-modal-title">
-            <h3 class="confirm-title" id="audio-mode-modal-title">${t('components/modal/audio-mode-selector-modal:title')}</h3>
+        <div class="audio-mode-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="audio-mode-modal-title">
+            <div class="audio-mode-selector-header">
+                <h3 class="audio-mode-selector-title" id="audio-mode-modal-title">${t('components/modal/audio-mode-selector-modal:title')}</h3>
+            </div>
             <div class="audio-mode-options-container">
                 ${modesHTML}
             </div>
-            <div class="confirm-actions">
-                <button class="btn btn--outline confirm-btn w-100" id="audio-mode-btn-cancel">${t('close')}</button>
+            <div class="audio-mode-selector-footer">
+                <button class="btn btn--outline w-100" id="audio-mode-btn-cancel">${t('close')}</button>
             </div>
         </div>
     `;

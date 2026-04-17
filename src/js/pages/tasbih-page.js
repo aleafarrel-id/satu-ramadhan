@@ -26,6 +26,7 @@ import * as notif from '../modules/notification/notification.js';
 
 let _container = null;
 let _isOpen = false;
+let _sessions = {};
 let _count = 0;
 let _round = 1;
 let _totalCount = 0;
@@ -59,12 +60,21 @@ export async function init(container) {
     await loadNS('components/modal/confirm-modal');
 
     // Restore persisted state
-    _count = store.getState('tasbih.count') ?? 0;
-    _round = store.getState('tasbih.round') ?? 1;
+    _sessions = store.getState('tasbih.sessions') || {};
     _totalCount = store.getState('tasbih.total') ?? 0;
     _physicalCount = store.getState('tasbih.physicalCount') ?? 0;
     _activeZikirId = store.getState('tasbih.activeZikir') ?? 'subhanallah';
     _activeZikir = _getAllZikir().find(z => z.id === _activeZikirId) ?? _getAllZikir()[0];
+
+    // Migrate from legacy single state if any
+    if (Object.keys(_sessions).length === 0) {
+        const legacyCount = store.getState('tasbih.count') ?? 0;
+        const legacyRound = store.getState('tasbih.round') ?? 1;
+        _sessions[_activeZikirId] = { count: legacyCount, round: legacyRound };
+    }
+
+    _count = _sessions[_activeZikirId]?.count ?? 0;
+    _round = _sessions[_activeZikirId]?.round ?? 1;
 
     _renderHTML();
     _cacheElements();
@@ -449,6 +459,7 @@ function _bindEvents() {
                 _totalCount = 0;
                 _count = 0;
                 _round = 1;
+                _sessions = {};
                 _saveState();
                 _updateInfoCard(true);
                 _updateBeads(true);
@@ -541,13 +552,11 @@ function _increment() {
             if (currentIdx > -1) {
                 const nextId = defaultTasbihs[(currentIdx + 1) % defaultTasbihs.length].id;
 
-                // Reset counters before transitioning
+                // Update current dzikir's round before transitioning
                 _count = 0;
-                _round = 1;
-                // Save state to ensure physical count is kept before changeZikir overwrites anything
-                _saveState();
+                _round++;
 
-                // Change zikir (this will implicitly call _updateInfoCard and _updateBeads)
+                // Change zikir (implicitly calls _saveState to store current round, then loads next id state)
                 _changeZikir(nextId);
             }
             return; // Exit early since _changeZikir handles UI re-render
@@ -758,6 +767,16 @@ function _toggleInlineForm(id, zikir) {
             customPresets[presetIdx].target = finalTarget;
             store.setState('tasbih.customPresets', customPresets);
 
+            // Update running memory if editing the currently active dzikir
+            if (id === _activeZikirId) {
+                _activeZikir = customPresets[presetIdx];
+                if (_count > _activeZikir.target && _activeZikir.target > 0) {
+                    _count = 0;
+                    _round = 1;
+                    _saveState();
+                }
+            }
+
             _updateInfoCard();
             _el.list.innerHTML = _buildListHTML();
             _openInlineId = null;
@@ -777,8 +796,15 @@ function _toggleInlineForm(id, zikir) {
 function _changeZikir(id) {
     if (_activeZikirId === id && _getAllZikir().length === _el.list.children.length) return;
 
+    // Save previous zikir state before switching
+    _saveState();
+
     _activeZikirId = id;
     _activeZikir = _getAllZikir().find(z => z.id === id) ?? _getAllZikir()[0];
+
+    // Load newly selected zikir state
+    _count = _sessions[_activeZikirId]?.count ?? 0;
+    _round = _sessions[_activeZikirId]?.round ?? 1;
 
     // Validate bounds logic
     if (_count > (_activeZikir.target) && _activeZikir.target > 0) {
@@ -798,6 +824,19 @@ function _changeZikir(id) {
     _updateBeads();
 }
 
+// ── Persistence ────────────────────────────────────────────────────────────────
+
+function _saveState() {
+    if (!_sessions[_activeZikirId]) _sessions[_activeZikirId] = { count: 0, round: 1 };
+    _sessions[_activeZikirId].count = _count;
+    _sessions[_activeZikirId].round = _round;
+
+    store.setState('tasbih.sessions', _sessions);
+    store.setState('tasbih.total', _totalCount);
+    store.setState('tasbih.physicalCount', _physicalCount);
+    store.setState('tasbih.activeZikir', _activeZikirId);
+}
+
 function _prevZikir() {
     const all = _getAllZikir();
     let index = all.findIndex(z => z.id === _activeZikirId);
@@ -814,12 +853,4 @@ function _nextZikir() {
     _changeZikir(all[index].id);
 }
 
-// ── Persistence ────────────────────────────────────────────────────────────────
 
-function _saveState() {
-    store.setState('tasbih.count', _count);
-    store.setState('tasbih.round', _round);
-    store.setState('tasbih.total', _totalCount);
-    store.setState('tasbih.physicalCount', _physicalCount);
-    store.setState('tasbih.activeZikir', _activeZikirId);
-}

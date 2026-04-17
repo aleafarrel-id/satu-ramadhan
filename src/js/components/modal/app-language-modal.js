@@ -45,7 +45,9 @@ export async function showAppLanguageModal({
     registerModalDismiss(handleCancel);
 
     // Entrance animation
-    requestAnimationFrame(() => _overlayEl.classList.add('active'));
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => _overlayEl.classList.add('active'));
+    });
 
     // Accessibility
     _releaseFocus = trapFocus(_overlayEl);
@@ -108,15 +110,15 @@ function hideModal() {
     unregisterModalDismiss(handleCancel);
     _overlayEl.classList.remove('active');
 
-    const dialog = _overlayEl.querySelector('.language-selector-dialog');
-    if (dialog) {
-        dialog.addEventListener('transitionend', removeModal, { once: true });
+    const sheet = _overlayEl.querySelector('.language-selector-sheet');
+    if (sheet) {
+        sheet.addEventListener('transitionend', removeModal, { once: true });
     } else {
         _overlayEl.addEventListener('transitionend', removeModal, { once: true });
     }
 
     // Fallback if transition event fails
-    setTimeout(removeModal, 350);
+    setTimeout(removeModal, 450);
 }
 
 function removeModal() {
@@ -133,12 +135,12 @@ function removeModal() {
 
 function createModalDOM(currentLang) {
     const overlay = document.createElement('div');
-    overlay.className = 'confirm-overlay language-selector-overlay'; 
+    overlay.className = 'language-selector-overlay'; 
 
     // Auto option
     const isAutoSelected = currentLang === 'auto';
     const autoOptionHTML = `
-        <button class="lang-option ${isAutoSelected ? 'selected' : ''}" data-code="auto">
+        <button class="lang-option ${isAutoSelected ? 'selected' : ''}" data-code="auto" data-focus-item>
             <i class='bx bx-devices lang-icon'></i>
             <div class="lang-info">
                 <div class="lang-label">${t('components/modal/app-language-modal:auto')}</div>
@@ -153,7 +155,7 @@ function createModalDOM(currentLang) {
     const langListHTML = APP_LANGUAGES.map(lang => {
         const isSelected = lang.code === currentLang;
         return `
-            <button class="lang-option ${isSelected ? 'selected' : ''}" data-code="${lang.code}">
+            <button class="lang-option ${isSelected ? 'selected' : ''}" data-code="${lang.code}" data-focus-item>
                 <i class='bx bx-globe lang-icon'></i>
                 <div class="lang-info">
                     <div class="lang-label">${lang.nativeLabel}</div>
@@ -166,14 +168,16 @@ function createModalDOM(currentLang) {
     }).join('');
 
     overlay.innerHTML = `
-        <div class="confirm-dialog language-selector-dialog" role="dialog" aria-modal="true" aria-labelledby="app-lang-modal-title">
-            <h3 class="confirm-title" id="app-lang-modal-title">${t('components/modal/app-language-modal:title')}</h3>
-            <div class="lang-options-container">
+        <div class="language-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="app-lang-modal-title">
+            <div class="language-selector-header">
+                <h3 class="language-selector-title" id="app-lang-modal-title">${t('components/modal/app-language-modal:title')}</h3>
+            </div>
+            <div class="lang-options-container" data-focus-group="lang-options" data-focus-direction="vertical">
                 ${autoOptionHTML}
                 ${langListHTML}
             </div>
-            <div class="confirm-actions">
-                <button class="btn btn--outline confirm-btn w-100" id="lang-btn-cancel">${t('close')}</button>
+            <div class="language-selector-footer">
+                <button class="btn btn--outline w-100" id="lang-btn-cancel">${t('close')}</button>
             </div>
         </div>
     `;

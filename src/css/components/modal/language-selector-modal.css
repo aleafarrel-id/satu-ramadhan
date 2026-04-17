@@ -1,28 +1,97 @@
 /* 
   Language Selector Modal Styles 
-  Reuses base styles from confirm-modal.css for overlay and base dialog behavior,
-  adding specific styling for the language list.
+  Displays as a bottom sliding sheet
 */
 
-.language-selector-dialog {
-    padding: var(--sp-6);
-    max-width: 320px;
-    width: 90%;
-    border-radius: var(--radius-lg);
-    background-color: var(--surface-color);
+.language-selector-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.language-selector-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.language-selector-sheet {
+    background: var(--gradient-cal-bg);
+    border-top: 1px solid var(--clr-primary-a30);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 430px;
+    max-height: 80vh;
+    margin: 0 auto;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--clr-white-a05);
+    display: flex;
+    flex-direction: column;
+}
+
+.language-selector-overlay.active .language-selector-sheet {
+    transform: translateY(0);
+}
+
+.language-selector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+}
+
+.language-selector-title {
+    font-family: var(--font-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
 }
 
 .lang-options-container {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 100px;
+    margin: 0 calc(-1 * var(--spacing-lg));
+    padding: 0 var(--spacing-lg);
+    scrollbar-width: thin;
+    scrollbar-color: var(--clr-primary-500) transparent;
+    padding-bottom: var(--spacing-md);
     display: flex;
     flex-direction: column;
-    margin: var(--sp-2) calc(-1 * var(--sp-6));
 }
+
+.lang-options-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.lang-options-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.lang-options-container::-webkit-scrollbar-thumb {
+    background: var(--clr-primary-600);
+    border-radius: var(--radius-full);
+}
+
+/* Lang Options */
 
 .lang-option {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    padding: var(--spacing-md) var(--sp-6);
+    padding: var(--spacing-md) 0 10px 0;
     margin: 0;
     cursor: pointer;
     transition: background var(--transition-fast);
@@ -31,17 +100,11 @@
     width: 100%;
     border-radius: 0;
     border: none;
-    position: relative;
+    border-bottom: 1px solid var(--clr-border-light);
 }
 
-.lang-option::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: var(--sp-6);
-    right: var(--sp-6);
-    height: 1px;
-    background-color: var(--clr-border-light);
+.lang-option:last-child {
+    border-bottom: none;
 }
 
 .lang-option:active {
@@ -56,6 +119,14 @@
 
 .lang-option.selected {
     background-color: transparent;
+    border-left: 3px solid var(--clr-accent-400);
+    padding-left: var(--spacing-sm);
+    margin-left: calc(-1 * var(--spacing-sm));
+    border-bottom-color: var(--clr-border-light);
+}
+
+.lang-option:last-child.selected {
+    border-bottom: none;
 }
 
 .lang-icon {
@@ -100,7 +171,14 @@
     display: block;
 }
 
-/* W-100 utility for cancel button */
+.language-selector-footer {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--clr-border-light);
+    margin-top: var(--spacing-sm);
+    display: flex;
+    width: 100%;
+}
+
 .w-100 {
     width: 100%;
 }
