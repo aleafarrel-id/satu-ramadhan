@@ -15,7 +15,6 @@ import { impact } from '../../modules/system/haptic.js';
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
-import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -29,7 +28,7 @@ const generateId = () => 'custom_' + Date.now().toString(36) + Math.random().toS
  * @param {string} [config.presetId] - ID of custom preset to edit, if null then Create Mode.
  * @param {Function} config.onComplete - Callback when save/delete is done
  */
-export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
+export async function showTasbihPresetModal({ onComplete } = {}) {
     await loadNS('pages/tasbih-page');
     await loadNS('common');
 
@@ -39,9 +38,8 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
     }
 
     const customPresets = store.getState('tasbih.customPresets') || [];
-    let preset = presetId ? customPresets.find(p => p.id === presetId) : null;
 
-    _overlayEl = createModalDOM(preset);
+    _overlayEl = createModalDOM();
     document.body.appendChild(_overlayEl);
 
     registerModalDismiss(hideModal);
@@ -97,25 +95,16 @@ export async function showTasbihPresetModal({ presetId, onComplete } = {}) {
         impact('light');
         const finalTarget = isNaN(targetVal) || targetVal < 0 ? 0 : targetVal;
 
-        if (preset) {
-            // Edit Mode
-            preset.name = nameText;
-            preset.target = finalTarget;
-            const updated = customPresets.map(p => p.id === preset.id ? preset : p);
-            store.setState('tasbih.customPresets', updated);
-            notif.success(t('pages/tasbih-page:preset_updated', { defaultValue: 'Preset berhasil diperbarui' }));
-        } else {
-            // Create Mode
-            const newPreset = {
-                id: generateId(),
-                name: nameText,
-                target: finalTarget
-            };
-            store.setState('tasbih.customPresets', [...customPresets, newPreset]);
-            // Automatically switch to it
-            store.setState('tasbih.activeZikir', newPreset.id);
-            notif.success(t('pages/tasbih-page:preset_created', { defaultValue: 'Preset berhasil dibuat' }));
-        }
+        // Create Mode
+        const newPreset = {
+            id: generateId(),
+            name: nameText,
+            target: finalTarget
+        };
+        store.setState('tasbih.customPresets', [...customPresets, newPreset]);
+        // Automatically switch to it
+        store.setState('tasbih.activeZikir', newPreset.id);
+        notif.success(t('pages/tasbih-page:preset_created', { defaultValue: 'Preset berhasil dibuat' }));
 
         hideModal();
         if (onComplete) onComplete();
@@ -148,12 +137,10 @@ function removeModal() {
     }
 }
 
-function createModalDOM(preset) {
-    const isEdit = !!preset;
-
-    const title = isEdit ? t('pages/tasbih-page:modal_edit_title') : t('pages/tasbih-page:modal_create_title');
-    const defaultName = isEdit ? escapeHtml(preset.name) : '';
-    const defaultTarget = isEdit ? preset.target : '';
+function createModalDOM() {
+    const title = t('pages/tasbih-page:modal_create_title');
+    const defaultName = '';
+    const defaultTarget = '';
 
     const overlay = document.createElement('div');
     overlay.className = 'tb-preset-overlay';

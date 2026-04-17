@@ -401,7 +401,6 @@ function _bindEvents() {
     // Edit opens custom preset constructor modal (Always creation mode now)
     _el.editBtn.addEventListener('click', () => {
         showTasbihPresetModal({
-            presetId: null,
             onComplete: () => {
                 const newActiveId = store.getState('tasbih.activeZikir') ?? 'subhanallah';
                 if (newActiveId !== _activeZikirId) {
@@ -526,21 +525,44 @@ function _increment() {
     let roundComplete = false;
 
     if (target > 0 && _count === target) {
-        _count = 0;
-        _round++;
-        roundComplete = true;
+        // Transition tap (e.g. from 33 -> 0)
         _physicalCount++;
-        impact('light');
+        doubleVibrate();
+
+        const isCustomPreset = _activeZikir.id.startsWith('custom_') || _activeZikir.id === 'custom';
+
+        if (!isCustomPreset) {
+            // Auto Next Flow for Default Presets
+            const defaultTasbihs = tasbihData.filter(z => z.target > 0);
+            const currentIdx = defaultTasbihs.findIndex(z => z.id === _activeZikirId);
+
+            _animateBeadsArea();
+
+            if (currentIdx > -1) {
+                const nextId = defaultTasbihs[(currentIdx + 1) % defaultTasbihs.length].id;
+
+                // Reset counters before transitioning
+                _count = 0;
+                _round = 1;
+                // Save state to ensure physical count is kept before changeZikir overwrites anything
+                _saveState();
+
+                // Change zikir (this will implicitly call _updateInfoCard and _updateBeads)
+                _changeZikir(nextId);
+            }
+            return; // Exit early since _changeZikir handles UI re-render
+        } else {
+            // Normal Round Complete for Custom Presets
+            _count = 0;
+            _round++;
+            roundComplete = true;
+        }
     } else {
+        // Normal counting
         _count++;
         _totalCount++;
         _physicalCount++;
-
-        if (target > 0 && _count === target) {
-            doubleVibrate();
-        } else {
-            impact('light');
-        }
+        impact('light');
     }
 
     _saveState();

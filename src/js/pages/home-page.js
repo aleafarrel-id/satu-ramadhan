@@ -332,8 +332,17 @@ function bindCarouselEvents() {
 
             const containerRect = carouselWrapper.getBoundingClientRect();
             const slideRect = targetSlide.getBoundingClientRect();
+            
+            // Disable scroll behavior temporarily to prevent animation during restore
+            carouselWrapper.style.scrollBehavior = 'auto';
+            
             // Current scrollLeft + distance from container edge to slide edge = exact snap position
             carouselWrapper.scrollLeft = carouselWrapper.scrollLeft + (slideRect.left - containerRect.left);
+            
+            // Re-enable smooth scrolling after the layout is applied
+            requestAnimationFrame(() => {
+                carouselWrapper.style.scrollBehavior = '';
+            });
         });
     }
 }
