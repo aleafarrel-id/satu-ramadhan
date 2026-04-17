@@ -12,6 +12,7 @@
   "confirm_clean_yes": "Yes, Clear",
   "confirm_clean_no": "Cancel",
   "target": "Target: {{value}}",
+  "target_free": "Unlimited",
   "custom_dzikir_name": "Unlimited Target",
   "confirm_delete_preset_title": "Delete Preset?",
   "confirm_delete_preset_desc": "Are you sure you want to delete preset '{{presetName}}'?",

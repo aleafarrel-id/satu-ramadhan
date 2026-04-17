@@ -70,6 +70,7 @@ export async function syncNotifications() {
         
         const isNotifEnabled = store.getState('settings.notification');
         const isAdzanEnabled = store.getState('settings.adzan');
+        const adzanControls = store.getState('settings.adzanControls') || {};
 
         await PrayerService.cancelAll();
 
@@ -113,7 +114,8 @@ export async function syncNotifications() {
                 const config = PRAYER_NOTIFICATION_MAP[key];
                 if (!config) return;
 
-                const shouldPlayAdzan = config.isAdzan && isAdzanEnabled;
+                const isPrayerAdzanEnabled = adzanControls[key] !== false;
+                const shouldPlayAdzan = config.isAdzan && isAdzanEnabled && isPrayerAdzanEnabled;
 
                 alarmsToSchedule.push({
                     id: ALARM_BASE_ID + (dayOffset * 10) + prayerIndex,
@@ -263,5 +265,6 @@ function parseDateTimeToMs(date, timeStr) {
 // Register autonomous reactivity
 store.subscribe('settings.notification', syncNotifications);
 store.subscribe('settings.adzan', syncNotifications);
+store.subscribe('settings.adzanControls', syncNotifications);
 store.subscribe('settings.language', syncNotifications);
 store.subscribe('location', syncNotifications);

@@ -12,6 +12,7 @@
   "confirm_clean_yes": "Ya, Hapus",
   "confirm_clean_no": "Batal",
   "target": "Target: {{value}}",
+  "target_free": "Bebas",
   "custom_dzikir_name": "Target Bebas",
   "confirm_delete_preset_title": "Hapus Preset?",
   "confirm_delete_preset_desc": "Anda yakin ingin menghapus preset '{{presetName}}'?",

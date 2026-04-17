@@ -30,6 +30,7 @@ const generateId = () => 'custom_' + Date.now().toString(36) + Math.random().toS
  */
 export async function showTasbihPresetModal({ onComplete } = {}) {
     await loadNS('pages/tasbih-page');
+    await loadNS('components/modal/tasbih-preset-modal');
     await loadNS('common');
 
     if (_overlayEl) {

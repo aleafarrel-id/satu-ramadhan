@@ -299,6 +299,11 @@ function renderPrayerRows(timings, activePrayerKey, viewingToday) {
 
 /**
  * Render a single prayer time row with icon, name, time, and active state.
+ *
+ * Adzan toggle visibility follows a three-tier hierarchy:
+ *   1. Global notification OFF  → no toggle icon rendered
+ *   2. Global adzan OFF         → disabled mute icon (non-interactive, like imsak/terbit)
+ *   3. Both globals ON          → interactive per-prayer toggle
  */
 function renderPrayerRow(key, timings, activePrayerKey, todayView) {
     const prayer = PRAYER_LIST.find(p => p.key === key);
@@ -307,18 +312,36 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
 
     const adzanPrayers = ['subuh', 'dzuhur', 'ashar', 'magrib', 'isya'];
     let rightSideHtml = '';
-    
-    if (adzanPrayers.includes(key)) {
-        const adzanEnabled = store.getState('settings.adzanControls.' + key) !== false;
-        const icon = adzanEnabled ? 'bx-volume-full' : 'bx-volume-mute';
-        const activeClass = adzanEnabled ? ' active' : '';
-        rightSideHtml = `<button class="schedule-prayer-row__adzan-toggle${activeClass}" data-action="toggle-adzan"><i class='bx ${icon}'></i></button>`;
+    let isClickable = false;
+
+    const isNotifEnabled = store.getState('settings.notification');
+
+    if (isNotifEnabled) {
+        if (adzanPrayers.includes(key)) {
+            const isGlobalAdzanEnabled = store.getState('settings.adzan');
+
+            if (!isGlobalAdzanEnabled) {
+                // Global adzan OFF → show disabled muted icon (same look as imsak/sunrise)
+                rightSideHtml = `<div class="schedule-prayer-row__adzan-toggle disabled"><i class='bx bx-volume-mute'></i></div>`;
+            } else {
+                // Both globals ON → interactive per-prayer toggle
+                const adzanEnabled = store.getState('settings.adzanControls.' + key) !== false;
+                const icon = adzanEnabled ? 'bx-volume-full' : 'bx-volume-mute';
+                const activeClass = adzanEnabled ? ' active' : '';
+                rightSideHtml = `<button class="schedule-prayer-row__adzan-toggle${activeClass}" data-action="toggle-adzan"><i class='bx ${icon}'></i></button>`;
+                isClickable = true;
+            }
+        } else {
+            // Non-adzan prayer (imsak/sunrise) → show disabled bell icon
+            rightSideHtml = `<div class="schedule-prayer-row__adzan-toggle disabled"><i class='bx bx-bell'></i></div>`;
+        }
     } else {
-        rightSideHtml = `<div class="schedule-prayer-row__adzan-toggle disabled"><i class='bx bx-bell'></i></div>`;
+        // Global notification OFF → hide everything in the right column
+        rightSideHtml = '';
     }
 
     return `
-        <div class="schedule-prayer-row${isActive ? ' schedule-prayer-row--active' : ''}${adzanPrayers.includes(key) ? ' clickable' : ''}" data-prayer="${key}">
+        <div class="schedule-prayer-row${isActive ? ' schedule-prayer-row--active' : ''}${isClickable ? ' clickable' : ''}" data-prayer="${key}">
             <div class="schedule-prayer-row__icon">${prayer?.icon || ''}</div>
             <span class="schedule-prayer-row__name">${prayer ? getPrayerName(prayer.key) : key}</span>
             <div class="schedule-prayer-row__time-wrapper">
