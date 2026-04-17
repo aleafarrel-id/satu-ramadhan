@@ -15,6 +15,8 @@ import { store } from '../core/store.js';
 import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
 import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watcher.js';
+import { getPrayerName } from '../modules/prayer/prayer-times.js';
+import * as notification from '../modules/notification/notification.js';
 
 import {
     renderScheduleCard,
@@ -468,6 +470,38 @@ function bindEvents() {
             },
         });
     });
+
+    const swipeArea = document.getElementById('schedule-swipe-area');
+    if (swipeArea) {
+        swipeArea.addEventListener('click', (e) => {
+            const row = e.target.closest('.schedule-prayer-row.clickable');
+            if (row) {
+                const key = row.getAttribute('data-prayer');
+                if (key) {
+                    const toggleBtn = row.querySelector('.schedule-prayer-row__adzan-toggle');
+                    const currentVal = store.getState('settings.adzanControls.' + key) !== false;
+                    const newVal = !currentVal;
+                    store.setState('settings.adzanControls.' + key, newVal);
+
+                    // Optimistic UI update
+                    if (toggleBtn) {
+                        const icon = toggleBtn.querySelector('i');
+                        if (icon) {
+                            icon.className = newVal ? 'bx bx-volume-full' : 'bx bx-volume-mute';
+                        }
+                        toggleBtn.classList.toggle('active', newVal);
+                    }
+
+                    const prayerName = getPrayerName(key);
+                    if (newVal) {
+                        notification.info(t('pages/schedule-page:toast_adzan_unmuted', { prayer: prayerName }));
+                    } else {
+                        notification.info(t('pages/schedule-page:toast_adzan_muted', { prayer: prayerName }));
+                    }
+                }
+            }
+        });
+    }
 
     bindSwipeEvents('schedule-swipe-area', handleSwipe);
 }

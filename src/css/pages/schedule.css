@@ -163,6 +163,16 @@
     transition: all var(--transition-fast);
 }
 
+.schedule-prayer-row.clickable {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.schedule-prayer-row.clickable:active {
+    transform: scale(0.98);
+    background: var(--clr-bg-card-hover);
+}
+
 .schedule-prayer-row__icon {
     width: 26px;
     height: 26px;
@@ -193,7 +203,54 @@
     font-weight: var(--fw-bold);
     color: var(--clr-text-primary);
     font-variant-numeric: tabular-nums;
+}
+
+.schedule-prayer-row__time-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
     flex-shrink: 0;
+}
+
+.schedule-prayer-row__adzan-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-circle);
+    border: none;
+    background: transparent;
+    color: var(--clr-text-muted);
+    font-size: var(--fs-md);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+    padding: 0;
+    margin-right: -2px;
+}
+
+.schedule-prayer-row__adzan-toggle:active {
+    transform: scale(0.9);
+}
+
+.schedule-prayer-row__adzan-toggle.disabled {
+    cursor: default;
+    opacity: 0.35;
+}
+
+.schedule-prayer-row__adzan-toggle.disabled:active {
+    transform: none;
+}
+
+.schedule-prayer-row__adzan-toggle.active {
+    color: var(--clr-accent-500);
+}
+
+.schedule-prayer-row__adzan-spacer {
+    width: 28px;
+    height: 28px;
+    margin-right: -4px;
 }
 
 /* ── Active Prayer Highlight ── */
@@ -218,6 +275,15 @@
 
 .schedule-prayer-row--active .schedule-prayer-row__time {
     color: var(--clr-accent-400);
+}
+
+.schedule-prayer-row--active .schedule-prayer-row__adzan-toggle {
+    color: var(--clr-accent-400);
+    opacity: 0.5;
+}
+
+.schedule-prayer-row--active .schedule-prayer-row__adzan-toggle.active {
+    opacity: 1;
 }
 
 /* ── Empty / Error State ── */
@@ -462,6 +528,16 @@
     .schedule-prayer-row__time {
         font-size: var(--fs-sm);
     }
+
+    .schedule-prayer-row__time-wrapper {
+        gap: var(--spacing-sm);
+    }
+
+    .schedule-prayer-row__adzan-toggle {
+        width: 20px;
+        height: 20px;
+        font-size: var(--fs-sm);
+    }
 }
 
 
@@ -493,6 +569,16 @@
     }
 
     .schedule-prayer-row__time {
+        font-size: var(--fs-xs);
+    }
+
+    .schedule-prayer-row__time-wrapper {
+        gap: var(--spacing-xs);
+    }
+
+    .schedule-prayer-row__adzan-toggle {
+        width: 18px;
+        height: 18px;
         font-size: var(--fs-xs);
     }
 

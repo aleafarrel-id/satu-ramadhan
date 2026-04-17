@@ -21,6 +21,13 @@ const initialState = {
         language: 'auto',
         notification: true,
         adzan: true,
+        adzanControls: {
+            subuh: true,
+            dzuhur: true,
+            ashar: true,
+            magrib: true,
+            isya: true
+        },
         quran: {
             tajweed: true,
             transliteration: true,
@@ -101,10 +108,10 @@ class Store {
      * @returns {string} Subscription ID for cleanup.
      */
     subscribe(path, callback) {
-        const id = typeof crypto !== 'undefined' && crypto.randomUUID 
-            ? crypto.randomUUID() 
+        const id = typeof crypto !== 'undefined' && crypto.randomUUID
+            ? crypto.randomUUID()
             : Math.random().toString(36).substring(2, 15);
-        
+
         this.listeners.set(id, { path, callback });
         return id;
     }
@@ -136,7 +143,7 @@ class Store {
      */
     _isPathAffected(subPath, changedPath) {
         if (subPath === changedPath) return true;
-        
+
         // True if changed path is a parent of subscription path (e.g., settings -> settings.adzan)
         // or if subscription path is a parent of changed path (e.g., settings.adzan -> settings)
         return subPath.startsWith(changedPath + '.') || changedPath.startsWith(subPath + '.');
@@ -215,14 +222,14 @@ class Store {
         // Cleanup
         await storage.remove('user_location');
         await storage.remove('selected_org');
-        
+
         const legacyLocalKeys = [
-            'home_view_mode', 
-            'satu_ramadhan_view_mode', 
-            'satu_ramadhan_notif', 
-            'satu_ramadhan_adzan', 
-            'satu_ramadhan_tajweed', 
-            'satu_ramadhan_transliteration', 
+            'home_view_mode',
+            'satu_ramadhan_view_mode',
+            'satu_ramadhan_notif',
+            'satu_ramadhan_adzan',
+            'satu_ramadhan_tajweed',
+            'satu_ramadhan_transliteration',
             'satu_ramadhan_quran_lang',
             'satu_ramadhan_language'
         ];

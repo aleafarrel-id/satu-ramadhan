@@ -12,6 +12,7 @@ import { PRAYER_LIST, getCurrentPrayer, getPrayerName } from '../../modules/pray
 import { SCHEDULE_PRAYERS } from '../../utils/datetime.js';
 import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
+import { store } from '../../core/store.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
@@ -304,11 +305,26 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
     const time = timings ? cleanTime(timings[key]) : '--:--';
     const isActive = todayView && activePrayerKey === key;
 
+    const adzanPrayers = ['subuh', 'dzuhur', 'ashar', 'magrib', 'isya'];
+    let rightSideHtml = '';
+    
+    if (adzanPrayers.includes(key)) {
+        const adzanEnabled = store.getState('settings.adzanControls.' + key) !== false;
+        const icon = adzanEnabled ? 'bx-volume-full' : 'bx-volume-mute';
+        const activeClass = adzanEnabled ? ' active' : '';
+        rightSideHtml = `<button class="schedule-prayer-row__adzan-toggle${activeClass}" data-action="toggle-adzan"><i class='bx ${icon}'></i></button>`;
+    } else {
+        rightSideHtml = `<div class="schedule-prayer-row__adzan-toggle disabled"><i class='bx bx-bell'></i></div>`;
+    }
+
     return `
-        <div class="schedule-prayer-row${isActive ? ' schedule-prayer-row--active' : ''}">
+        <div class="schedule-prayer-row${isActive ? ' schedule-prayer-row--active' : ''}${adzanPrayers.includes(key) ? ' clickable' : ''}" data-prayer="${key}">
             <div class="schedule-prayer-row__icon">${prayer?.icon || ''}</div>
             <span class="schedule-prayer-row__name">${prayer ? getPrayerName(prayer.key) : key}</span>
-            <span class="schedule-prayer-row__time">${time}</span>
+            <div class="schedule-prayer-row__time-wrapper">
+                <span class="schedule-prayer-row__time">${time}</span>
+                ${rightSideHtml}
+            </div>
         </div>
     `;
 }
