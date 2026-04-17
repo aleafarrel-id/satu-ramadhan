@@ -12,21 +12,10 @@
   "confirm_clean_yes": "Yes, Clear",
   "confirm_clean_no": "Cancel",
   "target": "Target: {{value}}",
-  "target_free": "Unlimited",
   "custom_dzikir_name": "Unlimited Target",
-  "modal_create_title": "Custom Target",
-  "modal_edit_title": "Edit Target",
-  "form_name_label": "Dhikr Title",
-  "form_name_ph": "e.g., Reading Salawat",
-  "form_target_label": "Target Amount",
-  "form_target_ph": "0 to set to unlimited",
-  "suggestion_title": "Suggestions",
-  "err_name_empty": "Dhikr name cannot be empty.",
   "confirm_delete_preset_title": "Delete Preset?",
   "confirm_delete_preset_desc": "Are you sure you want to delete preset '{{presetName}}'?",
   "add": "Add",
-  "preset_saved": "Preset successfully saved",
   "preset_deleted": "Preset successfully deleted",
-  "preset_updated": "Preset successfully updated",
-  "preset_created": "Preset successfully created"
+  "preset_updated": "Preset successfully updated"
 }

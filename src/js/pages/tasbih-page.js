@@ -58,6 +58,7 @@ export async function init(container) {
 
     await loadNS('pages/tasbih-page');
     await loadNS('components/modal/confirm-modal');
+    await loadNS('components/modal/tasbih-preset-modal');
 
     // Restore persisted state
     _sessions = store.getState('tasbih.sessions') || {};
@@ -727,11 +728,11 @@ function _toggleInlineForm(id, zikir) {
     container.innerHTML = `
         <div class="tb-inline-form">
             <div class="tb-inline-form-group">
-                <label class="tb-inline-label">${t('pages/tasbih-page:form_name_label')}</label>
+                <label class="tb-inline-label">${t('components/modal/tasbih-preset-modal:form_name_label')}</label>
                 <input type="text" class="tb-inline-input" id="inline-name-${id}" value="${escapeHtml(zikir.name)}">
             </div>
             <div class="tb-inline-form-group">
-                <label class="tb-inline-label">${t('pages/tasbih-page:form_target_label')}</label>
+                <label class="tb-inline-label">${t('components/modal/tasbih-preset-modal:form_target_label')}</label>
                 <input type="number" class="tb-inline-input" id="inline-target-${id}" value="${zikir.target}">
             </div>
             <div class="tb-inline-actions">
@@ -753,7 +754,7 @@ function _toggleInlineForm(id, zikir) {
         const targetVal = parseInt(container.querySelector(`#inline-target-${id}`).value.trim() || '0', 10);
 
         if (!nameVal) {
-            notif.warning(t('pages/tasbih-page:err_name_empty'));
+            notif.warning(t('components/modal/tasbih-preset-modal:err_name_empty'));
             return;
         }
 
@@ -780,7 +781,7 @@ function _toggleInlineForm(id, zikir) {
             _updateInfoCard();
             _el.list.innerHTML = _buildListHTML();
             _openInlineId = null;
-            notif.success(t('pages/tasbih-page:preset_saved', { defaultValue: 'Preset berhasil disimpan' }));
+            notif.success(t('components/modal/tasbih-preset-modal:preset_saved', { defaultValue: 'Preset berhasil disimpan' }));
         }
     });
 

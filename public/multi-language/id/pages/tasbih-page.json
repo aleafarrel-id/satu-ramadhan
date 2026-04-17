@@ -12,21 +12,10 @@
   "confirm_clean_yes": "Ya, Hapus",
   "confirm_clean_no": "Batal",
   "target": "Target: {{value}}",
-  "target_free": "Bebas",
   "custom_dzikir_name": "Target Bebas",
-  "modal_create_title": "Target Baru",
-  "modal_edit_title": "Edit Target",
-  "form_name_label": "Judul Dzikir",
-  "form_name_ph": "Misal: Membaca Sholawat",
-  "form_target_label": "Target Jumlah",
-  "form_target_ph": "0 untuk tanpa batasan",
-  "suggestion_title": "Rekomendasi",
-  "err_name_empty": "Nama dzikir tidak boleh kosong.",
   "confirm_delete_preset_title": "Hapus Preset?",
   "confirm_delete_preset_desc": "Anda yakin ingin menghapus preset '{{presetName}}'?",
   "add": "Tambah",
-  "preset_saved": "Preset berhasil disimpan",
   "preset_deleted": "Preset berhasil dihapus",
-  "preset_updated": "Preset berhasil diperbarui",
-  "preset_created": "Preset berhasil dibuat"
+  "preset_updated": "Preset berhasil diperbarui"
 }

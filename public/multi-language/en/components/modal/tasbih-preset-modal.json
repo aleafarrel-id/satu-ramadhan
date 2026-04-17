@@ -1,0 +1,13 @@
+{
+  "target_free": "Unlimited",
+  "modal_create_title": "Custom Target",
+  "modal_edit_title": "Edit Target",
+  "form_name_label": "Dhikr Title",
+  "form_name_ph": "e.g., Reading Salawat",
+  "form_target_label": "Target Amount",
+  "form_target_ph": "0 to set to unlimited",
+  "suggestion_title": "Suggestions",
+  "err_name_empty": "Dhikr name cannot be empty.",
+  "preset_saved": "Preset successfully saved",
+  "preset_created": "Preset successfully created"
+}

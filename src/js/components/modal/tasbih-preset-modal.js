@@ -88,7 +88,7 @@ export async function showTasbihPresetModal({ onComplete } = {}) {
         const targetVal = parseInt(targetInput.value.trim() || '0', 10);
 
         if (!nameText) {
-            notif.warning(t('pages/tasbih-page:err_name_empty'));
+            notif.warning(t('components/modal/tasbih-preset-modal:err_name_empty'));
             return;
         }
 
@@ -104,7 +104,7 @@ export async function showTasbihPresetModal({ onComplete } = {}) {
         store.setState('tasbih.customPresets', [...customPresets, newPreset]);
         // Automatically switch to it
         store.setState('tasbih.activeZikir', newPreset.id);
-        notif.success(t('pages/tasbih-page:preset_created', { defaultValue: 'Preset berhasil dibuat' }));
+        notif.success(t('components/modal/tasbih-preset-modal:preset_created', { defaultValue: 'Preset berhasil dibuat' }));
 
         hideModal();
         if (onComplete) onComplete();
@@ -138,7 +138,7 @@ function removeModal() {
 }
 
 function createModalDOM() {
-    const title = t('pages/tasbih-page:modal_create_title');
+    const title = t('components/modal/tasbih-preset-modal:modal_create_title');
     const defaultName = '';
     const defaultTarget = '';
 
@@ -152,17 +152,17 @@ function createModalDOM() {
             </div>
             
             <div class="tb-preset-form-group">
-                <label class="tb-preset-label">${t('pages/tasbih-page:form_name_label')}</label>
-                <input type="text" class="tb-preset-input" id="tb-preset-name" value="${defaultName}" placeholder="${t('pages/tasbih-page:form_name_ph')}">
+                <label class="tb-preset-label">${t('components/modal/tasbih-preset-modal:form_name_label')}</label>
+                <input type="text" class="tb-preset-input" id="tb-preset-name" value="${defaultName}" placeholder="${t('components/modal/tasbih-preset-modal:form_name_ph')}">
             </div>
             
             <div class="tb-preset-form-group">
-                <label class="tb-preset-label">${t('pages/tasbih-page:form_target_label')}</label>
-                <input type="number" class="tb-preset-input" id="tb-preset-target" value="${defaultTarget}" placeholder="${t('pages/tasbih-page:form_target_ph')}" inputmode="numeric">
+                <label class="tb-preset-label">${t('components/modal/tasbih-preset-modal:form_target_label')}</label>
+                <input type="number" class="tb-preset-input" id="tb-preset-target" value="${defaultTarget}" placeholder="${t('components/modal/tasbih-preset-modal:form_target_ph')}" inputmode="numeric">
                 
-                <div class="tb-preset-suggestions-title"><i class='bx bx-bulb'></i> ${t('pages/tasbih-page:suggestion_title')}</div>
+                <div class="tb-preset-suggestions-title"><i class='bx bx-bulb'></i> ${t('components/modal/tasbih-preset-modal:suggestion_title')}</div>
                 <div class="tb-preset-chips">
-                    <button class="tb-preset-chip" data-val="0">${t('pages/tasbih-page:target_free')}</button>
+                    <button class="tb-preset-chip" data-val="0">${t('components/modal/tasbih-preset-modal:target_free')}</button>
                     <button class="tb-preset-chip" data-val="10">10x</button>
                     <button class="tb-preset-chip" data-val="25">25x</button>
                     <button class="tb-preset-chip" data-val="33">33x</button>
