@@ -378,6 +378,22 @@
 }
 
 /* =============================================
+   Settings Value Container
+   ============================================= */
+
+.settings-item-value {
+   color: var(--clr-text-secondary);
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-sm);
+   font-size: var(--fs-sm);
+}
+
+.settings-item-value i {
+   font-size: var(--icon-lg);
+}
+
+/* =============================================
    Responsive Overrides
    ============================================= */
 

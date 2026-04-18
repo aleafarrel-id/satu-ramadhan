@@ -15,6 +15,8 @@ import { showPermissionDialogPreset } from '../../modules/permission/permission-
 import { store } from '../../core/store.js';
 import { isWeb } from '../../modules/system/platform.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { showAdzanSelectorModal } from '../modal/adzan-selector-modal.js';
+import { DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH } from '../../config/adzan-sounds.js';
 
 export function render(container) {
     container.innerHTML = `
@@ -22,6 +24,16 @@ export function render(container) {
             <div class="settings-card-header">
                 <div class="settings-card-title">${t('components/settings/settings-panel:section_notif')}</div>
             </div>
+            <div class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="adzan-selector-row" tabindex="0" data-focus-item>
+                <div class="settings-item-info">
+                    <i class='bx bx-music'></i>
+                    <span id="adzan-selector-label">${t('components/modal/adzan-selector-modal:selector_label', { defaultValue: 'Pilihan Adzan' })}</span>
+                </div>
+                <div class="settings-select-trigger">
+                    <span id="adzan-selected-value"></span>
+                </div>
+            </div>
+            <div class="settings-divider"></div>
             <label class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
@@ -49,7 +61,7 @@ export function render(container) {
                     <i class='bx bx-battery'></i>
                     <span>${t('components/settings/settings-panel:battery_opt')}</span>
                 </div>
-                <div style="color: var(--clr-text-secondary); display: flex; font-size: var(--icon-lg);">
+                <div class="settings-item-value">
                     <i class='bx bx-chevron-right'></i>
                 </div>
             </div>
@@ -60,6 +72,25 @@ export function render(container) {
     const notificationToggle = container.querySelector('#toggle-notification');
     const adzanToggle = container.querySelector('#toggle-adzan');
     const batteryRow = container.querySelector('#battery-row');
+    const adzanSelectorRow = container.querySelector('#adzan-selector-row');
+    const adzanSelectedValue = container.querySelector('#adzan-selected-value');
+
+    let currentAdzan = store.getState('settings.adzan_selected') || DEFAULT_ADZAN;
+    let currentAdzanSubuh = store.getState('settings.adzan_subuh') || DEFAULT_ADZAN_SUBUH;
+
+    function updateAdzanValueDisplay() {
+        if (!adzanSelectedValue) return;
+        const normalLabel = t(`components/modal/adzan-selector-modal:${currentAdzan}`, { defaultValue: 'Makkah' });
+        const subuhLabel = t(`components/modal/adzan-selector-modal:${currentAdzanSubuh}`, { defaultValue: 'Madinah' });
+        
+        if (currentAdzan === currentAdzanSubuh) {
+            adzanSelectedValue.textContent = normalLabel;
+        } else {
+            adzanSelectedValue.textContent = `${normalLabel} • ${subuhLabel}`;
+        }
+    }
+
+    updateAdzanValueDisplay();
 
     // Read directly from Store Manager synchronization
     if (isWeb) {
@@ -142,6 +173,25 @@ export function render(container) {
     });
 
     if (!isWeb) {
+        adzanSelectorRow?.addEventListener('click', async () => {
+            if (!store.getState('settings.notification')) return;
+            await impact('medium');
+            
+            showAdzanSelectorModal({
+                currentAdzan,
+                currentAdzanSubuh,
+                onSelect: (selections) => {
+                    currentAdzan = selections.normal;
+                    currentAdzanSubuh = selections.subuh;
+                    
+                    store.setState('settings.adzan_selected', currentAdzan);
+                    store.setState('settings.adzan_subuh', currentAdzanSubuh);
+                    
+                    updateAdzanValueDisplay();
+                }
+            });
+        });
+
         batteryRow?.addEventListener('click', async () => {
             if (!store.getState('settings.notification')) return;
             await impact('medium');
@@ -173,9 +223,11 @@ function updateAdzanRowState(notifEnabled, container) {
     const root = container || document;
     const adzanRow = root.querySelector('#adzan-row');
     const batteryRow = root.querySelector('#battery-row');
+    const selectorRow = root.querySelector('#adzan-selector-row');
     
     if (adzanRow) adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
     if (batteryRow) batteryRow.classList.toggle('settings-item--disabled', !notifEnabled);
+    if (selectorRow) selectorRow.classList.toggle('settings-item--disabled', !notifEnabled);
 }
 
 /**

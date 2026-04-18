@@ -4,6 +4,7 @@ import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
 import '../../css/components/modal/language-selector-modal.css';
 import '../../css/components/modal/audio-mode-selector-modal.css';
+import '../../css/components/modal/adzan-selector-modal.css';
 
 import { CONFIG } from '../config/version-config.js';
 
@@ -35,6 +36,7 @@ export async function render(container) {
     await loadNS('components/settings/settings-panel');
     await loadNS('components/settings/settings-quran-panel');
     await loadNS('components/modal/audio-mode-selector-modal');
+    await loadNS('components/modal/adzan-selector-modal');
     await loadNS('components/ui/header');
 
     const wrapper = document.createElement('div');

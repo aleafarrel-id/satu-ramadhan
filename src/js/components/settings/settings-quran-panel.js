@@ -51,12 +51,12 @@ export function render(container) {
             <div class="settings-card-title">${t('components/settings/settings-quran-panel:section')}</div>
          </div>
          ${isNative ? `
-         <div class="settings-item" id="quran-audio-mode-item" data-focus-item style="cursor: pointer;">
+         <div class="settings-item" id="quran-audio-mode-item" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-headphone'></i>
                <span>${t('components/settings/settings-quran-panel:audio_mode')}</span>
             </div>
-            <div class="settings-select-trigger" style="pointer-events: none;">
+            <div class="settings-select-trigger">
                <span id="audio-mode-select-label">${audioModeLabel}</span>
             </div>
          </div>
@@ -84,12 +84,12 @@ export function render(container) {
             </div>
          </label>
          <div class="settings-divider"></div>
-         <div class="settings-item" id="quran-translation-item" data-focus-item style="cursor: pointer;">
+         <div class="settings-item" id="quran-translation-item" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-transfer-alt'></i>
                <span>${t('components/settings/settings-quran-panel:translation')}</span>
             </div>
-            <div class="settings-select-trigger" style="pointer-events: none;">
+            <div class="settings-select-trigger">
                <span id="translation-select-label">${savedLangLabel}</span>
             </div>
          </div>
