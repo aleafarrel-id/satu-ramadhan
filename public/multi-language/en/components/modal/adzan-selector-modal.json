@@ -3,9 +3,10 @@
     "selector_label": "Adzan Selection",
     "tab_normal": "Standard",
     "tab_subuh": "Fajr",
-    "madinah": "Madinah",
     "makkah": "Makkah",
-    "mesir": "Egypt",
     "malaysia": "Malaysia",
-    "indonesia": "Indonesia"
+    "kuwait": "Kuwait",
+    "mesir": "Egypt",
+    "selected_feedback": "{{adzan}} Selected",
+    "preview_feedback": "Preview: {{adzan}}"
 }

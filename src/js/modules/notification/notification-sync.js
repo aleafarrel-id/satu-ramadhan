@@ -9,6 +9,7 @@ import { PrayerService } from './native-notification.js';
 import { store } from '../../core/store.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { logError } from '../../utils/error-boundary.js';
+import { resolveAudioFile, DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH } from '../../config/adzan-sounds.js';
 
 /** Number of days to pre-schedule ahead (inclusive of today) */
 const ROLLING_DAYS = 30;
@@ -71,6 +72,8 @@ export async function syncNotifications() {
         const isNotifEnabled = store.getState('settings.notification');
         const isAdzanEnabled = store.getState('settings.adzan');
         const adzanControls = store.getState('settings.adzanControls') || {};
+        const selectedNormalId = store.getState('settings.adzan_selected') || DEFAULT_ADZAN;
+        const selectedSubuhId  = store.getState('settings.adzan_subuh')    || DEFAULT_ADZAN_SUBUH;
 
         await PrayerService.cancelAll();
 
@@ -117,12 +120,19 @@ export async function syncNotifications() {
                 const isPrayerAdzanEnabled = adzanControls[key] !== false;
                 const shouldPlayAdzan = config.isAdzan && isAdzanEnabled && isPrayerAdzanEnabled;
 
+                // Resolve the exact audio filename in JS — Java receives the final string
+                const isSubuhPrayer = (key === 'subuh');
+                const audioFile = shouldPlayAdzan
+                    ? resolveAudioFile(isSubuhPrayer ? selectedSubuhId : selectedNormalId, isSubuhPrayer)
+                    : null;
+
                 alarmsToSchedule.push({
                     id: ALARM_BASE_ID + (dayOffset * 10) + prayerIndex,
                     key,
                     title: t(`modules/prayer/prayer-times:notif_${key}_title`),
                     body: t(`modules/prayer/prayer-times:notif_${key}_body`),
                     isAdzan: shouldPlayAdzan,
+                    audioFile,
                     timestamp,
                 });
             });
@@ -266,5 +276,7 @@ function parseDateTimeToMs(date, timeStr) {
 store.subscribe('settings.notification', syncNotifications);
 store.subscribe('settings.adzan', syncNotifications);
 store.subscribe('settings.adzanControls', syncNotifications);
+store.subscribe('settings.adzan_selected', syncNotifications);
+store.subscribe('settings.adzan_subuh', syncNotifications);
 store.subscribe('settings.language', syncNotifications);
 store.subscribe('location', syncNotifications);

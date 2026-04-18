@@ -24,10 +24,6 @@ import androidx.core.app.NotificationCompat;
 public class PrayerPlaybackService extends Service {
     private static final String TAG = "PrayerPlaybackService";
 
-    // --- Audio Resources ---
-    private static final String AUDIO_SUBUH = "adzan_subuh";
-    private static final String AUDIO_REGULAR = "adzan";
-
     // --- Instance State ---
     private MediaPlayer mediaPlayer;
     private PowerManager.WakeLock wakeLock;
@@ -70,15 +66,18 @@ public class PrayerPlaybackService extends Service {
         if (Constants.ACTION_PLAY_PRAYER.equals(action)) {
             String prayerKey = intent.getStringExtra(Constants.EXTRA_PRAYER_KEY);
             String prayerName = intent.getStringExtra(Constants.EXTRA_PRAYER_NAME);
+            String audioFile = intent.getStringExtra(Constants.EXTRA_AUDIO_FILE);
+            boolean isPreview = intent.getBooleanExtra(Constants.EXTRA_IS_PREVIEW, false);
 
             if (prayerKey == null) prayerKey = "dzuhur";
             if (prayerName == null) prayerName = "Sholat";
+            if (audioFile == null || audioFile.isEmpty()) audioFile = Constants.DEFAULT_AUDIO_FILE;
 
             // If already playing, stop current before starting new
             releaseMediaPlayer();
 
-            startForeground(Constants.NOTIFICATION_ID_PLAYBACK, buildNotification(prayerName));
-            playAdzan(prayerKey, prayerName);
+            startForeground(Constants.NOTIFICATION_ID_PLAYBACK, buildNotification(prayerName, isPreview));
+            playAdzan(audioFile, prayerName);
         }
 
         return START_NOT_STICKY;
@@ -101,11 +100,17 @@ public class PrayerPlaybackService extends Service {
 
     // --- Core Playback Logic ---
 
-    private void playAdzan(String prayerKey, String prayerName) {
+    /**
+     * Play the adzan audio file specified by the JS layer.
+     *
+     * @param audioFile  Raw resource name without extension (e.g. "adzan_subuh_makkah")
+     * @param prayerName Human-readable prayer name for notification display
+     */
+    private void playAdzan(String audioFile, String prayerName) {
         try {
-            int audioResId = getAudioResource(prayerKey);
+            int audioResId = getAudioResource(audioFile);
             if (audioResId == 0) {
-                Log.e(TAG, "Audio resource not found for: " + prayerKey);
+                Log.e(TAG, "Audio resource not found for: " + audioFile);
                 stopSelfCleanly();
                 return;
             }
@@ -121,7 +126,7 @@ public class PrayerPlaybackService extends Service {
 
             try (android.content.res.AssetFileDescriptor afd = getResources().openRawResourceFd(audioResId)) {
                 if (afd == null) {
-                    Log.e(TAG, "Audio resource FD is null for: " + prayerKey);
+                    Log.e(TAG, "Audio resource FD is null for: " + audioFile);
                     stopSelfCleanly();
                     return;
                 }
@@ -145,7 +150,7 @@ public class PrayerPlaybackService extends Service {
             mediaPlayer.start();
             isPlaying = true;
             sIsPlaying = true;
-            Log.d(TAG, "Started playback for: " + prayerName);
+            Log.d(TAG, "Started playback for: " + prayerName + " (audio=" + audioFile + ")");
 
         } catch (Exception e) {
             Log.e(TAG, "Error during playback: " + e.getMessage(), e);
@@ -153,9 +158,36 @@ public class PrayerPlaybackService extends Service {
         }
     }
 
-    private int getAudioResource(String prayerKey) {
-        String audioName = "subuh".equals(prayerKey) ? AUDIO_SUBUH : AUDIO_REGULAR;
-        return getResources().getIdentifier(audioName, "raw", getPackageName());
+    /**
+     * Resolve a raw resource name to its Android resource ID.
+     * All audio selection logic has been performed by the JS layer —
+     * Java only looks up the ID and provides one generic fallback.
+     *
+     * @param audioFile Raw resource name without extension (e.g. "adzan_subuh_makkah")
+     * @return resource ID, or 0 if neither the requested nor default file exists
+     */
+    private int getAudioResource(String audioFile) {
+        // 1. Try the exact file name sent by JS
+        if (audioFile != null && !audioFile.isEmpty()) {
+            int resId = getResources().getIdentifier(audioFile, "raw", getPackageName());
+            if (resId != 0) {
+                Log.d(TAG, "Audio resource resolved: " + audioFile);
+                return resId;
+            }
+            Log.w(TAG, "Audio resource not found: '" + audioFile + "', falling back to default.");
+        }
+
+        // 2. Generic fallback — one constant, no prayer-type logic
+        int fallbackId = getResources().getIdentifier(
+            Constants.DEFAULT_AUDIO_FILE, "raw", getPackageName()
+        );
+        if (fallbackId != 0) {
+            Log.d(TAG, "Using default fallback: " + Constants.DEFAULT_AUDIO_FILE);
+            return fallbackId;
+        }
+
+        Log.e(TAG, "FATAL: Default audio resource also not found. Cannot play adzan.");
+        return 0;
     }
 
     // --- Notification Management ---
@@ -176,17 +208,28 @@ public class PrayerPlaybackService extends Service {
         }
     }
 
-    private Notification buildNotification(String prayerName) {
-        // Retrieve explicit multilanguage text from preferences
+    private Notification buildNotification(String prayerName, boolean isPreview) {
         android.content.SharedPreferences prefs = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
-        
-        String formatTitle = prefs.getString("system_adzan_title", null);
-        String titleStr = formatTitle != null ? String.format(formatTitle, prayerName) : getString(R.string.notification_title_adzan, prayerName);
-        
-        String formatBody = prefs.getString("system_adzan_body", null);
-        String bodyStr = formatBody != null ? String.format(formatBody, prayerName) : getString(R.string.notification_text_adzan_arrived, prayerName);
-        
-        String stopAdzanText = prefs.getString("system_stop_adzan", getString(R.string.notification_action_stop_adzan));
+
+        String titleStr;
+        String bodyStr;
+        String stopAdzanText;
+
+        if (isPreview) {
+            // Simplified text for preview playback — no "Telah Tiba" / arrival phrasing
+            titleStr = prayerName;
+            bodyStr = "";
+            stopAdzanText = prefs.getString("system_stop_adzan", getString(R.string.notification_action_stop_adzan));
+        } else {
+            // Full adzan notification with localized format strings
+            String formatTitle = prefs.getString("system_adzan_title", null);
+            titleStr = formatTitle != null ? String.format(formatTitle, prayerName) : getString(R.string.notification_title_adzan, prayerName);
+
+            String formatBody = prefs.getString("system_adzan_body", null);
+            bodyStr = formatBody != null ? String.format(formatBody, prayerName) : getString(R.string.notification_text_adzan_arrived, prayerName);
+
+            stopAdzanText = prefs.getString("system_stop_adzan", getString(R.string.notification_action_stop_adzan));
+        }
 
         // Stop Action
         Intent stopIntent = new Intent(this, PrayerActionReceiver.class);
@@ -229,6 +272,13 @@ public class PrayerPlaybackService extends Service {
         releaseAudioFocus();
         isPlaying = false;
         sIsPlaying = false;
+
+        // Notify the Capacitor plugin that playback has stopped,
+        // so the JS UI layer can reset its preview button state.
+        Intent stoppedIntent = new Intent(Constants.ACTION_PLAYBACK_STOPPED);
+        stoppedIntent.setPackage(getPackageName());
+        sendBroadcast(stoppedIntent);
+
         stopForeground(true);
         stopSelf();
     }

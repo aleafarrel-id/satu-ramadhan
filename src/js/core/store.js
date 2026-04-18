@@ -28,6 +28,8 @@ const initialState = {
             magrib: true,
             isya: true
         },
+        adzan_selected: 'makkah',
+        adzan_subuh: 'makkah',
         quran: {
             tajweed: true,
             transliteration: true,

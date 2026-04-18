@@ -8,6 +8,7 @@ import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
 
 import { isNative } from '../modules/system/platform.js';
+import { impact } from '../modules/system/haptic.js';
 
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { store } from '../core/store.js';
@@ -478,6 +479,7 @@ function bindEvents() {
             if (row) {
                 const key = row.getAttribute('data-prayer');
                 if (key) {
+                    impact('light');
                     const toggleBtn = row.querySelector('.schedule-prayer-row__adzan-toggle');
                     const currentVal = store.getState('settings.adzanControls.' + key) !== false;
                     const newVal = !currentVal;

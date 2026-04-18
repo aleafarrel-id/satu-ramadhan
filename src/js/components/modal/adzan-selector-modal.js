@@ -2,18 +2,24 @@
  * Adzan Selector Modal Component
  *
  * A modal for selecting Adzan sound preference.
+ * Preview playback uses PrayerService.play() / PrayerService.stop()
+ * to trigger real audio through the native Android playback service.
  */
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
-import { AVAILABLE_ADZANS } from '../../config/adzan-sounds.js';
+import { AVAILABLE_ADZANS, resolveAudioFile, DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH } from '../../config/adzan-sounds.js';
+import { PrayerService } from '../../modules/notification/native-notification.js';
+import { isNative } from '../../modules/system/platform.js';
 import * as Notif from '../../modules/notification/notification.js';
 
 let _overlayEl = null;
 let _onSelectCallback = null;
 let _releaseFocus = null;
+let _isPreviewPlaying = false;
+let _playbackStoppedHandle = null;
 
 let _state = {
     normal: null,
@@ -31,8 +37,14 @@ export async function showAdzanSelectorModal({ currentAdzan, currentAdzanSubuh, 
 
     _onSelectCallback = onSelect;
     
-    _state.normal = currentAdzan;
-    _state.subuh = currentAdzanSubuh || currentAdzan;
+    const validateAdzan = (val, defaultVal) => {
+        if (!val || typeof val !== 'string') return defaultVal;
+        const match = AVAILABLE_ADZANS.find(a => a.id === val.trim());
+        return match ? match.id : defaultVal;
+    };
+
+    _state.normal = validateAdzan(currentAdzan, DEFAULT_ADZAN);
+    _state.subuh = validateAdzan(currentAdzanSubuh, DEFAULT_ADZAN_SUBUH);
     _state.activeTab = 'normal';
 
     _overlayEl = _createModalDOM();
@@ -49,6 +61,15 @@ export async function showAdzanSelectorModal({ currentAdzan, currentAdzanSubuh, 
     _releaseFocus = trapFocus(_overlayEl);
 
     _bindEvents();
+
+    // Listen for native playback stop events (notification stop button, audio completion)
+    // so the preview button resets automatically without user interaction in-app.
+    if (isNative) {
+        _playbackStoppedHandle = PrayerService.addListener('onPlaybackStopped', () => {
+            _resetAllPreviewButtons();
+            _isPreviewPlaying = false;
+        });
+    }
 }
 
 function _handleSelect(adzanId, e) {
@@ -63,6 +84,13 @@ function _handleSelect(adzanId, e) {
 
     _renderOptions(); // Refresh selection visually
 
+    // Show success notification with the localized label of the selected adzan
+    const selectedConfig = AVAILABLE_ADZANS.find(a => a.id === adzanId);
+    if (selectedConfig) {
+        const adzanLabel = t(selectedConfig.labelKey);
+        Notif.show(t('components/modal/adzan-selector-modal:selected_feedback', { adzan: adzanLabel }), 'success');
+    }
+
     if (_onSelectCallback) {
         // Fire immediately upon selection as was original behavior
         _onSelectCallback({
@@ -72,11 +100,14 @@ function _handleSelect(adzanId, e) {
     }
 }
 
-function _handlePlay(adzanId, playBtn, e) {
+async function _handlePlay(adzanId, playBtn, e) {
     if (e) e.stopPropagation();
     impact('medium');
     
-    // Reset any other playing buttons
+    // Prevent interaction while a play call is in progress
+    if (playBtn.classList.contains('loading')) return;
+    
+    // Reset any other playing buttons visually
     _overlayEl.querySelectorAll('.adzan-preview-btn.playing').forEach(btn => {
         if (btn !== playBtn) {
             btn.classList.remove('playing');
@@ -91,41 +122,96 @@ function _handlePlay(adzanId, playBtn, e) {
     const isCurrentlyPlaying = playBtn.classList.contains('playing');
     
     if (!isCurrentlyPlaying) {
-        playBtn.classList.add('playing');
+        // Stop any currently playing preview first
+        _stopPreview();
+        
+        // Show loading spinner while native service initializes
+        playBtn.classList.add('loading');
         const icon = playBtn.querySelector('i');
         if (icon) {
             icon.classList.remove('bx-play-circle');
-            icon.classList.add('bx-pause-circle');
+            icon.classList.add('bx-loader-alt', 'bx-spin');
         }
         
-        let adzanLabel = t(`components/modal/adzan-selector-modal:${adzanId}`);
-        const previewType = _state.activeTab === 'subuh' ? '(Subuh)' : '(Normal)';
-        Notif.show(`Memutar preview suara Adzan ${adzanLabel} ${previewType}...`, 'info');
+        const isSubuh = _state.activeTab === 'subuh';
+        const audioFile = resolveAudioFile(adzanId, isSubuh);
+        const adzanLabel = t(`components/modal/adzan-selector-modal:${adzanId}`);
         
-        // Dummy timeout to simulate playback stop after 5 seconds
-        setTimeout(() => {
-            if (_overlayEl && playBtn.classList.contains('playing')) {
-                playBtn.classList.remove('playing');
+        if (isNative) {
+            try {
+                await PrayerService.play({
+                    prayerKey: isSubuh ? 'subuh' : 'dzuhur',
+                    prayerName: `Preview: ${adzanLabel}`,
+                    audioFile,
+                    isPreview: true,
+                });
+                
+                // Success — switch to pause icon
+                playBtn.classList.remove('loading');
+                playBtn.classList.add('playing');
                 if (icon) {
-                    icon.classList.remove('bx-pause-circle');
+                    icon.classList.remove('bx-loader-alt', 'bx-spin');
+                    icon.classList.add('bx-pause-circle');
+                }
+                _isPreviewPlaying = true;
+            } catch (err) {
+                console.warn('[AdzanSelector] Preview play failed:', err);
+                // Reset button on failure
+                playBtn.classList.remove('loading');
+                if (icon) {
+                    icon.classList.remove('bx-loader-alt', 'bx-spin');
                     icon.classList.add('bx-play-circle');
                 }
+                Notif.show('Preview gagal dimuat', 'error');
+                return;
             }
-        }, 5000);
+        }
+        
+        Notif.show(t('components/modal/adzan-selector-modal:preview_feedback', { adzan: adzanLabel }), 'info');
     } else {
-        // Stop playback trigger
+        // Stop playback
+        _stopPreview();
+        
         playBtn.classList.remove('playing');
         const icon = playBtn.querySelector('i');
         if (icon) {
             icon.classList.remove('bx-pause-circle');
             icon.classList.add('bx-play-circle');
         }
-        Notif.show('Preview dihentikan.', 'info');
+    }
+}
+
+/**
+ * Reset all preview buttons to the play state visually.
+ * Called when playback ends externally (e.g. notification stop, audio completion).
+ */
+function _resetAllPreviewButtons() {
+    if (!_overlayEl) return;
+    _overlayEl.querySelectorAll('.adzan-preview-btn.playing, .adzan-preview-btn.loading').forEach(btn => {
+        btn.classList.remove('playing', 'loading');
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.classList.remove('bx-pause-circle', 'bx-loader-alt', 'bx-spin');
+            icon.classList.add('bx-play-circle');
+        }
+    });
+}
+
+/**
+ * Stop any currently playing preview via native service.
+ */
+function _stopPreview() {
+    if (_isPreviewPlaying && isNative) {
+        PrayerService.stop().catch(err => {
+            console.warn('[AdzanSelector] Preview stop failed:', err);
+        });
+        _isPreviewPlaying = false;
     }
 }
 
 function _handleCancel(e) {
     if (e) e.stopPropagation();
+    _stopPreview(); // Ensure preview is stopped when modal closes
     _hideModal();
 }
 
@@ -143,6 +229,7 @@ function _bindEvents() {
             impact('light');
             const targetTab = tab.dataset.tab;
             if (_state.activeTab !== targetTab) {
+                _stopPreview(); // Stop preview when switching tabs
                 _state.activeTab = targetTab;
                 _overlayEl.querySelectorAll('.adzan-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
@@ -194,6 +281,11 @@ function _removeModal() {
         _releaseFocus();
         _releaseFocus = null;
     }
+    // Clean up the native playback-stopped listener to prevent leaks
+    if (_playbackStoppedHandle) {
+        _playbackStoppedHandle.remove();
+        _playbackStoppedHandle = null;
+    }
     if (_overlayEl) {
         _overlayEl.remove();
         _overlayEl = null;
@@ -209,7 +301,12 @@ function _renderOptions() {
 
     const currentAdzan = _state.activeTab === 'normal' ? _state.normal : _state.subuh;
 
-    const optionsHTML = AVAILABLE_ADZANS.map(({ id, labelKey }) => {
+    // Subuh tab: only show entries that have a dedicated subuh audio file
+    const adzansToShow = _state.activeTab === 'subuh'
+        ? AVAILABLE_ADZANS.filter(a => a.audioFileSubuh !== null)
+        : AVAILABLE_ADZANS;
+
+    const optionsHTML = adzansToShow.map(({ id, labelKey }) => {
         const isSelected = id === currentAdzan;
         return `
             <div class="adzan-option ${isSelected ? 'selected' : ''}" data-id="${id}">

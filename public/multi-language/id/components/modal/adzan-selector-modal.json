@@ -3,9 +3,10 @@
     "selector_label": "Pilihan Adzan",
     "tab_normal": "Waktu Normal",
     "tab_subuh": "Waktu Subuh",
-    "madinah": "Madinah",
     "makkah": "Makkah",
-    "mesir": "Mesir",
     "malaysia": "Malaysia",
-    "indonesia": "Indonesia"
+    "kuwait": "Kuwait",
+    "mesir": "Mesir",
+    "selected_feedback": "{{adzan}} Terpilih",
+    "preview_feedback": "Memutar: {{adzan}}"
 }

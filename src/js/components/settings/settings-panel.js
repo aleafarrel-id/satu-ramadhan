@@ -16,9 +16,12 @@ import { store } from '../../core/store.js';
 import { isWeb } from '../../modules/system/platform.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { showAdzanSelectorModal } from '../modal/adzan-selector-modal.js';
-import { DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH } from '../../config/adzan-sounds.js';
+import { AVAILABLE_ADZANS, DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH } from '../../config/adzan-sounds.js';
 
 export function render(container) {
+    // Force preload i18n to guarantee translations work accurately
+    loadNS('components/modal/adzan-selector-modal');
+
     container.innerHTML = `
         <div class="card settings-card settings-card-spacing" data-focus-group="settings-list" data-focus-direction="vertical">
             <div class="settings-card-header">
@@ -75,17 +78,34 @@ export function render(container) {
     const adzanSelectorRow = container.querySelector('#adzan-selector-row');
     const adzanSelectedValue = container.querySelector('#adzan-selected-value');
 
-    let currentAdzan = store.getState('settings.adzan_selected') || DEFAULT_ADZAN;
-    let currentAdzanSubuh = store.getState('settings.adzan_subuh') || DEFAULT_ADZAN_SUBUH;
+    // Function to strictly validate against our registry
+    const validateAdzan = (val, defaultVal) => {
+        if (!val || typeof val !== 'string') return defaultVal;
+        const match = AVAILABLE_ADZANS.find(a => a.id === val.trim());
+        return match ? match.id : defaultVal;
+    };
+
+    let currentAdzan = validateAdzan(store.getState('settings.adzan_selected'), DEFAULT_ADZAN);
+    let currentAdzanSubuh = validateAdzan(store.getState('settings.adzan_subuh'), DEFAULT_ADZAN_SUBUH);
+
+    console.log('[SettingsPanel] Strict valid adzan:', currentAdzan, 'subuh:', currentAdzanSubuh);
 
     function updateAdzanValueDisplay() {
         if (!adzanSelectedValue) return;
-        const normalLabel = t(`components/modal/adzan-selector-modal:${currentAdzan}`, { defaultValue: 'Makkah' });
-        const subuhLabel = t(`components/modal/adzan-selector-modal:${currentAdzanSubuh}`, { defaultValue: 'Madinah' });
         
-        if (currentAdzan === currentAdzanSubuh) {
+        const normalId = currentAdzan;
+        const subuhId = currentAdzanSubuh;
+        
+        // Find correct labels from our config registry if i18n isn't ready
+        const normalConfig = AVAILABLE_ADZANS.find(a => a.id === normalId) || AVAILABLE_ADZANS[0];
+        const subuhConfig = AVAILABLE_ADZANS.find(a => a.id === subuhId) || AVAILABLE_ADZANS[0];
+        
+        const normalLabel = t(normalConfig.labelKey, { defaultValue: 'Makkah' });
+        
+        if (normalId === subuhId) {
             adzanSelectedValue.textContent = normalLabel;
         } else {
+            const subuhLabel = t(subuhConfig.labelKey, { defaultValue: 'Makkah' });
             adzanSelectedValue.textContent = `${normalLabel} • ${subuhLabel}`;
         }
     }

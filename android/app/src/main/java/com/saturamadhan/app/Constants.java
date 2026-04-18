@@ -11,6 +11,7 @@ public final class Constants {
     // --- Intent Actions ---
     public static final String ACTION_PLAY_PRAYER = "com.saturamadhan.app.ACTION_PLAY_PRAYER";
     public static final String ACTION_STOP_PRAYER = "com.saturamadhan.app.ACTION_STOP_PRAYER";
+    public static final String ACTION_PLAYBACK_STOPPED = "com.saturamadhan.app.ACTION_PLAYBACK_STOPPED";
 
     // --- Intent Extras ---
     public static final String EXTRA_PRAYER_KEY = "prayer_key";
@@ -18,6 +19,13 @@ public final class Constants {
     public static final String EXTRA_IS_ADZAN = "EXTRA_IS_ADZAN";
     public static final String EXTRA_BODY = "EXTRA_BODY";
     public static final String EXTRA_STOP_ADZAN = "stop_adzan";
+    public static final String EXTRA_IS_PREVIEW = "is_preview";
+
+    // --- Audio ---
+    /** Intent extra key for the raw resource name of the audio to play */
+    public static final String EXTRA_AUDIO_FILE = "audio_file";
+    /** Fallback raw resource name when audioFile from JS is null or not found */
+    public static final String DEFAULT_AUDIO_FILE = "adzan_makkah";
 
     // --- Notification Channels ---
     public static final String CHANNEL_ID_PLAYBACK = "prayer_playback_high";

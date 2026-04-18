@@ -38,17 +38,20 @@ public class PrayerAlarmReceiver extends BroadcastReceiver {
         Log.d(TAG, "Alarm Triggered! Key=" + prayerKey + ", Name=" + prayerName + ", isAdzan=" + isAdzan);
 
         if (isAdzan) {
-            startAdzanService(context, prayerKey, prayerName);
+            String audioFile = intent.getStringExtra(Constants.EXTRA_AUDIO_FILE);
+            if (audioFile == null || audioFile.isEmpty()) audioFile = Constants.DEFAULT_AUDIO_FILE;
+            startAdzanService(context, prayerKey, prayerName, audioFile);
         } else {
             showStandardNotification(context, prayerKey, prayerName, bodyText);
         }
     }
 
-    private void startAdzanService(Context context, String prayerKey, String prayerName) {
+    private void startAdzanService(Context context, String prayerKey, String prayerName, String audioFile) {
         Intent serviceIntent = new Intent(context, PrayerPlaybackService.class);
         serviceIntent.setAction(Constants.ACTION_PLAY_PRAYER);
         serviceIntent.putExtra(Constants.EXTRA_PRAYER_KEY, prayerKey);
         serviceIntent.putExtra(Constants.EXTRA_PRAYER_NAME, prayerName);
+        serviceIntent.putExtra(Constants.EXTRA_AUDIO_FILE, audioFile);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(serviceIntent);

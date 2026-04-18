@@ -12,6 +12,9 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -36,6 +39,44 @@ public class PrayerServicePlugin extends Plugin {
 
     /** Must match JS NOTIFICATION_BASE_ID (native-notification.js) */
     private static final int JS_NOTIFICATION_BASE_ID = 1000;
+
+    /**
+     * BroadcastReceiver that listens for playback-stopped events from
+     * PrayerPlaybackService and forwards them to the JS layer via
+     * Capacitor's notifyListeners(), enabling the UI to reset its
+     * preview button state when playback ends externally (e.g. via
+     * the notification stop button or natural audio completion).
+     */
+    private final BroadcastReceiver playbackStoppedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Playback stopped broadcast received — notifying JS listeners");
+            notifyListeners("onPlaybackStopped", new JSObject());
+        }
+    };
+
+    @Override
+    public void load() {
+        super.load();
+        IntentFilter filter = new IntentFilter(Constants.ACTION_PLAYBACK_STOPPED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getContext().registerReceiver(playbackStoppedReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            getContext().registerReceiver(playbackStoppedReceiver, filter);
+        }
+        Log.d(TAG, "Playback-stopped receiver registered");
+    }
+
+    @Override
+    protected void handleOnDestroy() {
+        try {
+            getContext().unregisterReceiver(playbackStoppedReceiver);
+            Log.d(TAG, "Playback-stopped receiver unregistered");
+        } catch (Exception e) {
+            Log.w(TAG, "Receiver already unregistered: " + e.getMessage());
+        }
+        super.handleOnDestroy();
+    }
 
     @PluginMethod()
     public void schedule(PluginCall call) {
@@ -81,12 +122,16 @@ public class PrayerServicePlugin extends Plugin {
     public void play(PluginCall call) {
         String prayerKey = call.getString("prayerKey", "dzuhur");
         String prayerName = call.getString("prayerName", "Sholat");
+        String audioFile = call.getString("audioFile", Constants.DEFAULT_AUDIO_FILE);
+        boolean isPreview = call.getBoolean("isPreview", false);
 
         Context context = getContext();
         Intent intent = new Intent(context, PrayerPlaybackService.class);
         intent.setAction(Constants.ACTION_PLAY_PRAYER);
         intent.putExtra(Constants.EXTRA_PRAYER_KEY, prayerKey);
         intent.putExtra(Constants.EXTRA_PRAYER_NAME, prayerName);
+        intent.putExtra(Constants.EXTRA_AUDIO_FILE, audioFile);
+        intent.putExtra(Constants.EXTRA_IS_PREVIEW, isPreview);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
@@ -376,12 +421,19 @@ public class PrayerServicePlugin extends Plugin {
                 boolean isAdzan = alarmObj.getBoolean("isAdzan");
                 int id = alarmObj.optInt("id", getRequestCode(key));
 
+                // Audio file resolved by JS — Java just passes it through
+                String audioFile = alarmObj.optString("audioFile", Constants.DEFAULT_AUDIO_FILE);
+                if (audioFile == null || audioFile.isEmpty()) {
+                    audioFile = Constants.DEFAULT_AUDIO_FILE;
+                }
+
                 if (timestamp > now) {
                     Intent intent = new Intent(context, PrayerAlarmReceiver.class);
                     intent.putExtra(Constants.EXTRA_PRAYER_KEY, key);
                     intent.putExtra(Constants.EXTRA_PRAYER_NAME, title); // Using 'title' as name
                     intent.putExtra(Constants.EXTRA_BODY, body);
                     intent.putExtra(Constants.EXTRA_IS_ADZAN, isAdzan);
+                    intent.putExtra(Constants.EXTRA_AUDIO_FILE, audioFile);
 
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(
                             context, id, intent,
