@@ -6,52 +6,51 @@ import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
 import { isNative } from './platform.js';
 
+const IMPACT_STYLE_MAP = {
+    light: ImpactStyle.Light,
+    medium: ImpactStyle.Medium,
+    heavy: ImpactStyle.Heavy,
+};
+
 /**
- * Trigger impact haptic feedback
+ * Trigger impact haptic feedback.
+ *
+ * Fire-and-forget: dispatches the native bridge call immediately without
+ * awaiting the response. This eliminates haptic lag during rapid successive
+ * taps — each call goes straight to the native layer without queuing behind
+ * the previous one's round-trip.
+ *
  * @param {'light'|'medium'|'heavy'} style
  */
-export async function impact(style = 'light') {
+export function impact(style = 'light') {
     if (!isNative) return;
-    try {
-        const styleMap = {
-            light: ImpactStyle.Light,
-            medium: ImpactStyle.Medium,
-            heavy: ImpactStyle.Heavy,
-        };
-        await Haptics.impact({ style: styleMap[style] || ImpactStyle.Light });
-    } catch (e) {
-        console.warn('Haptic impact failed:', e);
-    }
+    Haptics.impact({ style: IMPACT_STYLE_MAP[style] || ImpactStyle.Light })
+        .catch(e => console.warn('Haptic impact failed:', e));
 }
 
 /**
  * Trigger notification haptic feedback
  * @param {'success'|'warning'|'error'} type
  */
-export async function notification(type = 'success') {
+const NOTIFICATION_TYPE_MAP = {
+    success: NotificationType.Success,
+    warning: NotificationType.Warning,
+    error: NotificationType.Error,
+};
+
+export function notification(type = 'success') {
     if (!isNative) return;
-    try {
-        const typeMap = {
-            success: NotificationType.Success,
-            warning: NotificationType.Warning,
-            error: NotificationType.Error,
-        };
-        await Haptics.notification({ type: typeMap[type] || NotificationType.Success });
-    } catch (e) {
-        console.warn('Haptic notification failed:', e);
-    }
+    Haptics.notification({ type: NOTIFICATION_TYPE_MAP[type] || NotificationType.Success })
+        .catch(e => console.warn('Haptic notification failed:', e));
 }
 
 /**
  * Trigger selection haptic (for selection changes)
  */
-export async function selectionChanged() {
+export function selectionChanged() {
     if (!isNative) return;
-    try {
-        await Haptics.selectionChanged();
-    } catch (e) {
-        console.warn('Haptic selection failed:', e);
-    }
+    Haptics.selectionChanged()
+        .catch(e => console.warn('Haptic selection failed:', e));
 }
 
 /**

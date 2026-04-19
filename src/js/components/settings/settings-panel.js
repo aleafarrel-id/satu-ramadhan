@@ -92,16 +92,16 @@ export function render(container) {
 
     function updateAdzanValueDisplay() {
         if (!adzanSelectedValue) return;
-        
+
         const normalId = currentAdzan;
         const subuhId = currentAdzanSubuh;
-        
+
         // Find correct labels from our config registry if i18n isn't ready
         const normalConfig = AVAILABLE_ADZANS.find(a => a.id === normalId) || AVAILABLE_ADZANS[0];
         const subuhConfig = AVAILABLE_ADZANS.find(a => a.id === subuhId) || AVAILABLE_ADZANS[0];
-        
+
         const normalLabel = t(normalConfig.labelKey, { defaultValue: 'Makkah' });
-        
+
         if (normalId === subuhId) {
             adzanSelectedValue.textContent = normalLabel;
         } else {
@@ -126,7 +126,7 @@ export function render(container) {
 
     notificationToggle?.addEventListener('change', async (e) => {
         const enabled = e.target.checked;
-        await impact('medium');
+        impact('medium');
 
         if (!enabled) {
             store.setState('settings.notification', false);
@@ -159,7 +159,7 @@ export function render(container) {
                     store.setState('settings.notification', true);
                     updateAdzanRowState(true, container);
                     Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
-                    
+
                     // Tandai bahwa dialog baterai perlu dimunculkan nanti
                     // (setelah dialog ini benar-benar selesai tertutup)
                     shouldShowBattery = true;
@@ -182,9 +182,9 @@ export function render(container) {
         }
     });
 
-    adzanToggle?.addEventListener('change', async (e) => {
+    adzanToggle?.addEventListener('change', (e) => {
         const enabled = e.target.checked;
-        await impact('medium');
+        impact('medium');
         store.setState('settings.adzan', enabled);
         Notif.show(
             enabled ? t('components/settings/settings-panel:adzan_on') : t('components/settings/settings-panel:adzan_off'),
@@ -195,18 +195,17 @@ export function render(container) {
     if (!isWeb) {
         adzanSelectorRow?.addEventListener('click', async () => {
             if (!store.getState('settings.notification')) return;
-            await impact('medium');
-            
+
             showAdzanSelectorModal({
                 currentAdzan,
                 currentAdzanSubuh,
                 onSelect: (selections) => {
                     currentAdzan = selections.normal;
                     currentAdzanSubuh = selections.subuh;
-                    
+
                     store.setState('settings.adzan_selected', currentAdzan);
                     store.setState('settings.adzan_subuh', currentAdzanSubuh);
-                    
+
                     updateAdzanValueDisplay();
                 }
             });
@@ -214,10 +213,10 @@ export function render(container) {
 
         batteryRow?.addEventListener('click', async () => {
             if (!store.getState('settings.notification')) return;
-            await impact('medium');
-            
+            impact('medium');
+
             await loadNS('modules/permission/permission-dialog');
-            
+
             try {
                 const status = await PrayerService.isIgnoringBatteryOptimizations();
                 if (status && status.isIgnoring) {
@@ -244,7 +243,7 @@ function updateAdzanRowState(notifEnabled, container) {
     const adzanRow = root.querySelector('#adzan-row');
     const batteryRow = root.querySelector('#battery-row');
     const selectorRow = root.querySelector('#adzan-selector-row');
-    
+
     if (adzanRow) adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
     if (batteryRow) batteryRow.classList.toggle('settings-item--disabled', !notifEnabled);
     if (selectorRow) selectorRow.classList.toggle('settings-item--disabled', !notifEnabled);

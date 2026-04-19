@@ -36,7 +36,7 @@ export async function showAdzanSelectorModal({ currentAdzan, currentAdzanSubuh, 
     await loadNS('components/modal/adzan-selector-modal');
 
     _onSelectCallback = onSelect;
-    
+
     const validateAdzan = (val, defaultVal) => {
         if (!val || typeof val !== 'string') return defaultVal;
         const match = AVAILABLE_ADZANS.find(a => a.id === val.trim());
@@ -49,7 +49,7 @@ export async function showAdzanSelectorModal({ currentAdzan, currentAdzanSubuh, 
 
     _overlayEl = _createModalDOM();
     document.body.appendChild(_overlayEl);
-    
+
     _renderOptions();
 
     registerModalDismiss(_handleCancel);
@@ -74,7 +74,6 @@ export async function showAdzanSelectorModal({ currentAdzan, currentAdzanSubuh, 
 
 function _handleSelect(adzanId, e) {
     if (e) e.stopPropagation();
-    impact('light');
 
     if (_state.activeTab === 'normal') {
         _state.normal = adzanId;
@@ -82,31 +81,38 @@ function _handleSelect(adzanId, e) {
         _state.subuh = adzanId;
     }
 
-    _renderOptions(); // Refresh selection visually
-
-    // Show success notification with the localized label of the selected adzan
-    const selectedConfig = AVAILABLE_ADZANS.find(a => a.id === adzanId);
-    if (selectedConfig) {
-        const adzanLabel = t(selectedConfig.labelKey);
-        Notif.show(t('components/modal/adzan-selector-modal:selected_feedback', { adzan: adzanLabel }), 'success');
-    }
-
-    if (_onSelectCallback) {
-        // Fire immediately upon selection as was original behavior
-        _onSelectCallback({
-            normal: _state.normal,
-            subuh: _state.subuh
+    // CSS-only toggle — avoids full DOM rebuild (innerHTML + rebind)
+    if (_overlayEl) {
+        _overlayEl.querySelectorAll('.adzan-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.id === adzanId);
         });
     }
+
+    // Defer notification and store callback to the next frame.
+    // This frees the main thread immediately so any follow-up tap
+    // (e.g. "Selesai" button) is not blocked and responds instantly.
+    requestAnimationFrame(() => {
+        const selectedConfig = AVAILABLE_ADZANS.find(a => a.id === adzanId);
+        if (selectedConfig) {
+            const adzanLabel = t(selectedConfig.labelKey);
+            Notif.show(t('components/modal/adzan-selector-modal:selected_feedback', { adzan: adzanLabel }), 'success');
+        }
+
+        if (_onSelectCallback) {
+            _onSelectCallback({
+                normal: _state.normal,
+                subuh: _state.subuh
+            });
+        }
+    });
 }
 
 async function _handlePlay(adzanId, playBtn, e) {
     if (e) e.stopPropagation();
-    impact('medium');
-    
+
     // Prevent interaction while a play call is in progress
     if (playBtn.classList.contains('loading')) return;
-    
+
     // Reset any other playing buttons visually
     _overlayEl.querySelectorAll('.adzan-preview-btn.playing').forEach(btn => {
         if (btn !== playBtn) {
@@ -120,11 +126,11 @@ async function _handlePlay(adzanId, playBtn, e) {
     });
 
     const isCurrentlyPlaying = playBtn.classList.contains('playing');
-    
+
     if (!isCurrentlyPlaying) {
         // Stop any currently playing preview first
         _stopPreview();
-        
+
         // Show loading spinner while native service initializes
         playBtn.classList.add('loading');
         const icon = playBtn.querySelector('i');
@@ -132,11 +138,11 @@ async function _handlePlay(adzanId, playBtn, e) {
             icon.classList.remove('bx-play-circle');
             icon.classList.add('bx-loader-alt', 'bx-spin');
         }
-        
+
         const isSubuh = _state.activeTab === 'subuh';
         const audioFile = resolveAudioFile(adzanId, isSubuh);
         const adzanLabel = t(`components/modal/adzan-selector-modal:${adzanId}`);
-        
+
         if (isNative) {
             try {
                 await PrayerService.play({
@@ -145,7 +151,7 @@ async function _handlePlay(adzanId, playBtn, e) {
                     audioFile,
                     isPreview: true,
                 });
-                
+
                 // Success — switch to pause icon
                 playBtn.classList.remove('loading');
                 playBtn.classList.add('playing');
@@ -166,12 +172,12 @@ async function _handlePlay(adzanId, playBtn, e) {
                 return;
             }
         }
-        
+
         Notif.show(t('components/modal/adzan-selector-modal:preview_feedback', { adzan: adzanLabel }), 'info');
     } else {
         // Stop playback
         _stopPreview();
-        
+
         playBtn.classList.remove('playing');
         const icon = playBtn.querySelector('i');
         if (icon) {
@@ -226,14 +232,26 @@ function _bindEvents() {
     tabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
             if (e) e.stopPropagation();
-            impact('light');
             const targetTab = tab.dataset.tab;
             if (_state.activeTab !== targetTab) {
                 _stopPreview(); // Stop preview when switching tabs
                 _state.activeTab = targetTab;
                 _overlayEl.querySelectorAll('.adzan-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                _renderOptions();
+
+                const container = _overlayEl.querySelector('.adzan-options-container');
+                if (container) {
+                    container.style.opacity = '0';
+                    container.style.transform = 'translateY(6px)';
+
+                    setTimeout(() => {
+                        _renderOptions();
+                        container.style.opacity = '1';
+                        container.style.transform = 'translateY(0)';
+                    }, 200);
+                } else {
+                    _renderOptions();
+                }
             }
         });
     });
@@ -246,14 +264,14 @@ function _bindEvents() {
 function _bindOptionEvents() {
     _overlayEl.querySelectorAll('.adzan-option').forEach(option => {
         const id = option.dataset.id;
-        
+
         const selectArea = option.querySelector('.adzan-select-area');
         if (selectArea) {
             selectArea.addEventListener('click', (e) => {
                 _handleSelect(id, e);
             });
         }
-        
+
         const playBtn = option.querySelector('.adzan-preview-btn');
         if (playBtn) {
             playBtn.addEventListener('click', (e) => {
@@ -295,7 +313,7 @@ function _removeModal() {
 
 function _renderOptions() {
     if (!_overlayEl) return;
-    
+
     const container = _overlayEl.querySelector('.adzan-options-container');
     if (!container) return;
 
@@ -327,7 +345,7 @@ function _renderOptions() {
     }).join('');
 
     container.innerHTML = optionsHTML;
-    
+
     // Re-bind option events since DOM was cleared
     _bindOptionEvents();
 }
@@ -355,8 +373,13 @@ function _createModalDOM() {
         </div>
     `;
 
-    overlay.querySelector('#adzan-btn-cancel')
-        ?.addEventListener('click', _handleCancel);
+    const cancelBtn = overlay.querySelector('#adzan-btn-cancel');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', (e) => {
+            impact('light');
+            _handleCancel(e);
+        });
+    }
 
     return overlay;
 }
