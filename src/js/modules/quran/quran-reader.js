@@ -13,7 +13,7 @@ import { showConfirmModal } from '../../components/modal/confirm-modal.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
 import { renderBatchedList, createRenderContext } from './quran-utility.js';
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
-import { getTajweedEnabled, getTransliterationEnabled, isAudioOfflineEnabled } from './quran-settings.js';
+import { getTajweedEnabled, getTransliterationEnabled, isAudioOfflineEnabled, setAudioMode } from './quran-settings.js';
 import * as BookmarkManager from './bookmark-manager.js';
 
 // Audio & Download
@@ -591,26 +591,32 @@ function _rebuildBannerActions(container, surahIndex, totalAyahs) {
       // ── State 3: Ready to Play ──
       if (bannerCard) bannerCard.classList.add('state-downloaded');
 
-      // Optional auxiliary actions for Native
+      // Mode switch pill for Native
+      let redownloadBtn = null;
       if (Capacitor.isNativePlatform()) {
-         if (isStreaming && !isFullyDownloaded) {
-            // Provide a pill to download the surah for later offline use
-            const auxLabel = downloadedCount > 0 
-               ? t('modules/quran/quran-reader:download_progress', { current: downloadedCount, total: totalAyahs })
-               : t('modules/quran/quran-reader:download_surah');
+         if (isStreaming) {
+            // Streaming → offer switch to offline mode
+            const switchBtn = document.createElement('button');
+            switchBtn.className = 'quran-reader-redownload-pill';
+            switchBtn.dataset.action = 'banner-switch-offline';
+            switchBtn.innerHTML = `<i class='bx bx-cloud-download'></i> <span>${t('modules/quran/quran-reader:switch_to_offline')}</span>`;
+            container.appendChild(switchBtn);
+         } else {
+            // Offline → offer switch to streaming mode
+            const switchBtn = document.createElement('button');
+            switchBtn.className = 'quran-reader-redownload-pill';
+            switchBtn.dataset.action = 'banner-switch-streaming';
+            switchBtn.innerHTML = `<i class='bx bx-wifi'></i> <span>${t('modules/quran/quran-reader:switch_to_streaming')}</span>`;
+            container.appendChild(switchBtn);
 
-            const auxBtn = document.createElement('button');
-            auxBtn.className = 'quran-reader-redownload-pill';
-            auxBtn.dataset.action = 'banner-download';
-            auxBtn.innerHTML = `<i class='bx bx-cloud-download'></i> <span>${auxLabel}</span>`;
-            container.appendChild(auxBtn);
-         } else if (isFullyDownloaded) {
-            // Fully downloaded: offer Option to Redownload
-            const redownloadBtn = document.createElement('button');
-            redownloadBtn.className = 'quran-reader-redownload-pill';
-            redownloadBtn.dataset.action = 'banner-redownload';
-            redownloadBtn.innerHTML = `<i class='bx bx-refresh'></i> <span>${t('modules/quran/quran-reader:redownload_surah')}</span>`;
-            container.appendChild(redownloadBtn);
+            // Keep redownload pill for fully downloaded surahs (corrupt file recovery)
+            // Deferred to append after the play button
+            if (isFullyDownloaded) {
+               redownloadBtn = document.createElement('button');
+               redownloadBtn.className = 'quran-reader-redownload-pill';
+               redownloadBtn.dataset.action = 'banner-redownload';
+               redownloadBtn.innerHTML = `<i class='bx bx-refresh'></i> <span>${t('modules/quran/quran-reader:redownload_surah')}</span>`;
+            }
          }
       }
 
@@ -625,9 +631,23 @@ function _rebuildBannerActions(container, surahIndex, totalAyahs) {
       label.className = 'quran-reader-surah-action-label';
       label.textContent = t('modules/quran/quran-reader:play_surah');
       container.appendChild(label);
+
+      // Append redownload button at the very bottom
+      if (redownloadBtn) {
+         container.appendChild(redownloadBtn);
+      }
    } else {
       // ── State 1: Not Downloaded (or partially) ──
       if (bannerCard) bannerCard.classList.add('state-idle');
+
+      // Mode switch pill: offer switch to streaming (Native only)
+      if (Capacitor.isNativePlatform()) {
+         const switchBtn = document.createElement('button');
+         switchBtn.className = 'quran-reader-redownload-pill';
+         switchBtn.dataset.action = 'banner-switch-streaming';
+         switchBtn.innerHTML = `<i class='bx bx-wifi'></i> <span>${t('modules/quran/quran-reader:switch_to_streaming')}</span>`;
+         container.appendChild(switchBtn);
+      }
 
       const dlBtn = document.createElement('button');
       dlBtn.className = 'quran-reader-surah-action-btn';
@@ -1151,6 +1171,14 @@ function _handleBannerAction(btn) {
       // ── Re-download (corrupt/missing file recovery) ──
       case 'banner-redownload':
          _startRedownloadWithPermission(surahIndex, totalAyahs, surahTitle);
+         break;
+
+      // ── Mode Switch Actions ──
+      case 'banner-switch-streaming':
+         setAudioMode('streaming');
+         break;
+      case 'banner-switch-offline':
+         setAudioMode('offline');
          break;
    }
 }
