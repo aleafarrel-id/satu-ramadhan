@@ -19,6 +19,7 @@ import { t, loadNS } from '../core/i18n.js';
 import { showConfirmModal } from '../components/modal/confirm-modal.js';
 import { showTasbihPresetModal } from '../components/modal/tasbih-preset-modal.js';
 import { escapeHtml } from '../utils/sanitize.js';
+import { trapFocus } from '../utils/a11y.js';
 import { impact, doubleVibrate } from '../modules/system/haptic.js';
 import { preloadAudio, playSingleClick, playDoubleClick } from '../modules/tasbih/tasbih-audio.js';
 import { isWeb } from '../modules/system/platform.js';
@@ -28,6 +29,8 @@ import * as notif from '../modules/notification/notification.js';
 
 let _container = null;
 let _isOpen = false;
+let _releasePanelFocus = null;
+let _releaseSelectorFocus = null;
 let _sessions = {};
 let _count = 0;
 let _round = 1;
@@ -102,6 +105,7 @@ export function open() {
     _container.classList.add('tasbih-active');
 
     registerModalDismiss(close);
+    _releasePanelFocus = trapFocus(_container);
 }
 
 /** Close the Tasbih panel (back button / swipe left / hardware back). */
@@ -109,11 +113,10 @@ export function close() {
     if (!_isOpen || !_container) return;
     _isOpen = false;
 
-    // Blur any active element inside the container before hiding it
-    // to prevent accessibility warnings (e.g. "descendant retained focus")
-    if (_container.contains(document.activeElement)) {
-        document.activeElement.blur();
-    }
+    // Release focus trap — restores focus to the element that was active
+    // before the panel was opened (better than a bare blur() to body).
+    _releasePanelFocus?.();
+    _releasePanelFocus = null;
 
     _container.classList.remove('tasbih-active');
     _container.setAttribute('aria-hidden', 'true');
@@ -367,7 +370,7 @@ function _buildListHTML() {
         }
 
         return `
-        <div class="tasbih-list-item ${z.id === _activeZikirId ? 'selected' : ''}" data-id="${z.id}" role="option" aria-selected="${z.id === _activeZikirId}">
+        <div class="tasbih-list-item ${z.id === _activeZikirId ? 'selected' : ''}" data-id="${z.id}" role="option" aria-selected="${z.id === _activeZikirId}" tabindex="0">
             <div class="tasbih-list-item-header">
                 <div class="tasbih-list-item-info">
                     <span class="tasbih-list-item-name">${name}</span>
@@ -502,6 +505,17 @@ function _bindEvents() {
     // Selector modal close
     _el.selectorModal.addEventListener('click', e => {
         if (e.target === _el.selectorModal) _closeSelector();
+    });
+
+    // Keyboard activation for list items (Enter / Space → same logic as click).
+    // Guard: native buttons and links already handle Enter/Space — do not intercept.
+    _el.list.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+        const item = e.target.closest('.tasbih-list-item');
+        if (!item) return;
+        e.preventDefault();
+        item.click();
     });
 
     // Dzikir selection via event delegation
@@ -720,11 +734,14 @@ function _animateBeadsArea() {
 function _openSelector() {
     _el.selectorModal.classList.add('active');
     registerModalDismiss(_closeSelector);
+    _releaseSelectorFocus = trapFocus(_el.selectorModal);
 }
 
 function _closeSelector() {
     _el.selectorModal.classList.remove('active');
     unregisterModalDismiss(_closeSelector);
+    _releaseSelectorFocus?.();
+    _releaseSelectorFocus = null;
     setTimeout(() => {
         _closeAllInlineForms();
     }, 300);
