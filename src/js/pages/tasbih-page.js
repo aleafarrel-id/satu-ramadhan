@@ -20,6 +20,8 @@ import { showConfirmModal } from '../components/modal/confirm-modal.js';
 import { showTasbihPresetModal } from '../components/modal/tasbih-preset-modal.js';
 import { escapeHtml } from '../utils/sanitize.js';
 import { impact, doubleVibrate } from '../modules/system/haptic.js';
+import { preloadAudio, playSingleClick, playDoubleClick } from '../modules/tasbih/tasbih-audio.js';
+import { isWeb } from '../modules/system/platform.js';
 import * as notif from '../modules/notification/notification.js';
 
 // ── Module State ───────────────────────────────────────────────────────────────
@@ -37,6 +39,7 @@ let _beadPositions = [];
 let _svgW = 390;
 let _svgH = 460;
 let _resizeObserver = null;
+let _feedbackMode = 'haptic';
 
 function _getAllZikir() {
     const customPresets = store.getState('tasbih.customPresets') || [];
@@ -66,6 +69,7 @@ export async function init(container) {
     _physicalCount = store.getState('tasbih.physicalCount') ?? 0;
     _activeZikirId = store.getState('tasbih.activeZikir') ?? 'subhanallah';
     _activeZikir = _getAllZikir().find(z => z.id === _activeZikirId) ?? _getAllZikir()[0];
+    _feedbackMode = store.getState('tasbih.feedbackMode') ?? (isWeb ? 'audio' : 'haptic');
 
     // Migrate from legacy single state if any
     if (Object.keys(_sessions).length === 0) {
@@ -82,6 +86,8 @@ export async function init(container) {
     _bindEvents();
     _updateInfoCard();
     _updateBeads();
+    _updateFeedbackToggleIcon();
+    _initAudio();
 }
 
 // ── Open / Close API ──────────────────────────────────────────────────────────
@@ -197,6 +203,11 @@ function _renderHTML() {
 
             <!-- ── Beads Visual Area (full tap zone) ── -->
             <div class="tasbih-beads-area" id="tb-beads-area">
+                <!-- ── Feedback Mode Toggle (Top Right) ── -->
+                <button class="tasbih-feedback-btn" id="tb-feedback-toggle"
+                    aria-label="${t('pages/tasbih-page:toggle_feedback', { defaultValue: 'Ganti mode umpan balik' })}">
+                    <i class="bx bx-mobile-vibration"></i>
+                </button>
             </div>
 
             <!-- ── Floating Navigation (Bottom Left) ── -->
@@ -288,7 +299,12 @@ function _rebuildBeadsSVG() {
         `;
     }).join('');
 
-    _el.beadsArea.innerHTML = `
+    // Selectively replace the SVG only — preserve sibling elements
+    // (e.g. the feedback toggle button) that live inside beads-area.
+    const existingSvg = _el.beadsArea.querySelector('.tasbih-beads-svg');
+    if (existingSvg) existingSvg.remove();
+
+    const svgMarkup = `
         <svg class="tasbih-beads-svg" viewBox="0 0 ${W} ${H}">
             <defs>
                 <!-- Pending bead: warm wooden tan -->
@@ -324,6 +340,11 @@ function _rebuildBeadsSVG() {
             ${beadsHTML}
         </svg>
     `;
+
+    // Insert SVG before the first child (toggle button) to keep z-order correct
+    const template = document.createElement('template');
+    template.innerHTML = svgMarkup.trim();
+    _el.beadsArea.prepend(template.content.firstElementChild);
 }
 
 /** Build dzikir list items for the selector sheet. */
@@ -382,6 +403,7 @@ function _cacheElements() {
     _el.cleanBtn = _container.querySelector('#tb-clean');
     _el.selectorModal = _container.querySelector('#tb-selector-modal');
     _el.list = _container.querySelector('#tb-list');
+    _el.feedbackToggle = _container.querySelector('#tb-feedback-toggle');
 
     if (!_resizeObserver && _el.beadsArea) {
         _resizeObserver = new ResizeObserver(entries => {
@@ -405,6 +427,15 @@ function _cacheElements() {
 
 function _bindEvents() {
     _el.backBtn.addEventListener('click', close);
+
+    // Feedback mode toggle (haptic ↔ audio)
+    _el.feedbackToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent bubbling to beads-area tap handler
+        _toggleFeedbackMode();
+    });
+    _el.feedbackToggle.addEventListener('touchstart', (e) => {
+        e.stopPropagation(); // Prevent touchstart from incrementing counter
+    }, { passive: true });
 
     // Settings opens selector
     _el.settingsBtn.addEventListener('click', _openSelector);
@@ -539,7 +570,7 @@ function _increment() {
     if (target > 0 && _count === target) {
         // Transition tap (e.g. from 33 -> 0)
         _physicalCount++;
-        doubleVibrate();
+        _triggerFeedback('double');
 
         const isCustomPreset = _activeZikir.id.startsWith('custom_') || _activeZikir.id === 'custom';
 
@@ -572,7 +603,7 @@ function _increment() {
         _count++;
         _totalCount++;
         _physicalCount++;
-        impact('light');
+        _triggerFeedback('single');
     }
 
     _saveState();
@@ -854,4 +885,79 @@ function _nextZikir() {
     _changeZikir(all[index].id);
 }
 
+// ── Feedback Mode (Haptic / Audio) ─────────────────────────────────────────────
 
+/**
+ * Preloads audio assets for SFX feedback.
+ * Non-blocking — failures are swallowed so tasbih still works.
+ */
+async function _initAudio() {
+    try {
+        await preloadAudio();
+    } catch (e) {
+        console.warn('Tasbih audio preload failed:', e);
+    }
+}
+
+/**
+ * Unified feedback dispatcher — routes to haptic or audio
+ * based on the current feedback mode.
+ * @param {'single'|'double'} type - 'single' for normal tap, 'double' for round complete
+ */
+function _triggerFeedback(type) {
+    if (_feedbackMode === 'audio') {
+        if (type === 'double') {
+            playDoubleClick();
+        } else {
+            playSingleClick();
+        }
+    } else {
+        // Haptic mode (default on native)
+        if (type === 'double') {
+            doubleVibrate();
+        } else {
+            impact('light');
+        }
+    }
+}
+
+/**
+ * Toggles between haptic and audio feedback modes.
+ * Persists preference and updates the UI indicator.
+ */
+function _toggleFeedbackMode() {
+    _feedbackMode = _feedbackMode === 'haptic' ? 'audio' : 'haptic';
+    store.setState('tasbih.feedbackMode', _feedbackMode);
+    _updateFeedbackToggleIcon();
+
+    // Provide immediate tactile confirmation when switching TO haptic
+    if (_feedbackMode === 'haptic') {
+        impact('light');
+    } else {
+        playSingleClick();
+    }
+}
+
+/**
+ * Syncs the toggle button's icon and visual state with the current mode.
+ * - Haptic mode  → vibration icon (default look)
+ * - Audio mode   → volume icon + accent highlight
+ */
+function _updateFeedbackToggleIcon() {
+    if (!_el.feedbackToggle) return;
+
+    const icon = _el.feedbackToggle.querySelector('i');
+    const isAudio = _feedbackMode === 'audio';
+
+    // Swap icon class
+    icon.className = isAudio ? 'bx bx-volume-full' : 'bx bx-mobile-vibration';
+
+    // Toggle accent highlight
+    _el.feedbackToggle.classList.toggle('mode-audio', isAudio);
+
+    // Micro-animation on icon change
+    _el.feedbackToggle.classList.add('animating');
+    _el.feedbackToggle.addEventListener('animationend', () => {
+        _el.feedbackToggle.classList.remove('animating');
+    }, { once: true });
+}
