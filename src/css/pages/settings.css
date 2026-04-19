@@ -405,6 +405,84 @@
    line-height: var(--lh-normal);
 }
 
+/* ── Medium-small screens (e.g. ~390px phones) ── */
+@media (max-width: 390px) {
+
+   /* ── Uniform horizontal padding for ALL card headers ── */
+   .settings-loc-header,
+   .settings-preset-header {
+      padding: var(--spacing-md);
+   }
+
+   .settings-card-header {
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs) var(--spacing-md);
+   }
+
+   .settings-item {
+      padding: 12px var(--spacing-md);
+      min-height: 52px;
+   }
+
+   .settings-divider {
+      margin: 0 var(--spacing-md);
+   }
+
+   /* ── Typography scale-down ── */
+   .settings-loc-title,
+   .settings-preset-title,
+   .settings-card-title {
+      font-size: var(--fs-xs);
+      margin-bottom: 2px;
+   }
+
+   .settings-loc-regency,
+   .settings-preset-org {
+      font-size: var(--fs-xs);
+   }
+
+   .settings-loc-province,
+   .settings-preset-dates {
+      font-size: var(--fs-2xs);
+   }
+
+   .settings-item-info {
+      font-size: var(--fs-xs);
+   }
+
+   .settings-select-trigger {
+      font-size: var(--fs-xs);
+   }
+
+   /* ── Icon scale-down to match smaller text ── */
+   .settings-loc-map-icon,
+   .settings-preset-calendar-icon,
+   .settings-loc-icon {
+      font-size: var(--icon-md);
+   }
+
+   .settings-card-chevron {
+      font-size: var(--icon-md);
+   }
+
+   .settings-item-info i {
+      font-size: var(--icon-sm);
+      width: 20px;
+      height: 20px;
+   }
+
+   /* ── Inner content padding consistency ── */
+   .settings-loc-desc,
+   .settings-preset-desc {
+      padding: 0 var(--spacing-md);
+      font-size: var(--fs-2xs);
+   }
+
+   .settings-loc-actions,
+   .settings-preset-actions {
+      padding: 0 var(--spacing-md) var(--spacing-md);
+   }
+}
+
 @media (max-width: 360px) {
 
    .settings-item-info {

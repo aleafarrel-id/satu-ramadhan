@@ -159,3 +159,48 @@
     transform: scale(0.97);
     background: var(--clr-primary-a20);
 }
+
+/* ── Medium-small screens (~390px) ── */
+@media (max-width: 390px) {
+    .compass-guide-modal {
+        max-width: 280px;
+        padding: var(--spacing-md);
+    }
+
+    .compass-guide-modal__icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .compass-guide-modal__icon i {
+        font-size: var(--icon-md);
+    }
+
+    .compass-guide-modal__icon::after {
+        inset: -4px;
+    }
+
+    .compass-guide-modal__title {
+        font-size: var(--fs-sm);
+    }
+
+    .compass-guide-modal__items {
+        gap: 12px;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .compass-guide-item {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+
+    .compass-guide-item span {
+        font-size: var(--fs-2xs);
+    }
+
+    .compass-guide-modal__btn-close {
+        padding: 10px var(--spacing-sm);
+        font-size: var(--fs-2xs);
+    }
+}

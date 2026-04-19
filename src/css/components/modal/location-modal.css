@@ -182,3 +182,44 @@
    outline: none;
    box-shadow: 0 0 0 2px #102632, 0 0 0 4px var(--clr-accent-500);
 }
+
+/* ── Medium-small screens (~390px) ── */
+@media (max-width: 390px) {
+   .location-modal {
+      max-width: 280px;
+      padding: var(--spacing-md);
+   }
+
+   .location-modal__icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: var(--spacing-sm);
+   }
+
+   .location-modal__icon i {
+      font-size: var(--icon-md);
+   }
+
+   .location-modal__icon::after {
+      inset: -4px;
+   }
+
+   .location-modal__title {
+      font-size: var(--fs-sm);
+   }
+
+   .location-modal__desc {
+      font-size: var(--fs-2xs);
+      margin: var(--spacing-md) 0;
+   }
+
+   .location-modal__buttons {
+      gap: 12px;
+   }
+
+   .location-modal__btn-gps,
+   .location-modal__btn-manual {
+      padding: 10px var(--spacing-sm);
+      font-size: var(--fs-2xs);
+   }
+}

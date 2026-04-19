@@ -154,3 +154,48 @@
     transform: scale(0.97);
     background: rgba(0, 0, 0, 0.06);
 }
+
+/* ── Medium-small screens (~390px) ── */
+@media (max-width: 390px) {
+    .mushaf-guide-modal {
+        max-width: 290px;
+        padding: var(--spacing-md);
+    }
+
+    .mushaf-guide-modal__icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .mushaf-guide-modal__icon i {
+        font-size: var(--icon-md);
+    }
+
+    .mushaf-guide-modal__icon::after {
+        inset: -4px;
+    }
+
+    .mushaf-guide-modal__title {
+        font-size: var(--fs-sm);
+    }
+
+    .mushaf-guide-modal__items {
+        gap: 12px;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .mushaf-guide-item {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+
+    .mushaf-guide-item span {
+        font-size: var(--fs-2xs);
+    }
+
+    .mushaf-guide-modal__btn-close {
+        padding: 10px var(--spacing-sm);
+        font-size: var(--fs-2xs);
+    }
+}

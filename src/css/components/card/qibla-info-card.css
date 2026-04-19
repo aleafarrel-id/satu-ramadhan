@@ -135,6 +135,30 @@
     display: none;
 }
 
+/* Responsive adjustments for smaller screens */
+/* ── Medium-small screens (~390px) ── */
+@media (max-width: 390px) {
+    .qibla-info-card__header {
+        font-size: var(--fs-xs);
+    }
+    
+    .qibla-badge {
+        padding-left: 20px;
+        min-height: 32px;
+    }
+
+    .qibla-badge__icon-circle {
+        left: -6px;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+
+    .qibla-badge__value {
+        font-size: var(--fs-sm);
+    }
+}
+
 @media (max-width: 320px) {
     .qibla-info-card__header {
         font-size: var(--fs-xs);
@@ -142,5 +166,9 @@
 
     .qibla-info-card__fallback {
         font-size: var(--fs-2xs);
+    }
+
+    .qibla-badge__value {
+        font-size: var(--fs-xs);
     }
 }

@@ -187,6 +187,50 @@
 }
 
 /* Responsive adjustments for smaller screens */
+/* ── Medium-small screens (~390px) ── */
+@media (max-width: 390px) {
+    .compass-outer-wrapper {
+        max-width: 270px;
+        margin: var(--sp-6) auto;
+    }
+
+    .compass-container {
+        width: 270px;
+        height: 270px;
+    }
+
+    .compass-dial-wrapper {
+        width: 235px;
+        height: 235px;
+    }
+
+    .compass-tick {
+        transform-origin: 50% 117.5px;
+    }
+
+    .compass-inner {
+        width: 126px;
+        height: 126px;
+    }
+
+    .compass-needle {
+        width: 27px;
+        height: 165px;
+    }
+
+    .needle-top {
+        border-left-width: 13px;
+        border-right-width: 13px;
+        border-bottom-width: 82px;
+    }
+
+    .needle-bottom {
+        border-left-width: 13px;
+        border-right-width: 13px;
+        border-top-width: 82px;
+    }
+}
+
 @media (max-width: 320px) {
     .compass-outer-wrapper {
         max-width: 250px;

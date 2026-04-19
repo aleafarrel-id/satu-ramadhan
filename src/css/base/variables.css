@@ -224,14 +224,16 @@
 
    --nav-slider-size-xl: 46px;
    --nav-slider-size-lg: 44px;
-   --nav-slider-size-md: 42px;
-   --nav-slider-size-sm: 40px;
+   --nav-slider-size-md: 40px;
+   --nav-slider-size-sm: 36px;
+   --nav-slider-size-xs: 32px;
 
-   /* Navigation Slider Specifics */
-   --nav-slider-size-xl: 46px;
-   --nav-slider-size-lg: 44px;
-   --nav-slider-size-md: 42px;
-   --nav-slider-size-sm: 40px;
+   /* Navigation Slider Specifics (Legacy/Redundant - cleaning up) */
+   --nav-slider-width-xl: 64px;
+   --nav-slider-width-lg: 60px;
+   --nav-slider-width-md: 52px;
+   --nav-slider-width-sm: 44px;
+   --nav-slider-width-xs: 36px;
 
    /* Qibla Map Card */
    --clr-map-fallback: var(--clr-bg-card-solid);

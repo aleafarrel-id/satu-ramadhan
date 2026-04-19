@@ -120,3 +120,52 @@
 .notif--warning .notif__icon {
     color: #FFD60A;
 }
+
+/* ── Responsive Overrides ── */
+
+@media (max-width: 390px) {
+    .notif-container {
+        top: 68px;
+        gap: 6px;
+        padding: 0 12px;
+    }
+
+    .notif {
+        min-height: 38px;
+        padding: 6px 12px;
+    }
+
+    .notif__icon {
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+    }
+
+    .notif__message {
+        line-height: 18px;
+    }
+}
+
+@media (max-width: 320px) {
+    .notif-container {
+        top: 64px;
+        gap: 4px;
+        padding: 0 8px;
+    }
+
+    .notif {
+        min-height: 34px;
+        padding: 4px 10px;
+    }
+
+    .notif__icon {
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+    }
+
+    .notif__message {
+        font-size: var(--fs-2xs);
+        line-height: 16px;
+    }
+}

@@ -65,6 +65,22 @@
     gap: 4px;
 }
 
+/* ── Medium-small screens (e.g. ~390px phones) ── */
+@media (max-width: 390px) {
+
+    .location-card__header {
+        font-size: var(--fs-xs);
+    }
+
+    .location-card__name {
+        font-size: var(--fs-xs);
+    }
+
+    .location-card__province {
+        font-size: var(--fs-2xs);
+    }
+}
+
 @media (max-width: 320px) {
 
     .location-card__header,

@@ -239,16 +239,46 @@
     color: var(--clr-badge-online-text);
 }
 
-@media (max-width: 380px) {
-    .loc-search-input {
-        padding: 10px 12px 10px 36px;
+@media (max-width: 390px) {
+    .loc-search-sheet {
+        padding: var(--spacing-md) var(--spacing-md) calc(var(--spacing-md) + env(safe-area-inset-bottom));
+    }
+    .loc-search-header {
+        margin-bottom: var(--spacing-md);
+    }
+    .loc-search-title {
         font-size: var(--fs-sm);
+    }
+    .loc-search-input-wrapper {
+        margin-bottom: var(--spacing-sm);
+    }
+    .loc-search-icon {
+        left: 12px;
+        font-size: var(--icon-sm);
+    }
+    .loc-search-input {
+        padding: 10px 12px 10px 32px;
+        font-size: var(--fs-sm);
+    }
+    .loc-search-results {
+        margin: 0 calc(-1 * var(--spacing-md));
+        padding: 0 var(--spacing-md);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .loc-search-item {
+        padding: var(--spacing-md);
+        margin: 0 calc(-1 * var(--spacing-sm));
+    }
+    .loc-search-item i {
+        font-size: var(--icon-md);
     }
     .loc-search-item-title {
-        font-size: var(--fs-sm);
+        font-size: var(--fs-xs);
     }
     .loc-search-item-subtitle {
-        font-size: var(--fs-xs);
+        font-size: var(--fs-2xs);
     }
     .loc-search-badge {
         font-size: var(--fs-2xs);
