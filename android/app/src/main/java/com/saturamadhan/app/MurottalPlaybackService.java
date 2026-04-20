@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -46,6 +48,7 @@ public class MurottalPlaybackService extends Service {
     // --- Instance State ---
     private MediaPlayer mediaPlayer;
     private MediaSessionCompat mediaSession;
+    private int consecutiveErrors = 0;
     private PowerManager.WakeLock wakeLock;
     private AudioManager audioManager;
     private AudioFocusRequest audioFocusRequest;
@@ -128,8 +131,8 @@ public class MurottalPlaybackService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
-            stopSelfCleanly();
-            return START_NOT_STICKY;
+            Log.d(TAG, "Service restarted by OS with null intent — standing by");
+            return START_STICKY;
         }
 
         // Let MediaSession handle media button events
@@ -139,8 +142,8 @@ public class MurottalPlaybackService extends Service {
         Log.d(TAG, "onStartCommand: action=" + action);
 
         if (action == null) {
-            stopSelfCleanly();
-            return START_NOT_STICKY;
+            Log.d(TAG, "Null action — ignoring");
+            return START_STICKY;
         }
 
         switch (action) {
@@ -167,7 +170,7 @@ public class MurottalPlaybackService extends Service {
                 break;
         }
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -233,7 +236,11 @@ public class MurottalPlaybackService extends Service {
         releaseMediaPlayer();
 
         // Start foreground immediately
-        startForeground(Constants.NOTIFICATION_ID_MUROTTAL, buildNotification());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(Constants.NOTIFICATION_ID_MUROTTAL, buildNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+        } else {
+            startForeground(Constants.NOTIFICATION_ID_MUROTTAL, buildNotification());
+        }
 
         acquireWakeLock();
         requestAudioFocus();
@@ -264,6 +271,7 @@ public class MurottalPlaybackService extends Service {
             mediaPlayer.setDataSource(this, Uri.parse(uriStr));
 
             mediaPlayer.setOnPreparedListener(mp -> {
+                consecutiveErrors = 0;
                 mp.start();
                 isPlaying = true;
                 isPaused = false;
@@ -278,6 +286,12 @@ public class MurottalPlaybackService extends Service {
 
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
                 Log.e(TAG, "MediaPlayer error: what=" + what + " extra=" + extra);
+                consecutiveErrors++;
+                if (consecutiveErrors >= 3) {
+                    Log.e(TAG, "Too many consecutive errors, stopping playback");
+                    stopSelfCleanly();
+                    return true;
+                }
                 // Try to skip to next ayah on error
                 if (playbackMode.equals("sequential") && currentIndex + 1 < playlist.length()) {
                     currentIndex++;
@@ -321,6 +335,7 @@ public class MurottalPlaybackService extends Service {
                 mediaPlayer.pause();
             }
             isPaused = true;
+            isPausedByAdzan = false;
             updateStaticState();
             updateMediaSession(PlaybackStateCompat.STATE_PAUSED);
             updateNotification();
@@ -484,6 +499,37 @@ public class MurottalPlaybackService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
+        // Murottal Album Art Extractor
+        // Using a high-resolution 1024x1024 bitmap ensures it renders crisp on modern devices
+        // and doesn't get pixelated when the OS stretches it across the MediaStyle background.
+        int bitmapSize = 1024;
+        Bitmap largeIcon = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888);
+        android.graphics.Canvas canvas = new android.graphics.Canvas(largeIcon);
+        
+        // Exact Teal background to recreate the requested beautiful aesthetics
+        android.graphics.Paint paint = new android.graphics.Paint();
+        paint.setColor(0xFF0A3540); 
+        paint.setStyle(android.graphics.Paint.Style.FILL);
+        
+        canvas.drawRect(0, 0, bitmapSize, bitmapSize, paint);
+
+        try {
+            android.graphics.drawable.Drawable d = androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_notification);
+            if (d != null) {
+                int iconSize = 512; // Half the size for proper centering
+                int offset = (bitmapSize - iconSize) / 2;
+                d.setBounds(offset, offset, offset + iconSize, offset + iconSize);
+                d.setTint(0xFFD4A017); // Gold moon icon
+
+                if (d instanceof android.graphics.drawable.BitmapDrawable) {
+                    ((android.graphics.drawable.BitmapDrawable) d).setAntiAlias(true);
+                    ((android.graphics.drawable.BitmapDrawable) d).setFilterBitmap(true);
+                }
+
+                d.draw(canvas);
+            }
+        } catch (Exception e) {}
+
         // Action: Previous
         PendingIntent prevPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_PREV, 101);
 
@@ -494,11 +540,11 @@ public class MurottalPlaybackService extends Service {
         if (isPaused) {
             playPausePendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_RESUME, 102);
             playPauseLabel = textResume;
-            playPauseIcon = android.R.drawable.ic_media_play;
+            playPauseIcon = R.drawable.ic_notif_play;
         } else {
             playPausePendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_PAUSE, 102);
             playPauseLabel = textPause;
-            playPauseIcon = android.R.drawable.ic_media_pause;
+            playPauseIcon = R.drawable.ic_notif_pause;
         }
 
         // Action: Next
@@ -507,31 +553,40 @@ public class MurottalPlaybackService extends Service {
         // Action: Stop
         PendingIntent stopPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_STOP, 104);
 
-        // Use MediaStyle for lock screen + notification shade
+        // MediaStyle: Layout 3 actions in compact view, and 4 in expanded view.
         androidx.media.app.NotificationCompat.MediaStyle mediaStyle =
                 new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession != null ? mediaSession.getSessionToken() : null)
-                        .setShowActionsInCompactView(0, 1, 2); // prev, play/pause, next
+                        .setShowActionsInCompactView(0, 1, 2);
 
+        // Title: Surah name  |  Body: "Ayah X / N"
         String titleText = surahName;
         String bodyText = textAyah + " " + ayahNumber + " / " + totalAyahs;
 
-        return new NotificationCompat.Builder(this, Constants.CHANNEL_ID_MUROTTAL)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID_MUROTTAL)
                 .setContentTitle(titleText)
                 .setContentText(bodyText)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setShowWhen(false)
-                .addAction(android.R.drawable.ic_media_previous, textPrev, prevPendingIntent)
+                // Restoring the user's preferred colorized state for the background extraction
+                .setColorized(true)
+                .setColor(0xFFD4A017)
+                .addAction(R.drawable.ic_notif_prev, textPrev, prevPendingIntent)
                 .addAction(playPauseIcon, playPauseLabel, playPausePendingIntent)
-                .addAction(android.R.drawable.ic_media_next, textNext, nextPendingIntent)
-                .addAction(android.R.drawable.ic_delete, textStop, stopPendingIntent)
+                .addAction(R.drawable.ic_notif_next, textNext, nextPendingIntent)
+                .addAction(R.drawable.ic_notif_stop, textStop, stopPendingIntent)
                 .setStyle(mediaStyle)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .build();
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+
+        if (largeIcon != null) {
+            builder.setLargeIcon(largeIcon);
+        }
+
+        return builder.build();
     }
 
     private PendingIntent createActionPendingIntent(String action, int requestCode) {
@@ -700,34 +755,34 @@ public class MurottalPlaybackService extends Service {
     private void handleAudioFocusChange(int focusChange) {
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_LOSS:
-                // Permanent loss — stop
-                Log.d(TAG, "Audio focus lost permanently");
-                stopSelfCleanly();
+                if (isPlaying && !isPaused) {
+                    Log.d(TAG, "Audio focus lost permanently — pausing (not stopping)");
+                    pausePlayback();
+                    isPausedByAdzan = true;
+                }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                // Temporary loss (e.g. phone call) — pause
+                // Temporary loss (e.g. phone call, Adzan) — pause
                 if (isPlaying && !isPaused) {
                     Log.d(TAG, "Audio focus lost transiently — pausing");
-                    isPausedByAdzan = true;
                     pausePlayback();
+                    isPausedByAdzan = true;
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                // PrayerPlaybackService (Adzan) uses AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
-                // so we receive this event when Adzan starts playing.
-                // Per user requirement: Adzan has priority → PAUSE murottal (not just duck).
-                if (isPlaying && !isPaused) {
-                    Log.d(TAG, "Audio focus duck requested (likely Adzan) — pausing Murottal");
-                    isPausedByAdzan = true;
-                    pausePlayback();
+                // Other notifications — duck volume softly
+                if (mediaPlayer != null && isPlaying) {
+                    Log.d(TAG, "Audio focus duck requested — ducking volume");
+                    mediaPlayer.setVolume(0.2f, 0.2f);
                 }
                 break;
             case AudioManager.AUDIOFOCUS_GAIN:
-                // Regained focus — resume if paused by external source.
-                // No need to restore volume: we PAUSE (not duck) on transient loss,
-                // so volume was never reduced.
+                // Regained focus — restore volume and resume if paused by external source
+                if (mediaPlayer != null) {
+                    mediaPlayer.setVolume(1.0f, 1.0f);
+                }
                 if (isPaused && isPausedByAdzan) {
-                    Log.d(TAG, "Audio focus regained — resuming Murottal after Adzan");
+                    Log.d(TAG, "Audio focus regained — resuming Murottal after transient loss");
                     isPausedByAdzan = false;
                     resumePlayback();
                 }

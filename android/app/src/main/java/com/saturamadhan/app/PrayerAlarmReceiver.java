@@ -53,10 +53,17 @@ public class PrayerAlarmReceiver extends BroadcastReceiver {
         serviceIntent.putExtra(Constants.EXTRA_PRAYER_NAME, prayerName);
         serviceIntent.putExtra(Constants.EXTRA_AUDIO_FILE, audioFile);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent);
-        } else {
-            context.startService(serviceIntent);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent);
+            } else {
+                context.startService(serviceIntent);
+            }
+        } catch (Exception e) {
+            // Android 12+ prevents background foreground-service starts if exact alarm permission was denied.
+            // Fallback to standard notification so the user isn't left hanging.
+            Log.e(TAG, "Failed to start foreground service (probably background-restricted): " + e.getMessage());
+            showStandardNotification(context, prayerKey, prayerName, "Adzan " + prayerName + " telah tiba.");
         }
     }
 
@@ -82,8 +89,8 @@ public class PrayerAlarmReceiver extends BroadcastReceiver {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         }
         
-        // requestCode helps in distinguishing notifications for different events
-        int requestCode = "imsak".equals(prayerKey) ? 3000 : 3006;
+        // requestCode based on prayerKey hash to ensure unique notifications per prayer
+        int requestCode = prayerKey != null ? prayerKey.hashCode() : 3006;
         android.app.PendingIntent contentIntent = android.app.PendingIntent.getActivity(
                 context, requestCode, launchIntent != null ? launchIntent : new Intent(),
                 android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE

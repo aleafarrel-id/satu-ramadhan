@@ -76,7 +76,11 @@ public class PrayerPlaybackService extends Service {
             // If already playing, stop current before starting new
             releaseMediaPlayer();
 
-            startForeground(Constants.NOTIFICATION_ID_PLAYBACK, buildNotification(prayerName, isPreview));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(Constants.NOTIFICATION_ID_PLAYBACK, buildNotification(prayerName, isPreview), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+            } else {
+                startForeground(Constants.NOTIFICATION_ID_PLAYBACK, buildNotification(prayerName, isPreview));
+            }
             playAdzan(audioFile, prayerName);
         }
 
@@ -259,7 +263,7 @@ public class PrayerPlaybackService extends Service {
                 .setOngoing(true)
                 .addAction(android.R.drawable.ic_media_pause, stopAdzanText, stopPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .build();
     }
 
@@ -323,7 +327,7 @@ public class PrayerPlaybackService extends Service {
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
 
-        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
                 .setAudioAttributes(attrs)
                 .setOnAudioFocusChangeListener(focusChange -> Log.d(TAG, "Audio focus changed: " + focusChange))
                 .build();
