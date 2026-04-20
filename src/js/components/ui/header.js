@@ -88,7 +88,11 @@ function _onBrandClick() {
                sessionStorage.setItem('quran_auto_open_ayah', state.ayahNumber);
             }
         }
-        Router.navigate('quran');
+        if (Router.getCurrentPage() === 'quran') {
+            Router.refreshCurrentPage();
+        } else {
+            Router.navigate('quran');
+        }
     }
 }
 
