@@ -46,9 +46,10 @@ import * as navBar from './components/ui/nav-bar.js';
 // Static Pages (Critical Path)
 import * as homePage from './pages/home-page.js';
 
-// Tasbih System
 import { initTasbihGesture } from './modules/tasbih/tasbih-gesture.js';
-import * as TasbihPage from './pages/tasbih-page.js';
+
+/** Resolved after the first dynamic import of tasbih-page.js */
+let _tasbih = null;
 
 const SPLASH_MIN_DURATION = 1500;
 const POST_SPLASH_DIALOG_DELAY = 1500;
@@ -178,12 +179,17 @@ export async function initApp() {
     // Navigate to home
     await router.navigate('home');
 
-    // Initialize Tasbih System
+    // Initialize Tasbih System — dynamically imported to keep Tasbih out of the
+    // startup main chunk. import() resolves after splash; all callbacks below
+    // run after that point, so _tasbih is always populated when needed.
     const tasbihPanelEl = document.getElementById('tasbih-panel');
     if (tasbihPanelEl) {
-        TasbihPage.init(tasbihPanelEl);
+        import('./pages/tasbih-page.js').then((mod) => {
+            _tasbih = mod;
+            _tasbih.init(tasbihPanelEl);
+        });
         initTasbihGesture({
-            onOpen: () => TasbihPage.open(),
+            onOpen: () => _tasbih?.open(),
             getCurrentPage: () => router.getCurrentPage()
         });
     }
@@ -274,7 +280,7 @@ async function setupGlobalPullToRefresh() {
         scrollElement: '#app-content',
         threshold: 80,
         disableOnQuran: true,
-        checkDisabled: () => TasbihPage.isOpen(),
+        checkDisabled: () => _tasbih?.isOpen() ?? false,
         textPull: t('utils/pull-to-refresh:text_pull'),
         textRelease: t('utils/pull-to-refresh:text_release'),
         textRefreshing: t('utils/pull-to-refresh:text_refreshing'),

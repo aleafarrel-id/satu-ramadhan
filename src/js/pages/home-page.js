@@ -16,7 +16,6 @@ import { renderHomeSkeleton } from '../components/skeleton/skeleton-home.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { renderCountdownCard } from '../components/card/countdown-card.js';
 import { renderShortcutCard } from '../components/card/shortcut-card.js';
-import * as TasbihPage from './tasbih-page.js';
 import * as router from '../router.js';
 import { t, loadNS } from '../core/i18n.js';
 
@@ -332,13 +331,13 @@ function bindCarouselEvents() {
 
             const containerRect = carouselWrapper.getBoundingClientRect();
             const slideRect = targetSlide.getBoundingClientRect();
-            
+
             // Disable scroll behavior temporarily to prevent animation during restore
             carouselWrapper.style.scrollBehavior = 'auto';
-            
+
             // Current scrollLeft + distance from container edge to slide edge = exact snap position
             carouselWrapper.scrollLeft = carouselWrapper.scrollLeft + (slideRect.left - containerRect.left);
-            
+
             // Re-enable smooth scrolling after the layout is applied
             requestAnimationFrame(() => {
                 carouselWrapper.style.scrollBehavior = '';
@@ -362,9 +361,9 @@ function bindViewSpecificEvents() {
  */
 function bindShortcutEvents() {
     const shortcuts = {
-        'tasbih': () => {
-            TasbihPage.open();
-        },
+        // Dynamic import resolves instantly from the ES module cache after app.js
+        // has already loaded tasbih-page.js — no network round-trip on click.
+        'tasbih': () => import('./tasbih-page.js').then(m => m.open()),
         'surah': () => {
             sessionStorage.setItem('quran_tab', 'surah');
             router.navigate('quran');

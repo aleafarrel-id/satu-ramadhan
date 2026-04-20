@@ -43,7 +43,16 @@ export default defineConfig({
                     // Mushaf-only vendor libs → lazy-loaded with mushaf
                     if (id.includes('node_modules/page-flip') || id.includes('node_modules/panzoom')) return 'mushaf-vendor';
 
-                    // All other vendor libraries → single vendor chunk
+                    // Leaflet → only used on Compass page & Home list-view (both lazy-loaded)
+                    if (id.includes('node_modules/leaflet')) return 'vendor-leaflet';
+
+                    // html-to-image → only used in the Share Schedule flow (lazy-loaded)
+                    if (id.includes('node_modules/html-to-image')) return 'vendor-share';
+
+                    // geomagnetism → only used on Compass page (lazy-loaded)
+                    if (id.includes('node_modules/geomagnetism')) return 'vendor-compass';
+
+                    // All other vendor libraries (i18next, adhan, etc.) → startup vendor chunk
                     if (id.includes('node_modules')) return 'vendor';
                 }
             }
