@@ -26,6 +26,17 @@ let _container = null;
 let _compass = null;
 let _unsubscribeId = null;
 
+/**
+ * Monotonic render generation counter.
+ * Incremented on each render() and destroy() call. Async operations
+ * capture this value at their start and compare via _isStale(gen)
+ * to determine if they have been superseded.
+ */
+let _renderGen = 0;
+
+/** @param {number} gen */
+function _isStale(gen) { return gen !== _renderGen; }
+
 /* --- LIFECYCLE --- */
 
 /**
@@ -36,6 +47,7 @@ let _unsubscribeId = null;
  * @param {HTMLElement} container - The DOM element to render into.
  */
 export async function render(container, options = {}) {
+    const gen = ++_renderGen;
     _container = container;
     
     if (_unsubscribeId) {
@@ -49,21 +61,28 @@ export async function render(container, options = {}) {
     await loadNS('components/card/qibla-map-card');
     await loadNS('components/compass/compass-dial');
     await loadNS('components/ui/header');
+    if (_isStale(gen)) return;
 
     const loc = store.getState('location');
     renderCompassSkeleton(_container, loc, showLocationModalForCompass);
 
     if (options.refresh) {
         await new Promise(resolve => setTimeout(resolve, 350));
+        if (_isStale(gen)) return;
     }
 
     await initCompass(loc);
+    if (_isStale(gen)) return;
+
     await renderContent(loc);
+    if (_isStale(gen)) return;
 
     _unsubscribeId = store.subscribe('location', async () => {
+        if (!_container) return;
         const newLoc = store.getState('location');
         renderCompassSkeleton(_container, newLoc, showLocationModalForCompass);
         await initCompass(newLoc);
+        if (!_container) return;
         await renderContent(newLoc);
     });
 }
@@ -73,6 +92,7 @@ export async function render(container, options = {}) {
  * when navigating away from the page.
  */
 export function destroy() {
+    ++_renderGen;
     destroyQiblaMapCard();
     if (_unsubscribeId) {
         store.unsubscribe(_unsubscribeId);
@@ -115,6 +135,8 @@ async function initCompass(loc) {
  * Binds required event listeners immediately after insertion.
  */
 async function renderContent(loc) {
+    if (!_container) return;
+
     if (!loc) {
         _container.innerHTML = `
             ${renderLocationCard(loc)}

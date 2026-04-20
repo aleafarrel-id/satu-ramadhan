@@ -34,6 +34,17 @@ let _lastPrayerIndex = -1;
 let _viewMode = VIEW_TUBE;
 let _unsubscribe = [];
 
+/**
+ * Monotonic render generation counter.
+ * Incremented on each render() and destroy() call. Async operations
+ * capture this value at their start and compare via _isStale(gen)
+ * to determine if they have been superseded.
+ */
+let _renderGen = 0;
+
+/** @param {number} gen */
+function _isStale(gen) { return gen !== _renderGen; }
+
 /* --- LIFECYCLE --- */
 
 /**
@@ -45,6 +56,7 @@ let _unsubscribe = [];
  * @param {Object} [options={}] - Navigation options (e.g., refresh: true)
  */
 export async function render(container, options = {}) {
+    const gen = ++_renderGen;
     _container = container;
 
     if (_unsubscribe.length > 0) {
@@ -59,12 +71,14 @@ export async function render(container, options = {}) {
     await loadNS('components/prayer/prayer-widgets');
     await loadNS('components/card/qibla-map-card');
     await loadNS('components/card/shortcut-card');
+    if (_isStale(gen)) return;
 
     safeClear(container);
     renderSkeleton(null);
 
     if (options.refresh) {
         await new Promise(resolve => setTimeout(resolve, 350));
+        if (_isStale(gen)) return;
     }
 
     _viewMode = store.getState('home.viewMode');
@@ -77,10 +91,13 @@ export async function render(container, options = {}) {
         try {
             _timings = await getPrayerTimesByCoords(loc.latitude, loc.longitude);
         } catch { /* handled gracefully in renderContent */ }
+        if (_isStale(gen)) return;
         await renderContent();
     } else {
         showLocationModalForHome();
     }
+
+    if (_isStale(gen)) return;
 
     _unsubscribe.push(store.subscribe('location', _rehydrateAndRender));
     _unsubscribe.push(store.subscribe('settings.org', _rehydrateAndRender));
@@ -91,6 +108,7 @@ export async function render(container, options = {}) {
  * and nullifies module variables to prevent memory leaks during page navigation.
  */
 export function destroy() {
+    ++_renderGen;
     stopCountdown();
     _unsubscribe.forEach(id => store.unsubscribe(id));
     _unsubscribe = [];
@@ -110,12 +128,14 @@ export function getTimings() {
  * Re-render the home content autonomously when store triggers changes.
  */
 async function _rehydrateAndRender() {
+    const gen = _renderGen;
     if (!_container) return;
     const loc = store.getState('location');
     if (!loc) return;
     try {
         _timings = await getPrayerTimesByCoords(loc.latitude, loc.longitude);
     } catch { /* handled in renderContent */ }
+    if (_isStale(gen)) return;
     stopCountdown();
     await renderContent();
 }
@@ -174,6 +194,7 @@ function renderSkeleton(location) {
  * Evaluates the current state strings and renders the main content.
  */
 async function renderContent() {
+    const gen = _renderGen;
     let contentHtml = '';
     const loc = store.getState('location');
 
@@ -205,6 +226,7 @@ async function renderContent() {
     } else {
         const prayerState = getCurrentPrayer(_timings);
         const orgName = await getOrgDisplayNameAsync();
+        if (_isStale(gen)) return;
 
         const tubeActive = _viewMode === VIEW_TUBE ? ' active' : '';
         const listActive = _viewMode === VIEW_LIST ? ' active' : '';

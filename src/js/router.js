@@ -15,6 +15,7 @@ let _isNavigating = false;
 const _history = [];
 let _onNavigateCallback = null;
 let _targetPage = null;
+let _navId = 0;
 
 /**
  * Register a route.
@@ -70,13 +71,14 @@ export async function navigate(path, { pushHistory = true } = {}) {
         return;
     }
 
-    // If locked by another operation (e.g. language change or active navigation),
+    // If locked by another operation (e.g. language change or active destroy phase),
     // reject it and force UI back to the intended destination target
     if (_isNavigating) {
         if (_onNavigateCallback && effectivePage) _onNavigateCallback(effectivePage);
         return;
     }
 
+    const myNavId = ++_navId;
     _isNavigating = true;
     _targetPage = path;
 
@@ -93,11 +95,15 @@ export async function navigate(path, { pushHistory = true } = {}) {
             }
         }
 
-        // Destroy current page
+        // Destroy current page — this is the critical section that must not overlap
         const currentHandler = _routeCache[_currentPage];
         if (_currentPage && currentHandler?.destroy) {
             await currentHandler.destroy();
         }
+
+        _currentPage = path;
+        _isNavigating = false;
+        _targetPage = null;
 
         // Hide all pages
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -109,12 +115,15 @@ export async function navigate(path, { pushHistory = true } = {}) {
 
             // Resolve the handler (static or lazy)
             const handler = await _resolveHandler(path);
+
+            // A newer navigate() may have taken over — abort this render silently
+            if (myNavId !== _navId) return;
+
             if (handler?.render) {
                 await handler.render(pageEl);
             }
         }
 
-        _currentPage = path;
     } catch (error) {
         // Fallback UI to valid state if navigation throws an error
         if (_onNavigateCallback && _currentPage) {
@@ -122,8 +131,12 @@ export async function navigate(path, { pushHistory = true } = {}) {
         }
         logError('[Router]', error);
     } finally {
-        _isNavigating = false;
-        _targetPage = null;
+        // Only release the lock if this navigation still owns it.
+        // If a newer navigation took over, it owns the lock state now.
+        if (myNavId === _navId) {
+            _isNavigating = false;
+            _targetPage = null;
+        }
     }
 }
 

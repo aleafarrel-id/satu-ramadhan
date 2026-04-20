@@ -60,6 +60,25 @@ let _animPhase = 'idle';
 let _animDirection = null;
 let _animId = 0;
 
+/**
+ * Monotonic render generation counter.
+ * Incremented on each render() and destroy() call.
+ * Async operations capture this value at their start and compare later
+ * to determine if they have been superseded — a single, centralized
+ * mechanism that replaces scattered null-checks throughout the module.
+ */
+let _renderGen = 0;
+
+/**
+ * Returns true if the given generation has been superseded by a newer
+ * render() or destroy() cycle. Used as a unified async guard.
+ * @param {number} gen - The generation captured at the start of the operation.
+ * @returns {boolean}
+ */
+function _isStale(gen) {
+    return gen !== _renderGen;
+}
+
 /* --- LIFECYCLE --- */
 
 /**
@@ -70,6 +89,7 @@ let _animId = 0;
  * @param {Object} [options={}] - Navigation options (e.g., refresh: true)
  */
 export async function render(container, options = {}) {
+    const gen = ++_renderGen;
     _container = container;
 
     if (_unsubscribe.length > 0) {
@@ -86,6 +106,7 @@ export async function render(container, options = {}) {
     await loadNS('components/ui/header');
     await loadNS('components/modal/location-modal');
     await loadNS('modules/share/share-schedule-exporter');
+    if (_isStale(gen)) return;
 
     const location = store.getState('location');
     const org = store.getState('settings.org');
@@ -108,18 +129,23 @@ export async function render(container, options = {}) {
             renderScheduleSkeleton(_container);
             if (isRefresh) {
                 await new Promise(resolve => setTimeout(resolve, 350));
+                if (_isStale(gen)) return;
             }
             await _rehydrateAndRender();
         }
     }
 
+    if (_isStale(gen)) return;
+
     _unsubscribe.push(store.subscribe('location', () => {
+        if (!_container) return;
         renderScheduleSkeleton(_container);
         _rehydrateAndRender();
     }));
 
     // Org change
     _unsubscribe.push(store.subscribe('settings.org', () => {
+        if (!_container) return;
         _recomputeSchedule();
     }));
 }
@@ -129,6 +155,7 @@ export async function render(container, options = {}) {
  * stopping async loop intervals and destroying handlers.
  */
 export function destroy() {
+    ++_renderGen;
     stopDayCrossingCheck();
     offPrayerChange(handlePrayerTransition);
     unbindSwipeEvents();
@@ -142,6 +169,7 @@ export function destroy() {
  * Exported so other modules (settings) can trigger a refresh.
  */
 export async function refreshScheduleData() {
+    if (!_container) return;
     renderScheduleSkeleton(_container);
     await _rehydrateAndRender();
 }
@@ -151,6 +179,7 @@ export async function refreshScheduleData() {
  * Used when location changes (genuinely new API data needed).
  */
 async function _rehydrateAndRender() {
+    const gen = _renderGen;
     if (!_container) return;
     const location = store.getState('location');
     const org = store.getState('settings.org');
@@ -161,6 +190,7 @@ async function _rehydrateAndRender() {
             fetchScheduleData(location),
             getPrayerTimesByCoords(location.latitude, location.longitude).catch(() => null),
         ]);
+        if (_isStale(gen)) return;
 
         _scheduleData = scheduleResult;
         _todayTimings = todayTimingsResult;
@@ -175,6 +205,7 @@ async function _rehydrateAndRender() {
         await renderDayView();
     } catch (error) {
         logError('[Schedule]', error);
+        if (_isStale(gen)) return;
         await renderError(true);
     }
 }
@@ -188,6 +219,7 @@ async function _rehydrateAndRender() {
  * cached by location+month — zero network hit when only the org changes.
  */
 async function _recomputeSchedule() {
+    const gen = _renderGen;
     if (!_container) return;
     const location = store.getState('location');
     const org = store.getState('settings.org');
@@ -195,6 +227,7 @@ async function _recomputeSchedule() {
 
     try {
         const scheduleResult = await fetchScheduleData(location);
+        if (_isStale(gen)) return;
 
         _scheduleData = scheduleResult;
         _cachedDepStr = `${location.latitude}_${location.longitude}_${org}`;
@@ -208,6 +241,7 @@ async function _recomputeSchedule() {
         await renderDayView();
     } catch (error) {
         logError('[Schedule]', error);
+        if (_isStale(gen)) return;
         await renderError(true);
     }
 }
@@ -280,6 +314,8 @@ function stopDayCrossingCheck() {
  * @param {boolean} hasLocation - Deciphers which warning layout to mount.
  */
 async function renderError(hasLocation) {
+    if (!_container) return;
+
     if (!hasLocation) {
         _container.innerHTML = `
             ${renderLocationCard(null)}
@@ -344,10 +380,12 @@ function showLocationModalForSchedule() {
  * timeline views combining navbar elements with native widget handlers.
  */
 async function renderDayView() {
+    const gen = _renderGen;
     if (!_scheduleData || !_scheduleData[_currentDayIndex]) return;
 
     const entry = _scheduleData[_currentDayIndex];
     const orgName = await getOrgDisplayNameAsync();
+    if (_isStale(gen)) return;
 
     _container.innerHTML = renderScheduleCard(entry, orgName, _todayTimings, _currentDayIndex, _scheduleData.length);
     bindShareScheduleCardEvents(() => handleShareSchedule(), _container);
@@ -576,6 +614,7 @@ function animateSlide(direction) {
         inner.removeEventListener('animationend', onOut);
 
         if (currentAnimId !== _animId) return;
+        if (!_container || !_scheduleData) return;
 
         inner.classList.remove(outClass);
 

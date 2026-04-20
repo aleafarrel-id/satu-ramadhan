@@ -18,6 +18,17 @@ import { t, loadNS } from '../core/i18n.js';
 /* --- STATE --- */
 let _container = null;
 
+/**
+ * Monotonic render generation counter.
+ * Incremented on each render() and destroy() call. Async operations
+ * capture this value at their start and compare via _isStale(gen)
+ * to determine if they have been superseded.
+ */
+let _renderGen = 0;
+
+/** @param {number} gen */
+function _isStale(gen) { return gen !== _renderGen; }
+
 /* --- LIFECYCLE --- */
 
 /**
@@ -27,6 +38,7 @@ let _container = null;
  * @param {HTMLElement} container - The DOM element to render into.
  */
 export async function render(container) {
+    const gen = ++_renderGen;
     _container = container;
 
     await loadNS('pages/settings-page');
@@ -38,6 +50,7 @@ export async function render(container) {
     await loadNS('components/modal/audio-mode-selector-modal');
     await loadNS('components/modal/adzan-selector-modal');
     await loadNS('components/ui/header');
+    if (_isStale(gen)) return;
 
     const wrapper = document.createElement('div');
     wrapper.innerHTML = `
@@ -67,6 +80,7 @@ export async function render(container) {
         panelContainer && settingsPanel.render(panelContainer),
         quranPanelContainer && settingsQuranPanel.render(quranPanelContainer)
     ]);
+    if (_isStale(gen)) return;
 
     // Apply the fully hydrated HTML to the live DOM in one pass to prevent layout jumping
     _container.innerHTML = '';
@@ -78,6 +92,7 @@ export async function render(container) {
  * safely nullifies the page container reference.
  */
 export function destroy() {
+    ++_renderGen;
     settingsLocCard.destroy();
     settingsPresetCard.destroy();
     settingsDisplayPanel.destroy();
