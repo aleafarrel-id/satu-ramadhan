@@ -13,20 +13,8 @@ import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Receiver that re-schedules prayer alarms after the device boots or the app is updated.
- *
- * Handles three scenarios:
- *  1. LOCKED_BOOT_COMPLETED — Direct Boot phase. Device has powered on but the user has
- *     not yet unlocked it. Only Device-Protected (DE) storage is accessible here.
- *     Requires android:directBootAware="true" in the manifest.
- *  2. BOOT_COMPLETED — Normal boot, fired after the first credential unlock.
- *     Credential-Encrypted (CE) storage is now fully accessible.
- *  3. MY_PACKAGE_REPLACED — App was updated/reinstalled. AlarmManager slots are cleared
- *     by the OS on update, so we must reschedule immediately.
- *
- * Both storage layers (DE and CE) hold a copy of the alarm data, written by
- * PrayerServicePlugin.saveAlarmsToStorage(). This ensures the receiver can always
- * find data regardless of which boot phase triggers it.
+ * Receiver that reschedules prayer alarms after device boot or app update.
+ * Handles Direct Boot (LOCKED_BOOT_COMPLETED) and regular boot via CE/DE storage layers.
  */
 public class PrayerBootReceiver extends BroadcastReceiver {
     private static final String TAG = "PrayerBootReceiver";
@@ -65,18 +53,14 @@ public class PrayerBootReceiver extends BroadcastReceiver {
             Log.d(TAG, "Using Credential-Encrypted storage (post-unlock boot)");
         }
 
-        // goAsync() lets us move work off the main thread without the system killing
-        // the receiver for taking too long (BroadcastReceiver has a ~10s budget).
+        // goAsync() avoids BroadcastReceiver execution limits (ANR) while accessing storage.
         final PendingResult pendingResult = goAsync();
         new Thread(() -> {
             try {
                 // Primary path: reschedule alarms directly from storage
                 PrayerServicePlugin.rescheduleAlarmsFromStorage(storageContext);
 
-                // Safety net: also ensure the periodic WorkManager task is enqueued.
-                // Even if this receiver is killed by OEM battery manager before
-                // completing, WorkManager will pick up the task from its own
-                // internal database and re-run it.
+                // Safety net: ensure WorkManager periodic task is running.
                 enqueueAlarmRescheduleWorker(context);
             } catch (Exception e) {
                 Log.e(TAG, "Error during boot reschedule: " + e.getMessage(), e);
@@ -87,9 +71,7 @@ public class PrayerBootReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Enqueue the periodic alarm-reschedule worker as a safety net.
-     * WorkManager's own internal boot receiver (whitelisted by most OEMs)
-     * will keep this worker alive across reboots.
+     * Enqueues the periodic alarm-reschedule safeguard worker.
      */
     private void enqueueAlarmRescheduleWorker(Context context) {
         try {

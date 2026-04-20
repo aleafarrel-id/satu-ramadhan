@@ -32,15 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
- * Foreground Service responsible for playing Murottal (Quran recitation)
- * audio in the background. Completely independent from PrayerPlaybackService.
- *
- * Features:
- *   - Sequential playlist playback (auto-advance to next ayah)
- *   - MediaSession for lock screen + notification controls
- *   - WakeLock for CPU during screen-off playback
- *   - Adzan priority: auto-pauses when Adzan starts, resumes when it stops
- *   - Supports both streaming (https://) and local file (file://) URIs
+ * Foreground Service for Murottal audio playback.
+ * Handles sequential playback, MediaSession controls, WakeLock, and Adzan auto-pause.
  */
 public class MurottalPlaybackService extends Service {
     private static final String TAG = "MurottalPlayback";
@@ -95,10 +88,7 @@ public class MurottalPlaybackService extends Service {
     public static String getCurrentPlaybackMode() { return sPlaybackMode; }
 
     // --- Adzan Priority Receiver ---
-    // Listens for ACTION_PLAYBACK_STOPPED which IS broadcast by PrayerPlaybackService
-    // when adzan finishes. Adzan *start* detection is handled via the AudioFocus
-    // system (AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) because PrayerPlaybackService
-    // does not broadcast ACTION_PLAY_PRAYER — it only uses it as a startService action.
+    // Listens for ACTION_PLAYBACK_STOPPED to resume Murottal after Adzan completes.
     private final BroadcastReceiver adzanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -411,6 +401,18 @@ public class MurottalPlaybackService extends Service {
 
             @Override
             public void onSkipToPrevious() { skipPrev(); }
+
+            @Override
+            public void onSeekTo(long pos) {
+                if (mediaPlayer != null) {
+                    try {
+                        mediaPlayer.seekTo((int) pos);
+                        updateMediaSession(isPlaying && !isPaused ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED);
+                    } catch (Exception e) {
+                        Log.w(TAG, "Error seeking: " + e.getMessage());
+                    }
+                }
+            }
         });
 
         mediaSession.setActive(true);
@@ -420,15 +422,18 @@ public class MurottalPlaybackService extends Service {
         if (mediaSession == null) return;
 
         long position = 0;
+        long duration = -1;
         try {
             if (mediaPlayer != null) {
                 position = mediaPlayer.getCurrentPosition();
+                duration = mediaPlayer.getDuration();
             }
         } catch (Exception ignored) {}
 
         long actions = PlaybackStateCompat.ACTION_STOP
                 | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS;
+                | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                | PlaybackStateCompat.ACTION_SEEK_TO;
 
         if (state == PlaybackStateCompat.STATE_PLAYING) {
             actions |= PlaybackStateCompat.ACTION_PAUSE;
@@ -444,14 +449,17 @@ public class MurottalPlaybackService extends Service {
         mediaSession.setPlaybackState(playbackState);
 
         int ayahNumber = currentIndex + 1;
-        MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
+        MediaMetadataCompat.Builder metaBuilder = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, surahName)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, textAyah + " " + ayahNumber)
                 .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, ayahNumber)
-                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalAyahs)
-                .build();
+                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalAyahs);
 
-        mediaSession.setMetadata(metadata);
+        if (duration > 0 && "single".equals(playbackMode)) {
+            metaBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration);
+        }
+
+        mediaSession.setMetadata(metaBuilder.build());
     }
 
     private void releaseMediaSession() {
@@ -466,10 +474,7 @@ public class MurottalPlaybackService extends Service {
 
     private void ensureNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Use R.string resources for channel name/desc — the same pattern as
-            // PrayerPlaybackService. Android only reads the channel name on first
-            // creation, so SharedPreferences (which are populated later by JS)
-            // would always miss the first call and lock in the English default.
+            // Use localized static strings, as Android locks channel names upon first creation.
             NotificationChannel channel = new NotificationChannel(
                     Constants.CHANNEL_ID_MUROTTAL,
                     getString(R.string.notification_channel_murottal_name),
@@ -499,37 +504,6 @@ public class MurottalPlaybackService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        // Murottal Album Art Extractor
-        // Using a high-resolution 1024x1024 bitmap ensures it renders crisp on modern devices
-        // and doesn't get pixelated when the OS stretches it across the MediaStyle background.
-        int bitmapSize = 1024;
-        Bitmap largeIcon = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888);
-        android.graphics.Canvas canvas = new android.graphics.Canvas(largeIcon);
-        
-        // Exact Teal background to recreate the requested beautiful aesthetics
-        android.graphics.Paint paint = new android.graphics.Paint();
-        paint.setColor(0xFF0A3540); 
-        paint.setStyle(android.graphics.Paint.Style.FILL);
-        
-        canvas.drawRect(0, 0, bitmapSize, bitmapSize, paint);
-
-        try {
-            android.graphics.drawable.Drawable d = androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_notification);
-            if (d != null) {
-                int iconSize = 512; // Half the size for proper centering
-                int offset = (bitmapSize - iconSize) / 2;
-                d.setBounds(offset, offset, offset + iconSize, offset + iconSize);
-                d.setTint(0xFFD4A017); // Gold moon icon
-
-                if (d instanceof android.graphics.drawable.BitmapDrawable) {
-                    ((android.graphics.drawable.BitmapDrawable) d).setAntiAlias(true);
-                    ((android.graphics.drawable.BitmapDrawable) d).setFilterBitmap(true);
-                }
-
-                d.draw(canvas);
-            }
-        } catch (Exception e) {}
-
         // Action: Previous
         PendingIntent prevPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_PREV, 101);
 
@@ -550,10 +524,7 @@ public class MurottalPlaybackService extends Service {
         // Action: Next
         PendingIntent nextPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_NEXT, 103);
 
-        // Action: Stop
-        PendingIntent stopPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_STOP, 104);
-
-        // MediaStyle: Layout 3 actions in compact view, and 4 in expanded view.
+        // Enforce 3 actions to ensure symmetrical centering on custom OEM skins.
         androidx.media.app.NotificationCompat.MediaStyle mediaStyle =
                 new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession != null ? mediaSession.getSessionToken() : null)
@@ -570,21 +541,16 @@ public class MurottalPlaybackService extends Service {
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setShowWhen(false)
-                // Restoring the user's preferred colorized state for the background extraction
+                // Using colorized(true) to keep the deep gold/teal UI standard natively
                 .setColorized(true)
                 .setColor(0xFFD4A017)
                 .addAction(R.drawable.ic_notif_prev, textPrev, prevPendingIntent)
                 .addAction(playPauseIcon, playPauseLabel, playPausePendingIntent)
                 .addAction(R.drawable.ic_notif_next, textNext, nextPendingIntent)
-                .addAction(R.drawable.ic_notif_stop, textStop, stopPendingIntent)
                 .setStyle(mediaStyle)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-
-        if (largeIcon != null) {
-            builder.setLargeIcon(largeIcon);
-        }
 
         return builder.build();
     }
@@ -697,8 +663,7 @@ public class MurottalPlaybackService extends Service {
 
     private void registerAdzanReceiver() {
         IntentFilter filter = new IntentFilter();
-        // Only listen for PLAYBACK_STOPPED (which IS broadcast by PrayerPlaybackService).
-        // Adzan start is detected via AudioFocus (see handleAudioFocusChange).
+        // Adzan start is detected via AudioFocus. We only listen for its completion.
         filter.addAction(Constants.ACTION_PLAYBACK_STOPPED);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

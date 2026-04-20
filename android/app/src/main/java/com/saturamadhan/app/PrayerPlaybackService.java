@@ -19,7 +19,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 /**
- * Service responsible for playing adzan audio and managing its foreground notification.
+ * Foreground Service for playing adzan audio and managing its notification.
  */
 public class PrayerPlaybackService extends Service {
     private static final String TAG = "PrayerPlaybackService";
@@ -105,10 +105,10 @@ public class PrayerPlaybackService extends Service {
     // --- Core Playback Logic ---
 
     /**
-     * Play the adzan audio file specified by the JS layer.
+     * Plays the adzan audio file specified by the JS layer.
      *
-     * @param audioFile  Raw resource name without extension (e.g. "adzan_subuh_makkah")
-     * @param prayerName Human-readable prayer name for notification display
+     * @param audioFile  Raw resource name without extension.
+     * @param prayerName Human-readable prayer name for notification.
      */
     private void playAdzan(String audioFile, String prayerName) {
         try {
@@ -137,7 +137,7 @@ public class PrayerPlaybackService extends Service {
                 mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             }
 
-            // Must prepare manually since we are not using MediaPlayer.create()
+            // Prepare manually for manually constructed MediaPlayer
             mediaPlayer.prepare();
 
             mediaPlayer.setOnCompletionListener(mp -> {
@@ -163,12 +163,11 @@ public class PrayerPlaybackService extends Service {
     }
 
     /**
-     * Resolve a raw resource name to its Android resource ID.
-     * All audio selection logic has been performed by the JS layer —
-     * Java only looks up the ID and provides one generic fallback.
+     * Resolves a raw resource name to its Android resource ID.
+     * Defaults to fallback if not found.
      *
-     * @param audioFile Raw resource name without extension (e.g. "adzan_subuh_makkah")
-     * @return resource ID, or 0 if neither the requested nor default file exists
+     * @param audioFile Raw resource name without extension.
+     * @return Resource ID, or 0 if neither exists.
      */
     private int getAudioResource(String audioFile) {
         // 1. Try the exact file name sent by JS
@@ -181,7 +180,7 @@ public class PrayerPlaybackService extends Service {
             Log.w(TAG, "Audio resource not found: '" + audioFile + "', falling back to default.");
         }
 
-        // 2. Generic fallback — one constant, no prayer-type logic
+        // 2. Generic fallback
         int fallbackId = getResources().getIdentifier(
             Constants.DEFAULT_AUDIO_FILE, "raw", getPackageName()
         );
@@ -277,8 +276,7 @@ public class PrayerPlaybackService extends Service {
         isPlaying = false;
         sIsPlaying = false;
 
-        // Notify the Capacitor plugin that playback has stopped,
-        // so the JS UI layer can reset its preview button state.
+        // Notify JS layer that playback has stopped
         Intent stoppedIntent = new Intent(Constants.ACTION_PLAYBACK_STOPPED);
         stoppedIntent.setPackage(getPackageName());
         sendBroadcast(stoppedIntent);

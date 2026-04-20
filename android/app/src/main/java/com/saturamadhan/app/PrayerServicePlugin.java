@@ -41,11 +41,7 @@ public class PrayerServicePlugin extends Plugin {
     private static final int JS_NOTIFICATION_BASE_ID = 1000;
 
     /**
-     * BroadcastReceiver that listens for playback-stopped events from
-     * PrayerPlaybackService and forwards them to the JS layer via
-     * Capacitor's notifyListeners(), enabling the UI to reset its
-     * preview button state when playback ends externally (e.g. via
-     * the notification stop button or natural audio completion).
+     * BroadcastReceiver for playback-stopped events to reset the JS UI preview states.
      */
     private final BroadcastReceiver playbackStoppedReceiver = new BroadcastReceiver() {
         @Override
@@ -161,9 +157,7 @@ public class PrayerServicePlugin extends Plugin {
     // ── Background Location Detection ────────────────────────────────
 
     /**
-     * Start the passive background location detection worker.
-     * Uses WorkManager PeriodicWork (~6h interval, ~3h flex window).
-     * Policy KEEP ensures no duplicate workers are enqueued.
+     * Starts the passive background location detection worker.
      */
     @PluginMethod()
     public void startLocationDetection(PluginCall call) {
@@ -224,16 +218,9 @@ public class PrayerServicePlugin extends Plugin {
     }
 
     /**
-     * Opens the most relevant battery/autostart settings page for the current device.
-     *
-     * On Chinese OEM devices (Xiaomi, Oppo, Vivo, Huawei, Realme), these manufacturers
-     * implement proprietary "Autostart" controls that block BOOT_COMPLETED broadcasts
-     * regardless of Android permissions. This method deep-links to their specific UI
-     * so the user can whitelist the app manually.
-     *
-     * Falls back to the standard Android "Ignore Battery Optimizations" request,
-     * and then to the generic App Info page if all else fails.
-     *
+     * Opens the most relevant battery optimization or autostart settings page.
+     * Routes Chinese OEM custom skins to their proprietary whitelist interfaces.
+     * 
      * Returns: { opened: boolean, method: string }
      */
     @PluginMethod()
@@ -339,13 +326,11 @@ public class PrayerServicePlugin extends Plugin {
     private void saveAlarmsToStorage(Context context, JSArray alarms) {
         String alarmsJson = alarms.toString();
 
-        // 1. Credential-Encrypted (CE) storage — accessible after the user unlocks the device.
-        //    This is the primary copy read during normal boot (BOOT_COMPLETED).
+        // 1. Credential-Encrypted (CE) storage - accessible after user unlock.
         SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString("alarms_data", alarmsJson).apply();
 
-        // 2. Device-Protected (DE) storage — accessible even before the first unlock (Direct Boot).
-        //    PrayerBootReceiver uses this copy when triggered by LOCKED_BOOT_COMPLETED.
+        // 2. Device-Protected (DE) storage - accessible during Direct Boot (before unlock).
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Context deContext = context.createDeviceProtectedStorageContext();
             SharedPreferences dePrefs = deContext.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
@@ -441,7 +426,7 @@ public class PrayerServicePlugin extends Plugin {
                     );
 
                     if (canUseExact && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        // Exact alarm via AlarmClockInfo — appears in system alarm list
+                        // Schedules exact visible alarms (AlarmClock API)
                         Intent showIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
                         PendingIntent pendingShowIntent = PendingIntent.getActivity(
                                 context, 0, showIntent != null ? showIntent : new Intent(),
@@ -569,16 +554,8 @@ public class PrayerServicePlugin extends Plugin {
     // ── Alarm Reschedule Worker (Safety Net) ─────────────────────────
 
     /**
-     * Enqueue a periodic WorkManager task that re-checks alarm scheduling.
-     *
-     * WHY THIS IS THE KEY TO SURVIVING REBOOTS ON OEM DEVICES:
-     * WorkManager has its OWN internal boot receiver that is part of the AndroidX
-     * library and is whitelisted by most OEMs (Xiaomi, Oppo, Vivo, etc.).
-     * When the device reboots, WorkManager automatically re-enqueues all pending
-     * periodic work from its internal Room database — bypassing the OEM restrictions
-     * that block custom BOOT_COMPLETED receivers.
-     *
-     * Policy KEEP ensures we don't reset the schedule if already enqueued.
+     * Enqueues a periodic WorkManager task to safeguard alarm scheduling.
+     * Bypasses OEM BOOT_COMPLETED restrictions by relying on WorkManager's built-in persistence.
      */
     private void enqueueAlarmRescheduleWorker(Context context) {
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
