@@ -21,8 +21,7 @@ import * as QuranAudioDock from '../components/quran/quran-audio-dock.js';
 // Modules
 import * as QuranNav from '../modules/quran/quran-nav.js';
 import * as QuranReader from '../modules/quran/quran-reader.js';
-import * as DownloadManager from '../modules/quran/quran-download-manager.js';
-import * as AudioService from '../modules/quran/quran-audio-service.js';
+import { getSurahList } from '../modules/quran/quran-api.js';
 
 // Utilities
 import { initPullToRefresh } from '../utils/pull-to-refresh.js';
@@ -91,7 +90,7 @@ export async function render(container) {
 
    await loadSubPage(initialTab);
    if (initialTab !== 'surah') {
-       QuranDock.setActive(initialTab);
+      QuranDock.setActive(initialTab);
    }
 
    await transitionPromise;
@@ -104,6 +103,25 @@ export async function render(container) {
    }
 
    await loadNS('utils/pull-to-refresh');
+
+   // Handle deep link auto opening surah from audio pill click
+   const autoOpenSurah = sessionStorage.getItem('quran_auto_open_surah');
+   const autoOpenAyah = sessionStorage.getItem('quran_auto_open_ayah');
+   
+   if (autoOpenSurah) {
+      sessionStorage.removeItem('quran_auto_open_surah');
+      if (autoOpenAyah) sessionStorage.removeItem('quran_auto_open_ayah');
+      
+      try {
+         const surahList = await getSurahList();
+         const targetSurah = surahList.find(s => parseInt(s.index, 10) === parseInt(autoOpenSurah, 10));
+         if (targetSurah) {
+            QuranReader.open(targetSurah, 'surah', autoOpenAyah ? parseInt(autoOpenAyah, 10) : null);
+         }
+      } catch (err) {
+         logError('[QuranPage] Auto open surah failed', err);
+      }
+   }
 
    // Attach native PTR to the Quran content area so its UI renders inside
    // the overlay (not behind it).
@@ -232,8 +250,6 @@ export async function destroy() {
 
    QuranReader.destroy();
    QuranAudioDock.destroy();
-   DownloadManager.destroy();
-   AudioService.destroy();
 
    if (_activePage && _activePage.destroy) {
       await _activePage.destroy();

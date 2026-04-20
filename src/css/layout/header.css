@@ -27,11 +27,92 @@
    pointer-events: none;
 }
 
+/* Brand Pill (Dynamic Island style) */
+.header-brand-pill {
+   display: flex;
+   align-items: center;
+   gap: var(--spacing-sm);
+   background: transparent;
+   border: 1px solid transparent;
+   border-radius: var(--radius-full);
+   padding: var(--spacing-xs);
+   margin-left: calc(-1 * var(--spacing-xs));
+   cursor: pointer;
+   outline: none;
+   transition: background var(--transition-normal),
+      border-color var(--transition-normal),
+      padding var(--transition-normal),
+      box-shadow var(--transition-normal),
+      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+   overflow: hidden;
+}
+
+.header-brand-pill:active {
+   transform: scale(0.97);
+}
+
+/* Glassmorphism active state */
+.header-brand-pill.is-active {
+   background: var(--clr-bg-card);
+   border-color: var(--clr-border-light);
+   padding-right: var(--spacing-md);
+   box-shadow: var(--shadow-sm);
+   backdrop-filter: blur(12px);
+   -webkit-backdrop-filter: blur(12px);
+}
+
 .header-logo {
    width: var(--header-logo-size);
    height: var(--header-logo-size);
    object-fit: contain;
+   border-radius: var(--radius-full);
+   flex-shrink: 0;
    transition: width var(--transition-fast), height var(--transition-fast);
+}
+
+/* Audio Indicator */
+.header-audio-indicator {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 0;
+   opacity: 0;
+   overflow: hidden;
+   color: var(--clr-accent-500);
+   font-size: var(--icon-lg);
+   transition: width var(--transition-normal),
+      opacity var(--transition-normal),
+      transform var(--transition-normal);
+   transform: translateX(-10px);
+}
+
+.header-brand-pill.is-active .header-audio-indicator {
+   width: var(--icon-md);
+   opacity: 1;
+   transform: translateX(0);
+}
+
+/* Pause state: icon stops pulsing and goes dim */
+.header-brand-pill.is-paused .header-audio-indicator i {
+   animation: none;
+   opacity: 0.5;
+}
+
+/* Play state: icon gently pulses to indicate audio is active */
+.header-brand-pill.is-active:not(.is-paused) .header-audio-indicator i {
+   animation: pulseAudioPill 2s infinite ease-in-out;
+}
+
+@keyframes pulseAudioPill {
+   0%, 100% {
+      transform: scale(0.9);
+      opacity: 0.7;
+   }
+   50% {
+      transform: scale(1.1);
+      opacity: 1;
+      text-shadow: 0 0 8px var(--clr-accent-a50);
+   }
 }
 
 .header-right {
