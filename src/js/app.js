@@ -154,6 +154,16 @@ export async function initApp() {
     const navEl = document.getElementById('bottom-nav');
     if (navEl) navBar.render(navEl, handleNavigation);
 
+    // ── Cold-Start Murottal Rehydration ────────────────────────────────────────
+    // Covers the case where the app was fully killed (force-close / swipe-dismiss)
+    // while murottal was playing. In this scenario, the native foreground service
+    // keeps running but the JS layer starts from scratch with all state reset.
+    if (isNative) {
+        import('./modules/quran/quran-audio-service.js')
+            .then(({ rehydrateFromNative }) => rehydrateFromNative())
+            .catch(e => console.warn('[App] Cold-start murottal rehydration failed:', e.message));
+    }
+
     // Register routes — only homePage is statically imported (critical path).
     // All other pages use lazy handlerFactory via dynamic import().
     router.register('home', homePage);
@@ -292,14 +302,26 @@ async function prefetchQiblaDirection() {
 
 /**
  * Initialize the App lifecycle listener.
- * On every resume from background → trigger 30-day notification sync.
+ * On every resume from background:
+ *   - Re-sync 30-day prayer notifications
+ *   - Rehydrate Murottal playback state from native background service
  */
 function initAppResumeListener() {
     try {
-        App.addListener('appStateChange', (state) => {
+        App.addListener('appStateChange', async (state) => {
             if (state.isActive) {
                 console.log('[App] Resumed — syncing 30-day notifications');
                 syncNotifications();
+
+                // Rehydrate murottal state from native background service
+                if (isNative) {
+                    try {
+                        const { rehydrateFromNative } = await import('./modules/quran/quran-audio-service.js');
+                        await rehydrateFromNative();
+                    } catch (e) {
+                        console.warn('[App] Murottal rehydration failed:', e.message);
+                    }
+                }
             }
         });
         console.log('[App] Resume listener initialized');
@@ -310,10 +332,10 @@ function initAppResumeListener() {
 
 async function triggerPostSplashPermissions() {
     if (!isNative) return;
-    
+
     const interruptedByNotif = await _requestNotificationIfNeeded();
     const interruptedByBattery = await _requestBatteryOptIfNeeded();
-    
+
     // Jika dialog lokasi ditutup paksa demi menampilkan dialog perizinan,
     // kembalikan dialog lokasinya (jika user masih belum set lokasi)
     if (interruptedByNotif || interruptedByBattery) {
@@ -363,7 +385,7 @@ async function _requestNotificationIfNeeded() {
             store.setState('settings.notification', false);
         },
     });
-    
+
     return interrupted;
 }
 
@@ -407,6 +429,6 @@ async function _requestBatteryOptIfNeeded() {
             store.setState('settings.battery_opt_seen', true);
         },
     });
-    
+
     return interrupted;
 }

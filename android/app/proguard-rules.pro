@@ -47,6 +47,11 @@
 # Keep the MainActivity
 -keep class com.saturamadhan.app.MainActivity { *; }
 
+# ─── Murottal Background Playback ───────────────────────────────────────────
+-keep class com.saturamadhan.app.MurottalPlaybackService { *; }
+-keep class com.saturamadhan.app.MurottalServicePlugin { *; }
+-keep class com.saturamadhan.app.MurottalActionReceiver { *; }
+
 # ─── General AndroidX / WorkManager rules ───────────────────────────────────
 # WorkManager's internal RescheduleReceiver and related classes must survive R8
 -keep class androidx.work.** { *; }

@@ -1,9 +1,15 @@
 /**
  * Quran Audio Service
  *
- * Manages native audio playback of downloaded Murottal files via
- * @capgo/native-audio. Supports single-ayah and sequential surah
- * playback modes (foreground only).
+ * Manages Murottal playback with platform-aware routing:
+ *
+ *   - **Android Native**: Delegates to MurottalPlaybackService (Java Foreground
+ *     Service) via the MurottalServicePlugin Capacitor bridge. This enables
+ *     background playback that survives app minimization and force-close.
+ *
+ *   - **Web / Fallback**: Uses HTML5 Web Audio (and @capgo/native-audio for
+ *     preloaded local files on native-streaming mode). Playback stops when
+ *     the browser tab loses focus — acceptable for web deployments.
  *
  * Communication with UI is done via DOM CustomEvents on `document`.
  * No direct coupling to any view/component.
@@ -11,13 +17,14 @@
  * @module quran-audio-service
  */
 
-import { Capacitor } from '@capacitor/core';
 import { NativeAudio } from '@capgo/native-audio';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { store } from '../../core/store.js';
-import { DEFAULT_RECITER_ID, getReciterUrlSegment } from '../../config/quran-audio.js';
+import { getReciterUrlSegment } from '../../config/quran-audio.js';
 import { getSurahList } from './quran-api.js';
 import { isAudioOfflineEnabled } from './quran-settings.js';
+import { isNative } from '../system/platform.js';
+import { MurottalService, buildPlaylist, getReciterId } from './murottal-native-bridge.js';
+import { t, loadNS } from '../../core/i18n.js';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -25,6 +32,9 @@ const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
 
 /** Prefix for NativeAudio asset IDs to avoid collisions. */
 const ASSET_PREFIX = 'murottal';
+
+/** Whether to use the native background service for playback. */
+const USE_NATIVE_SERVICE = isNative;
 
 // ─── Internal State ──────────────────────────────────────────────────────────
 
@@ -61,12 +71,16 @@ let _completeListenerHandle = null;
 /** @type {HTMLAudioElement|null} */
 let _webAudioEl = null;
 
-// ─── Private Helpers ─────────────────────────────────────────────────────────
+/** @type {PluginListenerHandle|null} */
+let _nativeStateListenerHandle = null;
 
-/** @returns {string} Active reciter ID from settings store. */
-function _getReciterId() {
-    return store.getState('settings.quran.reciterId') || DEFAULT_RECITER_ID;
-}
+/** @type {PluginListenerHandle|null} */
+let _nativeStoppedListenerHandle = null;
+
+// getReciterId() is imported from murottal-native-bridge.js (the canonical owner).
+// quran-download-manager.js keeps its own private _getReciterId() intentionally
+// to avoid it depending on the murottal bridge — it predates the bridge and has no
+// playback concern. Merging them would create an incorrect dependency direction.
 
 /** @returns {string} Local filesystem path for a given ayah. */
 function _buildLocalPath(reciterId, surahIndex, ayahNumber) {
@@ -134,7 +148,101 @@ async function _removeCompleteListener() {
     _completeListenerHandle = null;
 }
 
-// ─── Core Playback Logic ─────────────────────────────────────────────────────
+// ─── Native Service Bridge ───────────────────────────────────────────────────
+
+/**
+ * Builds the i18n systemStrings payload for the native service notification.
+ * Pre-translates all UI strings in the active language before sending to Java.
+ * @returns {Promise<object>}
+ */
+async function _buildSystemStrings() {
+    await loadNS('components/quran/quran-audio-dock');
+    return {
+        playing: t('components/quran/quran-audio-dock:play'),
+        ayah: t('components/quran/quran-audio-dock:notif_ayah_label'),
+        stop: t('components/quran/quran-audio-dock:stop'),
+        pause: t('components/quran/quran-audio-dock:pause'),
+        resume: t('components/quran/quran-audio-dock:resume'),
+        next: t('components/quran/quran-audio-dock:next'),
+        prev: t('components/quran/quran-audio-dock:prev'),
+        channelName: t('components/quran/quran-audio-dock:notif_channel_name') || 'Murottal Playback',
+        channelDesc: t('components/quran/quran-audio-dock:notif_channel_desc') || 'Murottal Al-Quran playback controls',
+    };
+}
+
+/**
+ * Registers listeners for native service state changes.
+ * Called once when the first playback session starts on Android native.
+ */
+function _registerNativeListeners() {
+    if (_nativeStateListenerHandle) return; // Already registered
+
+    _nativeStateListenerHandle = MurottalService.addListener('onMurottalStateChanged', (data) => {
+        // Update internal state from native service
+        const prevAyah = _currentAyahNumber;
+        const prevPaused = _isPaused;
+        _isPlaying = data.isPlaying;
+        _isPaused = data.isPaused;
+        _currentAyahNumber = data.ayahNumber;
+        _playbackMode = data.mode || 'sequential';
+
+        if (_currentSurah) {
+            _currentSurah.index = data.surahIndex;
+            _currentSurah.name = data.surahName || _currentSurah.name;
+        }
+
+        // Emit appropriate events for UI sync.
+        // Only fire pause/resume events when the pause state *changes*,
+        // not every time we receive a broadcast with isPaused=true.
+        if (!prevPaused && data.isPaused) {
+            _emit('murottal:play-pause', {
+                surahIndex: data.surahIndex,
+                ayahNumber: data.ayahNumber,
+            });
+        } else if (prevPaused && data.isPlaying && !data.isPaused) {
+            _emit('murottal:play-resume', {
+                surahIndex: data.surahIndex,
+                ayahNumber: data.ayahNumber,
+            });
+        } else if (prevAyah !== data.ayahNumber && data.isPlaying) {
+            _emit('murottal:ayah-change', {
+                surahIndex: data.surahIndex,
+                surahName: data.surahName || _currentSurah?.name || '',
+                ayahNumber: data.ayahNumber,
+            });
+        }
+    });
+
+    _nativeStoppedListenerHandle = MurottalService.addListener('onMurottalStopped', () => {
+        const wasPlaying = _isPlaying;
+        _isPlaying = false;
+        _isPaused = false;
+        _isBuffering = false;
+        _currentSurah = null;
+        _currentAyahNumber = 0;
+        _playbackMode = 'single';
+
+        if (wasPlaying) {
+            _emit('murottal:play-stop', {});
+        }
+    });
+}
+
+/**
+ * Removes native service listeners.
+ */
+async function _removeNativeListeners() {
+    if (_nativeStateListenerHandle) {
+        try { await _nativeStateListenerHandle.remove(); } catch {}
+        _nativeStateListenerHandle = null;
+    }
+    if (_nativeStoppedListenerHandle) {
+        try { await _nativeStoppedListenerHandle.remove(); } catch {}
+        _nativeStoppedListenerHandle = null;
+    }
+}
+
+// ─── Core Playback Logic (Web/Fallback Path) ─────────────────────────────────
 
 /**
  * Loads and plays the audio file for a specific ayah.
@@ -150,7 +258,7 @@ async function _removeCompleteListener() {
  * @returns {Promise<boolean>} Resolves `true` if playback started successfully.
  */
 async function _playAyahFile(surahIndex, ayahNumber, signal) {
-    const reciterId = _getReciterId();
+    const reciterId = getReciterId();
 
     // Use isAudioOfflineEnabled() as the single routing decision:
     //   false → Streaming path (Web, or Native with streaming mode)
@@ -399,13 +507,21 @@ async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah,
     await _gotoAyah(startAyah, signal);
 }
 
+// ─── Platform-Routed Public API ──────────────────────────────────────────────
+
 /**
  * Plays an entire surah sequentially, auto-advancing through each ayah.
+ * On Android native, delegates to the background foreground service.
+ * On web, uses the in-process JS playback engine.
+ *
  * @param {number} surahIndex
  * @param {string} surahName
  * @param {number} totalAyahs
  */
-export function playSurah(surahIndex, surahName, totalAyahs) {
+export async function playSurah(surahIndex, surahName, totalAyahs) {
+    if (USE_NATIVE_SERVICE) {
+        return _nativePlaySurah(surahIndex, surahName, totalAyahs);
+    }
     return _initPlayback('sequential', surahIndex, surahName, totalAyahs, 1);
 }
 
@@ -413,11 +529,16 @@ export function playSurah(surahIndex, surahName, totalAyahs) {
  * Plays a single ayah in 'single' mode (stops automatically after the ayah ends).
  * Fetches totalAyahs from the Surah registry to enable skipNext/skipPrev while playing.
  * Aborts any in-flight playback immediately to prevent race conditions on rapid taps.
+ *
  * @param {number} surahIndex
  * @param {number} ayahNumber
  * @param {string} [surahName='']
  */
 export async function playAyah(surahIndex, ayahNumber, surahName = '') {
+    if (USE_NATIVE_SERVICE) {
+        return _nativePlayAyah(surahIndex, ayahNumber, surahName);
+    }
+
     // Abort BEFORE any async work to prevent race conditions when the user
     // taps multiple ayahs quickly before getSurahList() resolves.
     const controller = new AbortController();
@@ -425,7 +546,7 @@ export async function playAyah(surahIndex, ayahNumber, surahName = '') {
     _playController = controller;
     const signal = controller.signal;
 
-    let totalAyahs = ayahNumber; // Safe baseline fallback
+    let totalAyahs = 1; // Minimal safe fallback — playlist will only contain the played ayah
 
     try {
         const surahList = await getSurahList();
@@ -449,6 +570,16 @@ export async function playAyah(surahIndex, ayahNumber, surahName = '') {
  * Pauses the current playback.
  */
 export async function pause() {
+    if (USE_NATIVE_SERVICE) {
+        if (!_isPlaying || _isPaused) return;
+        try {
+            await MurottalService.pause();
+        } catch (error) {
+            console.warn('[AudioService] Native pause failed:', error);
+        }
+        return;
+    }
+
     if (!_isPlaying || _isPaused || !_currentAssetId) return;
 
     try {
@@ -470,6 +601,16 @@ export async function pause() {
  * Resumes paused playback.
  */
 export async function resume() {
+    if (USE_NATIVE_SERVICE) {
+        if (!_isPlaying || !_isPaused) return;
+        try {
+            await MurottalService.resume();
+        } catch (error) {
+            console.warn('[AudioService] Native resume failed:', error);
+        }
+        return;
+    }
+
     if (!_isPlaying || !_isPaused || !_currentAssetId) return;
 
     try {
@@ -491,6 +632,27 @@ export async function resume() {
  * Stops playback entirely and resets all internal state.
  */
 export async function stop() {
+    if (USE_NATIVE_SERVICE) {
+        _playController.abort();
+        const wasPlaying = _isPlaying;
+
+        _isPlaying = false;
+        _isPaused = false;
+        _isBuffering = false;
+        _currentSurah = null;
+        _currentAyahNumber = 0;
+        _playbackMode = 'single';
+
+        try {
+            await MurottalService.stop();
+        } catch (error) {
+            console.warn('[AudioService] Native stop failed:', error);
+        }
+
+        if (wasPlaying) _emit('murottal:play-stop', {});
+        return;
+    }
+
     _playController.abort();
 
     if (!_isPlaying && !_currentAssetId && !_isTransitioning) return;
@@ -510,6 +672,16 @@ export async function stop() {
  * Skips to the next ayah instantly, aborting any active transition.
  */
 export async function skipNext() {
+    if (USE_NATIVE_SERVICE) {
+        if (!_isPlaying || !_currentSurah) return;
+        try {
+            await MurottalService.next();
+        } catch (error) {
+            console.warn('[AudioService] Native next failed:', error);
+        }
+        return;
+    }
+
     if (!_isPlaying || !_currentSurah) return;
 
     const nextAyah = _currentAyahNumber + 1;
@@ -523,6 +695,16 @@ export async function skipNext() {
  * Skips to the previous ayah instantly, aborting any active transition.
  */
 export async function skipPrev() {
+    if (USE_NATIVE_SERVICE) {
+        if (!_isPlaying || !_currentSurah) return;
+        try {
+            await MurottalService.prev();
+        } catch (error) {
+            console.warn('[AudioService] Native prev failed:', error);
+        }
+        return;
+    }
+
     if (!_isPlaying || !_currentSurah) return;
 
     const prevAyah = Math.max(1, _currentAyahNumber - 1);
@@ -561,4 +743,166 @@ export function isPlaying() {
  */
 export async function destroy() {
     await stop();
+}
+
+// ─── Native Service Playback Helpers ─────────────────────────────────────────
+
+/**
+ * Plays a full surah via the native background foreground service.
+ */
+async function _nativePlaySurah(surahIndex, surahName, totalAyahs) {
+    // Register native listeners if not already done
+    _registerNativeListeners();
+
+    // Set JS state immediately for responsive UI
+    _isPlaying = true;
+    _isPaused = false;
+    _playbackMode = 'sequential';
+    _currentSurah = { index: surahIndex, name: surahName, totalAyahs };
+    _currentAyahNumber = 1;
+
+    _emit('murottal:play-start', { surahIndex, surahName, ayahNumber: 1, mode: 'sequential' });
+    _setBuffering(true, true);
+
+    try {
+        const playlist = await buildPlaylist(surahIndex, totalAyahs);
+        const systemStrings = await _buildSystemStrings();
+
+        await MurottalService.play({
+            playlist: JSON.stringify(playlist),
+            surahIndex,
+            surahName,
+            totalAyahs,
+            startAyah: 1,
+            mode: 'sequential',
+            systemStrings,
+        });
+
+        _setBuffering(false);
+    } catch (error) {
+        console.warn('[AudioService] Native playSurah failed:', error);
+        _setBuffering(false);
+        _isPlaying = false;
+        _emit('murottal:play-stop', {});
+    }
+}
+
+/**
+ * Plays a single ayah via the native background foreground service.
+ */
+async function _nativePlayAyah(surahIndex, ayahNumber, surahName) {
+    // Register native listeners if not already done
+    _registerNativeListeners();
+
+    let totalAyahs = ayahNumber;
+
+    try {
+        const surahList = await getSurahList();
+        const surahInfo = surahList.find(s => parseInt(s.index, 10) === parseInt(surahIndex, 10));
+        if (surahInfo) {
+            const count = surahInfo.count || surahInfo.numberOfAyahs;
+            if (count) totalAyahs = parseInt(count, 10);
+        }
+    } catch (err) {
+        console.warn(`[AudioService] _nativePlayAyah: failed to lookup totalAyahs for surah ${surahIndex}`, err);
+    }
+
+    // Set JS state immediately for responsive UI
+    _isPlaying = true;
+    _isPaused = false;
+    _playbackMode = 'single';
+    _currentSurah = { index: surahIndex, name: surahName, totalAyahs };
+    _currentAyahNumber = ayahNumber;
+
+    _emit('murottal:play-start', { surahIndex, surahName, ayahNumber, mode: 'single' });
+    _setBuffering(true, true);
+
+    try {
+        // Build a full playlist from ayah 1 to totalAyahs so next/prev can work
+        const playlist = await buildPlaylist(surahIndex, totalAyahs);
+        const systemStrings = await _buildSystemStrings();
+
+        await MurottalService.play({
+            playlist: JSON.stringify(playlist),
+            surahIndex,
+            surahName,
+            totalAyahs,
+            startAyah: ayahNumber,
+            mode: 'single',
+            systemStrings,
+        });
+
+        _setBuffering(false);
+    } catch (error) {
+        console.warn('[AudioService] Native playAyah failed:', error);
+        _setBuffering(false);
+        _isPlaying = false;
+        _emit('murottal:play-stop', {});
+    }
+}
+
+// ─── Rehydration (Background → Foreground Sync) ─────────────────────────────
+
+/**
+ * Syncs JS state with the native background service.
+ * Called when the app resumes from background on Android native.
+ *
+ * If the service is still playing, updates JS state and emits events
+ * so the UI (dock, reader, header pill) reflects the current position.
+ */
+export async function rehydrateFromNative() {
+    if (!USE_NATIVE_SERVICE) return;
+
+    try {
+        const state = await MurottalService.getState();
+
+        if (state.isPlaying) {
+            // Register listeners if not already done
+            _registerNativeListeners();
+
+            _isPlaying = true;
+            _isPaused = state.isPaused;
+            _currentAyahNumber = state.ayahNumber;
+            _playbackMode = state.mode || 'sequential';
+            _currentSurah = {
+                index: state.surahIndex,
+                name: state.surahName || '',
+                totalAyahs: state.totalAyahs || 0,
+            };
+
+            // Emit events to wake up all UI components
+            _emit('murottal:play-start', {
+                surahIndex: state.surahIndex,
+                surahName: state.surahName || '',
+                ayahNumber: state.ayahNumber,
+                mode: state.mode,
+            });
+
+            _emit('murottal:ayah-change', {
+                surahIndex: state.surahIndex,
+                surahName: state.surahName || '',
+                ayahNumber: state.ayahNumber,
+            });
+
+            if (state.isPaused) {
+                _emit('murottal:play-pause', {
+                    surahIndex: state.surahIndex,
+                    ayahNumber: state.ayahNumber,
+                });
+            }
+
+            console.log(`[AudioService] Rehydrated from native: surah=${state.surahIndex} ayah=${state.ayahNumber} paused=${state.isPaused}`);
+        } else {
+            // Native is not playing — ensure JS state is clean
+            if (_isPlaying) {
+                _isPlaying = false;
+                _isPaused = false;
+                _currentSurah = null;
+                _currentAyahNumber = 0;
+                _emit('murottal:play-stop', {});
+            }
+        }
+    } catch (error) {
+        console.warn('[AudioService] Rehydration failed:', error);
+    }
 }

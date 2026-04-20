@@ -20,4 +20,8 @@
     <string name="notification_channel_location_desc">Pemberitahuan saat lokasi Anda berubah signifikan</string>
     <string name="notification_title_location_changed">Lokasi Anda Berubah</string>
     <string name="notification_text_location_changed">Nampaknya lokasi Anda telah berubah. Ketuk untuk memperbarui jadwal notifikasi.</string>
+
+    <!-- Murottal Playback Notification Strings -->
+    <string name="notification_channel_murottal_name">Murottal Playback</string>
+    <string name="notification_channel_murottal_desc">Kontrol pemutaran Murottal Al-Quran</string>
 </resources>

@@ -56,4 +56,28 @@ public final class Constants {
     public static final long COOLDOWN_MS = 24 * 60 * 60 * 1000L; // 24 hours
     public static final String WORKER_TAG = "location_detect_worker";
     public static final String WORKER_TAG_ALARM_RESCHEDULE = "alarm_reschedule_worker";
+
+    // ─── Murottal Background Playback ──────────────────────────────────
+    public static final String ACTION_MUROTTAL_PLAY = "com.saturamadhan.app.ACTION_MUROTTAL_PLAY";
+    public static final String ACTION_MUROTTAL_PAUSE = "com.saturamadhan.app.ACTION_MUROTTAL_PAUSE";
+    public static final String ACTION_MUROTTAL_RESUME = "com.saturamadhan.app.ACTION_MUROTTAL_RESUME";
+    public static final String ACTION_MUROTTAL_STOP = "com.saturamadhan.app.ACTION_MUROTTAL_STOP";
+    public static final String ACTION_MUROTTAL_NEXT = "com.saturamadhan.app.ACTION_MUROTTAL_NEXT";
+    public static final String ACTION_MUROTTAL_PREV = "com.saturamadhan.app.ACTION_MUROTTAL_PREV";
+    public static final String ACTION_MUROTTAL_STATE_CHANGED = "com.saturamadhan.app.ACTION_MUROTTAL_STATE_CHANGED";
+    public static final String ACTION_MUROTTAL_STOPPED = "com.saturamadhan.app.ACTION_MUROTTAL_STOPPED";
+
+    public static final String CHANNEL_ID_MUROTTAL = "murottal_playback";
+    public static final int NOTIFICATION_ID_MUROTTAL = 3000;
+    public static final String PREF_MUROTTAL = "MurottalPlayback";
+
+    public static final String EXTRA_MUROTTAL_PLAYLIST = "murottal_playlist";
+    public static final String EXTRA_MUROTTAL_SURAH_INDEX = "murottal_surah_index";
+    public static final String EXTRA_MUROTTAL_SURAH_NAME = "murottal_surah_name";
+    public static final String EXTRA_MUROTTAL_TOTAL_AYAHS = "murottal_total_ayahs";
+    public static final String EXTRA_MUROTTAL_START_AYAH = "murottal_start_ayah";
+    public static final String EXTRA_MUROTTAL_MODE = "murottal_mode";
+    public static final String EXTRA_MUROTTAL_AYAH_NUMBER = "murottal_ayah_number";
+    public static final String EXTRA_MUROTTAL_IS_PLAYING = "murottal_is_playing";
+    public static final String EXTRA_MUROTTAL_IS_PAUSED = "murottal_is_paused";
 }

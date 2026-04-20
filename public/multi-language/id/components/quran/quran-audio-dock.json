@@ -11,5 +11,8 @@
     "next": "Selanjutnya",
     "stop": "Berhenti",
     "close": "Tutup",
-    "resume": "Lanjutkan"
+    "resume": "Lanjutkan",
+    "notif_channel_name": "Pemutaran Murottal",
+    "notif_channel_desc": "Kontrol pemutaran Murottal Al-Quran",
+    "notif_ayah_label": "Ayat"
 }

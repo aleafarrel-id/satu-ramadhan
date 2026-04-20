@@ -11,5 +11,8 @@
     "next": "Next",
     "stop": "Stop",
     "close": "Close",
-    "resume": "Resume"
+    "resume": "Resume",
+    "notif_channel_name": "Murottal Playback",
+    "notif_channel_desc": "Murottal Al-Quran playback controls",
+    "notif_ayah_label": "Ayah"
 }
