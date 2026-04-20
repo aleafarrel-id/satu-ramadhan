@@ -328,6 +328,15 @@ public class MurottalPlaybackService extends Service {
             isPausedByAdzan = false;
             updateStaticState();
             updateMediaSession(PlaybackStateCompat.STATE_PAUSED);
+            
+            // Detach from foreground so the user can swipe to dismiss when paused
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(Service.STOP_FOREGROUND_DETACH);
+            } else {
+                //noinspection deprecation
+                stopForeground(false);
+            }
+            
             updateNotification();
             broadcastStateChanged();
             Log.d(TAG, "Playback paused");
@@ -346,7 +355,14 @@ public class MurottalPlaybackService extends Service {
             isPaused = false;
             updateStaticState();
             updateMediaSession(PlaybackStateCompat.STATE_PLAYING);
-            updateNotification();
+
+            // Promote back to foreground service
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(Constants.NOTIFICATION_ID_MUROTTAL, buildNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+            } else {
+                startForeground(Constants.NOTIFICATION_ID_MUROTTAL, buildNotification());
+            }
+
             broadcastStateChanged();
             Log.d(TAG, "Playback resumed");
         } catch (Exception e) {
@@ -524,11 +540,16 @@ public class MurottalPlaybackService extends Service {
         // Action: Next
         PendingIntent nextPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_NEXT, 103);
 
+        // Delete Action (Triggered when the user swipes away the notification)
+        PendingIntent stopPendingIntent = createActionPendingIntent(Constants.ACTION_MUROTTAL_STOP, 104);
+
         // Enforce 3 actions to ensure symmetrical centering on custom OEM skins.
         androidx.media.app.NotificationCompat.MediaStyle mediaStyle =
                 new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession != null ? mediaSession.getSessionToken() : null)
-                        .setShowActionsInCompactView(0, 1, 2);
+                        .setShowActionsInCompactView(0, 1, 2)
+                        .setShowCancelButton(true)
+                        .setCancelButtonIntent(stopPendingIntent);
 
         // Title: Surah name  |  Body: "Ayah X / N"
         String titleText = surahName;
@@ -539,7 +560,8 @@ public class MurottalPlaybackService extends Service {
                 .setContentText(bodyText)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentIntent(contentIntent)
-                .setOngoing(true)
+                .setDeleteIntent(stopPendingIntent)
+                .setOngoing(!isPaused)
                 .setShowWhen(false)
                 // Using colorized(true) to keep the deep gold/teal UI standard natively
                 .setColorized(true)
