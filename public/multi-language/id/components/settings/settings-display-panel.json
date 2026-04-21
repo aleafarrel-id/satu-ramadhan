@@ -1,5 +1,6 @@
 {
     "section": "TAMPILAN",
     "language": "Bahasa",
+    "theme": "Tema",
     "language_changed": "Bahasa aplikasi: {{label}}"
 }

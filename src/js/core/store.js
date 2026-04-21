@@ -17,6 +17,7 @@ const initialState = {
         carouselIndex: 0
     },
     settings: {
+        theme: 'auto',
         org: 'nu',
         language: 'auto',
         notification: true,

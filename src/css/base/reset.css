@@ -21,6 +21,7 @@ html,
 body {
    height: 100%;
    overflow: hidden;
+   background: var(--clr-bg-gradient);
 }
 
 body {
@@ -29,7 +30,6 @@ body {
    font-weight: var(--fw-regular);
    line-height: var(--lh-normal);
    color: var(--clr-text-primary);
-   background: var(--clr-bg-gradient);
    background-attachment: fixed;
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;

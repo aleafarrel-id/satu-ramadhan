@@ -126,9 +126,9 @@
    display: flex;
    gap: 0;
    flex-shrink: 0;
-   background: var(--clr-accent-a20);
+   background: var(--clr-nav-arrows-bg);
    border-radius: var(--radius-pill);
-   border: 1px solid var(--clr-accent-a30);
+   border: 1px solid var(--clr-nav-arrows-border);
    overflow: hidden;
    -webkit-tap-highlight-color: transparent;
 }
@@ -141,7 +141,7 @@
    height: 34px;
    border: none;
    background: transparent;
-   color: var(--clr-accent-500);
+   color: var(--clr-nav-arrows-text);
    cursor: pointer;
    transition: background var(--transition-fast);
    padding: 0;
@@ -155,7 +155,7 @@
 }
 
 .schedule-nav__btn--prev {
-   border-right: 1px solid var(--clr-accent-a30);
+   border-right: 1px solid var(--clr-nav-arrows-border);
    border-top-left-radius: var(--radius-pill);
    border-bottom-left-radius: var(--radius-pill);
 }
@@ -181,8 +181,8 @@
 }
 
 .schedule-nav__btn.active {
-   background: var(--clr-accent-a25);
-   color: var(--clr-accent-500);
+   background: var(--clr-nav-arrows-active);
+   color: var(--clr-nav-arrows-active-text);
 }
 
 @media (max-width: 400px) {

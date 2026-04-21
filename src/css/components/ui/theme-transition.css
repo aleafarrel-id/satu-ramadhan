@@ -1,0 +1,30 @@
+/* ==========================================================================
+   THEME TRANSITION UTILITIES
+   Registers View Transition pseudo-elements for neat theme switching
+   ========================================================================== */
+
+/*
+   By default View Transitions run a crossfade (`mix-blend-mode: plus-lighter`).
+   We disable it when `#app-container` or `html` has our circular reveal custom animation.
+   We tell browser to only animate clip-path natively in our JS.
+*/
+::view-transition-old(root),
+::view-transition-new(root) {
+   animation: none !important;
+   mix-blend-mode: normal !important;
+   display: block;
+}
+
+/* Ensure the new root view is drawn perfectly on top */
+::view-transition-new(root) {
+   z-index: 9999 !important;
+}
+
+::view-transition-old(root) {
+   z-index: 1 !important;
+}
+
+/* To avoid any stray scrolls taking over during transition */
+html.theme-transitioning {
+   overflow: hidden;
+}

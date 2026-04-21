@@ -1,0 +1,9 @@
+{
+    "title": "Tema Aplikasi",
+    "theme_dark": "Gelap",
+    "theme_dark_desc": "Skema warna gelap premium",
+    "theme_teal": "Teal",
+    "theme_teal_desc": "Skema warna standar aplikasi",
+    "theme_auto": "Otomatis",
+    "theme_auto_desc": "Ikuti pengaturan perangkat"
+}

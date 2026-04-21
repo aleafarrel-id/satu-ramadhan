@@ -4,6 +4,8 @@
    ========================================================================== */
 
 :root {
+   color-scheme: dark;
+   
    /* --- 1. PRIMITIVE COLORS ---
       Base palettes and their alpha/transparency variants. */
 
@@ -86,12 +88,26 @@
    --clr-text-dark: #1a2a3a;
    --clr-text-accent: var(--clr-accent-500);
 
-   /* Background Tokens */
+   /* ── App Specific Utilities ── */
    --clr-bg-gradient: linear-gradient(135deg, #0a3540 0%, #1a4a5a 50%, #0f3545 100%);
-   --clr-bg-dark: #0d1f2d;
+   --clr-bg-dark: #061922;
+   --clr-bg-overlay: rgba(10, 53, 64, 0.85);
+
+   /* ── Component Primitives ── */
+   --clr-tube-bg: #1E4152;
+   --clr-tube-active-bg: #163845;
+   --clr-schedule-nav-bg: rgba(30, 65, 82, 0.5);
+   
+   /* Segmented Pill Buttons */
+   --clr-nav-arrows-bg: var(--clr-accent-a20);
+   --clr-nav-arrows-border: var(--clr-accent-a30);
+   --clr-nav-arrows-active: var(--clr-accent-a25);
+   --clr-nav-arrows-text: var(--clr-accent-500);
+   --clr-nav-arrows-active-text: var(--clr-accent-500);
+
+   /* Background Tokens */
    --clr-bg-card: rgba(26, 58, 74, 0.6);
    --clr-bg-card-solid: #1a3a4a;
-   --clr-bg-overlay: rgba(10, 53, 64, 0.95);
    --clr-bg-cal-overlay: rgba(4, 26, 32, 0.85);
 
    /* Border & Line Tokens */
@@ -339,12 +355,12 @@
 
    /* Gradient Compositions */
    --gradient-app-bg: var(--clr-bg-gradient);
-   --gradient-splash-bg: linear-gradient(180deg, #0a3540 0%, #1a4a5a 50%, #d4af37 100%);
+   --gradient-splash-bg: radial-gradient(ellipse farthest-corner at 0% 0%, #0a3540 0%, #1a4a5a 60%, #d4af37 110%);
    --gradient-tube-fill: linear-gradient(to top, rgba(154, 122, 28, 0.95), rgba(212, 175, 55, 0.85), rgba(232, 200, 110, 0.7));
    --gradient-loading-bar: linear-gradient(90deg, #d4af37, #e8c86e);
    --gradient-org-badge: linear-gradient(90deg, #1a5f6f 0%, #2d9e9e 50%, #1a5f6f 100%);
    --gradient-cal-bg: linear-gradient(165deg, rgba(26, 58, 74, 0.95) 0%, rgba(15, 40, 52, 0.98) 100%);
-   
+
    /* --- Tasbih Variables --- */
    --clr-tasbih-bg-start: var(--clr-primary-900);
    --clr-tasbih-bg-end: var(--clr-primary-800);
@@ -352,7 +368,7 @@
    --clr-tasbih-text: #ffffff;
    --clr-tasbih-text-secondary: rgba(255, 255, 255, 0.55);
    --clr-tasbih-accent: var(--clr-accent-500);
-   --clr-tasbih-ring: var(--clr-primary-400); 
+   --clr-tasbih-ring: var(--clr-primary-400);
    --clr-tasbih-ring-track: rgba(255, 255, 255, 0.08);
    --clr-tasbih-bead: #C4956A;
    --clr-tasbih-bead-shadow: rgba(0, 0, 0, 0.5);
@@ -363,4 +379,108 @@
    --clr-liquid-body: #A5913A;
    --clr-liquid-deep: #8D7320;
    --clr-liquid-bubble: rgba(255, 235, 170, 0.4);
+}
+
+/* ==========================================================================
+   DARK THEME OVERRIDES (PREMIUM DARK & TEAL TINT)
+   Isolated logic, leaving the :root (Teal default) entirely pristine.
+   ========================================================================== */
+[data-theme="dark"] {
+   /* --- Primitive Background Re-mapping --- */
+   /* Deep pure dark background with subtle teal tint to maintain identity (Deep Ocean) */
+   --clr-bg-gradient: linear-gradient(135deg, #05191e 0%, #082229 50%, #061d24 100%);
+   --clr-bg-dark: #031013;
+
+   /* UI Surface Layers (Softer elevated cards) */
+   --clr-bg-card: rgba(13, 34, 43, 0.75);
+   --clr-bg-card-solid: #0d222b;
+   --clr-bg-overlay: rgba(5, 25, 30, 0.95);
+   --clr-bg-cal-overlay: rgba(5, 25, 30, 0.85);
+
+   /* Global Structs */
+   --color-bg-primary: #082229;
+   --color-bg-secondary: #0d222b;
+   --color-bg-card: rgba(13, 34, 43, 0.75);
+   --color-bg-card-inner: rgba(16, 40, 50, 0.7);
+   --color-nav-bg: #06151a;
+   --gradient-cal-bg: linear-gradient(165deg, rgba(13, 34, 43, 0.95) 0%, rgba(5, 15, 20, 0.98) 100%);
+   --gradient-splash-bg: radial-gradient(ellipse farthest-corner at 0% 0%, #031013 0%, #082229 60%, #5c4a11 110%);
+
+   /* Component Specific Overrides */
+   --clr-tube-bg: rgba(16, 40, 50, 0.4);
+   --clr-tube-active-bg: rgba(10, 25, 33, 0.6);
+   --clr-schedule-nav-bg: rgba(13, 34, 43, 0.4);
+   
+   /* Pure gold aesthetic for segmented pills - no dark overlays, just transparent accent */
+   --clr-nav-arrows-bg: rgba(212, 175, 55, 0.08);
+   --clr-nav-arrows-border: rgba(212, 175, 55, 0.25);
+   --clr-nav-arrows-active: rgba(212, 175, 55, 0.25);
+   --clr-nav-arrows-text: rgba(212, 175, 55, 0.6);
+   --clr-nav-arrows-active-text: var(--clr-accent-500);
+
+   /* Base Text (Dark context requires lighter text) */
+   --clr-text-primary: #eef2f5;
+   --clr-text-secondary: #9cb1c5;
+   --clr-text-muted: #7c94a8;
+   --clr-text-dark: #dce1e6;
+   --color-nav-inactive: #526778;
+
+   /* Overrides strictly for Al-Quran & Mushaf Surfaces to remove white/sephia glare */
+   /* Use Soft Slate Dark to represent a comfortable night-paper reading experience */
+   --clr-quran-bg: #12181c;
+   --clr-quran-bg-alt: #151c20;
+   --clr-quran-card-bg: #181d22;
+   --clr-quran-card-hover: #1c2228;
+
+   /* Invert dark texts to light/gray */
+   --clr-quran-text: #dce1e6;
+   --clr-quran-text-secondary: #8c9bad;
+   --clr-quran-border: rgba(45, 158, 158, 0.15);
+
+   /* Mushaf Native Rendering */
+   --clr-mushaf-bg-start: #101518;
+   --clr-mushaf-bg-mid: #161c22;
+   --clr-mushaf-bg-end: #181d22;
+   --clr-mushaf-page-start: #101518;
+   --clr-mushaf-page-end: #181d22;
+   --clr-mushaf-header-bg: rgba(18, 24, 28, 0.85);
+   --clr-mushaf-header-border: rgba(212, 175, 55, 0.15);
+   /* Keep gold tint */
+   --clr-mushaf-edge-shadow: rgba(0, 0, 0, 0.3);
+   --clr-mushaf-line-border: rgba(212, 175, 55, 0.25);
+   --clr-mushaf-page-shadow: 0 0 5px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+   /* 
+      Mushaf Text Inversion Strategy 
+      Warning: STRICT 1:1 Inversion! Gold is kept Gold! 
+   */
+   --clr-mushaf-text: #d5dae0;
+   /* Origin: #5a4520. Now Light Gray */
+   --clr-mushaf-text-dark: #e8ecf0;
+   /* Origin: #3d3016. Now Brighter Gray */
+   --clr-mushaf-text-body: #f8f9fa;
+   /* Origin: #1a1408 (Black). Now Purest Neutral White */
+   --clr-mushaf-text-active: var(--clr-accent-500);
+   /* Keep it gold! */
+
+   /* Tasbih Environment */
+   --clr-tasbih-bg-start: #082229;
+   --clr-tasbih-bg-end: #031013;
+   --clr-tasbih-surface: rgba(255, 255, 255, 0.04);
+   --clr-tasbih-text: #ffffff;
+   --clr-tasbih-text-secondary: rgba(255, 255, 255, 0.4);
+   --clr-tasbih-bead-shadow: rgba(0, 0, 0, 0.6);
+
+   /* Tasbih Bead Brightness Override (compensate for dark bg) */
+   --bead-pending-1: #f3e0bf;
+   --bead-pending-2: #daaf7f;
+   --bead-pending-3: #9b6c4b;
+
+   --bead-active-1: #fceed3;
+   --bead-active-2: #eec185;
+   --bead-active-3: #b37e47;
+
+   --bead-counted-1: #e2cba6;
+   --bead-counted-2: #c4956a;
+   --bead-counted-3: #7d5939;
 }

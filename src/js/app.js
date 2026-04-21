@@ -11,6 +11,7 @@ import { isNative } from './modules/system/platform.js';
 
 // State & Core Services
 import { store } from './core/store.js';
+import { initTheme } from './core/theme.js';
 import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
@@ -62,6 +63,9 @@ let _cleanupPtr = null;
 export async function initApp() {
     // Hydrate persistent state before anything else
     await store.hydrate();
+
+    // Initialize Theme globally before painting
+    initTheme();
 
     // Initialize i18n — must run after hydrate (reads saved language)
     // and before any render (components may call t())

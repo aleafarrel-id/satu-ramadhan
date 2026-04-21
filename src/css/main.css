@@ -25,6 +25,7 @@
 @import './components/ui/toggle.css';
 @import './components/ui/empty-state.css';
 @import './components/ui/carousel.css';
+@import './components/ui/theme-transition.css';
 
 /* Prayer (used by Home) */
 @import './components/prayer/prayer-time.css';

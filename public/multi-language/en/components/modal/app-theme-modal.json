@@ -1,0 +1,9 @@
+{
+    "title": "App Theme",
+    "theme_dark": "Dark",
+    "theme_dark_desc": "Premium dark color scheme",
+    "theme_teal": "Teal",
+    "theme_teal_desc": "Standard app color scheme",
+    "theme_auto": "Auto",
+    "theme_auto_desc": "Follow device settings"
+}

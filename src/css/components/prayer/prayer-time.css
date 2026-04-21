@@ -95,7 +95,7 @@
    Individual tube
    ============================================= */
 .tube {
-   --tube-bg: #1E4152;
+   --tube-bg: var(--clr-tube-bg);
    position: relative;
    background: var(--tube-bg);
    border-radius: var(--radius-lg);
@@ -267,7 +267,7 @@
    Active tube styling
    ============================================= */
 .tube.active {
-   --tube-bg: #163845;
+   --tube-bg: var(--clr-tube-active-bg);
    border-color: var(--clr-primary-a30);
 }
 

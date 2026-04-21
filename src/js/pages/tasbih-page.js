@@ -312,27 +312,27 @@ function _rebuildBeadsSVG() {
             <defs>
                 <!-- Pending bead: warm wooden tan -->
                 <radialGradient id="bead-gradient-pending" cx="35%" cy="32%" r="65%">
-                    <stop offset="0%"   stop-color="#E8C99A"/>
-                    <stop offset="45%"  stop-color="#C4956A"/>
-                    <stop offset="100%" stop-color="#8B6347"/>
+                    <stop offset="0%"   stop-color="var(--bead-pending-1, #E8C99A)"/>
+                    <stop offset="45%"  stop-color="var(--bead-pending-2, #C4956A)"/>
+                    <stop offset="100%" stop-color="var(--bead-pending-3, #8B6347)"/>
                 </radialGradient>
                 <!-- Counted bead: slightly muted to show it's been passed -->
                 <radialGradient id="bead-gradient-counted" cx="35%" cy="32%" r="65%">
-                    <stop offset="0%"   stop-color="#D4B588"/>
-                    <stop offset="45%"  stop-color="#A87C56"/>
-                    <stop offset="100%" stop-color="#6E4D30"/>
+                    <stop offset="0%"   stop-color="var(--bead-counted-1, #D4B588)"/>
+                    <stop offset="45%"  stop-color="var(--bead-counted-2, #A87C56)"/>
+                    <stop offset="100%" stop-color="var(--bead-counted-3, #6E4D30)"/>
                 </radialGradient>
                 <!-- Active bead: warm glowing highlight -->
                 <radialGradient id="bead-gradient-active" cx="30%" cy="28%" r="70%">
-                    <stop offset="0%"   stop-color="#F5DFB8"/>
-                    <stop offset="40%"  stop-color="#DBA96D"/>
-                    <stop offset="100%" stop-color="#9A6A3A"/>
+                    <stop offset="0%"   stop-color="var(--bead-active-1, #F5DFB8)"/>
+                    <stop offset="40%"  stop-color="var(--bead-active-2, #DBA96D)"/>
+                    <stop offset="100%" stop-color="var(--bead-active-3, #9A6A3A)"/>
                 </radialGradient>
                 <!-- Marker bead: dark, like the separator bead on a real tasbih -->
                 <radialGradient id="bead-gradient-marker" cx="35%" cy="32%" r="65%">
-                    <stop offset="0%"   stop-color="#555"/>
-                    <stop offset="50%"  stop-color="#2A2A2A"/>
-                    <stop offset="100%" stop-color="#111"/>
+                    <stop offset="0%"   stop-color="var(--bead-marker-1, #555555)"/>
+                    <stop offset="50%"  stop-color="var(--bead-marker-2, #2A2A2A)"/>
+                    <stop offset="100%" stop-color="var(--bead-marker-3, #111111)"/>
                 </radialGradient>
             </defs>
 
