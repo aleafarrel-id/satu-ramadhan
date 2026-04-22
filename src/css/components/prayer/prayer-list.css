@@ -14,7 +14,7 @@
    display: grid;
    grid-template-columns: repeat(5, 1fr);
    gap: var(--spacing-xs);
-   background: rgba(30, 65, 82, 0.5);
+   background: var(--clr-schedule-nav-bg); /* Use matching semantic container background */
    border: 1px solid var(--clr-primary-a20);
    border-radius: var(--radius-lg);
    padding: var(--spacing-md) var(--spacing-sm);

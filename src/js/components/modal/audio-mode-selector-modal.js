@@ -176,7 +176,7 @@ function _createModalDOM(currentMode) {
                 ${modesHTML}
             </div>
             <div class="audio-mode-selector-footer">
-                <button class="btn btn--outline w-100" id="audio-mode-btn-cancel">${t('close')}</button>
+                <button class="btn btn--gold w-100" id="audio-mode-btn-cancel">${t('close')}</button>
             </div>
         </div>
     `;

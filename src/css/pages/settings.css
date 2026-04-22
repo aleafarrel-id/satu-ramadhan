@@ -289,7 +289,7 @@
 .settings-preset-actions .btn--gold {
    background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
    box-shadow: 0 4px 12px var(--clr-accent-a30);
-   color: var(--clr-text-dark);
+   color: #1a2a3a; /* Force dark text explicitly since gold gradient does not invert */
    border: none;
 }
 

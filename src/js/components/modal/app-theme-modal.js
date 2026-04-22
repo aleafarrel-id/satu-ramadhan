@@ -6,8 +6,10 @@
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { executeThemeTransition } from '../../utils/theme-transition.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { store } from '../../core/store.js';
+import { isDarkPrayer } from '../../core/theme.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -15,7 +17,7 @@ let _releaseFocus = null;
 const THEMES = [
     { code: 'dark', icon: 'bx-moon', tlKey: 'theme_dark' },
     { code: 'teal', icon: 'bx-sun', tlKey: 'theme_teal' },
-    { code: 'auto', icon: 'bx-cog', tlKey: 'theme_auto' }
+    { code: 'auto', icon: 'bxs-hourglass', tlKey: 'theme_auto' }
 ];
 
 export async function showAppThemeModal() {
@@ -41,9 +43,14 @@ export async function showAppThemeModal() {
     bindEvents();
 }
 
-function handleSelect(themeCode, event) {
+let _isTransitioning = false;
+
+async function handleSelect(themeCode, event) {
+    if (_isTransitioning) return;
     if (event) event.stopPropagation();
-    impact('light');
+
+    const currentThemeSetting = store.getState('settings.theme');
+    if (currentThemeSetting === themeCode) return;
 
     const selectedItem = _overlayEl.querySelector(`.lang-option[data-code="${themeCode}"]`);
     if (selectedItem) {
@@ -51,20 +58,70 @@ function handleSelect(themeCode, event) {
         selectedItem.classList.add('selected');
     }
 
-    // Pre-calculate coordinates before event is lost
-    let startX = innerWidth / 2;
-    let startY = innerHeight / 2;
+    impact('light');
+
+    let startX = document.documentElement.clientWidth / 2;
+    let startY = document.documentElement.clientHeight / 2;
     if (event) {
         const rect = event.currentTarget.getBoundingClientRect();
         startX = event.clientX ?? (rect.left + rect.width / 2);
         startY = event.clientY ?? (rect.top + rect.height / 2);
     }
 
-    const currentTheme = store.getState('settings.theme');
+    let isTargetDark = themeCode === 'dark';
 
-    if (currentTheme !== themeCode) {
-        executeThemeChangeWithTransition(themeCode, startX, startY);
+    if (themeCode === 'auto') {
+        try {
+            const [pwm, pt] = await Promise.all([
+                import('../../modules/prayer/prayer-watcher.js'),
+                import('../../modules/prayer/prayer-times.js')
+            ]);
+
+            const timings = pwm.getCurrentTimings ? pwm.getCurrentTimings() : null;
+            if (timings) {
+                const state = pt.getCurrentPrayer(timings);
+                if (state && state.current) {
+                    isTargetDark = isDarkPrayer(state.current.key);
+                }
+            }
+        } catch (e) {
+            isTargetDark = false;
+        }
     }
+
+    const isCurrentlyDark = document.documentElement.dataset.theme === 'dark';
+
+    if (isCurrentlyDark === isTargetDark) {
+        store.setState('settings.theme', themeCode);
+        hideModal();
+        return;
+    }
+
+    hideModal(() => {
+        _isTransitioning = true;
+        executeThemeTransition({
+            x: startX,
+            y: startY,
+            updateDOMCallback: () => {
+                // Force sync DOM state for correct View Transition capture
+                if (isTargetDark) {
+                    document.documentElement.dataset.theme = 'dark';
+                } else {
+                    delete document.documentElement.dataset.theme;
+                }
+                
+                const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                if (metaThemeColor) {
+                    metaThemeColor.setAttribute('content', isTargetDark ? '#031013' : '#1A2B3A');
+                }
+
+                // Sync global state
+                store.setState('settings.theme', themeCode);
+            }
+        }).then(() => {
+            _isTransitioning = false;
+        });
+    });
 }
 
 function handleCancel(e) {
@@ -166,54 +223,3 @@ function createModalDOM(currentTheme) {
     return overlay;
 }
 
-/**
- * Handles the View Transition API for expanding circular reveal
- */
-function executeThemeChangeWithTransition(themeCode, x, y) {
-    // If the browser doesn't support View Transitions, just apply directly.
-    if (!document.startViewTransition) {
-        store.setState('settings.theme', themeCode);
-        return;
-    }
-
-    // Calculate the distance to the farthest corner
-    const endRadius = Math.hypot(
-        Math.max(x, innerWidth - x),
-        Math.max(y, innerHeight - y)
-    );
-
-    document.documentElement.classList.add('theme-transitioning');
-
-    // Execution freezes frame
-    const transition = document.startViewTransition(() => {
-        store.setState('settings.theme', themeCode);
-    });
-
-    transition.ready.then(() => {
-        // Dummy animation on old view to prevent browser from culling it early
-        document.documentElement.animate(
-            { opacity: [1, 1] },
-            {
-                duration: 900,
-                pseudoElement: '::view-transition-old(root)'
-            }
-        );
-
-        // Native CSS animation overriding the default crossfade
-        document.documentElement.animate(
-            {
-                clipPath: [
-                    `circle(0px at ${x}px ${y}px)`,
-                    `circle(${endRadius}px at ${x}px ${y}px)`
-                ]
-            },
-            {
-                duration: 900,
-                easing: 'ease-in-out',
-                pseudoElement: '::view-transition-new(root)'
-            }
-        );
-    }).finally(() => {
-        document.documentElement.classList.remove('theme-transitioning');
-    });
-}

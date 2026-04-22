@@ -4,6 +4,6 @@
     "theme_dark_desc": "Premium dark color scheme",
     "theme_teal": "Teal",
     "theme_teal_desc": "Standard app color scheme",
-    "theme_auto": "Auto",
-    "theme_auto_desc": "Follow device settings"
+    "theme_auto": "Dynamic",
+    "theme_auto_desc": "Switch automatically according to the time"
 }

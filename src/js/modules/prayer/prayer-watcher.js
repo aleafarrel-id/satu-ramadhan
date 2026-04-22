@@ -10,10 +10,29 @@ import { t } from '../../core/i18n.js';
 
 let _timeout = null;
 let _timings = null;
+let _driftCheckInterval = null;
+let _currentPrayerKey = null;
 let _lastTriggeredDateMs = null;
+let _isRunning = false;
 
 /** @type {Set<Function>} */
 const _listeners = new Set();
+/** @type {Set<Function>} */
+const _updateListeners = new Set();
+
+/**
+ * Returns the latest timings loaded into the watcher
+ */
+export function getCurrentTimings() {
+    return _timings;
+}
+
+/**
+ * Register to listen to the core timings update (API cache resolved)
+ */
+export function onWatcherUpdate(callback) {
+    _updateListeners.add(callback);
+}
 
 /**
  * Stop the current watcher timeout
@@ -23,6 +42,26 @@ export function stopWatcher() {
         clearTimeout(_timeout);
         _timeout = null;
     }
+    if (_driftCheckInterval) {
+        clearInterval(_driftCheckInterval);
+        _driftCheckInterval = null;
+    }
+    _isRunning = false;
+}
+
+/**
+ * Starts the watcher and monitoring intervals
+ */
+export function startWatcher() {
+    if (_isRunning) return;
+    _isRunning = true;
+    _evaluateAndRestart();
+    
+    // Periodically check for time drifts (e.g. system clock manually changed)
+    // This guarantees UI sync even if setTimeout fails due to monotonic clock constraints
+    if (!_driftCheckInterval) {
+        _driftCheckInterval = setInterval(() => checkAndSync(), 5000);
+    }
 }
 
 /**
@@ -31,6 +70,9 @@ export function stopWatcher() {
  */
 export function updateWatcher(timings) {
     _timings = timings;
+    for (const cb of _updateListeners) {
+        try { cb(_timings); } catch { /* noop */ }
+    }
     scheduleNext();
 }
 
@@ -52,34 +94,66 @@ export function offPrayerChange(callback) {
 }
 
 /**
+ * Checks if the time has drifted (e.g. system clock changed, or woke from deep sleep)
+ * and manually triggers a sync if the prayer state has changed.
+ */
+export function checkAndSync() {
+    if (!_timings) return;
+    
+    import('./prayer-times.js').then(({ getCurrentPrayer }) => {
+        const prayerState = getCurrentPrayer(_timings);
+        if (!prayerState || !prayerState.current) return;
+
+        if (_currentPrayerKey && _currentPrayerKey !== prayerState.current.key) {
+            console.log(`[PrayerWatcher] State drifted from ${_currentPrayerKey} to ${prayerState.current.key}. Syncing...`);
+            _currentPrayerKey = prayerState.current.key;
+            
+            for (const listener of _listeners) {
+                try { listener({ prayer: prayerState.current, timings: _timings }); } catch { /* noop */ }
+            }
+            
+            scheduleNext();
+        }
+    });
+}
+
+/**
  * Find the next prayer and schedule a timeout for it
  */
 function scheduleNext() {
-    stopWatcher();
+    if (_timeout) {
+        clearTimeout(_timeout);
+        _timeout = null;
+    }
 
     if (!_timings) return;
 
     const prayerState = getCurrentPrayer(_timings);
+    
+    // Detect missed states (e.g. from device sleep or clock drift)
+    if (_currentPrayerKey && _currentPrayerKey !== prayerState.current.key) {
+        for (const listener of _listeners) {
+            try { listener({ prayer: prayerState.current, timings: _timings }); } catch { /* noop */ }
+        }
+    }
+    _currentPrayerKey = prayerState.current.key;
+
     const nextPrayer = prayerState.next;
 
     if (!nextPrayer || !nextPrayer.date) return;
 
     const nextTimeMs = nextPrayer.date.getTime();
     const nowMs = Date.now();
-
-    // Calculate how long until the next prayer time
     const timeUntilNext = nextTimeMs - nowMs;
 
-    // Safety check: if time is negative or somehow already processed
+    // Retry if time already passed
     if (timeUntilNext < 0 || _lastTriggeredDateMs === nextTimeMs) {
-        // If we just passed it, wait a second and try to schedule the one after
         _timeout = setTimeout(() => {
             scheduleNext();
         }, 1000);
         return;
     }
 
-    // Schedule the exact timeout
     _timeout = setTimeout(() => {
         triggerNotification(nextPrayer, nextTimeMs);
     }, timeUntilNext);
@@ -91,8 +165,15 @@ function scheduleNext() {
 function triggerNotification(prayer, triggerTimeMs) {
     _lastTriggeredDateMs = triggerTimeMs;
 
-    const notifBody = t(`modules/prayer/prayer-times:notif_${prayer.key}_body`);
-    info(notifBody);
+    const driftMs = Date.now() - triggerTimeMs;
+    
+    // Skip outdated toasts if device woke from long sleep
+    if (driftMs < 60000) {
+        const notifBody = t(`modules/prayer/prayer-times:notif_${prayer.key}_body`);
+        info(notifBody);
+    }
+
+    _currentPrayerKey = prayer.key;
 
     // Notify all subscribers of the prayer transition
     for (const listener of _listeners) {
@@ -119,7 +200,7 @@ async function _evaluateAndRestart() {
             updateWatcher(timings);
         }
     } catch {
-        // Silently fail if API/network is unavailable; the watcher will hold its last known state.
+        // Fallback to last known state on failure
     }
 }
 

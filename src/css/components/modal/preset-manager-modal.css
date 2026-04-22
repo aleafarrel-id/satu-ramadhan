@@ -102,16 +102,22 @@
     flex-wrap: wrap;
     align-items: flex-start;
     gap: var(--spacing-sm);
+    position: relative;
 }
 
 .preset-mgr-item:last-child {
     border-bottom: none;
 }
 
-.preset-mgr-item--active {
-    border-left: 3px solid var(--clr-accent-400);
-    padding-left: var(--spacing-sm);
-    margin-left: calc(-1 * var(--spacing-sm));
+.preset-mgr-item--active::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--spacing-sm));
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--clr-accent-400);
+    border-radius: 4px;
 }
 
 .preset-mgr-item-select {
@@ -139,7 +145,8 @@
 .preset-mgr-item-radio--checked {
     background: var(--clr-accent-500);
     border-color: var(--clr-accent-500);
-    color: var(--clr-text-dark);
+    color: #1a2a3a;
+    /* Force dark text explicitly since gold background does not invert */
     font-size: var(--fs-sm);
 }
 
@@ -470,12 +477,15 @@
     .preset-mgr-item-name {
         font-size: var(--fs-xs);
     }
+
     .preset-mgr-item-dates {
         font-size: var(--fs-2xs);
     }
+
     .preset-mgr-form-row {
         grid-template-columns: 1fr;
     }
+
     .preset-mgr-form-input {
         padding: 10px 12px;
         font-size: var(--fs-sm);

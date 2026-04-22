@@ -322,6 +322,11 @@ function initAppResumeListener() {
             if (state.isActive) {
                 console.log('[App] Resumed — syncing 30-day notifications');
                 syncNotifications();
+                
+                // Sync UI/Theme against clock drifts during sleep
+                import('./modules/prayer/prayer-watcher.js')
+                    .then(pw => pw.checkAndSync())
+                    .catch(() => {});
 
                 // Rehydrate murottal state from native background service
                 if (isNative) {

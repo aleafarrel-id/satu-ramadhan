@@ -7,9 +7,10 @@
    width: 100%;
    max-width: 430px;
    padding-bottom: env(safe-area-inset-bottom);
-   z-index: calc(var(--z-modal) + 10); /* Higher than quran modal (300) to allow sliding under */
+   z-index: calc(var(--z-modal) + 10);
+   /* Higher than quran modal (300) to allow sliding under */
    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-               opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
    will-change: transform, opacity;
    -webkit-backface-visibility: hidden;
    backface-visibility: hidden;

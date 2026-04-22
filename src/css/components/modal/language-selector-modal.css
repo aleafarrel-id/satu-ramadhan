@@ -8,6 +8,7 @@
     inset: 0;
     z-index: var(--z-modal);
     background: var(--clr-bg-cal-overlay);
+    view-transition-name: theme-modal-overlay;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     display: flex;
@@ -26,6 +27,7 @@
 .language-selector-sheet {
     background: var(--gradient-cal-bg);
     border-top: 1px solid var(--clr-primary-a30);
+    view-transition-name: theme-modal-sheet;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     width: 100%;
@@ -101,6 +103,7 @@
     border-radius: 0;
     border: none;
     border-bottom: 1px solid var(--clr-border-light);
+    position: relative;
 }
 
 .lang-option:last-child {
@@ -119,10 +122,18 @@
 
 .lang-option.selected {
     background-color: transparent;
-    border-left: 3px solid var(--clr-accent-400);
-    padding-left: var(--spacing-sm);
-    margin-left: calc(-1 * var(--spacing-sm));
     border-bottom-color: var(--clr-border-light);
+}
+
+.lang-option.selected::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--spacing-sm));
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--clr-accent-400);
+    border-radius: 4px;
 }
 
 .lang-option:last-child.selected {

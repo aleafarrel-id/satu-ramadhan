@@ -218,7 +218,7 @@
     border: none;
     border-radius: var(--radius-full);
     background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
-    color: var(--clr-text-dark);
+    color: #1a2a3a; /* Force dark text explicitly since gold gradient does not invert */
     font-family: var(--ff-primary);
     font-size: var(--fs-xs);
     font-weight: var(--fw-bold);

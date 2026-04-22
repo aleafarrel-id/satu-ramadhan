@@ -39,7 +39,7 @@
 
 .btn--gold {
    background: var(--clr-accent-500);
-   color: var(--clr-text-dark);
+   color: #1a2a3a; /* Force dark color to prevent white-on-gold inversion in dark mode */
    font-weight: var(--fw-semibold);
 }
 

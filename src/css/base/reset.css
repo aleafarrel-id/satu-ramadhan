@@ -21,6 +21,7 @@ html,
 body {
    height: 100%;
    overflow: hidden;
+   background-color: var(--clr-bg-dark);
    background: var(--clr-bg-gradient);
 }
 

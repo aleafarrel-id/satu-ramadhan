@@ -45,7 +45,7 @@ export async function render(container) {
                <span id="app-language-select-label">${langLabel}</span>
             </div>
          </div>
-         
+         <div class="settings-divider"></div>
          <div class="settings-item" id="app-theme-item" data-focus-item style="cursor: pointer;">
             <div class="settings-item-info">
                <i class='bx bx-palette'></i>

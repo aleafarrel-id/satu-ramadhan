@@ -99,6 +99,7 @@
     border-radius: 0;
     border: none;
     border-bottom: 1px solid var(--clr-border-light);
+    position: relative;
 }
 
 .audio-mode-option:last-child {
@@ -117,10 +118,18 @@
 
 .audio-mode-option.selected {
     background-color: transparent;
-    border-left: 3px solid var(--clr-accent-400);
-    padding-left: var(--spacing-sm);
-    margin-left: calc(-1 * var(--spacing-sm));
     border-bottom-color: var(--clr-border-light);
+}
+
+.audio-mode-option.selected::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--spacing-sm));
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--clr-accent-400);
+    border-radius: 4px;
 }
 
 .audio-mode-option:last-child.selected {

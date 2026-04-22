@@ -30,7 +30,7 @@
     "next_ayah": "Next ayah",
     "playing_ayah": "Ayah {{current}} / {{total}}",
     "play_error": "Failed to play recitation.",
-    "switch_to_streaming": "Use Streaming",
+    "switch_to_streaming": "Streaming Mode",
     "switch_to_offline": "Offline Mode",
     "redownload_surah": "Re-download",
     "redownload_confirm_title": "Re-download Recitation",

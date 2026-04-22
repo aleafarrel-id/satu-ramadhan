@@ -5,7 +5,7 @@
 
 :root {
    color-scheme: dark;
-   
+
    /* --- 1. PRIMITIVE COLORS ---
       Base palettes and their alpha/transparency variants. */
 
@@ -97,7 +97,7 @@
    --clr-tube-bg: #1E4152;
    --clr-tube-active-bg: #163845;
    --clr-schedule-nav-bg: rgba(30, 65, 82, 0.5);
-   
+
    /* Segmented Pill Buttons */
    --clr-nav-arrows-bg: var(--clr-accent-a20);
    --clr-nav-arrows-border: var(--clr-accent-a30);
@@ -387,9 +387,9 @@
    ========================================================================== */
 [data-theme="dark"] {
    /* --- Primitive Background Re-mapping --- */
-   /* Deep pure dark background with subtle teal tint to maintain identity (Deep Ocean) */
-   --clr-bg-gradient: linear-gradient(135deg, #05191e 0%, #082229 50%, #061d24 100%);
-   --clr-bg-dark: #031013;
+   /* Deep Abyssal Teal - Provides luxury depth and perfect contrast for OLED (Premium Ocean) */
+   --clr-bg-gradient: linear-gradient(135deg, #010a0d 0%, #081d24 50%, #020c0e 100%);
+   --clr-bg-dark: #01080a;
 
    /* UI Surface Layers (Softer elevated cards) */
    --clr-bg-card: rgba(13, 34, 43, 0.75);
@@ -410,7 +410,7 @@
    --clr-tube-bg: rgba(16, 40, 50, 0.4);
    --clr-tube-active-bg: rgba(10, 25, 33, 0.6);
    --clr-schedule-nav-bg: rgba(13, 34, 43, 0.4);
-   
+
    /* Pure gold aesthetic for segmented pills - no dark overlays, just transparent accent */
    --clr-nav-arrows-bg: rgba(212, 175, 55, 0.08);
    --clr-nav-arrows-border: rgba(212, 175, 55, 0.25);
