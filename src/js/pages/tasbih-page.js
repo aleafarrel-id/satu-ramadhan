@@ -10,7 +10,7 @@
  */
 
 import '../../css/pages/tasbih.css';
-import '../../css/pages/tasbih-beads.css';
+import '../../css/components/tasbih/tasbih-beads.css';
 
 import { store } from '../core/store.js';
 import tasbihData from '../../data/tasbih.json';

@@ -206,8 +206,12 @@ export async function initApp() {
     const remaining = Math.max(0, SPLASH_MIN_DURATION - elapsed);
     await new Promise(resolve => setTimeout(resolve, remaining));
 
-    // Ensure loading bar is at 100%
-    if (fillEl) fillEl.style.width = '100%';
+    // Ensure loading bar is at 100% smoothly without animation glitches
+    if (fillEl) {
+        if (window._splashAnimTimeout) clearTimeout(window._splashAnimTimeout);
+        fillEl.style.transition = 'width 400ms cubic-bezier(0.4, 0, 0.2, 1)';
+        fillEl.style.width = '100%';
+    }
     await new Promise(resolve => setTimeout(resolve, 400));
 
     // Hide web splash with CSS fade-out transition
@@ -266,11 +270,11 @@ function animateLoadingBar(fillEl) {
         fillEl.style.width = step.target + '%';
 
         stepIndex++;
-        setTimeout(nextStep, step.duration + 100);
+        window._splashAnimTimeout = setTimeout(nextStep, step.duration + 100);
     }
 
     // Start after a small delay
-    setTimeout(nextStep, 200);
+    window._splashAnimTimeout = setTimeout(nextStep, 200);
 }
 
 /**
@@ -322,11 +326,11 @@ function initAppResumeListener() {
             if (state.isActive) {
                 console.log('[App] Resumed — syncing 30-day notifications');
                 syncNotifications();
-                
+
                 // Sync UI/Theme against clock drifts during sleep
                 import('./modules/prayer/prayer-watcher.js')
                     .then(pw => pw.checkAndSync())
-                    .catch(() => {});
+                    .catch(() => { });
 
                 // Rehydrate murottal state from native background service
                 if (isNative) {
