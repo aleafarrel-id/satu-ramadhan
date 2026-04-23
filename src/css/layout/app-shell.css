@@ -15,13 +15,29 @@
 .splash-screen {
    position: fixed;
    inset: 0;
-   z-index: 1000;
+   z-index: 9999;
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
    background: var(--gradient-splash-bg, radial-gradient(ellipse farthest-corner at 0% 0%, #0a3540 0%, #1a4a5a 60%, #d4af37 110%));
-   transition: opacity 0.5s ease, visibility 0.5s ease;
+   transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s linear;
+   will-change: opacity;
+   transform: translateZ(0);
+   backface-visibility: hidden;
+   perspective: 1000px;
+   contain: content;
+}
+
+/* 
+   While splash is active, keep app content hidden.
+   Using a specific selector without !important to allow smooth transition 
+   once the .hidden class is added to the splash screen.
+*/
+.splash-screen:not(.hidden) ~ :not(.splash-screen) {
+   opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
 }
 
 .splash-screen.hidden {
@@ -40,7 +56,7 @@
    max-width: 430px;
    margin: 0 auto;
    z-index: 2;
-   /* In front of quran-backdrop */
+   transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-content {
@@ -135,7 +151,8 @@
    justify-content: center;
    gap: var(--spacing-sm);
    height: 48px;
-   transform: translateY(-48px); /* Hidden above the fold by default */
+   transform: translateY(-48px);
+   /* Hidden above the fold by default */
    font-size: var(--fs-sm);
    background-color: transparent;
    flex-shrink: 0;
@@ -150,13 +167,13 @@
  * EXCEPT the spinner (.custom-ptr) and the full-screen Quran modal (#page-quran).
  * Uses a CSS Custom Property set by JS — zero reflow, pure compositor layer.
  */
-.ptr-animating > *:not(.custom-ptr):not(#page-quran) {
+.ptr-animating>*:not(.custom-ptr):not(#page-quran) {
    transform: translateY(var(--ptr-y, 0px));
    will-change: transform;
 }
 
 /** Smooth settle-back animation when finger is released. */
-.ptr-transition > *:not(.custom-ptr):not(#page-quran) {
+.ptr-transition>*:not(.custom-ptr):not(#page-quran) {
    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 

@@ -61,6 +61,10 @@ let _cleanupPtr = null;
  * Initialize the entire application
  */
 export async function initApp() {
+    // Yield to browser for initial paint of the custom splash screen 
+    // before blocking the thread with hydration and i18n logic.
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
     // Hydrate persistent state before anything else
     await store.hydrate();
 
