@@ -9,7 +9,7 @@ import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { executeThemeTransition } from '../../utils/theme-transition.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { store } from '../../core/store.js';
-import { isDarkPrayer } from '../../core/theme.js';
+import { isDarkPrayer, applyToDOM } from '../../core/theme.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -104,16 +104,7 @@ async function handleSelect(themeCode, event) {
             y: startY,
             updateDOMCallback: () => {
                 // Force sync DOM state for correct View Transition capture
-                if (isTargetDark) {
-                    document.documentElement.dataset.theme = 'dark';
-                } else {
-                    delete document.documentElement.dataset.theme;
-                }
-                
-                const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-                if (metaThemeColor) {
-                    metaThemeColor.setAttribute('content', isTargetDark ? '#031013' : '#1A2B3A');
-                }
+                applyToDOM(isTargetDark);
 
                 // Sync global state
                 store.setState('settings.theme', themeCode);

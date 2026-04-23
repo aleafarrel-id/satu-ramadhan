@@ -334,7 +334,8 @@
 .mushaf-surah-name {
    font-family: var(--ff-mushaf-header-ar);
    font-size: var(--fs-xl);
-   color: #3d3016; /* Force dark text since SVG frame center is permanently white */
+   color: #3d3016;
+   /* Force dark text since SVG frame center is permanently white */
    text-align: center;
    line-height: 1.8;
 }

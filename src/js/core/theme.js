@@ -3,6 +3,8 @@
  * Evaluates 'dark', 'teal', or 'auto' and applies it to the DOM safely.
  */
 import { store } from './store.js';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { isNative } from '../modules/system/platform.js';
 
 let _watcherSubscribed = false;
 let _initialThemeSet = false;
@@ -32,7 +34,7 @@ export function applyThemeBackground(themeMode) {
 
     if (themeMode === 'auto') {
         const prayerWatcher = _getCachedPrayerWatcher();
-        
+
         if (prayerWatcher) {
             const timings = prayerWatcher.getCurrentTimings ? prayerWatcher.getCurrentTimings() : null;
             if (timings) {
@@ -66,7 +68,7 @@ export function applyThemeBackground(themeMode) {
 function _setupWatcher(pw) {
     if (_watcherSubscribed) return;
     _watcherSubscribed = true;
-    
+
     if (pw.onWatcherUpdate) {
         pw.onWatcherUpdate((newTimings) => {
             if (store.getState('settings.theme') === 'auto') {
@@ -89,7 +91,7 @@ function _setupWatcher(pw) {
  */
 function _getCachedPrayerWatcher() {
     try {
-        return null; 
+        return null;
     } catch {
         return null;
     }
@@ -137,7 +139,7 @@ export function isDarkPrayer(prayerKey) {
 function _evaluateDynamicTheme(timings, shouldAnimate = false, explicitPrayer = null) {
     import('../modules/prayer/prayer-times.js').then(({ getCurrentPrayer }) => {
         if (!timings) return;
-        
+
         // Cache today's boundary timings for instantaneous synchronous boot evaluation
         if (timings.magrib && timings.terbit) {
             try {
@@ -146,7 +148,7 @@ function _evaluateDynamicTheme(timings, shouldAnimate = false, explicitPrayer = 
                     magrib: timings.magrib,
                     terbit: timings.terbit
                 }));
-            } catch {}
+            } catch { }
         }
 
         let currentPrayerKey = null;
@@ -162,7 +164,7 @@ function _evaluateDynamicTheme(timings, shouldAnimate = false, explicitPrayer = 
         const isDark = isDarkPrayer(currentPrayerKey);
 
         const currentIsDark = document.documentElement.dataset.theme === 'dark';
-        
+
         // Only trigger DOM update if the state has actually changed.
         if (!_initialThemeSet || currentIsDark !== isDark) {
             _applyDOMMode(isDark, shouldAnimate);
@@ -193,7 +195,7 @@ function _applyDOMMode(finalDark, shouldAnimate = false) {
     _initialThemeSet = true;
 }
 
-function applyToDOM(finalDark) {
+export function applyToDOM(finalDark) {
     if (finalDark) {
         document.documentElement.dataset.theme = 'dark';
     } else {
@@ -203,5 +205,14 @@ function applyToDOM(finalDark) {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
         metaThemeColor.setAttribute('content', finalDark ? '#031013' : '#1A2B3A');
+    }
+
+    if (isNative) {
+        try {
+            StatusBar.setStyle({ style: Style.Dark });
+            StatusBar.setBackgroundColor({ color: finalDark ? '#031013' : '#0a3540' });
+        } catch (err) {
+            console.warn('[Theme] Failed to set native StatusBar', err);
+        }
     }
 }
