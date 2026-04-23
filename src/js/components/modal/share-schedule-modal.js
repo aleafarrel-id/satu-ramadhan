@@ -76,23 +76,6 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
 
         // Replace spinner with preview image immediately
         await showPreviewImage(_previewCanvas);
-
-        _fullResTaskPromise = (async () => {
-            await new Promise(r => setTimeout(r, 800));
-            if (!_hiddenEl) return null; // Modal closed early
-
-            const canvas = await captureScheduleImage(_hiddenEl, { pixelRatio: 2.0 });
-
-            // Once high-res is ready, we can safely destroy the hidden template
-            if (_hiddenEl) {
-                destroyShareScheduleElement(_hiddenEl);
-                _hiddenEl = null;
-            }
-
-            _fullResCanvas = canvas;
-            return canvas;
-        })();
-
     } catch (err) {
         logError('[ShareModal]', err);
         showErrorState();
@@ -105,15 +88,29 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
  */
 async function ensureFullResCanvas() {
     if (_fullResCanvas) return _fullResCanvas;
-    if (!_fullResTaskPromise) throw new Error('Full resolution task not initialized');
 
-    setButtonsLoading(true, t('components/modal/share-schedule-modal:state_optimizing'));
+    // Start high-res capture task lazily if not already in progress
+    if (!_fullResTaskPromise) {
+        _fullResTaskPromise = (async () => {
+            if (!_hiddenEl) return null;
+            const canvas = await captureScheduleImage(_hiddenEl, { pixelRatio: 2.0 });
+
+            // Once high-res is ready, we can safely destroy the hidden template
+            if (_hiddenEl) {
+                destroyShareScheduleElement(_hiddenEl);
+                _hiddenEl = null;
+            }
+
+            _fullResCanvas = canvas;
+            return canvas;
+        })();
+    }
+
     const canvas = await _fullResTaskPromise;
-    setButtonsLoading(false);
-
     if (!canvas) throw new Error('Failed to generate high resolution image');
     return canvas;
 }
+
 
 /**
  * Handle the share action — haptic feedback, delegate to caller, close modal.
@@ -121,12 +118,14 @@ async function ensureFullResCanvas() {
 async function handleShare() {
     if (!_onShareCb) return;
 
-    try {
-        const canvas = await ensureFullResCanvas();
-        impact('medium');
-        setButtonsLoading(true);
+    impact('medium');
+    setButtonsLoading(true);
 
-        await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+    try {
+        await new Promise(r => setTimeout(r, 64));
+
+        const canvas = await ensureFullResCanvas();
+
         await _onShareCb(canvas);
         hideModal();
     } catch (err) {
@@ -136,18 +135,21 @@ async function handleShare() {
     }
 }
 
+
 /**
  * Handle the download action — haptic feedback, delegate to caller, close modal.
  */
 async function handleDownload() {
     if (!_onDownloadCb) return;
 
-    try {
-        const canvas = await ensureFullResCanvas();
-        impact('medium');
-        setButtonsLoading(true);
+    impact('medium');
+    setButtonsLoading(true);
 
-        await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+    try {
+        await new Promise(r => setTimeout(r, 64));
+
+        const canvas = await ensureFullResCanvas();
+
         await _onDownloadCb(canvas);
         hideModal();
     } catch (err) {
@@ -156,6 +158,7 @@ async function handleDownload() {
         setButtonsLoading(false);
     }
 }
+
 
 /**
  * Handle cancel — dismiss modal, invoke optional cancel callback.

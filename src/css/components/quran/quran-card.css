@@ -32,6 +32,7 @@
       opacity: 0;
       transform: translateY(var(--sp-3));
    }
+
    to {
       opacity: 1;
       transform: translateY(0);
@@ -182,6 +183,24 @@
    background: var(--clr-quran-border);
    border-radius: var(--radius-sm);
    color: transparent;
+}
+
+/* ── Dark Mode Enhancements ── */
+[data-theme="dark"] .surah-title-latin {
+   color: var(--clr-text-primary);
+}
+
+[data-theme="dark"] .surah-type-pill {
+   background: var(--clr-primary-a20);
+   color: var(--clr-primary-100);
+   border: 1px solid var(--clr-primary-a25);
+}
+
+[data-theme="dark"] .surah-verse-count,
+[data-theme="dark"] .surah-detail-dot,
+[data-theme="dark"] .surah-range-dash {
+   color: var(--clr-text-secondary);
+   opacity: 1;
 }
 
 /* ── Responsive Rules ── */
