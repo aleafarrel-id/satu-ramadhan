@@ -21,7 +21,6 @@ import fontPoppinsSemiBold from '../../../assets/font/poppins/Poppins-SemiBold.w
 import fontPoppinsBold from '../../../assets/font/poppins/Poppins-Bold.woff2?url';
 import fontAmiriRegular from '../../../assets/font/amiri/Amiri-Regular.woff2?url';
 import fontAmiriBold from '../../../assets/font/amiri/Amiri-Bold.woff2?url';
-import fontBoxicons from '../../../assets/vendor/boxicons/fonts/boxicons.woff2?url';
 
 /** Font files to embed as base64 for html-to-image capture */
 const FONT_FILES = [
@@ -32,7 +31,6 @@ const FONT_FILES = [
     { path: fontPoppinsBold,     family: 'Poppins', weight: 700,  format: 'woff2' },
     { path: fontAmiriRegular,    family: 'Amiri',   weight: 400,  format: 'woff2' },
     { path: fontAmiriBold,       family: 'Amiri',   weight: 700,  format: 'woff2' },
-    { path: fontBoxicons,        family: 'boxicons', weight: 400, format: 'woff2' },
 ];
 
 /**

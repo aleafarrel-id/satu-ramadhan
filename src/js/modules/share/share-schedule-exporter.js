@@ -35,16 +35,17 @@ const getDefaultFilename = () => {
  * base64 @font-face CSS from the builder.
  *
  * @param {HTMLElement} element - DOM element to capture (from iframe)
+ * @param {Object}      [customOptions] - Optional overrides (e.g. pixelRatio)
  * @returns {Promise<HTMLCanvasElement>} Rendered canvas
  */
-export async function captureScheduleImage(element) {
+export async function captureScheduleImage(element, customOptions = {}) {
     if (!element) throw new Error('captureScheduleImage: element is required');
 
     // Get pre-built font CSS from builder (attached to element)
     const fontEmbedCSS = element._fontEmbedCSS || '';
 
     const options = {
-        pixelRatio: 2,
+        pixelRatio: customOptions.pixelRatio || 2,
         backgroundColor: null,
         cacheBust: true,
         width: TEMPLATE_WIDTH,
@@ -57,6 +58,9 @@ export async function captureScheduleImage(element) {
         style: {
             margin: '0',
             padding: '0',
+            boxShadow: 'none',
+            backdropFilter: 'none',
+            ...customOptions.style
         },
     };
 

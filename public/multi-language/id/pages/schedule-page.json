@@ -4,5 +4,6 @@
     "error_offline_title": "Gagal Memuat Jadwal",
     "error_offline_desc": "Periksa koneksi internet Anda dan coba lagi.",
     "toast_adzan_muted": "Adzan {{prayer}} dimatikan",
-    "toast_adzan_unmuted": "Adzan {{prayer}} dinyalakan"
+    "toast_adzan_unmuted": "Adzan {{prayer}} dinyalakan",
+    "back_to_today": "Kembali ke Hari Ini"
 }

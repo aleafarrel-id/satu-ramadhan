@@ -18,12 +18,15 @@ import { t, loadNS } from '../../core/i18n.js';
 import { logError } from '../../utils/error-boundary.js';
 
 let _overlayEl = null;
-let _canvas = null;
+let _previewCanvas = null;
+let _fullResCanvas = null;
+let _previewUrl = null;
 let _hiddenEl = null;
 let _releaseFocus = null;
 let _onShareCb = null;
 let _onDownloadCb = null;
 let _onCancelCb = null;
+let _fullResTaskPromise = null;
 
 /**
  * Show the share schedule preview modal.
@@ -67,16 +70,28 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
     // Build template, capture, and show preview (async pipeline)
     try {
         // Builder returns the #share-schedule-container element (inside a hidden iframe).
-        // The element has _fontEmbedCSS attached for the exporter.
         _hiddenEl = await buildShareScheduleElement(payload);
-        _canvas = await captureScheduleImage(_hiddenEl);
 
-        // Remove hidden iframe (no longer needed after capture)
-        destroyShareScheduleElement(_hiddenEl);
-        _hiddenEl = null;
+        _previewCanvas = await captureScheduleImage(_hiddenEl, { pixelRatio: 1.0 });
 
-        // Replace spinner with preview image
-        showPreviewImage(_canvas);
+        // Replace spinner with preview image immediately
+        await showPreviewImage(_previewCanvas);
+
+        _fullResTaskPromise = (async () => {
+            await new Promise(r => setTimeout(r, 800));
+            if (!_hiddenEl) return null; // Modal closed early
+
+            const canvas = await captureScheduleImage(_hiddenEl, { pixelRatio: 2.0 });
+
+            // Once high-res is ready, we can safely destroy the hidden template
+            if (_hiddenEl) {
+                destroyShareScheduleElement(_hiddenEl);
+                _hiddenEl = null;
+            }
+
+            _fullResCanvas = canvas;
+            return canvas;
+        })();
 
     } catch (err) {
         logError('[ShareModal]', err);
@@ -85,45 +100,61 @@ export async function showShareScheduleModal({ payload, onShare, onDownload, onC
 }
 
 /**
+ * Ensures the full-resolution canvas is ready, showing a loading state if needed.
+ * @returns {Promise<HTMLCanvasElement>}
+ */
+async function ensureFullResCanvas() {
+    if (_fullResCanvas) return _fullResCanvas;
+    if (!_fullResTaskPromise) throw new Error('Full resolution task not initialized');
+
+    setButtonsLoading(true, t('components/modal/share-schedule-modal:state_optimizing'));
+    const canvas = await _fullResTaskPromise;
+    setButtonsLoading(false);
+
+    if (!canvas) throw new Error('Failed to generate high resolution image');
+    return canvas;
+}
+
+/**
  * Handle the share action — haptic feedback, delegate to caller, close modal.
  */
 async function handleShare() {
-    if (!_canvas || !_onShareCb) return;
-
-    impact('medium');
-    setButtonsLoading(true);
-
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+    if (!_onShareCb) return;
 
     try {
-        await _onShareCb(_canvas);
+        const canvas = await ensureFullResCanvas();
+        impact('medium');
+        setButtonsLoading(true);
+
+        await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+        await _onShareCb(canvas);
+        hideModal();
     } catch (err) {
         logError('[ShareModal]', err);
+    } finally {
+        setButtonsLoading(false);
     }
-
-    setButtonsLoading(false);
-    hideModal();
 }
 
 /**
  * Handle the download action — haptic feedback, delegate to caller, close modal.
  */
 async function handleDownload() {
-    if (!_canvas || !_onDownloadCb) return;
-
-    impact('medium');
-    setButtonsLoading(true);
-
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+    if (!_onDownloadCb) return;
 
     try {
-        await _onDownloadCb(_canvas);
+        const canvas = await ensureFullResCanvas();
+        impact('medium');
+        setButtonsLoading(true);
+
+        await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+        await _onDownloadCb(canvas);
+        hideModal();
     } catch (err) {
         logError('[ShareModal]', err);
+    } finally {
+        setButtonsLoading(false);
     }
-
-    setButtonsLoading(false);
-    hideModal();
 }
 
 /**
@@ -198,7 +229,14 @@ function removeModal() {
         _overlayEl = null;
     }
 
-    _canvas = null;
+    if (_previewUrl) {
+        URL.revokeObjectURL(_previewUrl);
+        _previewUrl = null;
+    }
+
+    _previewCanvas = null;
+    _fullResCanvas = null;
+    _fullResTaskPromise = null;
     _onShareCb = null;
     _onDownloadCb = null;
     _onCancelCb = null;
@@ -241,28 +279,39 @@ function createModalDOM() {
 
 /**
  * Replace the loading spinner with the preview image from the captured canvas.
+ * Uses Object URL for memory efficiency.
  *
  * @param {HTMLCanvasElement} canvas - Captured canvas to display
  */
-function showPreviewImage(canvas) {
+async function showPreviewImage(canvas) {
     if (!_overlayEl) return;
 
     const previewWrapper = _overlayEl.querySelector('#ss-modal-preview');
     if (!previewWrapper) return;
 
-    const img = document.createElement('img');
-    img.className = 'ss-modal__preview-img';
-    img.src = canvas.toDataURL('image/png');
-    img.alt = t('components/modal/share-schedule-modal:title');
+    try {
+        // Convert to blob and use Object URL to avoid massive base64 strings in memory
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        if (_previewUrl) URL.revokeObjectURL(_previewUrl);
+        _previewUrl = URL.createObjectURL(blob);
 
-    previewWrapper.innerHTML = '';
-    previewWrapper.appendChild(img);
+        const img = document.createElement('img');
+        img.className = 'ss-modal__preview-img';
+        img.src = _previewUrl;
+        img.alt = t('components/modal/share-schedule-modal:title');
 
-    // Enable action buttons now that preview is ready
-    const shareBtn = _overlayEl.querySelector('#ss-modal-btn-share');
-    const downloadBtn = _overlayEl.querySelector('#ss-modal-btn-download');
-    if (shareBtn) shareBtn.disabled = false;
-    if (downloadBtn) downloadBtn.disabled = false;
+        previewWrapper.innerHTML = '';
+        previewWrapper.appendChild(img);
+
+        // Enable action buttons now that preview is ready
+        const shareBtn = _overlayEl.querySelector('#ss-modal-btn-share');
+        const downloadBtn = _overlayEl.querySelector('#ss-modal-btn-download');
+        if (shareBtn) shareBtn.disabled = false;
+        if (downloadBtn) downloadBtn.disabled = false;
+    } catch (err) {
+        logError('[ShareModal] Preview failed:', err);
+        showErrorState();
+    }
 }
 
 /**
@@ -286,15 +335,20 @@ function showErrorState() {
  * Toggle loading state on action buttons during share/download operations.
  *
  * @param {boolean} loading - Whether buttons should be in a loading state
+ * @param {string} [text]   - Optional text to show during loading
  */
-function setButtonsLoading(loading) {
+function setButtonsLoading(loading, text = null) {
     if (!_overlayEl) return;
 
     const shareBtn = _overlayEl.querySelector('#ss-modal-btn-share');
     const downloadBtn = _overlayEl.querySelector('#ss-modal-btn-download');
-    const cancelBtn = _overlayEl.querySelector('#ss-modal-btn-cancel');
 
-    if (shareBtn) shareBtn.disabled = loading;
-    if (downloadBtn) downloadBtn.disabled = loading;
-    if (cancelBtn) cancelBtn.disabled = loading;
+    if (shareBtn) {
+        shareBtn.disabled = loading;
+        const span = shareBtn.querySelector('span');
+        if (span) span.textContent = text || t('components/modal/share-schedule-modal:btn_share');
+    }
+    if (downloadBtn) {
+        downloadBtn.disabled = loading;
+    }
 }

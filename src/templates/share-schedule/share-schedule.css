@@ -214,7 +214,8 @@ body {
 }
 
 .location-card__icon {
-    font-size: var(--icon-lg);
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
 }
 
@@ -272,8 +273,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.org-toggle__icon-circle svg {
+    width: 18px;
+    height: 18px;
+    display: block;
     color: var(--clr-secondary-200);
-    font-size: 16px;
 }
 
 .org-toggle__label {
@@ -388,11 +394,11 @@ body {
 }
 
 .share-schedule__col-hijri {
-    width: 13%;
+    width: 19%;
 }
 
 .share-schedule__col-date {
-    width: 13%;
+    width: 11%;
 }
 
 /* Prayer time columns (6 columns) — ~12.3% each automatically */
@@ -426,8 +432,10 @@ td.share-schedule__cell-hijri {
 
 .share-schedule__cell-hijri {
     font-weight: var(--fw-semibold);
-    font-size: var(--fs-sm);
+    font-size: 13px;
     background: rgba(212, 175, 55, 0.06);
+    line-height: 1.2;
+    padding: 8px 4px;
 }
 
 .share-schedule__cell-date {

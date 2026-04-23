@@ -113,35 +113,78 @@
     flex-shrink: 0;
 }
 
-.schedule-nav__today {
+.schedule-nav__arrows {
+    display: flex;
+    align-items: center;
+    background: var(--clr-nav-arrows-bg);
+    border: 1px solid var(--clr-nav-arrows-border);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.schedule-nav__btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
+    width: 38px;
     height: 34px;
-    border-radius: var(--radius-circle);
-    border: 1px solid var(--clr-accent-a30);
-    background: var(--clr-accent-a20);
-    color: var(--clr-accent-500);
-    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--clr-nav-arrows-text);
     font-size: var(--fs-lg);
-    padding: 0;
+    cursor: pointer;
     transition: all var(--transition-fast);
     -webkit-tap-highlight-color: transparent;
 }
 
-.schedule-nav__today:active {
-    transform: scale(0.9);
+.schedule-nav__btn:active {
+    background: var(--clr-nav-arrows-active);
 }
 
-@media (hover: hover) and (pointer: fine) {
-    .schedule-nav__today:hover {
-        background: var(--clr-accent-a30);
-    }
+.schedule-nav__btn.disabled {
+    opacity: 0.3;
+    cursor: default;
 }
 
-.schedule-nav__today.hidden {
+.schedule-nav__btn--prev {
+    border-right: 1px solid var(--clr-nav-arrows-border);
+}
+
+.schedule-today-container {
+    margin-top: 0;
+    transition: all var(--transition-normal);
+}
+
+.schedule-today-container.hidden {
     display: none;
+}
+
+.schedule-today-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: 10px;
+    background: var(--clr-nav-arrows-bg);
+    border: 1px solid var(--clr-nav-arrows-border);
+    border-radius: var(--radius-pill);
+    color: var(--clr-nav-arrows-text);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.schedule-today-btn i {
+    font-size: var(--fs-md);
+}
+
+.schedule-today-btn:active {
+    transform: scale(0.98);
+    background: var(--clr-nav-arrows-active);
 }
 
 
@@ -506,11 +549,6 @@
         font-size: var(--fs-md);
     }
 
-    .schedule-nav__today {
-        width: 30px;
-        height: 30px;
-        font-size: var(--fs-md);
-    }
 
     .schedule-prayer-row {
         padding: 10px var(--spacing-sm);
@@ -538,10 +576,16 @@
         height: 20px;
         font-size: var(--fs-sm);
     }
+
+    .schedule-today-btn {
+        padding: 8px;
+        font-size: var(--fs-xs);
+    }
+
+    .schedule-today-btn i {
+        font-size: var(--fs-xs);
+    }
 }
-
-
-
 
 @media (max-width: 340px) {
     .schedule-nav {
@@ -558,11 +602,6 @@
         font-size: var(--fs-sm);
     }
 
-    .schedule-nav__today {
-        width: 28px;
-        height: 28px;
-        font-size: var(--fs-sm);
-    }
 
     .schedule-prayer-row__name {
         font-size: 11px;
@@ -585,5 +624,10 @@
     .schedule-swipe-hint__text,
     .schedule-swipe-hint__arrow {
         font-size: var(--fs-2xs);
+    }
+
+    .schedule-today-btn {
+        padding: 6px;
+        font-size: 10px;
     }
 }

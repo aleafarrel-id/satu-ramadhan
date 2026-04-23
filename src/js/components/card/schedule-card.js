@@ -46,6 +46,12 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, total
 
             <div class="card card--container schedule-content-card${viewingToday ? ' schedule-content-card--today' : ''}" id="schedule-swipe-area">
                 ${renderDateNav(entry, dayIndex, totalDays)}
+                <div class="schedule-today-container${viewingToday ? ' hidden' : ''}" id="schedule-today-container">
+                    <button class="schedule-today-btn" id="schedule-today">
+                        <i class='bx bx-reset'></i>
+                        <span>${t('pages/schedule-page:back_to_today')}</span>
+                    </button>
+                </div>
                 <div class="schedule-swipe-inner" id="schedule-swipe-inner">
                     <div class="schedule-prayers">
                         ${renderPrayerRows(entry.timings, activePrayerKey, viewingToday)}
@@ -97,9 +103,9 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
         subtitleEl.textContent = `${dayOfWeek}, ${dateFormatted}`;
     }
 
-    const todayBtn = document.getElementById('schedule-today');
-    if (todayBtn) {
-        todayBtn.classList.toggle('hidden', viewingToday);
+    const todayContainer = document.getElementById('schedule-today-container');
+    if (todayContainer) {
+        todayContainer.classList.toggle('hidden', viewingToday);
     }
 
     const prevBtn = document.getElementById('schedule-prev');
@@ -270,9 +276,6 @@ function renderDateNav(entry, dayIndex, totalDays = 30) {
                 <span class="schedule-nav__subtitle">${dayOfWeek}, ${dateFormatted}</span>
             </div>
             <div class="schedule-nav__controls">
-                <button class="schedule-nav__today${today ? ' hidden' : ''}" id="schedule-today" data-focus-item>
-                    <i class='bx bx-reset'></i>
-                </button>
                 <div class="schedule-nav__arrows">
                     <button class="schedule-nav__btn schedule-nav__btn--prev${isPrevDisabled ? ' disabled' : ''}"
                             id="schedule-prev" ${isPrevDisabled ? 'disabled' : ''} data-focus-item>
