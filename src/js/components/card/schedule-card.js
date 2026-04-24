@@ -13,6 +13,7 @@ import { SCHEDULE_PRAYERS } from '../../utils/datetime.js';
 import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 import { store } from '../../core/store.js';
+import { isNative } from '../../modules/system/platform.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
@@ -303,8 +304,8 @@ function renderPrayerRows(timings, activePrayerKey, viewingToday) {
 /**
  * Render a single prayer time row with icon, name, time, and active state.
  *
- * Adzan toggle visibility follows a three-tier hierarchy:
- *   1. Global notification OFF  → no toggle icon rendered
+ * Adzan toggle visibility follows a hierarchy:
+ *   1. Non-native (Web) or Global notification OFF  → no toggle icon rendered
  *   2. Global adzan OFF         → disabled mute icon (non-interactive, like imsak/terbit)
  *   3. Both globals ON          → interactive per-prayer toggle
  */
@@ -319,7 +320,7 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
 
     const isNotifEnabled = store.getState('settings.notification');
 
-    if (isNotifEnabled) {
+    if (isNative && isNotifEnabled) {
         if (adzanPrayers.includes(key)) {
             const isGlobalAdzanEnabled = store.getState('settings.adzan');
 
@@ -339,7 +340,7 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
             rightSideHtml = `<div class="schedule-prayer-row__adzan-toggle disabled"><i class='bx bx-bell'></i></div>`;
         }
     } else {
-        // Global notification OFF → hide everything in the right column
+        // Global notification OFF or Web environment → hide everything in the right column
         rightSideHtml = '';
     }
 
