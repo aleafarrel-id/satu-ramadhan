@@ -96,6 +96,7 @@ export async function save(ayahData) {
       type: ayahData.type || '',
       readMode: ayahData.readMode || 'surah',
       juzIndex: ayahData.juzIndex || null,
+      note: ayahData.note || '',
       timestamp: Math.floor(Date.now() / 1000)
    };
 
@@ -117,6 +118,24 @@ export async function remove(surahIndex, verseNumber) {
    if (idx === -1) return false;
 
    _cache.splice(idx, 1);
+   await _persist();
+   return true;
+}
+
+/**
+ * Updates the custom note for a specific bookmark.
+ * @param {number} surahIndex
+ * @param {number} verseNumber
+ * @param {string} note
+ * @returns {Promise<boolean>} true if updated
+ */
+export async function updateNote(surahIndex, verseNumber, note) {
+   await _ensureLoaded();
+   const key = createKey(surahIndex, verseNumber);
+   const idx = _cache.findIndex(b => b.key === key);
+   if (idx === -1) return false;
+
+   _cache[idx].note = note;
    await _persist();
    return true;
 }

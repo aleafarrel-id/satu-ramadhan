@@ -20,44 +20,108 @@
    font-size: var(--fs-2xs);
 }
 
-/* Relative context for delete button */
+/* Relative context for delete and edit button */
 .bookmark-card {
    position: relative;
 }
 
-/* ── Delete Button ── */
-.bookmark-delete-btn {
-   position: absolute;
-   top: 50%;
-   right: var(--sp-2);
-   transform: translateY(-50%);
+/* ── Edit & Delete Buttons (Preset Mgr Style) ── */
+.bookmark-actions {
+   display: flex;
+   gap: var(--spacing-xs);
+   flex-shrink: 0;
+   align-items: center;
+   margin-left: auto;
+}
+
+.bookmark-action-btn {
+   background: none;
+   border: 1px solid var(--clr-border-light);
+   color: var(--clr-text-muted);
+   width: 32px;
+   height: 32px;
+   border-radius: var(--radius-md);
    display: flex;
    align-items: center;
    justify-content: center;
-   width: var(--sp-8);
-   height: var(--sp-8);
-   background: transparent;
-   border: none;
-   color: var(--clr-quran-text-secondary);
-   opacity: 0.5;
    cursor: pointer;
-   border-radius: var(--radius-circle);
-   transition: opacity var(--transition-fast), color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+   transition: all var(--transition-fast);
+   font-size: var(--icon-sm);
+   padding: 0;
    -webkit-tap-highlight-color: transparent;
-   z-index: 2;
 }
 
-.bookmark-delete-btn:active {
-   transform: translateY(-50%) scale(0.88);
+.bookmark-action-btn:active {
+   background: var(--clr-white-a05);
+   transform: scale(0.92);
 }
 
-.bookmark-delete-btn i {
+.bookmark-action-btn i {
    font-size: var(--icon-md);
 }
 
-/* Hide Arabic title to accommodate delete button */
+.bookmark-action-btn--delete {
+   color: var(--clr-cal-sunday);
+   border-color: rgba(248, 113, 113, 0.2);
+}
+
+.bookmark-action-btn--delete:active {
+   background: rgba(248, 113, 113, 0.1);
+}
+
+.bookmark-action-btn--edit {
+   color: var(--clr-quran-text-secondary);
+   border-color: var(--clr-quran-border);
+}
+
+.bookmark-action-btn--edit:active {
+   background: var(--clr-quran-bg-alt);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .bookmark-action-btn:hover {
+      background: var(--clr-white-a05);
+   }
+
+   .bookmark-action-btn--delete:hover {
+      color: var(--clr-danger);
+      background: rgba(248, 113, 113, 0.1);
+   }
+
+   .bookmark-action-btn--edit:hover {
+      color: var(--clr-quran-accent);
+      background: var(--clr-quran-bg-alt);
+   }
+}
+
+/* Hide Arabic title to accommodate buttons */
 .bookmark-card .surah-title-arabic {
    visibility: hidden;
+}
+
+/* ── Note Badge ── */
+.bookmark-note-container {
+   margin-top: var(--spacing-xs);
+}
+
+.bookmark-note-badge {
+   display: inline-flex;
+   align-items: center;
+   gap: var(--sp-1);
+   padding: var(--sp-1) var(--sp-2);
+   background: var(--clr-quran-bg-alt);
+   color: var(--clr-quran-text-secondary);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-medium);
+   border-radius: var(--radius-sm);
+   line-height: var(--lh-none);
+   white-space: nowrap;
+   border: 1px solid var(--clr-quran-border);
+}
+
+.bookmark-note-badge i {
+   font-size: var(--fs-2xs);
 }
 
 /* ── Deletion Animation ── */
@@ -85,12 +149,4 @@
    color: var(--clr-quran-accent);
 }
 
-/* ── Responsive Rules ── */
 
-@media (hover: hover) and (pointer: fine) {
-   .bookmark-delete-btn:hover {
-      opacity: 1;
-      color: var(--clr-danger);
-      background: var(--clr-quran-bg-alt);
-   }
-}

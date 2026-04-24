@@ -11,6 +11,7 @@ import * as Notification from '../../modules/notification/notification.js';
 import { getSurahList, getJuzList } from '../../modules/quran/quran-api.js';
 import { renderBatchedList } from '../../modules/quran/quran-utility.js';
 import { showConfirmModal } from '../../components/modal/confirm-modal.js';
+import { showBookmarkNoteModal } from '../../components/modal/bookmark-note-modal.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { logError } from '../../utils/error-boundary.js';
 import { escapeHtml } from '../../utils/sanitize.js';
@@ -57,7 +58,8 @@ export async function render(container, callbacks = {}) {
                   if (_callbacks?.onItemSelected) _callbacks.onItemSelected();
                   _openBookmarkedVerse(selectedBookmark, selectedSurah);
                },
-               _handleDeleteBookmark
+               _handleDeleteBookmark,
+               _handleEditNote
             );
          }
       });
@@ -82,7 +84,9 @@ export async function onSearch(query, resultsContainer, searchCallbacks = {}) {
       const titleMatch = b.surahTitle.toLowerCase().includes(query);
       const verseMatch = b.verseNumber.toString() === query;
       const indexMatch = b.surahIndex.toString() === query;
-      return titleMatch || verseMatch || indexMatch;
+      const noteMatch = b.note && b.note.toLowerCase().includes(query);
+      const typeMatch = b.type && b.type.toLowerCase().includes(query);
+      return titleMatch || verseMatch || indexMatch || noteMatch || typeMatch;
    });
 
    if (!filtered.length) {
@@ -106,7 +110,8 @@ export async function onSearch(query, resultsContainer, searchCallbacks = {}) {
                if (searchCallbacks.onItemSelected) searchCallbacks.onItemSelected();
                _openBookmarkedVerse(selectedBookmark, selectedSurah);
             },
-            _handleDeleteBookmark
+            _handleDeleteBookmark,
+            _handleEditNote
          );
          card.style.opacity = '1';
          card.style.animation = 'none';
@@ -181,6 +186,22 @@ function _handleDeleteBookmark(bookmark, cardEl) {
                _renderEmptyState();
             }
          }, { once: true });
+      }
+   });
+}
+
+/**
+ * Handles editing the custom note for a bookmark.
+ */
+function _handleEditNote(bookmark, cardEl) {
+   showBookmarkNoteModal(bookmark.note || '', async (newNote) => {
+      const success = await BookmarkManager.updateNote(bookmark.surahIndex, bookmark.verseNumber, newNote);
+      if (success) {
+         Notification.success(t('pages/quran-pages/bookmark-page:note_saved_notif') || 'Note saved');
+         // Refresh list to show updated badge
+         if (_container) {
+            render(_container, _callbacks);
+         }
       }
    });
 }

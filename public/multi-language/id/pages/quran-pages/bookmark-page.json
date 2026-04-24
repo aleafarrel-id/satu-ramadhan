@@ -3,5 +3,9 @@
     "error_load": "Gagal memuat bookmark",
     "confirm_delete_title": "Hapus Bookmark",
     "confirm_delete_msg": "Apakah Anda yakin ingin menghapus bookmark untuk QS. {{surah}} ayat {{verse}}?",
-    "deleted_notif": "QS. {{surah}}: {{verse}} dihapus"
+    "deleted_notif": "QS. {{surah}}: {{verse}} dihapus",
+    "edit_note": "Edit Catatan",
+    "note_placeholder": "Misal: Ayat Kursi",
+    "save_note": "Simpan",
+    "note_saved_notif": "Catatan berhasil disimpan"
 }

@@ -185,8 +185,9 @@ export function renderErrorState(container, message = null) {
  * @param {Object} surah - Surah metadata
  * @param {Function} onClick - Handler for opening the bookmarked verse
  * @param {Function} [onDelete] - Handler for removing the bookmark
+ * @param {Function} [onEditNote] - Handler for editing the custom note
  */
-export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
+export function createBookmarkCard(bookmark, surah, onClick, onDelete, onEditNote) {
    const card = document.createElement('div');
    card.className = 'surah-card bookmark-card';
    card.setAttribute('data-focus-item', '');
@@ -198,7 +199,20 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
    const titleLatin = isJuzMode ? `Juz ${bookmark.juzIndex}` : (surah ? surah.title : bookmark.surahTitle);
    const titleAr = isJuzMode ? `الجزء ${_toArabicNumeral(parseInt(bookmark.juzIndex))}` : (surah ? surah.titleAr : bookmark.surahTitleAr);
    const topNumber = isJuzMode ? bookmark.juzIndex : bookmark.surahIndex;
-   const primaryBadge = isJuzMode ? (surah ? surah.title : bookmark.surahTitle) : typeText;
+
+   let primaryBadge = isJuzMode ? (surah ? surah.title : bookmark.surahTitle) : typeText;
+
+   let noteHtml = '';
+   if (bookmark.note && bookmark.note.trim() !== '') {
+      noteHtml = `
+         <div class="bookmark-note-container">
+            <span class="bookmark-note-badge">
+               <i class='bx bxs-note'></i>
+               ${escapeHtml(bookmark.note)}
+            </span>
+         </div>
+      `;
+   }
 
    card.innerHTML = `
       <div class="surah-number-wrapper">
@@ -215,25 +229,41 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete) {
                ${t('components/quran/quran-card:ayat', { verseNumber: bookmark.verseNumber })}
             </span>
          </div>
+         ${noteHtml}
       </div>
-      <div class="surah-title-arabic">${escapeHtml(titleAr)}</div>
+      <div class="bookmark-actions"></div>
    `;
 
    if (onClick) {
       makeAccessibleBtn(card, () => onClick(bookmark, surah));
    }
 
-   // Delete button (overlays the Arabic title area)
+   const actionsContainer = card.querySelector('.bookmark-actions');
+
+   // Edit button
+   if (onEditNote) {
+      const editBtn = document.createElement('button');
+      editBtn.className = 'bookmark-action-btn bookmark-action-btn--edit';
+      editBtn.setAttribute('aria-label', t('components/quran/quran-card:edit_note') || 'Edit Note');
+      editBtn.innerHTML = `<i class='bx bx-pencil'></i>`;
+      editBtn.addEventListener('click', (e) => {
+         e.stopPropagation();
+         onEditNote(bookmark, card);
+      });
+      actionsContainer.appendChild(editBtn);
+   }
+
+   // Delete button
    if (onDelete) {
       const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'bookmark-delete-btn';
+      deleteBtn.className = 'bookmark-action-btn bookmark-action-btn--delete';
       deleteBtn.setAttribute('aria-label', t('components/quran/quran-card:delete_bookmark'));
       deleteBtn.innerHTML = `<i class='bx bx-trash'></i>`;
       deleteBtn.addEventListener('click', (e) => {
          e.stopPropagation();
          onDelete(bookmark, card);
       });
-      card.appendChild(deleteBtn);
+      actionsContainer.appendChild(deleteBtn);
    }
 
    return card;

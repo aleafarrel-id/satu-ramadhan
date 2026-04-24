@@ -1,0 +1,45 @@
+/* 
+  Bookmark Note Modal Styles
+  Reuses slider layout logic.
+*/
+
+.bookmark-note-body {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--spacing-xs);
+}
+
+.bookmark-note-input {
+    width: 100%;
+    background: var(--clr-black-a05);
+    border: 1px solid var(--clr-mushaf-line-border);
+    color: var(--clr-mushaf-text-dark);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    text-align: left;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    font-family: inherit;
+    margin-bottom: 6px;
+}
+
+.bookmark-note-input:focus {
+    outline: none;
+    border-color: var(--clr-quran-accent);
+    background: transparent;
+}
+
+.bookmark-note-input::placeholder {
+    color: var(--clr-quran-text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+}
+
+.bookmark-note-hint {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+    text-align: right;
+    margin-bottom: var(--spacing-md);
+}
