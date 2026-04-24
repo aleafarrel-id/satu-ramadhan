@@ -838,6 +838,22 @@
 }
 
 /* Responsive */
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .tasbih-page {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .tasbih-page {
+        max-width: 580px;
+    }
+}
+
 @media screen and (max-width: 380px) {
     .tasbih-header {
         padding: var(--sp-2) var(--sp-3);

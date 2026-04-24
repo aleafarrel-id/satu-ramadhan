@@ -285,6 +285,22 @@
    Responsive Overrides
    ============================================= */
 
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .adzan-selector-sheet {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .adzan-selector-sheet {
+        max-width: 580px;
+    }
+}
+
 @media (max-width: 360px) {
     .adzan-preview-btn {
         width: 28px;

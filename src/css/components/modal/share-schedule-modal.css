@@ -150,6 +150,22 @@
 
 /* === RESPONSIVE === */
 
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .ss-modal {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .ss-modal {
+        max-width: 580px;
+    }
+}
+
 @media (max-width: 380px) {
 
     /* Actions adjustment */

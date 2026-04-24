@@ -283,6 +283,22 @@
 
 /* ── Responsive Rules ── */
 
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+   .quran-page {
+      max-width: 720px;
+   }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+   .quran-page {
+      max-width: 580px;
+   }
+}
+
 @media (pointer: fine) {
    .quran-page :focus-visible {
       outline: 2px solid var(--clr-primary-500);

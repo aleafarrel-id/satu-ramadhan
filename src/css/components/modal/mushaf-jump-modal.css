@@ -160,3 +160,19 @@
     transform: scale(0.97);
     background: var(--clr-quran-accent-light);
 }
+
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .mushaf-jump-sheet {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .mushaf-jump-sheet {
+        max-width: 580px;
+    }
+}

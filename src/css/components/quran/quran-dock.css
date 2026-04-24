@@ -122,7 +122,45 @@
 
 /* ── Responsive Rules ── */
 
-@media screen and (min-width: 480px) {
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+   .quran-dock {
+      max-width: 720px;
+   }
+   
+   .quran-dock-list {
+      max-width: 480px;
+      padding: 0 var(--sp-3);
+   }
+
+   .quran-dock-slider,
+   .quran-dock-item:focus-visible::after {
+      width: 72px;
+      height: var(--nav-slider-size-lg);
+   }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+   .quran-dock {
+      max-width: 580px;
+   }
+   
+   .quran-dock-list {
+      max-width: 420px;
+      padding: 0 var(--sp-3);
+   }
+
+   .quran-dock-slider,
+   .quran-dock-item:focus-visible::after {
+      width: 72px;
+      height: var(--nav-slider-size-lg);
+   }
+}
+
+@media screen and (min-width: 480px) and (max-width: 599px) {
    .quran-dock-list {
       max-width: 360px;
       padding: 0 var(--sp-3);

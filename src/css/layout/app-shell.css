@@ -34,7 +34,7 @@
    Using a specific selector without !important to allow smooth transition 
    once the .hidden class is added to the splash screen.
 */
-.splash-screen:not(.hidden) ~ :not(.splash-screen) {
+.splash-screen:not(.hidden)~ :not(.splash-screen) {
    opacity: 0;
    visibility: hidden;
    pointer-events: none;
@@ -217,5 +217,23 @@
 @media (max-width: 320px) {
    .custom-ptr {
       font-size: var(--fs-xs);
+   }
+}
+
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+/* Tablet (e.g. iPad, Galaxy Tab) */
+@media screen and (min-width: 768px) {
+   .app-container {
+      max-width: 720px;
+   }
+}
+
+/* Foldable (e.g. Galaxy Z Fold inner screen) */
+@media screen and (min-width: 600px) and (max-width: 767px) {
+   .app-container {
+      max-width: 580px;
    }
 }

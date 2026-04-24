@@ -193,3 +193,19 @@
 .w-100 {
     width: 100%;
 }
+
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .language-selector-sheet {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .language-selector-sheet {
+        max-width: 580px;
+    }
+}

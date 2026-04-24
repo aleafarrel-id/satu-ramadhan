@@ -117,8 +117,46 @@
    transform: translateY(1px);
 }
 
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+   .bottom-nav {
+      max-width: 720px;
+   }
+
+   .nav-list {
+      max-width: 520px;
+      padding: 0 12px;
+   }
+
+   .nav-slider,
+   .nav-item:focus-visible::after {
+      width: 72px;
+      height: var(--nav-slider-size-lg);
+   }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+   .bottom-nav {
+      max-width: 580px;
+   }
+
+   .nav-list {
+      max-width: 460px;
+      padding: 0 12px;
+   }
+
+   .nav-slider,
+   .nav-item:focus-visible::after {
+      width: 72px;
+      height: var(--nav-slider-size-lg);
+   }
+}
+
 /* Responsive refinements via variable overrides only */
-@media screen and (min-width: 480px) {
+@media screen and (min-width: 480px) and (max-width: 599px) {
    .nav-list {
       max-width: 420px;
       padding: 0 12px;

@@ -180,6 +180,22 @@
 /* ─────────────────────────────────────────
    Responsive Adjustments
 ───────────────────────────────────────── */
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .tb-preset-sheet {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .tb-preset-sheet {
+        max-width: 580px;
+    }
+}
+
 @media screen and (max-width: 380px) {
     .tb-preset-input {
         padding: 10px 12px;

@@ -239,6 +239,22 @@
     color: var(--clr-badge-online-text);
 }
 
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .loc-search-sheet {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .loc-search-sheet {
+        max-width: 580px;
+    }
+}
+
 @media (max-width: 390px) {
     .loc-search-sheet {
         padding: var(--spacing-md) var(--spacing-md) calc(var(--spacing-md) + env(safe-area-inset-bottom));

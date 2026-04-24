@@ -473,6 +473,22 @@
 
 /* ── Responsive ── */
 
+/* =============================================
+   Foldable & Tablet Layout Enhancements
+   ============================================= */
+
+@media screen and (min-width: 768px) {
+    .preset-mgr-sheet {
+        max-width: 720px;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px) {
+    .preset-mgr-sheet {
+        max-width: 580px;
+    }
+}
+
 @media (max-width: 380px) {
     .preset-mgr-item-name {
         font-size: var(--fs-xs);
