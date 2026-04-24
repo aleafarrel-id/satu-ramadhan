@@ -1,0 +1,162 @@
+/* 
+  Mushaf Jump Modal Styles 
+  Displays as a bottom sliding sheet for jumping to specific Mushaf pages
+*/
+
+.mushaf-jump-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) + 10);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.mushaf-jump-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mushaf-jump-sheet {
+    background: var(--clr-quran-card-bg);
+    border-top: 1px solid var(--clr-mushaf-header-border);
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-modal);
+    display: flex;
+    flex-direction: column;
+}
+
+.mushaf-jump-overlay.active .mushaf-jump-sheet {
+    transform: translateY(0);
+}
+
+.mushaf-jump-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.mushaf-jump-title {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-mushaf-text-dark);
+}
+
+/* Input Form */
+.mushaf-jump-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xs);
+}
+
+.mushaf-jump-input-group {
+    position: relative;
+    width: 100%;
+}
+
+.mushaf-jump-input {
+    width: 100%;
+    background: var(--clr-black-a05);
+    border: 1px solid var(--clr-mushaf-line-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-mushaf-text-dark);
+    text-align: center;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    /* Disable spinner for number input */
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.mushaf-jump-input::-webkit-outer-spin-button,
+.mushaf-jump-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.mushaf-jump-input:focus {
+    outline: none;
+    border-color: var(--clr-quran-accent);
+    background: transparent;
+}
+
+.mushaf-jump-input::placeholder {
+    color: var(--clr-quran-text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+}
+
+.mushaf-jump-error {
+    color: var(--clr-danger);
+    font-size: var(--fs-xs);
+    text-align: center;
+    height: 16px;
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.mushaf-jump-error.visible {
+    opacity: 1;
+}
+
+/* Footer Buttons */
+.mushaf-jump-footer {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+}
+
+.mushaf-jump-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.mushaf-jump-btn--cancel {
+    background: var(--clr-black-a05);
+    border: 1px solid var(--clr-mushaf-line-border);
+    color: var(--clr-mushaf-text-dark);
+}
+
+.mushaf-jump-btn--cancel:active {
+    transform: scale(0.97);
+    background: var(--clr-black-a10);
+}
+
+.mushaf-jump-btn--submit {
+    background: var(--clr-quran-accent);
+    border: 1px solid transparent;
+    color: var(--clr-text-primary);
+    box-shadow: 0 4px 10px var(--clr-accent-a25);
+}
+
+.mushaf-jump-btn--submit:active {
+    transform: scale(0.97);
+    background: var(--clr-quran-accent-light);
+}

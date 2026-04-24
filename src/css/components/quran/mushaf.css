@@ -1,4 +1,5 @@
 @import '../modal/mushaf-guide-modal.css';
+@import '../modal/mushaf-jump-modal.css';
 
 /* Mushaf Mode Styles */
 
@@ -142,6 +143,17 @@
    color: var(--clr-mushaf-text);
    user-select: none;
    text-align: center;
+   background: transparent;
+   border: 1px solid var(--clr-mushaf-header-border);
+   cursor: pointer;
+   padding: 2px var(--spacing-md);
+   border-radius: var(--radius-pill);
+   transition: all var(--transition-fast);
+}
+
+.mushaf-page-counter:active {
+   background-color: var(--clr-black-a05);
+   transform: translateX(-50%) scale(0.96);
 }
 
 /* ── Header Actions ── */

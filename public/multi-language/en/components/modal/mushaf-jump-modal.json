@@ -1,0 +1,7 @@
+{
+  "title": "Jump to Page",
+  "placeholder": "Page number (1-604)",
+  "cancel": "Cancel",
+  "jump": "Jump",
+  "error_range": "Enter a page number between 1 and 604"
+}

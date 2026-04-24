@@ -1,0 +1,7 @@
+{
+  "title": "Lompat Halaman",
+  "placeholder": "Nomor halaman (1-604)",
+  "cancel": "Batal",
+  "jump": "Lompat",
+  "error_range": "Masukkan nomor halaman antara 1 dan 604"
+}

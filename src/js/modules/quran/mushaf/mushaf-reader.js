@@ -16,6 +16,7 @@ import * as QuranDock from '../../../components/quran/quran-dock.js';
 import { createSurahCard } from '../../../components/quran/quran-card.js';
 import { openPicker, closePicker, isOpen as isPickerOpen, destroyPicker } from '../../../components/quran/quran-picker.js';
 import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-modal.js';
+import { showMushafJumpModal } from '../../../components/modal/mushaf-jump-modal.js';
 
 // Utilities & Helpers
 import { initTooltip, dismissTooltip } from '../../../utils/tooltip.js';
@@ -518,8 +519,12 @@ function _buildHeader() {
    leftWrap.appendChild(backBtn);
    leftWrap.appendChild(infoBtn);
 
-   _pageCounterEl = document.createElement('span');
+   _pageCounterEl = document.createElement('button');
    _pageCounterEl.className = 'mushaf-page-counter';
+   _pageCounterEl.setAttribute('aria-label', 'Lompat ke halaman');
+   makeAccessibleBtn(_pageCounterEl, () => {
+       showMushafJumpModal({ current: _currentPage, onJump: goToPage });
+   });
    _updatePageCounter();
 
    // Actions wrapper (right side: zoom + menu)
