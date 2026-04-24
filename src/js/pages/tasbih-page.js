@@ -43,6 +43,7 @@ let _svgW = 390;
 let _svgH = 460;
 let _resizeObserver = null;
 let _feedbackMode = 'haptic';
+let _unsubscribeLanguage = null;
 
 function _getAllZikir() {
     const customPresets = store.getState('tasbih.customPresets') || [];
@@ -91,6 +92,18 @@ export async function init(container) {
     _updateBeads();
     _updateFeedbackToggleIcon();
     _initAudio();
+
+    // Listen for language changes to re-render translations seamlessly
+    if (!_unsubscribeLanguage) {
+        _unsubscribeLanguage = store.subscribe('settings.language', async () => {
+            await loadNS('pages/tasbih-page');
+            _renderHTML();
+            _cacheElements();
+            _bindEvents();
+            _updateInfoCard();
+            _updateFeedbackToggleIcon();
+        });
+    }
 }
 
 // ── Open / Close API ──────────────────────────────────────────────────────────
@@ -408,7 +421,14 @@ function _cacheElements() {
     _el.list = _container.querySelector('#tb-list');
     _el.feedbackToggle = _container.querySelector('#tb-feedback-toggle');
 
-    if (!_resizeObserver && _el.beadsArea) {
+    if (_resizeObserver) {
+        _resizeObserver.disconnect();
+    }
+
+    if (_el.beadsArea) {
+        _svgW = 0;
+        _svgH = 0;
+
         _resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
                 const { width, height } = entry.contentRect;
