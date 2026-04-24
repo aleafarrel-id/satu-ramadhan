@@ -145,7 +145,6 @@ function createModalDOM(current) {
                 <div class="mushaf-jump-input-group">
                     <input type="number" 
                            class="mushaf-jump-input" 
-                           value="${current}" 
                            min="1" 
                            max="${total}" 
                            placeholder="${t(`${ns}:placeholder`)}" 

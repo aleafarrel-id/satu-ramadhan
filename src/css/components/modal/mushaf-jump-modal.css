@@ -6,7 +6,7 @@
 .mushaf-jump-overlay {
     position: fixed;
     inset: 0;
-    z-index: calc(var(--z-modal) + 10);
+    z-index: 9999;
     background: var(--clr-bg-cal-overlay);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
