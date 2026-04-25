@@ -109,10 +109,12 @@ export function renderTabletQiblaCard() {
  * @returns {string} HTML string
  */
 export function renderTabletMosqueCard(timings, orgName, prayerState) {
+    const imgSrc = getMosqueImageSrc(prayerState?.current?.key);
     return `
         <div class="tablet-mosque-hero">
             <img
-                src="/assets/mosque/mosque-midday.webp"
+                src="${imgSrc}"
+                id="tablet-mosque-img"
                 alt="Masjid Istiqlal"
                 class="tablet-mosque-hero__img"
                 loading="lazy"
@@ -160,4 +162,58 @@ export function renderTabletFullListCard(timings, prayerState) {
             ${columnsHtml}
         </div>
     `;
+}
+
+/**
+ * Get the appropriate mosque image source based on the current prayer.
+ * @param {string} prayerKey
+ * @returns {string}
+ */
+export function getMosqueImageSrc(prayerKey) {
+    const middayKeys = ['terbit', 'dzuhur'];
+    const afternoonKeys = ['ashar'];
+    const nightKeys = ['magrib', 'isya', 'imsak', 'subuh'];
+
+    if (nightKeys.includes(prayerKey)) {
+        return '/assets/mosque/mosque-night.webp';
+    } else if (afternoonKeys.includes(prayerKey)) {
+        return '/assets/mosque/mosque-afternoon.webp';
+    } else if (middayKeys.includes(prayerKey)) {
+        return '/assets/mosque/mosque-midday.webp';
+    }
+    
+    // Default fallback
+    return '/assets/mosque/mosque-midday.webp';
+}
+
+/**
+ * Updates the tablet mosque image dynamically with a CSS opacity fade.
+ * @param {object} prayerState 
+ */
+export function updateTabletMosqueImage(prayerState) {
+    const imgEl = document.getElementById('tablet-mosque-img');
+    if (!imgEl) return;
+    
+    const newSrc = getMosqueImageSrc(prayerState?.current?.key);
+    
+    if (imgEl.getAttribute('src') !== newSrc) {
+        // Preload the next image to avoid blank flash during transition
+        const tempImg = new Image();
+        tempImg.onload = () => {
+            // Initiate fade out
+            imgEl.style.opacity = '0';
+            
+            // Wait for CSS transition (0.4s) to finish before swapping src
+            setTimeout(() => {
+                imgEl.setAttribute('src', newSrc);
+                // Initiate fade in
+                imgEl.style.opacity = '1';
+            }, 400); 
+        };
+        // Error handling fallback
+        tempImg.onerror = () => {
+            imgEl.setAttribute('src', newSrc);
+        };
+        tempImg.src = newSrc;
+    }
 }

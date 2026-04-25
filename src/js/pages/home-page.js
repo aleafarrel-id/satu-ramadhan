@@ -7,7 +7,7 @@ import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 
 
 import { renderPrayerCard, updatePrayerCardFills, updatePrayerCardDynamicUI } from '../components/card/prayer-card.js';
-import { renderPrayerListCard, renderTabletMosqueCard, renderTabletQiblaCard, renderTabletFullListCard, getHomeMapId } from '../components/card/prayer-list.js';
+import { renderPrayerListCard, renderTabletMosqueCard, renderTabletQiblaCard, renderTabletFullListCard, getHomeMapId, updateTabletMosqueImage } from '../components/card/prayer-list.js';
 import { renderLocationCard as renderLocationCardShared, bindLocationCardEvents } from '../components/card/location-card.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
@@ -169,6 +169,9 @@ function startCountdownTimer() {
                 if (_viewMode === VIEW_LIST) {
                     updateListHighlights(currentState);
                 }
+
+                // Update tablet/foldable dynamic mosque background
+                updateTabletMosqueImage(currentState);
             }
 
             // Only update tube fills when the tube view is active

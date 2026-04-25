@@ -142,6 +142,8 @@
       width: 100%;
       height: auto;
       display: block;
+      transition: opacity 0.4s ease-in-out;
+      will-change: opacity;
    }
 
    /* Full-width Glassmorphism Bottom Bar */
@@ -259,6 +261,8 @@
       width: 100%;
       height: auto;
       display: block;
+      transition: opacity 0.4s ease-in-out;
+      will-change: opacity;
    }
 
    /* Full-width Glassmorphism Bottom Bar */
