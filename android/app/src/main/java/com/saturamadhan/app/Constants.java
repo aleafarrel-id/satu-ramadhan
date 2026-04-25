@@ -38,24 +38,14 @@ public final class Constants {
     public static final String PREF_NAME = "PrayerAlarms";
     public static final String KEY_NOTIFICATIONS_ENABLED = "notifications_enabled";
 
-    // --- Anchor Location (stored on every notification sync) ---
-    public static final String KEY_ANCHOR_LAT = "anchor_lat";
-    public static final String KEY_ANCHOR_LON = "anchor_lon";
+    // --- WorkManager Tags ---
+    public static final String WORKER_TAG_ALARM_RESCHEDULE = "alarm_reschedule_worker";
 
     // --- 30-Day Rolling Schedule ID Range ---
     /** Base ID for rolling alarms: ID = BASE + (dayOffset * 10) + prayerIndex */
     public static final int ROLLING_ALARM_BASE_ID = 5000;
     /** Total ID slots reserved for rolling schedule (30 days × 10 slots/day) */
     public static final int ROLLING_ALARM_MAX_COUNT = 300;
-
-    // --- Passive Background Location Detection ---
-    public static final String CHANNEL_ID_LOCATION = "location_detect";
-    public static final int NOTIFICATION_ID_LOCATION = 4000;
-    public static final String KEY_LAST_DETECTION_ALERT = "last_detection_alert_time";
-    public static final double DISTANCE_THRESHOLD_KM = 50.0;
-    public static final long COOLDOWN_MS = 24 * 60 * 60 * 1000L; // 24 hours
-    public static final String WORKER_TAG = "location_detect_worker";
-    public static final String WORKER_TAG_ALARM_RESCHEDULE = "alarm_reschedule_worker";
 
     // ─── Murottal Background Playback ──────────────────────────────────
     public static final String ACTION_MUROTTAL_PLAY = "com.saturamadhan.app.ACTION_MUROTTAL_PLAY";

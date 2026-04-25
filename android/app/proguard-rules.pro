@@ -38,7 +38,6 @@
 -keep class com.saturamadhan.app.PrayerServicePlugin { *; }
 
 # Keep WorkManager workers (instantiated reflectively by WorkManager)
--keep class com.saturamadhan.app.LocationDetectWorker { *; }
 -keep class com.saturamadhan.app.AlarmRescheduleWorker { *; }
 
 # Keep the Constants class (used by all components above)

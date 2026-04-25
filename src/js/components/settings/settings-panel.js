@@ -216,17 +216,6 @@ export function render(container) {
             impact('medium');
 
             await loadNS('modules/permission/permission-dialog');
-
-            try {
-                const status = await PrayerService.isIgnoringBatteryOptimizations();
-                if (status && status.isIgnoring) {
-                    Notif.show(t('modules/permission/permission-dialog:battery_granted', { defaultValue: 'Proses latar belakang diizinkan' }), 'success');
-                    return;
-                }
-            } catch (e) {
-                console.warn('[SettingsPanel] isIgnoringBatteryOptimizations failed:', e);
-            }
-
             showBatterySafetyDialog();
         });
     }

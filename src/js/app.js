@@ -417,16 +417,6 @@ async function _requestBatteryOptIfNeeded() {
 
     if (store.getState('settings.notification') === false) return false;
 
-    try {
-        const status = await PrayerService.isIgnoringBatteryOptimizations();
-        if (status && status.isIgnoring) {
-            store.setState('settings.battery_opt_seen', true);
-            return false;
-        }
-    } catch (e) {
-        console.warn('[App] isIgnoringBatteryOptimizations failed:', e);
-    }
-
     let interrupted = false;
     if (isLocationModalActive()) {
         interrupted = true;

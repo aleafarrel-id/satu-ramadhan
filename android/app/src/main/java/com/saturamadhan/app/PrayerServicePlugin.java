@@ -2,13 +2,11 @@ package com.saturamadhan.app;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -84,13 +82,6 @@ public class PrayerServicePlugin extends Plugin {
 
         Context context = getContext();
 
-        // Save anchor location for background detection
-        Double anchorLat = call.getDouble("anchorLat");
-        Double anchorLon = call.getDouble("anchorLon");
-        if (anchorLat != null && anchorLon != null) {
-            saveAnchorLocation(context, anchorLat, anchorLon);
-        }
-
         JSObject systemStrings = call.getObject("systemStrings", null);
         if (systemStrings != null) {
             saveSystemStringsToStorage(context, systemStrings);
@@ -154,170 +145,37 @@ public class PrayerServicePlugin extends Plugin {
         call.resolve(result);
     }
 
-    // ── Background Location Detection ────────────────────────────────
+    // ── Battery & Settings ────────────────────────────────────────────
 
     /**
-     * Starts the passive background location detection worker.
-     */
-    @PluginMethod()
-    public void startLocationDetection(PluginCall call) {
-        Context context = getContext();
-
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
-                LocationDetectWorker.class,
-                6, TimeUnit.HOURS,
-                3, TimeUnit.HOURS
-        )
-                .addTag(Constants.WORKER_TAG)
-                .build();
-
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                Constants.WORKER_TAG,
-                ExistingPeriodicWorkPolicy.KEEP,
-                workRequest
-        );
-
-        Log.d(TAG, "Location detection worker enqueued (6h interval, 3h flex)");
-        call.resolve();
-    }
-
-    /**
-     * Stop the background location detection worker.
-     */
-    @PluginMethod()
-    public void stopLocationDetection(PluginCall call) {
-        Context context = getContext();
-        WorkManager.getInstance(context).cancelUniqueWork(Constants.WORKER_TAG);
-        Log.d(TAG, "Location detection worker cancelled");
-        call.resolve();
-    }
-
-    /**
-     * Check if this app is already exempted from battery optimizations.
-     * Uses Android's PowerManager.isIgnoringBatteryOptimizations() API.
+     * Opens the App Info page in system Settings.
+     * From there, users can manually manage battery optimization, autostart,
+     * and other background permissions based on their device.
      *
-     * Returns: { isIgnoring: boolean }
-     */
-    @PluginMethod()
-    public void isIgnoringBatteryOptimizations(PluginCall call) {
-        Context context = getContext();
-        boolean isIgnoring = false;
-
-        try {
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            if (pm != null) {
-                isIgnoring = pm.isIgnoringBatteryOptimizations(context.getPackageName());
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "Could not check battery optimization status: " + e.getMessage());
-        }
-
-        JSObject result = new JSObject();
-        result.put("isIgnoring", isIgnoring);
-        call.resolve(result);
-    }
-
-    /**
-     * Opens the most relevant battery optimization or autostart settings page.
-     * Routes Chinese OEM custom skins to their proprietary whitelist interfaces.
-     * 
-     * Returns: { opened: boolean, method: string }
+     * Uses ACTION_APPLICATION_DETAILS_SETTINGS — a standard, non-privileged
+     * intent that works on all Android versions and OEMs without any
+     * special permissions.
+     *
+     * Returns: { opened: boolean }
      */
     @PluginMethod()
     public void openBatteryOptimizationSettings(PluginCall call) {
         Context context = getContext();
-        String manufacturer = Build.MANUFACTURER.toLowerCase();
-        String method = "unknown";
         boolean opened = false;
 
-        // ── Tier 1: OEM-specific Autostart management screens ─────────────────
         try {
-            Intent oemIntent = new Intent();
-            oemIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            if (manufacturer.contains("xiaomi") || manufacturer.contains("redmi") || manufacturer.contains("poco")) {
-                // MIUI / HyperOS
-                oemIntent.setComponent(new ComponentName(
-                        "com.miui.securitycenter",
-                        "com.miui.permcenter.autostart.AutoStartManagementActivity"
-                ));
-                method = "xiaomi_autostart";
-            } else if (manufacturer.contains("oppo") || manufacturer.contains("realme") || manufacturer.contains("oneplus")) {
-                // ColorOS / OxygenOS
-                oemIntent.setComponent(new ComponentName(
-                        "com.coloros.safecenter",
-                        "com.coloros.safecenter.permission.startup.FakeActivity"
-                ));
-                method = "oppo_coloros_autostart";
-            } else if (manufacturer.contains("vivo") || manufacturer.contains("iqoo")) {
-                // FunTouchOS / OriginOS
-                oemIntent.setComponent(new ComponentName(
-                        "com.vivo.permissionmanager",
-                        "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
-                ));
-                method = "vivo_startup_manager";
-            } else if (manufacturer.contains("huawei") || manufacturer.contains("honor")) {
-                // EMUI / MagicOS
-                oemIntent.setComponent(new ComponentName(
-                        "com.huawei.systemmanager",
-                        "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"
-                ));
-                method = "huawei_startup_manager";
-            } else if (manufacturer.contains("samsung")) {
-                // One UI — no dedicated autostart, but battery settings help
-                oemIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                oemIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
-                method = "samsung_app_details";
-            } else {
-                oemIntent = null; // Not a known OEM, go to Tier 2
-            }
-
-            if (oemIntent != null && oemIntent.getComponent() != null) {
-                context.startActivity(oemIntent);
-                opened = true;
-                Log.d(TAG, "Opened OEM battery settings via: " + method);
-            } else if (oemIntent != null && oemIntent.getData() != null) {
-                context.startActivity(oemIntent);
-                opened = true;
-                Log.d(TAG, "Opened app details settings via: " + method);
-            }
+            Intent appInfoIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            appInfoIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
+            appInfoIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(appInfoIntent);
+            opened = true;
+            Log.d(TAG, "Opened App Info settings page");
         } catch (Exception e) {
-            Log.w(TAG, "OEM settings intent failed: " + e.getMessage());
-        }
-
-        // ── Tier 2: Standard Android — REQUEST_IGNORE_BATTERY_OPTIMIZATIONS ────
-        if (!opened) {
-            try {
-                Intent batteryIntent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                batteryIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
-                batteryIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(batteryIntent);
-                method = "ignore_battery_optimizations";
-                opened = true;
-                Log.d(TAG, "Opened standard battery optimization settings");
-            } catch (Exception e) {
-                Log.w(TAG, "Battery optimization settings failed: " + e.getMessage());
-            }
-        }
-
-        // ── Tier 3: Final fallback — generic App Info page ───────────────────
-        if (!opened) {
-            try {
-                Intent appInfoIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                appInfoIntent.setData(Uri.fromParts("package", context.getPackageName(), null));
-                appInfoIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(appInfoIntent);
-                method = "app_info_fallback";
-                opened = true;
-                Log.d(TAG, "Opened generic app info settings as final fallback");
-            } catch (Exception e) {
-                Log.e(TAG, "All settings intents failed", e);
-            }
+            Log.e(TAG, "Failed to open App Info settings: " + e.getMessage());
         }
 
         JSObject result = new JSObject();
         result.put("opened", opened);
-        result.put("method", method);
         call.resolve(result);
     }
 
@@ -536,19 +394,6 @@ public class PrayerServicePlugin extends Plugin {
             case "isya": return 3005;
             default: return 3099;
         }
-    }
-
-    /**
-     * Save anchor location to SharedPreferences.
-     * Used by background location detection worker.
-     */
-    private static void saveAnchorLocation(Context context, double lat, double lon) {
-        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
-        prefs.edit()
-                .putFloat(Constants.KEY_ANCHOR_LAT, (float) lat)
-                .putFloat(Constants.KEY_ANCHOR_LON, (float) lon)
-                .apply();
-        Log.d(TAG, "Anchor location saved: " + lat + ", " + lon);
     }
 
     // ── Alarm Reschedule Worker (Safety Net) ─────────────────────────

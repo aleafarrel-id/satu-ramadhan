@@ -141,8 +141,6 @@ export async function syncNotifications() {
         if (alarmsToSchedule.length > 0) {
             await PrayerService.schedule({
                 alarms: alarmsToSchedule,
-                anchorLat: location.latitude,
-                anchorLon: location.longitude,
                 systemStrings: {
                     adzanTitle: t('modules/prayer/prayer-times:system_adzan_title') || 'Adzan %1$s',
                     adzanBody: t('modules/prayer/prayer-times:system_adzan_body') || '%1$s Telah Tiba',
@@ -151,17 +149,10 @@ export async function syncNotifications() {
             });
             console.log(
                 `[NotifSync] Synced ${alarmsToSchedule.length} alarms ` +
-                `for ${ROLLING_DAYS} days (anchor: ${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)})`
+                `for ${ROLLING_DAYS} days`
             );
         } else {
             console.log('[NotifSync] No future alarms to schedule');
-        }
-
-        try {
-            await PrayerService.startLocationDetection();
-            console.log('[NotifSync] Background location detection worker active');
-        } catch (e) {
-            console.warn('[NotifSync] Could not start location detection:', e.message);
         }
     } catch (e) {
         logError('[NotifSync]', e);

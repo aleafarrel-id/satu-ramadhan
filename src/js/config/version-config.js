@@ -5,6 +5,6 @@
 
 export const CONFIG = {
     appName: 'Satu Ramadhan',
-    version: '1.0.0',
+    version: '1.0.rc',
     developer: 'Alea Farrel'
 };
