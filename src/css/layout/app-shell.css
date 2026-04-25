@@ -214,26 +214,26 @@
    }
 }
 
-@media (max-width: 320px) {
-   .custom-ptr {
-      font-size: var(--fs-xs);
-   }
-}
-
 /* =============================================
    Foldable & Tablet Layout Enhancements
    ============================================= */
 
 /* Tablet (e.g. iPad, Galaxy Tab) */
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
    .app-container {
       max-width: 800px;
    }
 }
 
 /* Foldable (e.g. Galaxy Z Fold inner screen) */
-@media screen and (min-width: 600px) and (max-width: 767px) {
+@media screen and (min-width: 600px) and (max-width: 1023px) {
    .app-container {
-      max-width: 600px;
+      max-width: 100%;
+   }
+}
+
+@media (max-width: 320px) {
+   .custom-ptr {
+      font-size: var(--fs-xs);
    }
 }

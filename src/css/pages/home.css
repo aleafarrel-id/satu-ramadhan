@@ -69,8 +69,8 @@
 
 /* Media queries ordered largest to smallest (best practice). */
 
-/* Tablet (min-width: 768px) */
-@media screen and (min-width: 768px) {
+/* Tablet (min-width: 1024px) */
+@media screen and (min-width: 1024px) {
    .home-bento-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -79,6 +79,7 @@
          "kiri masjid"
          "bawah bawah";
       gap: var(--spacing-md);
+      row-gap: var(--spacing-lg);
       align-items: stretch;
    }
 
@@ -188,8 +189,8 @@
    }
 }
 
-/* Foldable (min-width: 600px and max-width: 767px) */
-@media screen and (min-width: 600px) and (max-width: 767px) {
+/* Foldable (min-width: 600px and max-width: 1023px) */
+@media screen and (min-width: 600px) and (max-width: 1023px) {
    .home-bento-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -198,6 +199,7 @@
          "kiri masjid"
          "bawah bawah";
       gap: var(--spacing-sm);
+      row-gap: var(--spacing-md);
       align-items: stretch;
    }
 

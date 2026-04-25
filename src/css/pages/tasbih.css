@@ -843,15 +843,15 @@
    Foldable & Tablet Layout Enhancements
    ============================================= */
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1024px) {
     .tasbih-panel {
         max-width: 800px;
     }
 }
 
-@media screen and (min-width: 600px) and (max-width: 767px) {
+@media screen and (min-width: 600px) and (max-width: 1023px) {
     .tasbih-panel {
-        max-width: 600px;
+        max-width: 100%;
     }
 }
 

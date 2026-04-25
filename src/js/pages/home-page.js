@@ -33,6 +33,7 @@ let _timings = null;
 let _lastPrayerIndex = -1;
 let _viewMode = VIEW_TUBE;
 let _unsubscribe = [];
+let _mediaQueryList = null;
 
 /**
  * Monotonic render generation counter.
@@ -99,6 +100,11 @@ export async function render(container, options = {}) {
 
     if (_isStale(gen)) return;
 
+    if (!_mediaQueryList) {
+        _mediaQueryList = window.matchMedia('(min-width: 600px)');
+        _mediaQueryList.addEventListener('change', _handleMediaChange);
+    }
+
     _unsubscribe.push(store.subscribe('location', _rehydrateAndRender));
     _unsubscribe.push(store.subscribe('settings.org', _rehydrateAndRender));
 }
@@ -112,6 +118,10 @@ export function destroy() {
     stopCountdown();
     _unsubscribe.forEach(id => store.unsubscribe(id));
     _unsubscribe = [];
+    if (_mediaQueryList) {
+        _mediaQueryList.removeEventListener('change', _handleMediaChange);
+        _mediaQueryList = null;
+    }
     _container = null;
     _timings = null;
 }
@@ -562,4 +572,16 @@ async function handleOrgToggle(labelIdOverride = null) {
             await renderContent();
         }
     });
+}
+
+/**
+ * Handle screen size changes to initialize/transplant the map layout dynamically.
+ */
+async function _handleMediaChange(e) {
+    if (!_timings) return;
+    if (e.matches) {
+        await initMapForTablet();
+    } else {
+        await initMapIfListView();
+    }
 }

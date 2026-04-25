@@ -55,9 +55,25 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
 
             if (_mapInstance) {
                 const cachedContainer = _mapInstance.getContainer();
-                
+
                 if (newContainer !== cachedContainer && newContainer.parentNode) {
-                    newContainer.parentNode.replaceChild(cachedContainer, newContainer);
+                    const p1 = cachedContainer.parentNode;
+                    const p2 = newContainer.parentNode;
+                    const targetId = newContainer.id;
+
+                    if (p1) {
+                        // Safely swap the two containers so the empty one takes the old place
+                        const s1 = cachedContainer.nextSibling;
+                        const s2 = newContainer.nextSibling;
+                        p1.insertBefore(newContainer, s1);
+                        p2.insertBefore(cachedContainer, s2);
+                        newContainer.id = cachedContainer.id;
+                    } else {
+                        // cachedContainer is orphaned (e.g. after innerHTML reset), just replace
+                        p2.replaceChild(cachedContainer, newContainer);
+                    }
+                    
+                    cachedContainer.id = targetId;
                 }
 
                 const card = cachedContainer.closest('.qibla-map-card');
@@ -85,11 +101,11 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
 
                 _handleNetworkChange();
                 _fitView(_mapInstance, userLat, userLng);
-                
+
                 _bindResetButton(card);
-                
+
                 _mapInstance.invalidateSize();
-                
+
                 resolve(_mapInstance);
                 return;
             }
@@ -103,18 +119,25 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             _addMarkers(map, userLat, userLng);
             _addGeodesicLine(map, userLat, userLng);
             _bindResetButton(card);
-            
+
             _mapInstance = map;
-            
+
             _handleNetworkChange();
             _fitView(map, userLat, userLng);
+
+            setTimeout(() => {
+                if (card) {
+                    const loader = card.querySelector('.qibla-map-card__loader');
+                    if (loader) loader.classList.add('is-hidden');
+                }
+            }, 600);
 
             // Setup ResizeObserver to fix responsive map rendering and centering
             if ('ResizeObserver' in window && !_resizeObserver) {
                 _resizeObserver = new ResizeObserver(() => {
                     if (!_mapInstance) return;
                     _mapInstance.invalidateSize({ animate: false });
-                    
+
                     if (_resizeTimeout) clearTimeout(_resizeTimeout);
                     _resizeTimeout = setTimeout(() => {
                         if (_mapInstance && _currentUserLat !== null) {
@@ -290,14 +313,14 @@ function _fitView(map, userLat, userLng, animate = true) {
     const userPoint = L.latLng(userLat, userLng);
     const kaabaPoint = L.latLng(KAABA_LAT, KAABA_LNG);
     const bounds = L.latLngBounds(userPoint, kaabaPoint);
-    
+
     const isOffline = store.getState('network.isOffline');
     const maxZoomOpt = isOffline ? OFFLINE_MAX_ZOOM : null;
 
     // Calculate distance to determine if fitting both points is viable UX-wise
     const distanceKm = userPoint.distanceTo(kaabaPoint) / 1000;
     const targetZoom = map.getBoundsZoom(bounds, false, FIT_BOUNDS_PADDING) || 0;
-    
+
     // If the user is very far from the Kaaba (e.g. > 3000km) or the resulting zoom is too low (< 4),
     // mapping both will often center on vast empty spaces (like oceans).
     // Instead, prioritize showing the user's local context to make the Qibla direction useful.
@@ -307,13 +330,13 @@ function _fitView(map, userLat, userLng, animate = true) {
         const focusZoom = isOffline ? OFFLINE_MAX_ZOOM : 6;
         map.setView(userPoint, focusZoom, { animate });
     } else {
-        map.fitBounds(bounds, { 
+        map.fitBounds(bounds, {
             padding: FIT_BOUNDS_PADDING,
             maxZoom: maxZoomOpt,
             animate
         });
     }
-    
+
     map.once('moveend', () => {
         setTimeout(() => {
             _isProgrammaticMove = false;
@@ -346,14 +369,14 @@ function _handleNetworkChange() {
     if (!isOffline) {
         _tileLayer.setUrl(TILE_URL);
         _mapInstance.setMaxZoom(TILE_MAX_ZOOM);
-        
+
         _mapInstance.touchZoom.enable();
         _mapInstance.doubleClickZoom.enable();
         _mapInstance.scrollWheelZoom.enable();
     } else {
         _tileLayer.setUrl(OFFLINE_TILE_URL);
         _mapInstance.setMaxZoom(OFFLINE_MAX_ZOOM);
-        
+
         if (_mapInstance.getZoom() > OFFLINE_MAX_ZOOM) {
             _mapInstance.setZoom(OFFLINE_MAX_ZOOM);
         }
