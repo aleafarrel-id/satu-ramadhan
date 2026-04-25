@@ -211,6 +211,16 @@
    }
 }
 
+@media screen and (min-width: 600px) {
+   .surah-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--sp-4) var(--sp-4);
+      align-items: start;
+      align-content: start;
+   }
+}
+
 @media screen and (max-width: 390px) {
    .surah-card {
       padding: var(--sp-3) var(--sp-4);
