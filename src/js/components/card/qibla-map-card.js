@@ -31,6 +31,8 @@ let _currentUserLat = null;
 let _currentUserLng = null;
 let _isProgrammaticMove = false;
 let _unsubStore = null;
+let _resizeObserver = null;
+let _resizeTimeout = null;
 
 /**
  * Initialise the Leaflet map inside the rendered container.
@@ -107,6 +109,22 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             _handleNetworkChange();
             _fitView(map, userLat, userLng);
 
+            // Setup ResizeObserver to fix responsive map rendering and centering
+            if ('ResizeObserver' in window && !_resizeObserver) {
+                _resizeObserver = new ResizeObserver(() => {
+                    if (!_mapInstance) return;
+                    _mapInstance.invalidateSize({ animate: false });
+                    
+                    if (_resizeTimeout) clearTimeout(_resizeTimeout);
+                    _resizeTimeout = setTimeout(() => {
+                        if (_mapInstance && _currentUserLat !== null) {
+                            _fitView(_mapInstance, _currentUserLat, _currentUserLng, false);
+                        }
+                    }, 150);
+                });
+                _resizeObserver.observe(container);
+            }
+
             _unsubStore = store.subscribe('network.isOffline', () => {
                 _handleNetworkChange();
             });
@@ -124,6 +142,15 @@ export function destroyQiblaMapCard() {
     if (_unsubStore) {
         store.unsubscribe(_unsubStore);
         _unsubStore = null;
+    }
+
+    if (_resizeObserver) {
+        _resizeObserver.disconnect();
+        _resizeObserver = null;
+    }
+    if (_resizeTimeout) {
+        clearTimeout(_resizeTimeout);
+        _resizeTimeout = null;
     }
 
     if (_mapInstance) {
@@ -256,8 +283,9 @@ function _addGeodesicLine(map, userLat, userLng) {
  * @param {L.Map} map
  * @param {number} userLat
  * @param {number} userLng
+ * @param {boolean} [animate=true]
  */
-function _fitView(map, userLat, userLng) {
+function _fitView(map, userLat, userLng, animate = true) {
     _isProgrammaticMove = true;
     const userPoint = L.latLng(userLat, userLng);
     const kaabaPoint = L.latLng(KAABA_LAT, KAABA_LNG);
@@ -277,11 +305,12 @@ function _fitView(map, userLat, userLng) {
         // When online, zoom 6 provides a good balance between local context and the direction of the line.
         // When offline, we respect the limit by falling back to OFFLINE_MAX_ZOOM.
         const focusZoom = isOffline ? OFFLINE_MAX_ZOOM : 6;
-        map.setView(userPoint, focusZoom, { animate: true });
+        map.setView(userPoint, focusZoom, { animate });
     } else {
         map.fitBounds(bounds, { 
             padding: FIT_BOUNDS_PADDING,
-            maxZoom: maxZoomOpt
+            maxZoom: maxZoomOpt,
+            animate
         });
     }
     

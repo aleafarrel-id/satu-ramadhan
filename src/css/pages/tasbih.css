@@ -9,8 +9,11 @@
 .tasbih-panel {
     position: fixed;
     inset: 0;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
     z-index: var(--z-modal);
-    /* Panel is off-screen to the left by default */
+    overflow: hidden;
     pointer-events: none;
 }
 
@@ -19,8 +22,6 @@
     position: absolute;
     inset: 0;
     width: 100%;
-    max-width: 430px;
-    margin: 0 auto;
     display: flex;
     flex-direction: column;
     background: var(--clr-quran-bg);
@@ -843,14 +844,14 @@
    ============================================= */
 
 @media screen and (min-width: 768px) {
-    .tasbih-page {
-        max-width: 720px;
+    .tasbih-panel {
+        max-width: 800px;
     }
 }
 
 @media screen and (min-width: 600px) and (max-width: 767px) {
-    .tasbih-page {
-        max-width: 580px;
+    .tasbih-panel {
+        max-width: 600px;
     }
 }
 

@@ -7,7 +7,7 @@ import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 
 
 import { renderPrayerCard, updatePrayerCardFills, updatePrayerCardDynamicUI } from '../components/card/prayer-card.js';
-import { renderPrayerListCard, getHomeMapId } from '../components/card/prayer-list.js';
+import { renderPrayerListCard, renderTabletMosqueCard, renderTabletQiblaCard, renderTabletFullListCard, getHomeMapId } from '../components/card/prayer-list.js';
 import { renderLocationCard as renderLocationCardShared, bindLocationCardEvents } from '../components/card/location-card.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
@@ -198,6 +198,10 @@ async function renderContent() {
     let contentHtml = '';
     const loc = store.getState('location');
 
+    // Hoist to function scope so tablet components always have access.
+    let prayerState = null;
+    let orgName = null;
+
     if (!_timings) {
         const emptyStateProps = !loc ? {
             icon: 'bx-map-pin',
@@ -224,8 +228,8 @@ async function renderContent() {
 
         contentHtml = renderEmptyState(emptyStateProps);
     } else {
-        const prayerState = getCurrentPrayer(_timings);
-        const orgName = await getOrgDisplayNameAsync();
+        prayerState = getCurrentPrayer(_timings);
+        orgName = await getOrgDisplayNameAsync();
         if (_isStale(gen)) return;
 
         const tubeActive = _viewMode === VIEW_TUBE ? ' active' : '';
@@ -268,9 +272,33 @@ async function renderContent() {
 
     safeClear(_container);
     const wrapper = document.createElement('div');
+
+    // Bento layout: right block gets the Qibla map, bottom block gets the Mosque Hero + Full List.
+    const bentoRightHtml = (_timings && prayerState)
+        ? `<div class="home-bento-right">${renderTabletQiblaCard()}</div>`
+        : '';
+
+    const bentoBotHtml = (_timings && prayerState)
+        ? `<div class="home-bento-bottom">
+               ${renderTabletMosqueCard(_timings, orgName, prayerState)}
+               <div class="card card--container tablet-full-grid-wrapper">
+                   ${renderTabletFullListCard(_timings, prayerState)}
+               </div>
+           </div>`
+        : '';
+
     wrapper.innerHTML = `
-        ${renderLocationCardShared(loc)}
-        ${contentHtml}
+        <div class="home-bento-grid">
+            <!-- Left column: Location card + carousel (all viewports) -->
+            <div class="home-bento-left">
+                ${renderLocationCardShared(loc)}
+                ${contentHtml}
+            </div>
+            <!-- Right column: Mosque card with prayer widgets (tablet/foldable only) -->
+            ${bentoRightHtml}
+            <!-- Bottom row: Full 7-time prayer list (tablet/foldable only) -->
+            ${bentoBotHtml}
+        </div>
     `;
 
     // Append all internal elements of the wrapper to the container
@@ -283,7 +311,7 @@ async function renderContent() {
     bindCarouselEvents();
     bindShortcutEvents();
 
-    // Bind empty-state action buttons (only present when _timings is null)
+    // Bind empty-state retry/search buttons (only present when _timings is null)
     _container.querySelector('#home-btn-retry')?.addEventListener('click', () => location.reload());
     _container.querySelector('#home-btn-manual-search')?.addEventListener('click', () => {
         showLocationSearchModal({
@@ -296,6 +324,7 @@ async function renderContent() {
     if (_timings) {
         startCountdownTimer();
         await initMapIfListView();
+        await initMapForTablet();
     }
 }
 
@@ -372,10 +401,12 @@ function bindCarouselEvents() {
  * Binds event listeners that are specific to the current view content.
  */
 function bindViewSpecificEvents() {
-    document.getElementById('org-toggle')?.addEventListener('click', handleOrgToggle);
-    document.getElementById('home-btn-kiblat')?.addEventListener('click', () => {
-        router.navigate('compass');
-    });
+    document.getElementById('org-toggle')?.addEventListener('click', () => handleOrgToggle('org-toggle-label'));
+    document.getElementById('org-toggle-tablet')?.addEventListener('click', () => handleOrgToggle('org-toggle-tablet-label'));
+
+    const goToCompass = () => router.navigate('compass');
+    document.getElementById('home-btn-kiblat')?.addEventListener('click', goToCompass);
+    document.getElementById('home-btn-kiblat-tablet')?.addEventListener('click', goToCompass);
 }
 
 /**
@@ -465,17 +496,29 @@ function updateListHighlights(prayerState) {
 /* --- QIBLA MAP --- */
 
 /**
- * Lazily initialise the Qibla map if the list view is active.
+ * Lazily initialise the Qibla map when the mobile list view is active.
  */
 async function initMapIfListView() {
     const loc = store.getState('location');
     if (_viewMode !== VIEW_LIST || !loc) return;
 
-    // Dynamic import to avoid loading Leaflet unless needed
     const { initQiblaMapCard } = await import('../components/card/qibla-map-card.js');
     await import('../../css/components/card/qibla-map-card.css');
 
     await initQiblaMapCard(getHomeMapId(), loc.latitude, loc.longitude);
+}
+
+/**
+ * Lazily initialise the Qibla map for the permanent tablet bento list.
+ * Only loads the heavy Leaflet dependency on viewports >= 600px.
+ */
+async function initMapForTablet() {
+    const loc = store.getState('location');
+    if (!loc || window.innerWidth < 600) return;
+
+    const { initQiblaMapCard } = await import('../components/card/qibla-map-card.js');
+    await import('../../css/components/card/qibla-map-card.css');
+    await initQiblaMapCard(getHomeMapId() + '-tablet', loc.latitude, loc.longitude);
 }
 
 
@@ -504,8 +547,8 @@ function showLocationModalForHome() {
 /**
  * Switches the organizational source for fetching timings.
  */
-async function handleOrgToggle() {
-    const labelId = _viewMode === VIEW_LIST ? 'org-toggle-label' : 'org-label';
+async function handleOrgToggle(labelIdOverride = null) {
+    const labelId = labelIdOverride || (_viewMode === VIEW_LIST ? 'org-toggle-label' : 'org-label');
     await handleOrgToggleShared(labelId, async () => {
         const loc = store.getState('location');
         if (loc) {

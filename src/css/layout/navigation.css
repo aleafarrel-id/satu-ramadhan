@@ -123,34 +123,34 @@
 
 @media screen and (min-width: 768px) {
    .bottom-nav {
-      max-width: 720px;
+      max-width: 480px;
    }
 
    .nav-list {
-      max-width: 520px;
+      max-width: 400px;
       padding: 0 12px;
    }
 
    .nav-slider,
    .nav-item:focus-visible::after {
-      width: 72px;
+      width: 68px;
       height: var(--nav-slider-size-lg);
    }
 }
 
 @media screen and (min-width: 600px) and (max-width: 767px) {
    .bottom-nav {
-      max-width: 580px;
+      max-width: 460px;
    }
 
    .nav-list {
-      max-width: 460px;
+      max-width: 380px;
       padding: 0 12px;
    }
 
    .nav-slider,
    .nav-item:focus-visible::after {
-      width: 72px;
+      width: 66px;
       height: var(--nav-slider-size-lg);
    }
 }

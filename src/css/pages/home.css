@@ -56,3 +56,249 @@
 .home-schedule-header .schedule-nav__btn {
    width: 38px;
 }
+
+/* =============================================
+   Bento Grid Layout (Tablet & Foldable)
+   ============================================= */
+
+/* Hide tablet-only regions by default (mobile-first). */
+.home-bento-right,
+.home-bento-bottom {
+   display: none;
+}
+
+/* Media queries ordered largest to smallest (best practice). */
+
+/* Tablet (min-width: 768px) */
+@media screen and (min-width: 768px) {
+   .home-bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+         "kiri masjid"
+         "kiri masjid"
+         "bawah bawah";
+      gap: var(--spacing-md);
+      align-items: stretch;
+   }
+
+   .home-bento-left {
+      grid-area: kiri;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+   }
+
+   /* Reset card bottom margins — gap handles spacing inside flex column. */
+   .home-bento-left .card {
+      margin-bottom: 0;
+   }
+
+   .home-bento-left .top-carousel-wrapper {
+      margin-bottom: 0;
+   }
+
+   /* Reveal tablet-only columns by overriding the base display:none. */
+   .home-bento-right {
+      grid-area: masjid;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+   }
+
+   .home-bento-right .qibla-map-card {
+      flex: 1;
+      height: 100%;
+      min-height: 200px;
+      margin-bottom: 0;
+   }
+
+   .home-bento-bottom {
+      grid-area: bawah;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+   }
+
+   /* Hide the mobile tube/list toggle — tablet always uses the full list. */
+   .home-bento-left .home-schedule-header,
+   .home-bento-left #home-schedule-wrapper {
+      display: none !important;
+   }
+
+   /* Mosque Hero Card (Wide Banner) */
+   .tablet-mosque-hero {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--clr-border-light);
+      background: var(--clr-bg-card);
+      box-shadow: var(--shadow-sm);
+      padding: 0;
+   }
+
+   .tablet-mosque-hero__img {
+      width: 100%;
+      height: auto;
+      display: block;
+   }
+
+   /* Full-width Glassmorphism Bottom Bar */
+   .tablet-mosque-hero__bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--clr-black-a40);
+      padding: var(--spacing-sm) var(--spacing-md);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--clr-border-light);
+   }
+
+   .tablet-mosque-hero__featured .prayer-featured {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      min-height: auto;
+      box-shadow: none;
+   }
+
+   .tablet-mosque-hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+   }
+
+   /* Full 7-column prayer schedule grid */
+   .tablet-full-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm);
+      text-align: center;
+   }
+}
+
+/* Foldable (min-width: 600px and max-width: 767px) */
+@media screen and (min-width: 600px) and (max-width: 767px) {
+   .home-bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+         "kiri masjid"
+         "kiri masjid"
+         "bawah bawah";
+      gap: var(--spacing-sm);
+      align-items: stretch;
+   }
+
+   .home-bento-left {
+      grid-area: kiri;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+   }
+
+   /* Reset card bottom margins — gap handles spacing inside flex column. */
+   .home-bento-left .card {
+      margin-bottom: 0;
+   }
+
+   .home-bento-left .top-carousel-wrapper {
+      margin-bottom: 0;
+   }
+
+   /* Reveal foldable-only columns by overriding the base display:none. */
+   .home-bento-right {
+      grid-area: masjid;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+   }
+
+   .home-bento-right .qibla-map-card {
+      flex: 1;
+      height: 100%;
+      min-height: 200px;
+      margin-bottom: 0;
+   }
+
+   .home-bento-bottom {
+      grid-area: bawah;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+   }
+
+   /* Hide the mobile tube/list toggle — foldable always uses the full list. */
+   .home-bento-left .home-schedule-header,
+   .home-bento-left #home-schedule-wrapper {
+      display: none !important;
+   }
+
+   /* Mosque Hero Card (Wide Banner) */
+   .tablet-mosque-hero {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--clr-border-light);
+      background: var(--clr-bg-card);
+      box-shadow: var(--shadow-sm);
+      padding: 0;
+   }
+
+   .tablet-mosque-hero__img {
+      width: 100%;
+      height: auto;
+      display: block;
+   }
+
+   /* Full-width Glassmorphism Bottom Bar */
+   .tablet-mosque-hero__bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--clr-black-a40);
+      padding: var(--spacing-sm);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--clr-border-light);
+   }
+
+   .tablet-mosque-hero__featured .prayer-featured {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      min-height: auto;
+      box-shadow: none;
+   }
+
+   .tablet-mosque-hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+   }
+
+   /* Compact 7-column grid — tighter gap on narrower foldable screens. */
+   .tablet-full-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm);
+      text-align: center;
+   }
+}

@@ -193,12 +193,12 @@
 
 @media screen and (min-width: 768px) {
     .audio-mode-selector-sheet {
-        max-width: 720px;
+        max-width: 800px;
     }
 }
 
 @media screen and (min-width: 600px) and (max-width: 767px) {
     .audio-mode-selector-sheet {
-        max-width: 580px;
+        max-width: 600px;
     }
 }
