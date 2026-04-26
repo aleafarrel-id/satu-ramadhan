@@ -16,6 +16,9 @@ const initialState = {
         viewMode: 'tube',
         carouselIndex: 0
     },
+    schedule: {
+        carouselIndex: 0
+    },
     settings: {
         theme: 'auto',
         org: 'nu',

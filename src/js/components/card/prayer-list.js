@@ -181,7 +181,7 @@ export function getMosqueImageSrc(prayerKey) {
     } else if (middayKeys.includes(prayerKey)) {
         return '/assets/mosque/mosque-midday.webp';
     }
-    
+
     // Default fallback
     return '/assets/mosque/mosque-midday.webp';
 }
@@ -193,22 +193,22 @@ export function getMosqueImageSrc(prayerKey) {
 export function updateTabletMosqueImage(prayerState) {
     const imgEl = document.getElementById('tablet-mosque-img');
     if (!imgEl) return;
-    
+
     const newSrc = getMosqueImageSrc(prayerState?.current?.key);
-    
+
     if (imgEl.getAttribute('src') !== newSrc) {
         // Preload the next image to avoid blank flash during transition
         const tempImg = new Image();
         tempImg.onload = () => {
             // Initiate fade out
             imgEl.style.opacity = '0';
-            
+
             // Wait for CSS transition (0.4s) to finish before swapping src
             setTimeout(() => {
                 imgEl.setAttribute('src', newSrc);
                 // Initiate fade in
                 imgEl.style.opacity = '1';
-            }, 400); 
+            }, 400);
         };
         // Error handling fallback
         tempImg.onerror = () => {
@@ -217,3 +217,72 @@ export function updateTabletMosqueImage(prayerState) {
         tempImg.src = newSrc;
     }
 }
+
+/**
+ * ─────────────────────────────────────────────────────────────
+ * SCHEDULE-PAGE TABLET COMPONENTS
+ * Isolated variants to avoid ID collision with home-page bento.
+ * ─────────────────────────────────────────────────────────────
+ */
+
+/**
+ * Schedule-page mosque hero card.
+ * Only shows the "Now" featured widget inside the overlay.
+ * Kiblat and Org Toggle are rendered outside by schedule-page.js.
+ * @param {object} timings     - Prayer timings
+ * @param {object} prayerState - Current prayer state
+ * @returns {string} HTML string
+ */
+export function renderScheduleTabletMosqueCard(timings, prayerState) {
+    const imgSrc = getMosqueImageSrc(prayerState?.current?.key);
+    return `
+        <div class="tablet-mosque-hero">
+            <img
+                src="${imgSrc}"
+                id="sched-mosque-img"
+                alt="Masjid Istiqlal"
+                class="tablet-mosque-hero__img"
+                loading="lazy"
+            >
+            <div class="tablet-mosque-hero__bottom-bar">
+                <div id="sched-featured-tablet" class="tablet-mosque-hero__featured">
+                    ${renderFeaturedCard(timings, prayerState)}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Updates the schedule-page mosque image with an opacity fade.
+ * Targets sched-mosque-img, independent from home's tablet-mosque-img.
+ * @param {object} prayerState
+ */
+export function updateScheduleTabletMosqueImage(prayerState) {
+    const imgEl = document.getElementById('sched-mosque-img');
+    if (!imgEl) return;
+
+    const newSrc = getMosqueImageSrc(prayerState?.current?.key);
+    if (imgEl.getAttribute('src') === newSrc) return;
+
+    const tempImg = new Image();
+    tempImg.onload = () => {
+        imgEl.style.opacity = '0';
+        setTimeout(() => {
+            imgEl.setAttribute('src', newSrc);
+            imgEl.style.opacity = '1';
+        }, 400);
+    };
+    tempImg.onerror = () => { imgEl.setAttribute('src', newSrc); };
+    tempImg.src = newSrc;
+}
+
+/**
+ * Render the Qibla Map card for the schedule-page tablet bento slot.
+ * Uses sched-qibla-map to keep Leaflet singleton ID separate from home's map.
+ * @returns {string} HTML string
+ */
+export function renderScheduleTabletQiblaCard() {
+    return renderQiblaMapCard('sched-qibla-map');
+}
+

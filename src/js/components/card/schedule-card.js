@@ -181,20 +181,23 @@ export function renderScheduleCardSkeleton() {
 
     return `
         <div class="schedule-page">
-            <!-- Featured card skeleton -->
-            <div class="card card--inner skeleton-featured skeleton--mb-md">
-                <div class="skeleton skeleton--featured-icon-sm"></div>
-                <div class="skeleton-featured__body">
-                    <div class="skeleton skeleton--text-md" style="width: 40%"></div>
-                    <div class="skeleton skeleton--text-lg" style="width: 30%"></div>
+            <!-- Widget card skeleton -->
+            <div class="card card--container schedule-widget-card">
+                <!-- Featured card skeleton -->
+                <div class="card card--inner skeleton-featured">
+                    <div class="skeleton skeleton--featured-icon-sm"></div>
+                    <div class="skeleton-featured__body">
+                        <div class="skeleton skeleton--text-md" style="width: 40%"></div>
+                        <div class="skeleton skeleton--text-lg" style="width: 30%"></div>
+                    </div>
+                    <div class="skeleton skeleton--badge"></div>
                 </div>
-                <div class="skeleton skeleton--badge"></div>
-            </div>
 
-            <!-- Action buttons skeleton -->
-            <div class="schedule-actions">
-                <div class="skeleton skeleton--action-btn-fill"></div>
-                <div class="skeleton skeleton--action-btn-fixed"></div>
+                <!-- Action buttons skeleton -->
+                <div class="schedule-actions">
+                    <div class="skeleton skeleton--action-btn-fill"></div>
+                    <div class="skeleton skeleton--action-btn-fixed"></div>
+                </div>
             </div>
 
             <!-- Date nav skeleton -->

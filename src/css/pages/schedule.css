@@ -2,6 +2,204 @@
    Schedule Page — Single Day Navigator View
    ============================================= */
 
+/* =============================================
+   Bento Grid Layout (Tablet & Foldable)
+   ============================================= */
+
+/*
+ * Mobile: left column shows schedule card only (location & carousel hidden).
+ * Right column (mosque hero, kiblat/org, map) is hidden on mobile.
+ */
+.sched-bento-right {
+    display: none;
+}
+
+.sched-bento-left .location-card,
+.sched-bento-left .top-carousel-wrapper {
+    display: none;
+}
+
+
+
+@media screen and (min-width: 1024px) {
+    .sched-bento-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+
+    .sched-bento-left {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .sched-bento-left .location-card {
+        display: block;
+    }
+
+    .sched-bento-left .top-carousel-wrapper {
+        display: block;
+    }
+
+    .sched-bento-left .location-card {
+        margin-bottom: 0;
+    }
+
+    .sched-bento-left .top-carousel-wrapper {
+        margin-bottom: 0;
+    }
+
+    .sched-bento-left .share-schedule-card {
+        display: none !important;
+    }
+
+    .sched-bento-left .schedule-widget-card {
+        display: none !important;
+    }
+
+    .sched-bento-right {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        height: 100%;
+    }
+
+    .sched-bento-right .tablet-mosque-hero {
+        min-height: 240px;
+    }
+
+    .sched-bento-right .tablet-mosque-hero .tablet-mosque-hero__featured {
+        flex: 1;
+        display: flex;
+    }
+
+    .sched-bento-right .tablet-mosque-hero .prayer-featured {
+        flex: 1;
+    }
+
+    .sched-bento-right .tablet-mosque-hero .prayer-featured__badge {
+        margin-left: auto;
+    }
+
+    .sched-bento-share-card {
+        margin-top: var(--spacing-xs);
+    }
+
+    .sched-bento-hero-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        align-items: stretch;
+    }
+
+    .sched-bento-hero-actions .kiblat-btn {
+        flex-shrink: 0;
+    }
+
+    .sched-bento-hero-actions .org-toggle {
+        flex: 1;
+    }
+
+    .sched-bento-right .qibla-map-card {
+        flex: 1;
+        height: auto !important;
+        min-height: 260px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+}
+
+/* ── Foldable (600–1023px) ── */
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+    .sched-bento-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-sm);
+        align-items: stretch;
+    }
+
+    .sched-bento-left {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .sched-bento-left .location-card {
+        display: block;
+    }
+
+    .sched-bento-left .top-carousel-wrapper {
+        display: block;
+    }
+
+    .sched-bento-left .location-card {
+        margin-bottom: 0;
+    }
+
+    .sched-bento-left .top-carousel-wrapper {
+        margin-bottom: 0;
+    }
+
+    .sched-bento-left .share-schedule-card {
+        display: none !important;
+    }
+
+    .sched-bento-left .schedule-widget-card {
+        display: none !important;
+    }
+
+    .sched-bento-right {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+        height: 100%;
+    }
+
+    .sched-bento-right .tablet-mosque-hero {
+        min-height: 200px;
+    }
+
+    .sched-bento-right .tablet-mosque-hero .tablet-mosque-hero__featured {
+        flex: 1;
+        display: flex;
+    }
+
+    .sched-bento-right .tablet-mosque-hero .prayer-featured {
+        flex: 1;
+    }
+
+    .sched-bento-right .tablet-mosque-hero .prayer-featured__badge {
+        margin-left: auto;
+    }
+
+    .sched-bento-share-card {
+        margin-top: var(--spacing-xs);
+    }
+
+    .sched-bento-hero-actions {
+        display: flex;
+        gap: var(--spacing-xs);
+        align-items: stretch;
+    }
+
+    .sched-bento-hero-actions .kiblat-btn {
+        flex-shrink: 0;
+    }
+
+    .sched-bento-hero-actions .org-toggle {
+        flex: 1;
+    }
+
+    .sched-bento-right .qibla-map-card {
+        flex: 1;
+        height: auto !important;
+        min-height: 200px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+}
+
 /* ── Page Layout ── */
 .schedule-page {
     display: flex;

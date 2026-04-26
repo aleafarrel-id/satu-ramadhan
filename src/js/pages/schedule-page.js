@@ -15,8 +15,10 @@ import { store } from '../core/store.js';
 import { getOrgDisplayNameAsync } from '../modules/schedule/ramadhan.js';
 import { fetchScheduleData, findTodayIndex, isToday, getTodayDateStr } from '../modules/schedule/schedule-data.js';
 import { onPrayerChange, offPrayerChange } from '../modules/prayer/prayer-watcher.js';
-import { getPrayerName } from '../modules/prayer/prayer-times.js';
+import { getCurrentPrayer, getPrayerName } from '../modules/prayer/prayer-times.js';
+import { startCountdown, stopCountdown } from '../modules/schedule/countdown.js';
 import * as notification from '../modules/notification/notification.js';
+import * as router from '../router.js';
 
 import {
     renderScheduleCard,
@@ -27,8 +29,15 @@ import {
     getActivePrayerKey,
 } from '../components/card/schedule-card.js';
 import { renderLocationCard, bindLocationCardEvents } from '../components/card/location-card.js';
-import { bindShareScheduleCardEvents } from '../components/card/share-schedule-card.js';
-import { handleOrgToggle } from '../components/prayer/prayer-widgets.js';
+import { renderCountdownCardSchedule } from '../components/card/countdown-card.js';
+import { renderShortcutCard } from '../components/card/shortcut-card.js';
+import {
+    renderScheduleTabletMosqueCard,
+    updateScheduleTabletMosqueImage,
+    renderScheduleTabletQiblaCard,
+} from '../components/card/prayer-list.js';
+import { renderKiblatButton, renderOrgToggle, handleOrgToggle } from '../components/prayer/prayer-widgets.js';
+import { renderShareScheduleCard, bindShareScheduleCardEvents } from '../components/card/share-schedule-card.js';
 import { renderScheduleSkeleton } from '../components/skeleton/skeleton-schedule.js';
 import { renderEmptyState } from '../components/ui/empty-state.js';
 import { showCalendarModal } from '../components/modal/calendar-modal.js';
@@ -55,6 +64,7 @@ let _cachedDepStr = null;
 let _dayCheckInterval = null;
 let _lastDateStr = null;
 let _unsubscribe = [];
+let _mediaQueryList = null;
 
 let _animPhase = 'idle';
 let _animDirection = null;
@@ -101,8 +111,11 @@ export async function render(container, options = {}) {
     await loadNS('components/card/location-card');
     await loadNS('components/card/schedule-card');
     await loadNS('components/card/share-schedule-card');
+    await loadNS('components/card/countdown-card');
+    await loadNS('components/card/shortcut-card');
     await loadNS('modules/prayer/prayer-times');
     await loadNS('components/prayer/prayer-widgets');
+    await loadNS('components/card/qibla-map-card');
     await loadNS('components/ui/header');
     await loadNS('components/modal/location-modal');
     await loadNS('modules/share/share-schedule-exporter');
@@ -115,7 +128,7 @@ export async function render(container, options = {}) {
 
     if (!location) {
         safeClear(container);
-        renderScheduleSkeleton(_container);
+        renderScheduleSkeleton(_container, null, showLocationModalForSchedule);
         await renderError(false);
     } else {
         const isRefresh = options?.refresh === true;
@@ -126,7 +139,7 @@ export async function render(container, options = {}) {
             await renderDayView();
         } else {
             safeClear(_container);
-            renderScheduleSkeleton(_container);
+            renderScheduleSkeleton(_container, location, showLocationModalForSchedule);
             if (isRefresh) {
                 await new Promise(resolve => setTimeout(resolve, 350));
                 if (_isStale(gen)) return;
@@ -137,9 +150,14 @@ export async function render(container, options = {}) {
 
     if (_isStale(gen)) return;
 
+    if (!_mediaQueryList) {
+        _mediaQueryList = window.matchMedia('(min-width: 600px)');
+        _mediaQueryList.addEventListener('change', _handleMediaChange);
+    }
+
     _unsubscribe.push(store.subscribe('location', () => {
         if (!_container) return;
-        renderScheduleSkeleton(_container);
+        renderScheduleSkeleton(_container, store.getState('location'), showLocationModalForSchedule);
         _rehydrateAndRender();
     }));
 
@@ -156,11 +174,16 @@ export async function render(container, options = {}) {
  */
 export function destroy() {
     ++_renderGen;
+    stopCountdown();
     stopDayCrossingCheck();
     offPrayerChange(handlePrayerTransition);
     unbindSwipeEvents();
     _unsubscribe.forEach(id => store.unsubscribe(id));
     _unsubscribe = [];
+    if (_mediaQueryList) {
+        _mediaQueryList.removeEventListener('change', _handleMediaChange);
+        _mediaQueryList = null;
+    }
     _container = null;
 }
 
@@ -170,7 +193,7 @@ export function destroy() {
  */
 export async function refreshScheduleData() {
     if (!_container) return;
-    renderScheduleSkeleton(_container);
+    renderScheduleSkeleton(_container, store.getState('location'), showLocationModalForSchedule);
     await _rehydrateAndRender();
 }
 
@@ -263,12 +286,17 @@ function subscribePrayerWatcher() {
 function handlePrayerTransition() {
     if (!_container || !_scheduleData) return;
 
+    if (_todayTimings) {
+        updateScheduleFeaturedCard(_todayTimings);
+        const currentState = getCurrentPrayer(_todayTimings);
+        updateScheduleTabletMosqueImage(currentState);
+    }
+
     const entry = _scheduleData[_currentDayIndex];
     if (!entry || !isToday(entry.date)) return;
 
     const newActivePrayerKey = getActivePrayerKey(entry.timings);
     updateScheduleHighlights(newActivePrayerKey, _container);
-    updateScheduleFeaturedCard(_todayTimings);
 }
 
 /**
@@ -387,7 +415,54 @@ async function renderDayView() {
     const orgName = await getOrgDisplayNameAsync();
     if (_isStale(gen)) return;
 
-    _container.innerHTML = renderScheduleCard(entry, orgName, _todayTimings, _currentDayIndex, _scheduleData.length);
+    const loc = store.getState('location');
+    const scheduleCardHtml = renderScheduleCard(entry, orgName, _todayTimings, _currentDayIndex, _scheduleData.length);
+
+    // Build tablet bento panels — only rendered when timings are available
+    const prayerState = _todayTimings ? getCurrentPrayer(_todayTimings) : null;
+    const savedCarouselIndex = store.getState('schedule.carouselIndex') ?? 0;
+
+    const bentoCarouselHtml = (_todayTimings && prayerState) ? `
+        <div class="top-carousel-wrapper">
+            <div class="top-carousel" id="sched-top-carousel">
+                <div class="carousel-slide">${renderCountdownCardSchedule(prayerState)}</div>
+                <div class="carousel-slide">${renderShortcutCard()}</div>
+            </div>
+            <div class="carousel-dots" id="sched-carousel-dots">
+                <span class="carousel-dot${savedCarouselIndex === 0 ? ' active' : ''}" data-index="0"></span>
+                <span class="carousel-dot${savedCarouselIndex === 1 ? ' active' : ''}" data-index="1"></span>
+            </div>
+        </div>
+    ` : '';
+
+
+    const bentoRightHtml = `
+        <div class="sched-bento-right">
+            ${(_todayTimings && prayerState) ? renderScheduleTabletMosqueCard(_todayTimings, prayerState) : ''}
+            ${(_todayTimings && prayerState) ? `
+            <div class="sched-bento-hero-actions">
+                ${renderKiblatButton('sched-btn-kiblat-tablet')}
+                ${renderOrgToggle(orgName, 'sched-org-toggle-tablet')}
+            </div>` : ''}
+            <div class="sched-bento-share-card">
+                ${renderShareScheduleCard().replace('id="btn-generate-schedule"', 'id="sched-btn-generate-tablet"')}
+            </div>
+            ${(_todayTimings && prayerState) ? renderScheduleTabletQiblaCard() : ''}
+        </div>
+    `;
+
+    _container.innerHTML = `
+        <div class="sched-bento-grid">
+            <div class="sched-bento-left">
+                ${renderLocationCard(loc)}
+                ${bentoCarouselHtml}
+                ${scheduleCardHtml}
+            </div>
+            ${bentoRightHtml}
+        </div>
+    `;
+
+    bindLocationCardEvents(showLocationModalForSchedule, _container);
     bindShareScheduleCardEvents(() => handleShareSchedule(), _container);
 
     _lastDateStr = getTodayDateStr();
@@ -395,6 +470,17 @@ async function renderDayView() {
     bindEvents();
     subscribePrayerWatcher();
     startDayCrossingCheck();
+    _bindScheduleCarouselEvents();
+    _bindScheduleShortcutEvents();
+    _bindScheduleTabletEvents(orgName);
+
+    // Bind the tablet generate button
+    _container.querySelector('#sched-btn-generate-tablet')?.addEventListener('click', () => {
+        handleShareSchedule();
+    });
+
+    _startScheduleCountdown();
+    await _initScheduleTabletMap();
 }
 
 /* --- SHARE SCHEDULE --- */
@@ -485,11 +571,7 @@ function bindEvents() {
     });
 
     document.getElementById('schedule-org-toggle')?.addEventListener('click', async () => {
-        await handleOrgToggle('schedule-org-toggle-label', async () => {
-            // Note: handleOrgToggle internally triggers backend synchronization or ui bindings.
-            // When migrated, the setting 'settings.org' change will naturally be caught by the active subscription
-            // here via _rehydrateAndRender(), bypassing legacy logic.
-        });
+        await handleOrgToggle('schedule-org-toggle-label', async () => {});
     });
 
     document.getElementById('schedule-btn-kiblat')?.addEventListener('click', () => {
@@ -542,6 +624,132 @@ function bindEvents() {
     }
 
     bindSwipeEvents('schedule-swipe-area', handleSwipe);
+}
+
+/* --- TABLET / FOLDABLE HELPERS --- */
+
+/**
+ * Bind tablet-only action buttons (Kiblat + Org Toggle below hero).
+ * @param {string} orgName - current org display name
+ */
+function _bindScheduleTabletEvents(orgName) {
+    document.getElementById('sched-btn-kiblat-tablet')?.addEventListener('click', () => {
+        document.querySelector('.nav-item[data-tab="compass"]')?.click();
+    });
+
+    document.getElementById('sched-org-toggle-tablet')?.addEventListener('click', async () => {
+        await handleOrgToggle('sched-org-toggle-tablet-label', async () => {});
+    });
+}
+
+/**
+ * Bind scroll-snap carousel events for the tablet bento carousel.
+ * Persists the active slide index to schedule.carouselIndex in store.
+ */
+function _bindScheduleCarouselEvents() {
+    const carouselWrapper = document.getElementById('sched-top-carousel');
+    const dots = document.querySelectorAll('#sched-carousel-dots .carousel-dot');
+
+    if (!carouselWrapper || dots.length === 0) return;
+
+    function syncDots(index) {
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+
+    carouselWrapper.addEventListener('scroll', () => {
+        const index = Math.round(carouselWrapper.scrollLeft / carouselWrapper.clientWidth);
+        syncDots(index);
+        store.setState('schedule.carouselIndex', index);
+    }, { passive: true });
+
+    const savedIndex = store.getState('schedule.carouselIndex') ?? 0;
+    if (savedIndex > 0) {
+        requestAnimationFrame(() => {
+            const slides = carouselWrapper.querySelectorAll('.carousel-slide');
+            const targetSlide = slides[savedIndex];
+            if (!targetSlide) return;
+
+            const containerRect = carouselWrapper.getBoundingClientRect();
+            const slideRect = targetSlide.getBoundingClientRect();
+
+            carouselWrapper.style.scrollBehavior = 'auto';
+            carouselWrapper.scrollLeft = carouselWrapper.scrollLeft + (slideRect.left - containerRect.left);
+            requestAnimationFrame(() => { carouselWrapper.style.scrollBehavior = ''; });
+        });
+    }
+}
+
+/**
+ * Bind shortcut card navigation buttons for schedule-page context.
+ */
+function _bindScheduleShortcutEvents() {
+    const carouselEl = document.getElementById('sched-top-carousel');
+    if (!carouselEl) return;
+
+    const shortcuts = {
+        'tasbih': () => import('./tasbih-page.js').then(m => m.open()),
+        'surah':  () => { sessionStorage.setItem('quran_tab', 'surah');  router.navigate('quran'); },
+        'juz':    () => { sessionStorage.setItem('quran_tab', 'juz');    router.navigate('quran'); },
+        'mushaf': () => { sessionStorage.setItem('quran_tab', 'mushaf'); router.navigate('quran'); },
+        'kiblat': () => router.navigate('compass'),
+    };
+
+    carouselEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('[id^="shortcut-"]');
+        if (!btn) return;
+        const id = btn.id.replace('shortcut-', '');
+        shortcuts[id]?.();
+    });
+}
+
+/**
+ * Start the countdown timer targeting schedule-specific scd-* element IDs.
+ */
+function _startScheduleCountdown() {
+    if (!_todayTimings) return;
+
+    const hoursEl = document.getElementById('scd-hours');
+    if (!hoursEl) return;
+
+    const minutesEl = document.getElementById('scd-minutes');
+    const secondsEl = document.getElementById('scd-seconds');
+
+    startCountdown(
+        ({ hours, minutes, seconds }) => {
+            if (!document.getElementById('scd-hours')) {
+                stopCountdown();
+                return;
+            }
+            hoursEl.textContent = String(hours);
+            minutesEl.textContent = String(minutes).padStart(2, '0');
+            secondsEl.textContent = String(seconds).padStart(2, '0');
+        },
+        () => getCurrentPrayer(_todayTimings).next?.date
+    );
+}
+
+/**
+ * Lazily initialise the Qibla map for the schedule tablet bento slot.
+ * Only loads Leaflet on viewports ≥ 600px.
+ */
+async function _initScheduleTabletMap() {
+    const loc = store.getState('location');
+    if (!loc || window.innerWidth < 600) return;
+
+    const { initQiblaMapCard } = await import('../components/card/qibla-map-card.js');
+    await import('../../css/components/card/qibla-map-card.css');
+    await initQiblaMapCard('sched-qibla-map', loc.latitude, loc.longitude);
+}
+
+/**
+ * Handle viewport changes between foldable and mobile.
+ * Re-initialises the map and countdown when expanding to tablet/foldable.
+ */
+async function _handleMediaChange(e) {
+    if (!_todayTimings || !_container) return;
+    if (e.matches) {
+        await _initScheduleTabletMap();
+    }
 }
 
 /**
