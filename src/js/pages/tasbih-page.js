@@ -267,13 +267,16 @@ function _rebuildBeadsSVG() {
     // Ensures beads scale down gracefully on small screens without becoming too small (min 13px)
     const BEAD_R = Math.min(22, Math.max(13, 18 * (W / 390)));
 
+    // For smartphone (< 430px) keep 12 beads. For larger screens, add extra beads gradually (max 16).
+    const numBeads = W > 430 ? Math.min(16, 12 + Math.floor((W - 430) / 80)) : 12;
+
     _beadPositions = [];
 
-    // Pick 12 specific slots for the beads along a curve
-    for (let i = 0; i < 12; i++) {
-        let t_linear = (i - 1) / 10;
+    // Pick specific slots for the beads along a curve
+    for (let i = 0; i < numBeads; i++) {
+        let t_linear = (i - 1) / (numBeads - 2);
         if (i === 0) t_linear = -0.3;
-        if (i === 11) t_linear = 1.3;
+        if (i === numBeads - 1) t_linear = 1.3;
 
         let t_x = t_linear;
         if (t_linear > 0 && t_linear <= 1) {
@@ -297,8 +300,8 @@ function _rebuildBeadsSVG() {
     }
     const cordD = `M ${cordP.join(' L ')}`;
 
-    // Build bead elements (12 total DOM elements)
-    const beadsHTML = Array.from({ length: 12 }).map((_, i) => {
+    // Build bead elements (DOM elements based on numBeads)
+    const beadsHTML = Array.from({ length: numBeads }).map((_, i) => {
         const pos = _beadPositions[i];
         return `
             <g class="bead-group bead-pending" id="tb-bead-${i}" style="transform: translate(${pos.x.toFixed(1)}px, ${pos.y.toFixed(1)}px); transition: none;">
@@ -710,17 +713,19 @@ function _updateInfoCard(roundComplete = false) {
 function _updateBeads(roundComplete = false) {
     if (_beadPositions.length === 0) return;
 
-    for (let i = 0; i < 12; i++) {
+    const totalBeads = _beadPositions.length;
+
+    for (let i = 0; i < totalBeads; i++) {
         const beadEl = _container.querySelector(`#tb-bead-${i}`);
         if (!beadEl) continue;
 
         // Use _physicalCount to ensure the animation never jumps back when _totalCount resets!
-        // (i + _physicalCount) % 12 means they flow from Slot 0 -> Slot 11 (Top-Left to Bottom-Right)
-        const nextSlot = (i + _physicalCount) % 12;
+        // (i + _physicalCount) % totalBeads means they flow from Slot 0 -> Slot totalBeads-1
+        const nextSlot = (i + _physicalCount) % totalBeads;
         const pos = _beadPositions[nextSlot];
 
         // Slot 0 is the left-offscreen holding area. 
-        // Whenever a bead enters slot 0, it teleported from slot 11 (right-offscreen).
+        // Whenever a bead enters slot 0, it teleported from right-offscreen.
         if (nextSlot === 0) {
             beadEl.style.transition = 'none';
             beadEl.style.transform = `translate(${pos.x.toFixed(1)}px, ${pos.y.toFixed(1)}px)`;
@@ -731,7 +736,7 @@ function _updateBeads(roundComplete = false) {
 
         // Color coding (optional realism). Make active beads darker
         beadEl.classList.remove('bead-counted', 'bead-active', 'bead-pending');
-        if (nextSlot >= 8 && nextSlot <= 10) {
+        if (nextSlot >= totalBeads - 4 && nextSlot <= totalBeads - 2) {
             beadEl.classList.add('bead-active'); // At junction point (kanan bawah)
         } else {
             beadEl.classList.add('bead-pending');
