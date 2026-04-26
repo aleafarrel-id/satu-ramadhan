@@ -1,4 +1,6 @@
 {
     "title": "Map",
-    "reset_map": "Reset Map View"
+    "reset_map": "Reset Map View",
+    "lock_map": "Lock Map",
+    "unlock_map": "Unlock Map"
 }

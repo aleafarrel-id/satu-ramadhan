@@ -8,6 +8,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { store } from '../../core/store.js';
+import { t } from '../../core/i18n.js';
 
 const KAABA_LAT = 21.4225;
 const KAABA_LNG = 39.8262;
@@ -31,6 +32,7 @@ let _currentUserLat = null;
 let _currentUserLng = null;
 let _isProgrammaticMove = false;
 let _unsubStore = null;
+let _unsubLock = null;
 let _resizeObserver = null;
 let _resizeTimeout = null;
 
@@ -99,10 +101,12 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
                     _geodesicLine.setLatLngs(path);
                 }
 
-                _handleNetworkChange();
+                // Sync map engine (tile URL, maxZoom, interactions) and UI in one call
+                _applyLockState(store.getState('map.isLocked'));
                 _fitView(_mapInstance, userLat, userLng);
 
                 _bindResetButton(card);
+                _bindLockButton(card);
 
                 _mapInstance.invalidateSize();
 
@@ -119,10 +123,12 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
             _addMarkers(map, userLat, userLng);
             _addGeodesicLine(map, userLat, userLng);
             _bindResetButton(card);
+            _bindLockButton(card);
 
             _mapInstance = map;
 
-            _handleNetworkChange();
+            // Apply persisted lock state before any interaction is possible
+            _applyLockState(store.getState('map.isLocked'));
             _fitView(map, userLat, userLng);
 
             setTimeout(() => {
@@ -152,6 +158,11 @@ export function initQiblaMapCard(mapId, userLat, userLng) {
                 _handleNetworkChange();
             });
 
+            // Global lock subscriber — one subscription serves all map instances
+            _unsubLock = store.subscribe('map.isLocked', (isLocked) => {
+                _applyLockState(isLocked);
+            });
+
             resolve(map);
         }, INIT_DELAY_MS);
     });
@@ -165,6 +176,11 @@ export function destroyQiblaMapCard() {
     if (_unsubStore) {
         store.unsubscribe(_unsubStore);
         _unsubStore = null;
+    }
+
+    if (_unsubLock) {
+        store.unsubscribe(_unsubLock);
+        _unsubLock = null;
     }
 
     if (_resizeObserver) {
@@ -360,19 +376,29 @@ function _showResetButton() {
 
 /**
  * Handle network availability to toggle between offline and online map rendering smoothly.
+ * Explicitly enables OR disables zoom controls based on both network and lock state,
+ * ensuring no interaction accidentally re-enables while the map is locked.
  */
 function _handleNetworkChange() {
     if (!_mapInstance || !_tileLayer) return;
 
     const isOffline = store.getState('network.isOffline');
+    const isLocked = store.getState('map.isLocked');
 
     if (!isOffline) {
         _tileLayer.setUrl(TILE_URL);
         _mapInstance.setMaxZoom(TILE_MAX_ZOOM);
 
-        _mapInstance.touchZoom.enable();
-        _mapInstance.doubleClickZoom.enable();
-        _mapInstance.scrollWheelZoom.enable();
+        // Explicitly set zoom state for both branches to prevent stale enabled state
+        if (!isLocked) {
+            _mapInstance.touchZoom.enable();
+            _mapInstance.doubleClickZoom.enable();
+            _mapInstance.scrollWheelZoom.enable();
+        } else {
+            _mapInstance.touchZoom.disable();
+            _mapInstance.doubleClickZoom.disable();
+            _mapInstance.scrollWheelZoom.disable();
+        }
     } else {
         _tileLayer.setUrl(OFFLINE_TILE_URL);
         _mapInstance.setMaxZoom(OFFLINE_MAX_ZOOM);
@@ -385,6 +411,79 @@ function _handleNetworkChange() {
         _mapInstance.doubleClickZoom.disable();
         _mapInstance.scrollWheelZoom.disable();
     }
+}
+
+/**
+ * Apply the map lock state. Manages dragging directly (lock-only concern),
+ * then delegates tile URL, maxZoom, and zoom controls to _handleNetworkChange
+ * so all state is always synced in one pass — regardless of lock direction.
+ * @param {boolean} isLocked
+ */
+function _applyLockState(isLocked) {
+    if (!_mapInstance) return;
+
+    // Dragging is controlled purely by lock state (network doesn't affect it)
+    if (isLocked) {
+        _mapInstance.dragging.disable();
+    } else {
+        _mapInstance.dragging.enable();
+    }
+
+    // Sync tile URL, maxZoom, and zoom interactions with combined lock+network state
+    _handleNetworkChange();
+
+    _updateLockButtonUI(isLocked);
+}
+
+/**
+ * Update the lock button icon and aria-label to reflect the current lock state.
+ * Targets the card that wraps the active singleton map instance.
+ * @param {boolean} isLocked
+ */
+function _updateLockButtonUI(isLocked) {
+    if (!_mapInstance) return;
+    const container = _mapInstance.getContainer();
+    const card = container.closest('.qibla-map-card');
+    if (!card) return;
+
+    const lockBtn = card.querySelector('.qibla-map-card__lock');
+    if (!lockBtn) return;
+
+    const icon = lockBtn.querySelector('i');
+    if (icon) {
+        icon.className = isLocked ? 'bx bx-lock' : 'bx bx-lock-open';
+    }
+    lockBtn.classList.toggle('is-locked', isLocked);
+    lockBtn.setAttribute(
+        'aria-label',
+        isLocked
+            ? t('components/card/qibla-map-card:unlock_map')
+            : t('components/card/qibla-map-card:lock_map')
+    );
+}
+
+/**
+ * Bind the lock button click listener. Safe to call on every re-mount
+ * (removes any previous listener before adding to avoid duplicates).
+ * @param {HTMLElement|null} card
+ */
+function _bindLockButton(card) {
+    if (!card) return;
+    const btn = card.querySelector('.qibla-map-card__lock');
+    if (!btn) return;
+
+    btn.removeEventListener('click', _handleLockClick);
+    btn.addEventListener('click', _handleLockClick);
+}
+
+/**
+ * Toggle global map lock state in store.
+ * The store subscriber calls _applyLockState which updates both the map engine
+ * and all visible lock button UIs.
+ */
+function _handleLockClick() {
+    const isLocked = store.getState('map.isLocked');
+    store.setState('map.isLocked', !isLocked);
 }
 
 /**

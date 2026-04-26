@@ -200,3 +200,58 @@
    pointer-events: none;
    transform: scale(0.8);
 }
+
+/* ── Lock Button ── */
+
+.qibla-map-card__lock {
+   position: absolute;
+   bottom: var(--spacing-sm);
+   right: var(--spacing-sm);
+   z-index: 5;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 36px;
+   height: 36px;
+   border-radius: var(--radius-circle);
+   border: 1px solid var(--clr-border-light);
+   background: var(--clr-bg-card);
+   color: var(--clr-text-muted);
+   cursor: pointer;
+   font-size: var(--fs-lg);
+   padding: 0;
+   box-shadow: var(--shadow-md);
+   /* Smooth slide when reset button appears/disappears */
+   transition:
+      right var(--transition-fast),
+      background var(--transition-fast),
+      color var(--transition-fast),
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+}
+
+/* Locked state — accent color signals "protected" */
+.qibla-map-card__lock.is-locked {
+   color: var(--clr-accent-500);
+   border-color: var(--clr-accent-a30);
+}
+
+.qibla-map-card__lock:active {
+   transform: scale(0.9);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .qibla-map-card__lock:hover {
+      background: var(--clr-accent-a10);
+   }
+}
+
+/*
+   When the reset button is visible, slide the lock button to the left
+   so both are visible side by side: [lock] [reset]
+   44px = 36px button + 8px gap
+*/
+.qibla-map-card:has(.qibla-map-card__reset:not(.hidden)) .qibla-map-card__lock {
+   right: calc(var(--spacing-sm) + 44px);
+}

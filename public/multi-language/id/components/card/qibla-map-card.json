@@ -1,4 +1,6 @@
 {
     "title": "Peta",
-    "reset_map": "Kembalikan Tampilan Peta"
+    "reset_map": "Kembalikan Tampilan Peta",
+    "lock_map": "Kunci Peta",
+    "unlock_map": "Buka Kunci Peta"
 }

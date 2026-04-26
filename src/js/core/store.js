@@ -19,6 +19,9 @@ const initialState = {
     schedule: {
         carouselIndex: 0
     },
+    map: {
+        isLocked: true
+    },
     settings: {
         theme: 'auto',
         org: 'nu',
