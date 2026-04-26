@@ -175,10 +175,8 @@ function startCountdownTimer() {
                 // Update featured card in both views
                 updatePrayerCardDynamicUI(_timings, currentState);
 
-                // Update list view highlights if active
-                if (_viewMode === VIEW_LIST) {
-                    updateListHighlights(currentState);
-                }
+                // Update list view highlights AND tablet full list highlights
+                updateListHighlights(currentState);
 
                 // Update tablet/foldable dynamic mosque background
                 updateTabletMosqueImage(currentState);
@@ -499,10 +497,12 @@ async function switchView(mode) {
 function updateListHighlights(prayerState) {
     const cols = document.querySelectorAll('.prayer-list-col');
     const activeKey = prayerState.current?.key;
-    const keys = LIST_PRAYER_KEYS;
 
-    cols.forEach((col, i) => {
-        col.classList.toggle('prayer-list-col--active', keys[i] === activeKey);
+    cols.forEach(col => {
+        const key = col.dataset.prayer;
+        if (key) {
+            col.classList.toggle('prayer-list-col--active', key === activeKey);
+        }
     });
 }
 

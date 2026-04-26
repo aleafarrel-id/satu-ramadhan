@@ -186,9 +186,170 @@
     object-fit: contain;
 }
 
-/* Responsive adjustments for smaller screens */
+/* Responsive adjustments for varying screen sizes */
+
+/* ── Large Tablet (1024px and up) ── */
+@media screen and (min-width: 1024px) {
+    .compass-outer-wrapper {
+        max-width: 380px;
+        margin: var(--spacing-xl) auto;
+    }
+
+    .compass-container {
+        width: 380px;
+        height: 380px;
+    }
+
+    .compass-dial-wrapper {
+        width: 340px;
+        height: 340px;
+    }
+
+    .compass-tick {
+        transform-origin: 50% 170px;
+    }
+
+    .compass-tick.major {
+        height: 14px;
+        width: 3px;
+        margin-left: -1.5px;
+    }
+
+    .compass-tick.minor {
+        height: 8px;
+        width: 2px;
+        margin-left: -1px;
+    }
+
+    .compass-label {
+        top: 16px;
+        font-size: var(--fs-sm);
+    }
+
+    .compass-inner {
+        width: 180px;
+        height: 180px;
+    }
+
+    .compass-needle {
+        width: 36px;
+        height: 220px;
+    }
+
+    .needle-top {
+        border-left-width: 18px;
+        border-right-width: 18px;
+        border-bottom-width: 110px;
+    }
+
+    .needle-bottom {
+        border-left-width: 18px;
+        border-right-width: 18px;
+        border-top-width: 110px;
+    }
+
+    .needle-center {
+        width: 16px;
+        height: 16px;
+    }
+
+    .qibla-indicator-wrapper {
+        inset: calc(var(--icon-xl) * -1);
+    }
+
+    .qibla-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .qibla-icon img {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* ── Foldable & Tablet (600px and up) ── */
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+    .compass-outer-wrapper {
+        max-width: 360px;
+        margin: var(--spacing-lg) auto;
+    }
+
+    .compass-container {
+        width: 360px;
+        height: 360px;
+    }
+
+    .compass-dial-wrapper {
+        width: 320px;
+        height: 320px;
+    }
+
+    .compass-tick {
+        transform-origin: 50% 160px;
+    }
+
+    .compass-tick.major {
+        height: 13px;
+        width: 2.5px;
+        margin-left: -1.25px;
+    }
+
+    .compass-tick.minor {
+        height: 8px;
+        width: 1.5px;
+        margin-left: -0.75px;
+    }
+
+    .compass-label {
+        top: 15px;
+        font-size: var(--fs-sm);
+    }
+
+    .compass-inner {
+        width: 170px;
+        height: 170px;
+    }
+
+    .compass-needle {
+        width: 34px;
+        height: 210px;
+    }
+
+    .needle-top {
+        border-left-width: 17px;
+        border-right-width: 17px;
+        border-bottom-width: 105px;
+    }
+
+    .needle-bottom {
+        border-left-width: 17px;
+        border-right-width: 17px;
+        border-top-width: 105px;
+    }
+
+    .needle-center {
+        width: 15px;
+        height: 15px;
+    }
+
+    .qibla-indicator-wrapper {
+        inset: -40px;
+    }
+
+    .qibla-icon {
+        width: 46px;
+        height: 46px;
+    }
+
+    .qibla-icon img {
+        width: var(--icon-lg);
+        height: var(--icon-lg);
+    }
+}
+
 /* ── Medium-small screens (~390px) ── */
-@media (max-width: 390px) {
+@media screen and (max-width: 390px) {
     .compass-outer-wrapper {
         max-width: 270px;
         margin: var(--sp-6) auto;
@@ -231,7 +392,8 @@
     }
 }
 
-@media (max-width: 320px) {
+/* ── Small screens (~320px) ── */
+@media screen and (max-width: 320px) {
     .compass-outer-wrapper {
         max-width: 250px;
     }
@@ -251,7 +413,7 @@
     }
 
     .compass-label {
-        top: 8px;
+        top: var(--spacing-sm);
         font-size: var(--fs-xs);
     }
 
@@ -261,7 +423,7 @@
     }
 
     .compass-needle {
-        width: 24px;
+        width: var(--spacing-lg);
         height: 150px;
     }
 
@@ -283,12 +445,12 @@
     }
 
     .qibla-indicator-wrapper {
-        inset: -1.5rem;
+        inset: calc(var(--spacing-lg) * -1);
     }
 
     .qibla-icon {
-        width: 32px;
-        height: 32px;
+        width: var(--spacing-xl);
+        height: var(--spacing-xl);
     }
 
     .qibla-icon img {

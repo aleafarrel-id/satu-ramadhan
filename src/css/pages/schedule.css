@@ -25,14 +25,14 @@
     .sched-bento-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-md);
+        gap: var(--spacing-lg);
         align-items: stretch;
     }
 
     .sched-bento-left {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-lg);
+        gap: var(--spacing-xl);
     }
 
     .sched-bento-left .location-card {
@@ -115,14 +115,14 @@
     .sched-bento-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-sm);
+        gap: var(--spacing-md);
         align-items: stretch;
     }
 
     .sched-bento-left {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-md);
+        gap: var(--spacing-lg);
     }
 
     .sched-bento-left .location-card {

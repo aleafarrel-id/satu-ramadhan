@@ -117,6 +117,11 @@ export function updatePrayerCardDynamicUI(timings, prayerState) {
     if (featuredContainer) {
         featuredContainer.innerHTML = renderFeaturedCard(timings, prayerState);
     }
+
+    const featuredTabletContainer = document.getElementById('featured-prayer-container-tablet');
+    if (featuredTabletContainer) {
+        featuredTabletContainer.innerHTML = renderFeaturedCardShared(timings, prayerState);
+    }
 }
 
 /**

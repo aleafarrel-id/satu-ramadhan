@@ -62,6 +62,8 @@
 .app-content {
    position: relative;
    flex: 1;
+   display: flex;
+   flex-direction: column;
    overflow-y: auto;
    overflow-x: hidden;
    padding: var(--spacing-md);
@@ -88,10 +90,14 @@
 .page {
    display: none;
    animation: pageIn 0.25s ease;
+   width: 100%;
+   flex-shrink: 0;
 }
 
 .page.active {
    display: block;
+   margin-top: auto;
+   margin-bottom: auto;
 }
 
 /* Disable default animation for Quran page since it uses custom slide-up transition */
@@ -223,12 +229,24 @@
    .app-container {
       max-width: 800px;
    }
+
+   .page.active {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+   }
 }
 
 /* Foldable (e.g. Galaxy Z Fold inner screen) */
 @media screen and (min-width: 600px) and (max-width: 1023px) {
    .app-container {
       max-width: 100%;
+   }
+
+   .page.active {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
    }
 }
 

@@ -345,11 +345,12 @@
 
 .mushaf-surah-name {
    font-family: var(--ff-mushaf-header-ar);
-   font-size: var(--fs-xl);
+   font-size: clamp(1.1rem, 4.5vw, 1.35rem);
    color: #3d3016;
    /* Force dark text since SVG frame center is permanently white */
    text-align: center;
    line-height: 1.8;
+   white-space: nowrap;
 }
 
 /* ── Basmala ── */

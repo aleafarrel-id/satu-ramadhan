@@ -78,8 +78,8 @@
          "kiri masjid"
          "kiri masjid"
          "bawah bawah";
-      gap: var(--spacing-md);
-      row-gap: var(--spacing-lg);
+      gap: var(--spacing-lg);
+      row-gap: var(--spacing-xl);
       align-items: stretch;
    }
 
@@ -87,7 +87,7 @@
       grid-area: kiri;
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-md);
+      gap: var(--spacing-lg);
    }
 
    /* Reset card bottom margins — gap handles spacing inside flex column. */
@@ -118,7 +118,7 @@
       grid-area: bawah;
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-md);
+      gap: var(--spacing-lg);
    }
 
    /* Hide the mobile tube/list toggle — tablet always uses the full list. */
@@ -198,8 +198,8 @@
          "kiri masjid"
          "kiri masjid"
          "bawah bawah";
-      gap: var(--spacing-sm);
-      row-gap: var(--spacing-md);
+      gap: var(--spacing-md);
+      row-gap: var(--spacing-lg);
       align-items: stretch;
    }
 
@@ -207,7 +207,7 @@
       grid-area: kiri;
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-sm);
+      gap: var(--spacing-md);
    }
 
    /* Reset card bottom margins — gap handles spacing inside flex column. */
@@ -238,7 +238,7 @@
       grid-area: bawah;
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-sm);
+      gap: var(--spacing-md);
    }
 
    /* Hide the mobile tube/list toggle — foldable always uses the full list. */

@@ -15,6 +15,8 @@
     z-index: var(--z-modal);
     overflow: hidden;
     pointer-events: none;
+    visibility: hidden;
+    transition: visibility 0s linear 0.4s;
 }
 
 /* The actual visible page lives inside the panel */
@@ -41,6 +43,8 @@
 /* Active state — slide in */
 .tasbih-panel.tasbih-active {
     pointer-events: auto;
+    visibility: visible;
+    transition: visibility 0s;
 }
 
 .tasbih-panel.tasbih-active .tasbih-page {

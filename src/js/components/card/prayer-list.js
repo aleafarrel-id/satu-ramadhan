@@ -74,7 +74,7 @@ function renderPrayerColumns(timings, prayerState) {
         const activeClass = isActive ? ' prayer-list-col--active' : '';
 
         return `
-            <div class="prayer-list-col${activeClass}">
+            <div class="prayer-list-col${activeClass}" data-prayer="${key}">
                 <span class="prayer-list-col__name">${getPrayerName(prayer.key)}</span>
                 <span class="prayer-list-col__time">${time}</span>
             </div>
@@ -150,7 +150,7 @@ export function renderTabletFullListCard(timings, prayerState) {
         const activeClass = isActive ? ' prayer-list-col--active' : '';
 
         return `
-            <div class="prayer-list-col${activeClass}">
+            <div class="prayer-list-col${activeClass}" data-prayer="${key}">
                 <span class="prayer-list-col__name">${getPrayerName(prayer.key)}</span>
                 <span class="prayer-list-col__time">${time}</span>
             </div>

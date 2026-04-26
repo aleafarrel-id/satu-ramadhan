@@ -290,6 +290,12 @@ function handlePrayerTransition() {
         updateScheduleFeaturedCard(_todayTimings);
         const currentState = getCurrentPrayer(_todayTimings);
         updateScheduleTabletMosqueImage(currentState);
+
+        // Update the countdown card's prayer name label
+        const cdNameEl = document.getElementById('cd-prayer-name');
+        if (cdNameEl) {
+            cdNameEl.textContent = currentState.next ? getPrayerName(currentState.next.key) : '--';
+        }
     }
 
     const entry = _scheduleData[_currentDayIndex];
@@ -571,7 +577,7 @@ function bindEvents() {
     });
 
     document.getElementById('schedule-org-toggle')?.addEventListener('click', async () => {
-        await handleOrgToggle('schedule-org-toggle-label', async () => {});
+        await handleOrgToggle('schedule-org-toggle-label', async () => { });
     });
 
     document.getElementById('schedule-btn-kiblat')?.addEventListener('click', () => {
@@ -638,7 +644,7 @@ function _bindScheduleTabletEvents(orgName) {
     });
 
     document.getElementById('sched-org-toggle-tablet')?.addEventListener('click', async () => {
-        await handleOrgToggle('sched-org-toggle-tablet-label', async () => {});
+        await handleOrgToggle('sched-org-toggle-tablet-label', async () => { });
     });
 }
 
@@ -688,8 +694,8 @@ function _bindScheduleShortcutEvents() {
 
     const shortcuts = {
         'tasbih': () => import('./tasbih-page.js').then(m => m.open()),
-        'surah':  () => { sessionStorage.setItem('quran_tab', 'surah');  router.navigate('quran'); },
-        'juz':    () => { sessionStorage.setItem('quran_tab', 'juz');    router.navigate('quran'); },
+        'surah': () => { sessionStorage.setItem('quran_tab', 'surah'); router.navigate('quran'); },
+        'juz': () => { sessionStorage.setItem('quran_tab', 'juz'); router.navigate('quran'); },
         'mushaf': () => { sessionStorage.setItem('quran_tab', 'mushaf'); router.navigate('quran'); },
         'kiblat': () => router.navigate('compass'),
     };

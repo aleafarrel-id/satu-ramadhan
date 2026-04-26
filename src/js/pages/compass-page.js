@@ -49,12 +49,12 @@ function _isStale(gen) { return gen !== _renderGen; }
 export async function render(container, options = {}) {
     const gen = ++_renderGen;
     _container = container;
-    
+
     if (_unsubscribeId) {
         store.unsubscribe(_unsubscribeId);
         _unsubscribeId = null;
     }
-    
+
     await loadNS('pages/compass-page');
     await loadNS('components/card/location-card');
     await loadNS('components/card/qibla-info-card');

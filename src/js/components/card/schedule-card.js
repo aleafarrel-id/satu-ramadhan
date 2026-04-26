@@ -138,9 +138,11 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
  */
 export function updateScheduleHighlights(activePrayerKey, container) {
     const rows = container.querySelectorAll('.schedule-prayer-row');
-    rows.forEach((row, i) => {
-        const key = SCHEDULE_PRAYERS[i];
-        row.classList.toggle('schedule-prayer-row--active', key === activePrayerKey);
+    rows.forEach(row => {
+        const key = row.dataset.prayer;
+        if (key) {
+            row.classList.toggle('schedule-prayer-row--active', key === activePrayerKey);
+        }
     });
 }
 
@@ -152,6 +154,11 @@ export function updateScheduleFeaturedCard(todayTimings) {
     const container = document.getElementById('schedule-featured-container');
     if (container && todayTimings) {
         container.innerHTML = renderFeaturedCard(todayTimings);
+    }
+
+    const tabletContainer = document.getElementById('sched-featured-tablet');
+    if (tabletContainer && todayTimings) {
+        tabletContainer.innerHTML = renderFeaturedCard(todayTimings);
     }
 }
 
