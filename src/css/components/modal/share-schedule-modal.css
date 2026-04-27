@@ -154,15 +154,11 @@
    Foldable & Tablet Layout Enhancements
    ============================================= */
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 600px) {
     .ss-modal {
-        max-width: 800px;
-    }
-}
-
-@media screen and (min-width: 600px) and (max-width: 767px) {
-    .ss-modal {
-        max-width: 600px;
+        max-width: 100%;
+        padding-left: max(var(--spacing-lg), calc((100vw - 800px) / 2));
+        padding-right: max(var(--spacing-lg), calc((100vw - 800px) / 2));
     }
 }
 
