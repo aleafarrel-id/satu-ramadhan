@@ -1,5 +1,16 @@
 import { t, loadNS } from '../../core/i18n.js';
 import { showAboutAppModal } from '../modal/about-app-modal.js';
+import { CONFIG } from '../../config/version-config.js';
+
+async function openPrivacyPolicy() {
+    try {
+        const { Browser } = await import('@capacitor/browser');
+        await Browser.open({ url: CONFIG.privacyPolicyUrl, presentationStyle: 'popover' });
+    } catch {
+        // Fallback for web or if plugin is unavailable
+        window.open(CONFIG.privacyPolicyUrl, '_blank', 'noopener,noreferrer');
+    }
+}
 
 export function render(container) {
     // Force preload i18n to guarantee translations work accurately
@@ -32,6 +43,11 @@ export function render(container) {
         </div>
     `;
 
+    const privacyPolicyRow = container.querySelector('#privacy-policy-row');
+    if (privacyPolicyRow) {
+        privacyPolicyRow.addEventListener('click', openPrivacyPolicy);
+    }
+
     const aboutAppRow = container.querySelector('#about-app-row');
     if (aboutAppRow) {
         aboutAppRow.addEventListener('click', () => {
@@ -43,4 +59,3 @@ export function render(container) {
 export function destroy() {
     // Cleanup if needed
 }
-

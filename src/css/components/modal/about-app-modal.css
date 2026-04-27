@@ -25,11 +25,11 @@
 
 .about-modal {
     width: 100%;
-    max-width: 400px;
+    max-width: 360px; /* Reduced from 400px to make it more compact */
     background: var(--gradient-cal-bg);
     border: 1px solid var(--clr-primary-a30);
     border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
+    padding: var(--spacing-lg); /* Reduced padding */
     box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.5),
         0 0 40px var(--clr-primary-a10),
@@ -48,18 +48,18 @@
 .about-modal__header {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-sm); /* Reduced gap */
+    margin-bottom: var(--spacing-md); /* Reduced margin */
 }
 
 .about-modal__logo {
-    width: 86px;
-    height: 86px;
+    width: 64px; /* Reduced size */
+    height: 64px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)); /* Adjusted shadow */
 }
 
 .about-modal__logo img {
@@ -76,7 +76,7 @@
 
 .about-modal__app-name {
     font-family: var(--ff-primary);
-    font-size: var(--fs-xl);
+    font-size: var(--fs-lg); /* Reduced font size */
     font-weight: var(--fw-bold);
     color: var(--clr-text-primary);
     line-height: var(--lh-tight);
@@ -85,7 +85,7 @@
 
 .about-modal__developer {
     font-family: var(--ff-primary);
-    font-size: var(--fs-sm);
+    font-size: 12px; /* Reduced font size */
     font-weight: var(--fw-semibold);
     color: var(--clr-accent-500);
     margin-top: 2px;
@@ -93,13 +93,13 @@
 
 .about-modal__version {
     font-family: var(--ff-primary);
-    font-size: 11px;
+    font-size: 10px; /* Reduced font size */
     font-weight: var(--fw-medium);
     color: var(--clr-text-primary);
     background: var(--clr-white-a10);
-    padding: 3px 10px;
+    padding: 2px 8px; /* Reduced padding */
     border-radius: var(--radius-pill);
-    margin-top: 8px;
+    margin-top: 6px;
     align-self: flex-start;
     opacity: 0.85;
     letter-spacing: 0.5px;
@@ -110,23 +110,23 @@
     width: 100%;
     height: 1px;
     background: var(--clr-white-a10);
-    margin: var(--spacing-lg) 0;
+    margin: var(--spacing-md) 0; /* Reduced margin */
 }
 
 /* ── Content ── */
 .about-modal__content {
     font-family: var(--ff-primary);
-    font-size: 14px;
+    font-size: 13px; /* Reduced font size */
     font-weight: var(--fw-medium);
     color: var(--clr-text-secondary);
-    line-height: 1.6;
+    line-height: 1.5; /* Adjusted line height */
     text-align: left;
-    margin-bottom: var(--spacing-lg);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    margin-bottom: var(--spacing-md); /* Reduced margin */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Softer shadow */
 }
 
 .about-modal__content p {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm); /* Reduced margin */
 }
 
 .about-modal__content p:last-child {
@@ -140,28 +140,30 @@
 }
 
 .about-modal__close-btn {
-    padding: 0 var(--spacing-lg);
-    min-height: 36px;
+    padding: 0 var(--spacing-md); /* Adjusted padding */
+    min-height: 32px; /* Adjusted height */
+    font-size: 13px; /* Adjusted font size */
 }
 
 /* ── Responsive ── */
-@media (max-width: 400px) {
+@media (max-width: 360px) {
     .about-modal {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
+        max-width: 320px;
     }
 
     .about-modal__header {
         flex-direction: column;
         text-align: center;
-        gap: var(--spacing-sm);
-        margin-bottom: var(--spacing-md);
+        gap: var(--spacing-xs);
+        margin-bottom: var(--spacing-sm);
     }
 
     .about-modal__logo {
-        width: 72px;
-        height: 72px;
+        width: 56px;
+        height: 56px;
         margin: 0 auto;
-        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
 
     .about-modal__title-group {
@@ -169,27 +171,26 @@
     }
 
     .about-modal__app-name {
-        font-size: 20px;
+        font-size: 18px;
         line-height: 1.2;
         white-space: normal;
     }
 
     .about-modal__developer {
-        font-size: 13px;
-        margin-top: 2px;
+        font-size: 11px;
     }
 
     .about-modal__version {
         align-self: center;
-        margin-top: var(--spacing-sm);
-        font-size: 11px;
+        margin-top: var(--spacing-xs);
+        font-size: 10px;
     }
 
     .about-modal__content {
-        font-size: 14px;
-        line-height: 1.5;
+        font-size: 12px;
+        line-height: 1.4;
         text-align: center;
-        margin-bottom: var(--spacing-lg);
+        margin-bottom: var(--spacing-sm);
     }
 
     .about-modal__footer {
@@ -198,6 +199,6 @@
 
     .about-modal__close-btn {
         width: 100%;
-        max-width: 180px;
+        max-width: 160px;
     }
 }
