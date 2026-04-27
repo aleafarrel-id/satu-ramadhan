@@ -1,0 +1,203 @@
+/* =============================================
+   About App Modal Component
+   ============================================= */
+
+.about-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.about-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.about-modal {
+    width: 100%;
+    max-width: 400px;
+    background: var(--gradient-cal-bg);
+    border: 1px solid var(--clr-primary-a30);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px var(--clr-primary-a10),
+        inset 0 1px 0 var(--clr-white-a05);
+    transform: translateY(24px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-modal-overlay.active .about-modal {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Header Section ── */
+.about-modal__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.about-modal__logo {
+    width: 86px;
+    height: 86px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+}
+
+.about-modal__logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.about-modal__title-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about-modal__app-name {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-tight);
+}
+
+.about-modal__developer {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-accent-500);
+    margin-top: 2px;
+}
+
+.about-modal__version {
+    font-family: var(--ff-primary);
+    font-size: 11px;
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-primary);
+    background: var(--clr-white-a10);
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    margin-top: 8px;
+    align-self: flex-start;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+}
+
+/* ── Divider ── */
+.about-modal__divider {
+    width: 100%;
+    height: 1px;
+    background: var(--clr-white-a10);
+    margin: var(--spacing-lg) 0;
+}
+
+/* ── Content ── */
+.about-modal__content {
+    font-family: var(--ff-primary);
+    font-size: 14px;
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-secondary);
+    line-height: 1.6;
+    text-align: left;
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.about-modal__content p {
+    margin-bottom: var(--spacing-md);
+}
+
+.about-modal__content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ── Footer ── */
+.about-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.about-modal__close-btn {
+    padding: 0 var(--spacing-lg);
+    min-height: 36px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 400px) {
+    .about-modal {
+        padding: var(--spacing-lg);
+    }
+
+    .about-modal__header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .about-modal__logo {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto;
+        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+    }
+
+    .about-modal__title-group {
+        align-items: center;
+    }
+
+    .about-modal__app-name {
+        font-size: 20px;
+        line-height: 1.2;
+        white-space: normal;
+    }
+
+    .about-modal__developer {
+        font-size: 13px;
+        margin-top: 2px;
+    }
+
+    .about-modal__version {
+        align-self: center;
+        margin-top: var(--spacing-sm);
+        font-size: 11px;
+    }
+
+    .about-modal__content {
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .about-modal__footer {
+        justify-content: center;
+    }
+
+    .about-modal__close-btn {
+        width: 100%;
+        max-width: 180px;
+    }
+}

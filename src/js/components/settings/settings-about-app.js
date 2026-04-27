@@ -1,4 +1,5 @@
 import { t, loadNS } from '../../core/i18n.js';
+import { showAboutAppModal } from '../modal/about-app-modal.js';
 
 export function render(container) {
     // Force preload i18n to guarantee translations work accurately
@@ -30,8 +31,16 @@ export function render(container) {
             </div>
         </div>
     `;
+
+    const aboutAppRow = container.querySelector('#about-app-row');
+    if (aboutAppRow) {
+        aboutAppRow.addEventListener('click', () => {
+            showAboutAppModal();
+        });
+    }
 }
 
 export function destroy() {
     // Cleanup if needed
 }
+
