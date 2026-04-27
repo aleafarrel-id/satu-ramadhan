@@ -13,6 +13,7 @@ import * as settingsQuranPanel from '../components/settings/settings-quran-panel
 import * as settingsLocCard from '../components/settings/settings-loc-card.js';
 import * as settingsPresetCard from '../components/settings/settings-preset-card.js';
 import * as settingsDisplayPanel from '../components/settings/settings-display-panel.js';
+import * as settingsAboutApp from '../components/settings/settings-about-app.js';
 import { t, loadNS } from '../core/i18n.js';
 
 /* --- STATE --- */
@@ -47,6 +48,7 @@ export async function render(container) {
     await loadNS('components/settings/settings-display-panel');
     await loadNS('components/settings/settings-panel');
     await loadNS('components/settings/settings-quran-panel');
+    await loadNS('components/settings/settings-about-app');
     await loadNS('components/modal/audio-mode-selector-modal');
     await loadNS('components/modal/adzan-selector-modal');
     await loadNS('components/ui/header');
@@ -61,6 +63,7 @@ export async function render(container) {
             <div id="settings-display-panel-container"></div>
             <div id="settings-panel-container"></div>
             <div id="settings-quran-panel-container"></div>
+            <div id="settings-about-app-container"></div>
             
             <p class="settings-version">${t('pages/settings-page:version_info', { appName: t('common:app_name'), version: CONFIG.version })}</p>
         </div>
@@ -71,6 +74,7 @@ export async function render(container) {
     const displayPanelContainer = wrapper.querySelector('#settings-display-panel-container');
     const panelContainer = wrapper.querySelector('#settings-panel-container');
     const quranPanelContainer = wrapper.querySelector('#settings-quran-panel-container');
+    const aboutAppContainer = wrapper.querySelector('#settings-about-app-container');
 
     // Render all components concurrently into the offline wrapper
     await Promise.all([
@@ -78,7 +82,8 @@ export async function render(container) {
         presetCardContainer && settingsPresetCard.render(presetCardContainer),
         displayPanelContainer && settingsDisplayPanel.render(displayPanelContainer),
         panelContainer && settingsPanel.render(panelContainer),
-        quranPanelContainer && settingsQuranPanel.render(quranPanelContainer)
+        quranPanelContainer && settingsQuranPanel.render(quranPanelContainer),
+        aboutAppContainer && settingsAboutApp.render(aboutAppContainer)
     ]);
     if (_isStale(gen)) return;
 
@@ -98,5 +103,6 @@ export function destroy() {
     settingsDisplayPanel.destroy();
     settingsPanel.destroy();
     settingsQuranPanel.destroy();
+    settingsAboutApp.destroy();
     _container = null;
 }
