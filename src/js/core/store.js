@@ -35,6 +35,10 @@ const initialState = {
             magrib: true,
             isya: true
         },
+        notifControls: {
+            imsak: true,
+            terbit: true
+        },
         adzan_selected: 'makkah',
         adzan_subuh: 'makkah',
         quran: {

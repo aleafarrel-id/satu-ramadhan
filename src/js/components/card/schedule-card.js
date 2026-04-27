@@ -9,7 +9,7 @@
 import { PRAYER_LIST, getCurrentPrayer, getPrayerName } from '../../modules/prayer/prayer-times.js';
 
 // Utilities & Helpers
-import { SCHEDULE_PRAYERS } from '../../utils/datetime.js';
+import { SCHEDULE_PRAYERS, ADZAN_PRAYER_KEYS } from '../../utils/datetime.js';
 import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 import { store } from '../../core/store.js';
@@ -324,7 +324,7 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
     const time = timings ? cleanTime(timings[key]) : '--:--';
     const isActive = todayView && activePrayerKey === key;
 
-    const adzanPrayers = ['subuh', 'dzuhur', 'ashar', 'magrib', 'isya'];
+    const adzanPrayers = ADZAN_PRAYER_KEYS;
     let rightSideHtml = '';
     let isClickable = false;
 
@@ -346,8 +346,12 @@ function renderPrayerRow(key, timings, activePrayerKey, todayView) {
                 isClickable = true;
             }
         } else {
-            // Non-adzan prayer (imsak/sunrise) → show disabled bell icon
-            rightSideHtml = `<div class="schedule-prayer-row__adzan-toggle disabled"><i class='bx bx-bell'></i></div>`;
+            // Non-adzan prayer (imsak/terbit) → interactive notification toggle
+            const notifEnabled = store.getState('settings.notifControls.' + key) !== false;
+            const bellIcon = notifEnabled ? 'bx-bell' : 'bx-bell-off';
+            const activeClass = notifEnabled ? ' active' : '';
+            rightSideHtml = `<button class="schedule-prayer-row__adzan-toggle${activeClass}" data-action="toggle-notif"><i class='bx ${bellIcon}'></i></button>`;
+            isClickable = true;
         }
     } else {
         // Global notification OFF or Web environment → hide everything in the right column

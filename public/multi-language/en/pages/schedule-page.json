@@ -5,5 +5,7 @@
     "error_offline_desc": "Check your internet connection and try again.",
     "toast_adzan_muted": "Adzan {{prayer}} muted",
     "toast_adzan_unmuted": "Adzan {{prayer}} unmuted",
+    "toast_notif_muted": "{{prayer}} notification muted",
+    "toast_notif_unmuted": "{{prayer}} notification enabled",
     "back_to_today": "Back to Today"
 }

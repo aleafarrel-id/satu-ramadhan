@@ -72,6 +72,7 @@ export async function syncNotifications() {
         const isNotifEnabled = store.getState('settings.notification');
         const isAdzanEnabled = store.getState('settings.adzan');
         const adzanControls = store.getState('settings.adzanControls') || {};
+        const notifControls = store.getState('settings.notifControls') || {};
         const selectedNormalId = store.getState('settings.adzan_selected') || DEFAULT_ADZAN;
         const selectedSubuhId  = store.getState('settings.adzan_subuh')    || DEFAULT_ADZAN_SUBUH;
 
@@ -116,6 +117,9 @@ export async function syncNotifications() {
 
                 const config = PRAYER_NOTIFICATION_MAP[key];
                 if (!config) return;
+
+                // Skip non-adzan prayers (imsak/terbit) when user disabled their notification
+                if (!config.isAdzan && notifControls[key] === false) return;
 
                 const isPrayerAdzanEnabled = adzanControls[key] !== false;
                 const shouldPlayAdzan = config.isAdzan && isAdzanEnabled && isPrayerAdzanEnabled;
@@ -267,6 +271,7 @@ function parseDateTimeToMs(date, timeStr) {
 store.subscribe('settings.notification', syncNotifications);
 store.subscribe('settings.adzan', syncNotifications);
 store.subscribe('settings.adzanControls', syncNotifications);
+store.subscribe('settings.notifControls', syncNotifications);
 store.subscribe('settings.adzan_selected', syncNotifications);
 store.subscribe('settings.adzan_subuh', syncNotifications);
 store.subscribe('settings.language', syncNotifications);

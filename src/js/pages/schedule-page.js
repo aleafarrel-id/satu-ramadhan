@@ -8,6 +8,7 @@ import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
 
 import { isNative } from '../modules/system/platform.js';
+import { ADZAN_PRAYER_KEYS } from '../utils/datetime.js';
 
 import { getPrayerTimesByCoords, getQiblaDirection } from '../core/api.js';
 import { store } from '../core/store.js';
@@ -599,31 +600,40 @@ function bindEvents() {
 
     const swipeArea = document.getElementById('schedule-swipe-area');
     if (swipeArea) {
+        const ADZAN_PRAYERS = ADZAN_PRAYER_KEYS;
+
         swipeArea.addEventListener('click', (e) => {
             const row = e.target.closest('.schedule-prayer-row.clickable');
             if (row) {
                 const key = row.getAttribute('data-prayer');
                 if (key) {
                     const toggleBtn = row.querySelector('.schedule-prayer-row__adzan-toggle');
-                    const currentVal = store.getState('settings.adzanControls.' + key) !== false;
+                    const isAdzanPrayer = ADZAN_PRAYERS.includes(key);
+
+                    const storeKey = isAdzanPrayer
+                        ? 'settings.adzanControls.' + key
+                        : 'settings.notifControls.' + key;
+
+                    const currentVal = store.getState(storeKey) !== false;
                     const newVal = !currentVal;
-                    store.setState('settings.adzanControls.' + key, newVal);
+                    store.setState(storeKey, newVal);
 
                     // Optimistic UI update
                     if (toggleBtn) {
                         const icon = toggleBtn.querySelector('i');
                         if (icon) {
-                            icon.className = newVal ? 'bx bx-volume-full' : 'bx bx-volume-mute';
+                            icon.className = isAdzanPrayer
+                                ? (newVal ? 'bx bx-volume-full' : 'bx bx-volume-mute')
+                                : (newVal ? 'bx bx-bell' : 'bx bx-bell-off');
                         }
                         toggleBtn.classList.toggle('active', newVal);
                     }
 
                     const prayerName = getPrayerName(key);
-                    if (newVal) {
-                        notification.info(t('pages/schedule-page:toast_adzan_unmuted', { prayer: prayerName }));
-                    } else {
-                        notification.info(t('pages/schedule-page:toast_adzan_muted', { prayer: prayerName }));
-                    }
+                    const toastKey = isAdzanPrayer
+                        ? (newVal ? 'pages/schedule-page:toast_adzan_unmuted' : 'pages/schedule-page:toast_adzan_muted')
+                        : (newVal ? 'pages/schedule-page:toast_notif_unmuted' : 'pages/schedule-page:toast_notif_muted');
+                    notification.info(t(toastKey, { prayer: prayerName }));
                 }
             }
         });

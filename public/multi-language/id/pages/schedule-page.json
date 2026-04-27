@@ -5,5 +5,7 @@
     "error_offline_desc": "Periksa koneksi internet Anda dan coba lagi.",
     "toast_adzan_muted": "Adzan {{prayer}} dimatikan",
     "toast_adzan_unmuted": "Adzan {{prayer}} dinyalakan",
+    "toast_notif_muted": "Notifikasi {{prayer}} dimatikan",
+    "toast_notif_unmuted": "Notifikasi {{prayer}} diaktifkan",
     "back_to_today": "Kembali ke Hari Ini"
 }

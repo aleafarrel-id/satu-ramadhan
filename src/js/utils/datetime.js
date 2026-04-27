@@ -41,12 +41,19 @@ export const PRAYER_KEY_MAP = {
 };
 
 /**
- * Prayer keys for the list/highlight view (excludes Imsak and Terbit).
- * Replaces all hardcoded ['subuh', 'dzuhur', 'ashar', 'magrib', 'isya'] arrays.
+ * Prayer keys that trigger adzan audio playback.
+ * Used by schedule UI toggle logic and notification scheduling.
  */
-export const LIST_PRAYER_KEYS = SCHEDULE_PRAYERS.filter(
+export const ADZAN_PRAYER_KEYS = SCHEDULE_PRAYERS.filter(
     k => k !== 'imsak' && k !== 'terbit'
 );
+
+/**
+ * Prayer keys for the list/highlight view (excludes Imsak and Terbit).
+ * Currently identical to ADZAN_PRAYER_KEYS — kept as a separate alias
+ * in case the list view and adzan sets diverge in the future.
+ */
+export const LIST_PRAYER_KEYS = ADZAN_PRAYER_KEYS;
 
 /**
  * Short date format.
