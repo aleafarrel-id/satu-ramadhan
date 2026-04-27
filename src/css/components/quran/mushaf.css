@@ -464,6 +464,33 @@
 
 /* ── Responsive ── */
 
+/* ── Tablet 2-Page Spread ── */
+
+@media screen and (min-width: 600px) and (min-height: 500px) {
+   .mushaf-book-container .stf__wrapper {
+      transform: none !important;
+   }
+
+   .mushaf-line--surah-header {
+      max-width: 280px;
+      min-height: 36px;
+      padding: var(--sp-1) 18%;
+   }
+
+   .mushaf-surah-name {
+      font-size: clamp(0.9rem, 3vw, 1.15rem);
+   }
+
+   .mushaf-page--opening .mushaf-line--surah-header {
+      max-width: 300px;
+      min-height: 40px;
+   }
+
+   .mushaf-page--opening .mushaf-surah-name {
+      font-size: clamp(0.9rem, 3vw, 1.15rem);
+   }
+}
+
 @media (min-width: 480px) {
    .mushaf-page {
       padding: var(--sp-4) max(var(--sp-6), env(safe-area-inset-right)) var(--sp-4) max(var(--sp-6), env(safe-area-inset-left));

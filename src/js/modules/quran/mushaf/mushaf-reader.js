@@ -64,6 +64,7 @@ let _resizeTimeout = null;
 let _lastVisibilityPage = null;
 let _buildGeneration = 0;
 let _cachedPageHPad = 32;
+let _isTwoPageView = false;
 const _transitionManager = {
    timers: [],
    add(t) { this.timers.push(t); },
@@ -115,6 +116,7 @@ function _resetState() {
    _resizeTimeout = null;
    _buildGeneration = 0;
    _cachedPageHPad = 32;
+   _isTwoPageView = false;
    _transitionManager.clear();
 }
 
@@ -160,7 +162,15 @@ function _updateSurahHeader() {
 }
 
 function _updatePageCounter() {
-   if (_pageCounterEl) {
+   if (!_pageCounterEl) return;
+
+   if (_isTwoPageView) {
+      const rightPage = _currentPage;
+      const leftPage = Math.min(_currentPage + 1, TOTAL_PAGES);
+      _pageCounterEl.textContent = rightPage === leftPage
+         ? _toArabicDigits(rightPage)
+         : `${_toArabicDigits(rightPage)} - ${_toArabicDigits(leftPage)}`;
+   } else {
       _pageCounterEl.textContent = _toArabicDigits(_currentPage);
    }
 }
@@ -201,8 +211,8 @@ export async function open(startPage = 1, options = {}) {
 
    QuranDock.hide();
 
-   // ── Phase 1: Build EMPTY overlay shell ──
-   // ── Phase 1: Build the OVERLAY first (it will act as the container) ──
+   // ── Build EMPTY overlay shell ──
+   // ── Build the OVERLAY first (it will act as the container) ──
    _buildOverlay();
    _updateSurahHeader();
 
@@ -214,7 +224,7 @@ export async function open(startPage = 1, options = {}) {
       });
    }
 
-   // ── Phase 2: Build BACKDROP nested inside the overlay ──
+   // ── Build BACKDROP nested inside the overlay ──
    _buildBackdrop(t('modules/quran/mushaf/mushaf-reader:loading'), _overlay);
    if (_backdropEl) {
       _backdropEl.classList.add('active'); // Hidden because overlay is at 100% Y
@@ -233,7 +243,7 @@ export async function open(startPage = 1, options = {}) {
    // Initialize tooltip delegation for interaction
    initTooltip(_viewportContainer, '.tj');
 
-   // ── Phase 3: Trigger the slide-up animation ──
+   // ── Trigger the slide-up animation ──
    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
          if (!_isOpen) return;
@@ -246,13 +256,13 @@ export async function open(startPage = 1, options = {}) {
    await new Promise(r => setTimeout(r, 650));
    if (!_isOpen) return;
 
-   // ── Phase 4: Build content behind the backdrop ──
+   // ── Build content behind the backdrop ──
    _buildGeneration++; // Invalidate any prior stale build
    _calcWindow(_currentPage);
    await _buildAndMountPageFlip(_currentPage);
    if (!_isOpen) return;
 
-   // ── Phase 5: Reveal — fade out the backdrop nested inside ──
+   // ── Reveal — fade out the backdrop nested inside ──
    await new Promise(r => setTimeout(r, 100));
    if (_backdropEl) {
       _backdropEl.classList.remove('active');
@@ -270,7 +280,7 @@ export async function close() {
    _detachListeners();
    destroyPicker();
 
-   // 1. Fade in loading backdrop inside the overlay to hide Mushaf text
+   // Fade in loading backdrop inside the overlay to hide Mushaf text
    if (_backdropEl) {
       _backdropEl.classList.add('active');
       const label = _backdropEl.querySelector('p');
@@ -283,7 +293,7 @@ export async function close() {
    // Wait for fade in
    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 300)));
 
-   // 2. Clear heavy PageFlip DOM to free memory while obscured
+   // Clear heavy PageFlip DOM to free memory while obscured
    if (_pageFlip) {
       _pageFlip.destroy();
       _pageFlip = null;
@@ -291,7 +301,7 @@ export async function close() {
    if (_bookContainer) _bookContainer.innerHTML = '';
    _bookContainer = null;
 
-   // 3. Command the background to rebuild (quran-page loadSubPage)
+   // Command the background to rebuild (quran-page loadSubPage)
    if (_onCloseCallback) {
       try {
          await _onCloseCallback();
@@ -302,7 +312,7 @@ export async function close() {
       }
    }
 
-   // 4. Show dock and slide the overlay down
+   // Show dock and slide the overlay down
    QuranDock.show();
 
    if (_overlay) _overlay.classList.remove('active');
@@ -312,7 +322,7 @@ export async function close() {
    // Wait for overlay completely sliding down (CSS transition is 0.6s)
    await new Promise(r => setTimeout(r, 600));
 
-   // 5. Safe full cleanup
+   // Safe full cleanup
    if (_overlay && _overlay.parentNode) _overlay.parentNode.removeChild(_overlay);
 
    _isOpen = false;
@@ -341,9 +351,10 @@ export function destroy() {
 export async function goToPage(pageNumber) {
    if (!_isOpen || !_pageFlip) return;
    const target = MushafApi.clampPage(pageNumber);
+   const mul = _isTwoPageView ? 1 : 2;
 
    if (target >= _windowStart && target <= _windowEnd) {
-      const index = (_windowEnd - target) * 2;
+      const index = (_windowEnd - target) * mul;
       _pageFlip.turnToPage(index);
    } else {
       _currentPage = target;
@@ -523,7 +534,7 @@ function _buildHeader() {
    _pageCounterEl.className = 'mushaf-page-counter';
    _pageCounterEl.setAttribute('aria-label', 'Lompat ke halaman');
    makeAccessibleBtn(_pageCounterEl, () => {
-       showMushafJumpModal({ current: _currentPage, onJump: goToPage });
+      showMushafJumpModal({ current: _currentPage, onJump: goToPage });
    });
    _updatePageCounter();
 
@@ -632,19 +643,27 @@ function _disposePanzoom() {
 function _getPageFlipConfig() {
    const pw = _viewportContainer.clientWidth || window.innerWidth;
    const ph = _viewportContainer.clientHeight || (window.innerHeight - 50);
-   const contentW = Math.max(160, pw - _cachedPageHPad);
+
+   _isTwoPageView = pw >= 600 && ph >= 500;
+
+   const pageW = _isTwoPageView ? Math.floor(pw / 2) : pw;
+   const contentW = Math.max(160, pageW - _cachedPageHPad);
 
    _viewportContainer.style.setProperty('--mushaf-page-h', `${ph}px`);
    _viewportContainer.style.setProperty('--mushaf-page-w', `${contentW}px`);
 
+   if (_bookContainer) {
+      _bookContainer.style.width = _isTwoPageView ? '100%' : '200%';
+   }
+
    return {
-      width: pw,
+      width: pageW,
       height: ph,
       size: 'fixed',
       usePortrait: false,
       useMouseEvents: false,
-      drawShadow: false,
-      maxShadowOpacity: 0,
+      drawShadow: _isTwoPageView,
+      maxShadowOpacity: _isTwoPageView ? 0.15 : 0,
       flippingTime: 350,
       mobileScrollSupport: false,
       swipeDistance: 10,
@@ -697,10 +716,17 @@ async function _buildAndMountPageFlip(targetPage) {
 
    const hasTajweed = Object.keys(tajweedMap).length > 0 ? tajweedMap : null;
 
+   // Detect two-page mode BEFORE building HTML so the DOM structure matches
+   const pw = _viewportContainer.clientWidth || window.innerWidth;
+   const ph = _viewportContainer.clientHeight || (window.innerHeight - 50);
+   _isTwoPageView = pw >= 600 && ph >= 500;
+
+   const mul = _isTwoPageView ? 1 : 2;
+
    let html = '';
    for (let i = pages.length - 1; i >= 0; i--) {
       html += MushafUI.buildPageHTML(pages[i], hasTajweed);
-      html += MushafUI.buildEmptyPageHTML();
+      if (!_isTwoPageView) html += MushafUI.buildEmptyPageHTML();
    }
    _bookContainer.innerHTML = html;
 
@@ -716,7 +742,7 @@ async function _buildAndMountPageFlip(targetPage) {
    _pageFlip = new PageFlip(_bookContainer, _getPageFlipConfig());
    _pageFlip.loadFromHTML(_bookContainer.querySelectorAll('.mushaf-page'));
 
-   const targetIndex = (_windowEnd - targetPage) * 2;
+   const targetIndex = (_windowEnd - targetPage) * mul;
    if (targetIndex > 0) _pageFlip.turnToPage(targetIndex);
 
    _pageFlip.on('flip', _onPageFlip);
@@ -727,7 +753,11 @@ async function _buildAndMountPageFlip(targetPage) {
 function _onPageFlip(e) {
    dismissTooltip();
    const flipIndex = e.data;
-   _currentPage = _windowEnd - (flipIndex / 2);
+   // In tablet mode flipIndex points to the LEFT page of the spread;
+   // _currentPage must be the RIGHT page (read-first in RTL mushaf).
+   _currentPage = _isTwoPageView
+      ? _windowEnd - flipIndex - 1
+      : _windowEnd - (flipIndex / 2);
    _updatePageCounter();
    _updateSurahHeader();
 
@@ -741,9 +771,14 @@ async function _checkAndExpand() {
    if (_isExpanding || !_pageFlip || !_isOpen) return;
 
    // Compute flipIndex from live state so it's always accurate
-   const flipIndex = (_windowEnd - _currentPage) * 2;
+   // Inverse of _onPageFlip formula for each mode
+   const flipIndex = _isTwoPageView
+      ? (_windowEnd - _currentPage - 1)
+      : (_windowEnd - _currentPage) * 2;
    const pagesInWindow = _windowEnd - _windowStart + 1;
-   const distFromHighest = flipIndex / 2;
+   const distFromHighest = _isTwoPageView
+      ? (flipIndex + 1) / 1
+      : flipIndex / 2;
    const distFromLowest = pagesInWindow - 1 - distFromHighest;
 
    if (distFromHighest <= Math.floor(EXPAND_MARGIN / 2) && _windowEnd < TOTAL_PAGES) {
@@ -763,15 +798,18 @@ async function _checkAndExpand() {
       let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
          html += MushafUI.buildPageHTML(pages[i], hasTajweed);
-         html += MushafUI.buildEmptyPageHTML();
+         if (!_isTwoPageView) html += MushafUI.buildEmptyPageHTML();
       }
       _bookContainer.insertAdjacentHTML('afterbegin', html);
 
       // Re-compute flipIndex after DOM change for accurate positioning
-      const newFlipIndex = (_windowEnd - _currentPage) * 2;
+      const newFlipIndex = _isTwoPageView
+         ? (_windowEnd - _currentPage - 1)
+         : (_windowEnd - _currentPage) * 2;
+      const addedElements = _isTwoPageView ? addedPairs : addedPairs * 2;
       _windowEnd = newEnd;
       _pageFlip.updateFromHtml(_bookContainer.querySelectorAll('.mushaf-page'));
-      _pageFlip.turnToPage(newFlipIndex + addedPairs * 2);
+      _pageFlip.turnToPage(newFlipIndex + addedElements);
 
       setTimeout(() => { _isExpanding = false; }, 400);
       return;
@@ -792,7 +830,7 @@ async function _checkAndExpand() {
       let html = '';
       for (let i = pages.length - 1; i >= 0; i--) {
          html += MushafUI.buildPageHTML(pages[i], hasTajweed);
-         html += MushafUI.buildEmptyPageHTML();
+         if (!_isTwoPageView) html += MushafUI.buildEmptyPageHTML();
       }
       _bookContainer.insertAdjacentHTML('beforeend', html);
 
