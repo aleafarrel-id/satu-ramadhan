@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Satu Ramadhan</string>
     <string name="title_activity_main">Satu Ramadhan</string>
-    <string name="package_name">com.saturamadhan.app</string>
-    <string name="custom_url_scheme">com.saturamadhan.app</string>
+    <string name="package_name">com.saturamadhan.mobile</string>
+    <string name="custom_url_scheme">com.saturamadhan.mobile</string>
 
     <!-- Notification Strings -->
     <string name="notification_channel_playback_name">Prayer Playback</string>

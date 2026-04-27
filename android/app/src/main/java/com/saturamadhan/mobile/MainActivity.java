@@ -1,4 +1,4 @@
-package com.saturamadhan.app;
+package com.saturamadhan.mobile;
 
 import android.os.Bundle;
 

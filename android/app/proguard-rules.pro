@@ -27,29 +27,29 @@
 # to silently fail in release builds.
 
 # Keep all BroadcastReceivers (PrayerBootReceiver, PrayerAlarmReceiver, PrayerActionReceiver)
--keep class com.saturamadhan.app.PrayerBootReceiver { *; }
--keep class com.saturamadhan.app.PrayerAlarmReceiver { *; }
--keep class com.saturamadhan.app.PrayerActionReceiver { *; }
+-keep class com.saturamadhan.mobile.PrayerBootReceiver { *; }
+-keep class com.saturamadhan.mobile.PrayerAlarmReceiver { *; }
+-keep class com.saturamadhan.mobile.PrayerActionReceiver { *; }
 
 # Keep the Foreground Service
--keep class com.saturamadhan.app.PrayerPlaybackService { *; }
+-keep class com.saturamadhan.mobile.PrayerPlaybackService { *; }
 
 # Keep the Capacitor plugin (called reflectively by Capacitor's bridge)
--keep class com.saturamadhan.app.PrayerServicePlugin { *; }
+-keep class com.saturamadhan.mobile.PrayerServicePlugin { *; }
 
 # Keep WorkManager workers (instantiated reflectively by WorkManager)
--keep class com.saturamadhan.app.AlarmRescheduleWorker { *; }
+-keep class com.saturamadhan.mobile.AlarmRescheduleWorker { *; }
 
 # Keep the Constants class (used by all components above)
--keep class com.saturamadhan.app.Constants { *; }
+-keep class com.saturamadhan.mobile.Constants { *; }
 
 # Keep the MainActivity
--keep class com.saturamadhan.app.MainActivity { *; }
+-keep class com.saturamadhan.mobile.MainActivity { *; }
 
 # ─── Murottal Background Playback ───────────────────────────────────────────
--keep class com.saturamadhan.app.MurottalPlaybackService { *; }
--keep class com.saturamadhan.app.MurottalServicePlugin { *; }
--keep class com.saturamadhan.app.MurottalActionReceiver { *; }
+-keep class com.saturamadhan.mobile.MurottalPlaybackService { *; }
+-keep class com.saturamadhan.mobile.MurottalServicePlugin { *; }
+-keep class com.saturamadhan.mobile.MurottalActionReceiver { *; }
 
 # ─── General AndroidX / WorkManager rules ───────────────────────────────────
 # WorkManager's internal RescheduleReceiver and related classes must survive R8

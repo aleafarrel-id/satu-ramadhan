@@ -1,4 +1,4 @@
-package com.saturamadhan.app;
+package com.saturamadhan.mobile;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

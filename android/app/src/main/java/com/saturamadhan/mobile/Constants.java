@@ -1,4 +1,4 @@
-package com.saturamadhan.app;
+package com.saturamadhan.mobile;
 
 /**
  * Shared constants for the Android native side of the application.
@@ -9,9 +9,9 @@ public final class Constants {
     }
 
     // --- Intent Actions ---
-    public static final String ACTION_PLAY_PRAYER = "com.saturamadhan.app.ACTION_PLAY_PRAYER";
-    public static final String ACTION_STOP_PRAYER = "com.saturamadhan.app.ACTION_STOP_PRAYER";
-    public static final String ACTION_PLAYBACK_STOPPED = "com.saturamadhan.app.ACTION_PLAYBACK_STOPPED";
+    public static final String ACTION_PLAY_PRAYER = "com.saturamadhan.mobile.ACTION_PLAY_PRAYER";
+    public static final String ACTION_STOP_PRAYER = "com.saturamadhan.mobile.ACTION_STOP_PRAYER";
+    public static final String ACTION_PLAYBACK_STOPPED = "com.saturamadhan.mobile.ACTION_PLAYBACK_STOPPED";
 
     // --- Intent Extras ---
     public static final String EXTRA_PRAYER_KEY = "prayer_key";
@@ -48,14 +48,14 @@ public final class Constants {
     public static final int ROLLING_ALARM_MAX_COUNT = 300;
 
     // ─── Murottal Background Playback ──────────────────────────────────
-    public static final String ACTION_MUROTTAL_PLAY = "com.saturamadhan.app.ACTION_MUROTTAL_PLAY";
-    public static final String ACTION_MUROTTAL_PAUSE = "com.saturamadhan.app.ACTION_MUROTTAL_PAUSE";
-    public static final String ACTION_MUROTTAL_RESUME = "com.saturamadhan.app.ACTION_MUROTTAL_RESUME";
-    public static final String ACTION_MUROTTAL_STOP = "com.saturamadhan.app.ACTION_MUROTTAL_STOP";
-    public static final String ACTION_MUROTTAL_NEXT = "com.saturamadhan.app.ACTION_MUROTTAL_NEXT";
-    public static final String ACTION_MUROTTAL_PREV = "com.saturamadhan.app.ACTION_MUROTTAL_PREV";
-    public static final String ACTION_MUROTTAL_STATE_CHANGED = "com.saturamadhan.app.ACTION_MUROTTAL_STATE_CHANGED";
-    public static final String ACTION_MUROTTAL_STOPPED = "com.saturamadhan.app.ACTION_MUROTTAL_STOPPED";
+    public static final String ACTION_MUROTTAL_PLAY = "com.saturamadhan.mobile.ACTION_MUROTTAL_PLAY";
+    public static final String ACTION_MUROTTAL_PAUSE = "com.saturamadhan.mobile.ACTION_MUROTTAL_PAUSE";
+    public static final String ACTION_MUROTTAL_RESUME = "com.saturamadhan.mobile.ACTION_MUROTTAL_RESUME";
+    public static final String ACTION_MUROTTAL_STOP = "com.saturamadhan.mobile.ACTION_MUROTTAL_STOP";
+    public static final String ACTION_MUROTTAL_NEXT = "com.saturamadhan.mobile.ACTION_MUROTTAL_NEXT";
+    public static final String ACTION_MUROTTAL_PREV = "com.saturamadhan.mobile.ACTION_MUROTTAL_PREV";
+    public static final String ACTION_MUROTTAL_STATE_CHANGED = "com.saturamadhan.mobile.ACTION_MUROTTAL_STATE_CHANGED";
+    public static final String ACTION_MUROTTAL_STOPPED = "com.saturamadhan.mobile.ACTION_MUROTTAL_STOPPED";
 
     public static final String CHANNEL_ID_MUROTTAL = "murottal_playback";
     public static final int NOTIFICATION_ID_MUROTTAL = 3000;
