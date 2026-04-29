@@ -56,3 +56,23 @@
 -keep class androidx.work.** { *; }
 -keep class * extends androidx.work.Worker { *; }
 -keep class * extends androidx.work.ListenableWorker { *; }
+
+# ─── Cordova & Capacitor Bridge Rules ───────────────────────────────────────
+# Cordova plugins do NOT supply consumer rules automatically. Since they are 
+# instantiated via reflection by the Cordova plugin manager, they must be kept.
+-keep class org.apache.cordova.** { *; }
+-keep public class * extends org.apache.cordova.CordovaPlugin
+-keep class cordova.plugins.** { *; }
+
+# Safeguard Capacitor plugins and their methods from aggressive R8 stripping
+-keep class com.getcapacitor.** { *; }
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }
+-keepclassmembers class * {
+    @com.getcapacitor.annotation.PluginMethod <methods>;
+}
+
+# ─── AndroidX Activity & Fragments (Used by Permission Requests) ────────────
+# R8 sometimes strips ActivityResult contracts used by native permission dialogs
+-keep class androidx.activity.result.** { *; }
+-keep class androidx.fragment.app.** { *; }
+
