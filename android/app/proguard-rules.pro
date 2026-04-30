@@ -76,3 +76,7 @@
 -keep class androidx.activity.result.** { *; }
 -keep class androidx.fragment.app.** { *; }
 
+# ─── Capgo Navigation Bar Plugin ────────────────────────────────────────────
+# Keep navigation bar plugin classes to prevent R8 from stripping internal 
+# components which may cause reflection failures in release builds.
+-keep class ee.forgr.capacitor_navigation_bar.** { *; }

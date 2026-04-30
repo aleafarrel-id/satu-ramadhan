@@ -4,6 +4,7 @@
  */
 import { store } from './store.js';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationBar } from '@capgo/capacitor-navigation-bar';
 import { isNative } from '../modules/system/platform.js';
 
 let _watcherSubscribed = false;
@@ -211,8 +212,13 @@ export function applyToDOM(finalDark) {
         try {
             StatusBar.setStyle({ style: Style.Dark });
             StatusBar.setBackgroundColor({ color: finalDark ? '#031013' : '#0a3540' });
+            
+            NavigationBar.setNavigationBarColor({
+                color: finalDark ? '#031013' : '#0a3540',
+                darkButtons: false
+            });
         } catch (err) {
-            console.warn('[Theme] Failed to set native StatusBar', err);
+            console.warn('[Theme] Failed to set native StatusBar or NavigationBar', err);
         }
     }
 }
