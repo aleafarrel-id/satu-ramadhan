@@ -17,6 +17,7 @@ import { createSurahCard } from '../../../components/quran/quran-card.js';
 import { openPicker, closePicker, isOpen as isPickerOpen, destroyPicker } from '../../../components/quran/quran-picker.js';
 import { showMushafGuideModal } from '../../../components/modal/mushaf-guide-modal.js';
 import { showMushafJumpModal } from '../../../components/modal/mushaf-jump-modal.js';
+import * as Notif from '../../notification/notification.js';
 
 // Utilities & Helpers
 import { initTooltip, dismissTooltip } from '../../../utils/tooltip.js';
@@ -546,7 +547,7 @@ function _buildHeader() {
    _zoomBtnEl.className = 'mushaf-back-btn mushaf-zoom-btn';
    _zoomBtnEl.id = 'mushaf-zoom-toggle';
    _zoomBtnEl.setAttribute('aria-label', 'Mode Zoom');
-   _zoomBtnEl.innerHTML = `<i class='bx bx-zoom-in'></i>`;
+   _zoomBtnEl.innerHTML = `<i class='bx bx-expand-alt'></i>`;
    makeAccessibleBtn(_zoomBtnEl, _toggleZoomMode);
 
    _menuBtnEl = document.createElement('button');
@@ -592,8 +593,10 @@ function _enterZoomMode() {
 
    if (_zoomBtnEl) {
       _zoomBtnEl.classList.add('is-active');
-      _zoomBtnEl.innerHTML = `<i class='bx bx-zoom-out'></i>`;
+      _zoomBtnEl.innerHTML = `<i class='bx bx-collapse-alt'></i>`;
    }
+   
+   Notif.show(t('modules/quran/mushaf/mushaf-reader:zoom_toast'), 'info');
    if (_overlay) _overlay.classList.add('is-zoom-mode');
 
    // Disable native viewport swipe to allow panzoom manipulation
@@ -619,7 +622,7 @@ function _exitZoomMode() {
 
    if (_zoomBtnEl) {
       _zoomBtnEl.classList.remove('is-active');
-      _zoomBtnEl.innerHTML = `<i class='bx bx-zoom-in'></i>`;
+      _zoomBtnEl.innerHTML = `<i class='bx bx-expand-alt'></i>`;
    }
    if (_overlay) _overlay.classList.remove('is-zoom-mode');
 

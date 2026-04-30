@@ -97,7 +97,7 @@ function createModalDOM() {
                     <span>${t('components/modal/mushaf-guide-modal:item_1')}</span>
                 </div>
                 <div class="mushaf-guide-item">
-                    <i class='bx bx-zoom-in'></i>
+                    <i class='bx bx-expand-alt'></i>
                     <span>${t('components/modal/mushaf-guide-modal:item_2')}</span>
                 </div>
                 <div class="mushaf-guide-item">
