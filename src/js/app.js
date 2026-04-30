@@ -357,11 +357,10 @@ async function triggerPostSplashPermissions() {
     if (!isNative) return;
 
     const interruptedByNotif = await _requestNotificationIfNeeded();
-    const interruptedByBattery = await _requestBatteryOptIfNeeded();
 
     // Jika dialog lokasi ditutup paksa demi menampilkan dialog perizinan,
     // kembalikan dialog lokasinya (jika user masih belum set lokasi)
-    if (interruptedByNotif || interruptedByBattery) {
+    if (interruptedByNotif) {
         if (!store.getState('location')) {
             // Beri waktu agar dialog izin selesai tertutup
             await new Promise(resolve => setTimeout(resolve, 400));
@@ -412,36 +411,3 @@ async function _requestNotificationIfNeeded() {
     return interrupted;
 }
 
-async function _requestBatteryOptIfNeeded() {
-    if (store.getState('settings.battery_opt_seen')) return false;
-
-    if (store.getState('settings.notification') === false) return false;
-
-    let interrupted = false;
-    if (isLocationModalActive()) {
-        interrupted = true;
-        await hideLocationModal();
-        await new Promise(resolve => setTimeout(resolve, 300));
-    }
-
-    // Small delay to allow previous dialog animation to settle
-    await new Promise(resolve => setTimeout(resolve, 350));
-
-    await showPermissionDialogPreset('battery', {
-        onConfirm: async () => {
-            try {
-                store.setState('settings.battery_opt_seen', true);
-                await PrayerService.openBatteryOptimizationSettings();
-            } catch (e) {
-                console.warn('[App] Could not open battery settings:', e);
-            }
-        },
-        onCancel: () => {
-            // User chose "Lain Kali" — mark as seen so it won't auto-show again
-            // They can still open it manually from settings
-            store.setState('settings.battery_opt_seen', true);
-        },
-    });
-
-    return interrupted;
-}
