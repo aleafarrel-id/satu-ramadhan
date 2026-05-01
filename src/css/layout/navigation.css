@@ -5,7 +5,7 @@
    left: 50%;
    transform: translateX(-50%);
    width: 100%;
-   max-width: 430px;
+   max-width: 100%;
    padding-bottom: env(safe-area-inset-bottom, 0px);
    z-index: calc(var(--z-modal) + 10);
    /* Higher than quran modal (300) to allow sliding under */

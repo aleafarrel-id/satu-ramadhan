@@ -29,7 +29,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     width: 100%;
-    max-width: 430px;
+    max-width: 100%;
     max-height: 80vh;
     margin: 0 auto;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
@@ -86,7 +86,8 @@
 
 .adzan-tab.active {
     background: linear-gradient(135deg, var(--clr-accent-600) 0%, var(--clr-accent-500) 50%, var(--clr-accent-400) 100%);
-    color: #1a2a3a; /* Force dark text explicitly since gold gradient does not invert */
+    color: #1a2a3a;
+    /* Force dark text explicitly since gold gradient does not invert */
     box-shadow: 0 2px 8px var(--clr-accent-a30);
 }
 

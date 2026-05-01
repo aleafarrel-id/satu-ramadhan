@@ -10,7 +10,7 @@
     position: fixed;
     inset: 0;
     width: 100%;
-    max-width: 430px;
+    max-width: 100%;
     margin: 0 auto;
     z-index: var(--z-modal);
     overflow: hidden;
@@ -854,6 +854,13 @@
 }
 
 @media screen and (min-width: 600px) and (max-width: 1023px) {
+    .tasbih-panel {
+        max-width: 100%;
+    }
+}
+
+/* Phone — any width below foldable (including zoomed-out browsers) */
+@media screen and (max-width: 599px) {
     .tasbih-panel {
         max-width: 100%;
     }

@@ -8,7 +8,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(100%);
     width: 100%;
-    max-width: 430px;
+    max-width: 100%;
     padding: var(--sp-3) var(--sp-4);
     padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom));
     z-index: calc(var(--z-modal) + 2);
@@ -89,7 +89,7 @@
     overflow: hidden;
 }
 
-.quran-audio-dock-info > i {
+.quran-audio-dock-info>i {
     font-size: var(--icon-md);
     color: var(--clr-quran-accent);
     flex-shrink: 0;
@@ -187,7 +187,9 @@
 }
 
 @keyframes dockBtnSpin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Play/Pause button is slightly larger */
@@ -240,13 +242,21 @@
 }
 
 /* Make the download icon pulse while active */
-.quran-audio-dock.download-mode:not(.download-paused) .quran-audio-dock-info > i {
+.quran-audio-dock.download-mode:not(.download-paused) .quran-audio-dock-info>i {
     animation: dockDownloadPulse 1.5s infinite alternate;
 }
 
 @keyframes dockDownloadPulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.15); opacity: 1; color: var(--clr-primary-500); }
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.15);
+        opacity: 1;
+        color: var(--clr-primary-500);
+    }
 }
 
 /* ── Responsive Rules ── */
@@ -301,7 +311,7 @@
 }
 
 @media screen and (max-width: 360px) {
-    .quran-audio-dock-info > i {
+    .quran-audio-dock-info>i {
         font-size: 16px;
     }
 

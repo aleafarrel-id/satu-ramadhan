@@ -3,7 +3,7 @@
    position: fixed;
    inset: 0;
    width: 100%;
-   max-width: 430px;
+   max-width: 100%;
    margin: 0 auto;
    display: flex;
    flex-direction: column;
@@ -294,6 +294,13 @@
 }
 
 @media screen and (min-width: 600px) and (max-width: 1023px) {
+   .quran-page {
+      max-width: 100%;
+   }
+}
+
+/* Phone — any width below foldable (including zoomed-out browsers) */
+@media screen and (max-width: 599px) {
    .quran-page {
       max-width: 100%;
    }

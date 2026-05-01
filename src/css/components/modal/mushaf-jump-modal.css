@@ -27,7 +27,7 @@
     background: var(--clr-quran-card-bg);
     border-top: 1px solid var(--clr-mushaf-header-border);
     width: 100%;
-    max-width: 430px;
+    max-width: 100%;
     margin: 0 auto;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom));

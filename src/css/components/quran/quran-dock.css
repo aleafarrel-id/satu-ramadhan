@@ -6,7 +6,7 @@
    left: 50%;
    transform: translateX(-50%);
    width: 100%;
-   max-width: 430px;
+   max-width: 100%;
    padding-bottom: env(safe-area-inset-bottom);
    z-index: calc(var(--z-modal) + 1);
    opacity: 0;
@@ -130,7 +130,7 @@
    .quran-dock {
       max-width: 800px;
    }
-   
+
    .quran-dock-list {
       max-width: 480px;
       padding: 0 var(--sp-3);
@@ -147,7 +147,7 @@
    .quran-dock {
       max-width: 600px;
    }
-   
+
    .quran-dock-list {
       max-width: 420px;
       padding: 0 var(--sp-3);
