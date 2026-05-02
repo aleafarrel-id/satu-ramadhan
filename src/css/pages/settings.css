@@ -557,9 +557,9 @@
    }
 
    /* Remove margin from cards inside grid — gap handles spacing */
-   .settings-desktop-left .settings-loc-card,
-   .settings-desktop-left .settings-preset-card,
-   .settings-desktop-right .settings-card-spacing {
+   .settings-desktop-grid .settings-loc-card,
+   .settings-desktop-grid .settings-preset-card,
+   .settings-desktop-grid .settings-card-spacing {
       margin-bottom: 0;
       margin-top: 0;
    }
