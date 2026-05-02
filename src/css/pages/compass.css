@@ -61,3 +61,58 @@
       font-size: var(--fs-sm);
    }
 }
+
+/* =============================================
+   Desktop Compass Layout (≥ 1024px)
+   ADDITIVE ONLY — zero changes to mobile/foldable above.
+   ============================================= */
+
+/* Mobile: wrapper is transparent to layout (display:contents = not a box) */
+.compass-desktop-grid {
+   display: contents;
+}
+
+@media (min-width: 1024px) {
+
+   /* Desktop: 2-column layout using grid areas */
+   .compass-desktop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      grid-template-areas:
+         "map    compass"
+         "loc    compass"
+         "info   compass";
+      gap: var(--spacing-lg);
+      align-items: start;
+      /* left column cards align top within their rows */
+      align-content: center;
+      /* grid row-group centered vertically in the grid container */
+   }
+
+   /* Assign existing card classes to grid areas */
+   .compass-desktop-grid .qibla-map-card {
+      grid-area: map;
+   }
+
+   .compass-desktop-grid .location-card {
+      grid-area: loc;
+   }
+
+   .compass-desktop-grid .qibla-info-card {
+      grid-area: info;
+   }
+
+   /* Compass dial: centered both horizontally and vertically in its column area */
+   .compass-desktop-grid .compass-outer-wrapper {
+      grid-area: compass;
+      align-self: center;
+      /* vertical center within the multi-row compass area */
+      justify-self: center;
+      /* horizontal center within the compass column */
+      width: min(420px, 100%);
+      /* respects column width, max 420px */
+      margin: 0;
+      /* not needed — justify-self handles centering */
+   }
+}

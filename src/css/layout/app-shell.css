@@ -262,3 +262,75 @@
       font-size: var(--fs-xs);
    }
 }
+
+/* =============================================
+   Desktop Shell Layout (≥ 1024px)
+   ADDITIVE ONLY — zero changes to mobile/foldable above.
+   ============================================= */
+
+@media (min-width: 1024px) {
+
+   /* Override tablet max-width: the sidebar needs full width */
+   /* Override #app background at desktop:
+      The curve notch on .app-content reveals #app's background.
+      By matching it to --clr-bg-card-solid (same as sidebar/header),
+      the curve looks seamless. Works for both light & dark theme
+      via the design token. */
+   #app {
+      background: var(--clr-bg-card-solid);
+   }
+
+   .app-container {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+         "sidebar header"
+         "sidebar content";
+      max-width: 100%;
+      height: 100%;
+   }
+
+   .app-header {
+      grid-area: header;
+   }
+
+   .app-content {
+      grid-area: content;
+      padding-bottom: var(--spacing-md);
+      /* Restore original theme gradient — no theme override */
+      background: var(--clr-bg-gradient);
+      /* Curved join at top-left: sidebar+header panel vs content area */
+      border-top-left-radius: 24px;
+   }
+
+   /* Restore pattern overlay on top of the content background */
+   .app-content::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='120' height='120' patternUnits='userSpaceOnUse'%3E%3Cg fill='none' stroke='%232d9e9e' stroke-opacity='0.06' stroke-width='0.75'%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3Ccircle cx='60' cy='60' r='15'/%3E%3Cpath d='M60 30L73 45H47zM60 90L47 75H73zM30 60L45 47V73zM90 60L75 73V47z'/%3E%3Cpath d='M60 30L90 60L60 90L30 60z'/%3E%3Cpath d='M45 45L75 45L75 75L45 75z'/%3E%3Ccircle cx='60' cy='30' r='4'/%3E%3Ccircle cx='60' cy='90' r='4'/%3E%3Ccircle cx='30' cy='60' r='4'/%3E%3Ccircle cx='90' cy='60' r='4'/%3E%3Ccircle cx='0' cy='0' r='4'/%3E%3Ccircle cx='120' cy='0' r='4'/%3E%3Ccircle cx='0' cy='120' r='4'/%3E%3Ccircle cx='120' cy='120' r='4'/%3E%3Cpath d='M0 0L30 30M120 0L90 30M0 120L30 90M120 120L90 90'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23p)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.65;
+   }
+
+   /* Ensure content children sit above the absolute pattern */
+   .app-content > * {
+      position: relative;
+      z-index: 1;
+   }
+
+   /* bottom-nav is assigned to sidebar area via navigation.css */
+   .bottom-nav {
+      grid-area: sidebar;
+   }
+
+   /* At desktop pages don't need the bottom-nav compensation.
+      margin-top/bottom: auto (from base CSS) provides vertical centering
+      for short-content pages like compass within the flex app-content area.
+      For tall pages (home/schedule/settings), overflow makes margins resolve to 0 — safe. */
+   .page.active {
+      display: block;
+   }
+}

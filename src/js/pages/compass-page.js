@@ -175,14 +175,14 @@ async function renderContent(loc) {
     }
 
     _container.innerHTML = `
-        ${renderQiblaMapCard('qibla-mini-map')}
-        ${renderLocationCard(loc)}
-        
-        <div class="compass-outer-wrapper">
-            ${renderCompass()}
+        <div class="compass-desktop-grid">
+            ${renderQiblaMapCard('qibla-mini-map')}
+            ${renderLocationCard(loc)}
+            <div class="compass-outer-wrapper">
+                ${renderCompass()}
+            </div>
+            ${renderQiblaInfoCard()}
         </div>
-
-        ${renderQiblaInfoCard()}
     `;
 
     if (hasData && _compass) {

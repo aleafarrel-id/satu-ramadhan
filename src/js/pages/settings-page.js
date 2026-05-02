@@ -59,12 +59,18 @@ export async function render(container) {
     wrapper.innerHTML = `
         <div class="settings-page">
             <h2 class="settings-title">${t('pages/settings-page:title')}</h2>
-            <div id="settings-loc-card-container"></div>
-            <div id="settings-preset-card-container"></div>
-            <div id="settings-display-panel-container"></div>
-            <div id="settings-panel-container"></div>
-            <div id="settings-quran-panel-container"></div>
-            <div id="settings-about-app-container"></div>
+            <div class="settings-desktop-grid">
+                <div class="settings-desktop-left">
+                    <div id="settings-loc-card-container"></div>
+                    <div id="settings-preset-card-container"></div>
+                </div>
+                <div class="settings-desktop-right">
+                    <div id="settings-display-panel-container"></div>
+                    <div id="settings-panel-container"></div>
+                    <div id="settings-quran-panel-container"></div>
+                    <div id="settings-about-app-container"></div>
+                </div>
+            </div>
             
             <p class="settings-version">${t('pages/settings-page:version_info', { appName: t('common:app_name'), version: CONFIG.version })}</p>
         </div>

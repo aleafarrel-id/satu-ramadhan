@@ -27,6 +27,19 @@ export async function render(container, onNavigate, initialActiveTabId = 'home')
 
     await loadNS('components/ui/nav-bar');
 
+    // Sidebar brand (desktop only — hidden via CSS on mobile/foldable)
+    const sidebarBrand = document.createElement('div');
+    sidebarBrand.className = 'sidebar-brand';
+    sidebarBrand.setAttribute('aria-hidden', 'true');
+    sidebarBrand.innerHTML = `
+        <img src="/favicon/favicon.png" alt="" class="sidebar-brand-logo" />
+        <div class="sidebar-brand-text">
+            <span class="sidebar-brand-name">Satu Ramadhan</span>
+            <span class="sidebar-brand-by">by Alea Farrel</span>
+        </div>
+    `;
+    _container.appendChild(sidebarBrand);
+
     // Background oval
     const bgOval = document.createElement('div');
     bgOval.className = 'nav-background-oval';
@@ -56,6 +69,11 @@ export async function render(container, onNavigate, initialActiveTabId = 'home')
         const icon = document.createElement('i');
         icon.className = `bx ${tab.icon}`;
         item.appendChild(icon);
+
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'nav-label';
+        labelSpan.textContent = label;
+        item.appendChild(labelSpan);
 
         item.addEventListener('click', () => handleClick(tab.id));
         list.appendChild(item);

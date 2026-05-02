@@ -530,3 +530,42 @@
       font-size: var(--fs-2xs);
    }
 }
+
+/* =============================================
+   Desktop Settings Layout (≥ 1024px)
+   ADDITIVE ONLY — zero changes to mobile/foldable above.
+   ============================================= */
+
+@media (min-width: 1024px) {
+   .settings-desktop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      align-items: start;
+   }
+
+   .settings-desktop-left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+   }
+
+   .settings-desktop-right {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+   }
+
+   /* Remove margin from cards inside grid — gap handles spacing */
+   .settings-desktop-left .settings-loc-card,
+   .settings-desktop-left .settings-preset-card,
+   .settings-desktop-right .settings-card-spacing {
+      margin-bottom: 0;
+      margin-top: 0;
+   }
+
+   /* Make settings title span full width above the grid */
+   .settings-desktop-header {
+      grid-column: 1 / -1;
+   }
+}

@@ -1,4 +1,15 @@
 /* Bottom Navigation Bar Container */
+
+/* Nav label: hidden by default (mobile bottom dock shows icon only) */
+.nav-label {
+   display: none;
+}
+
+/* Sidebar brand: hidden by default, only shows at desktop */
+.sidebar-brand {
+   display: none;
+}
+
 .bottom-nav {
    position: fixed;
    bottom: 0;
@@ -219,5 +230,169 @@
       bottom: calc(-18px - env(safe-area-inset-bottom, 0px));
       width: 104%;
       left: -2%;
+   }
+}
+
+/* =============================================
+   Desktop Sidebar Navigation (≥ 1024px)
+   ADDITIVE ONLY — zero changes to mobile/foldable above.
+   ============================================= */
+
+@media (min-width: 1024px) {
+
+   /* Reposition nav from bottom dock to left sidebar */
+   .bottom-nav {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      transform: none;
+      width: 240px;
+      max-width: 240px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: var(--clr-bg-card-solid);
+      z-index: 10;
+      opacity: 1;
+      pointer-events: all;
+      transition: none;
+   }
+
+   /* ── Sidebar Brand ── */
+   .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+      flex-shrink: 0;
+   }
+
+   .sidebar-brand-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+   }
+
+   .sidebar-brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+      overflow: hidden;
+   }
+
+   .sidebar-brand-name {
+      font-family: var(--ff-primary);
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      color: var(--clr-text-primary);
+      line-height: var(--lh-snug);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   .sidebar-brand-by {
+      font-family: var(--ff-primary);
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-medium);
+      color: var(--clr-accent-500);
+      line-height: var(--lh-snug);
+      white-space: nowrap;
+   }
+
+   /* When Quran opens: sidebar stays visible (Quran is offset by left:240px) */
+   .bottom-nav.nav-hidden {
+      transform: none;
+      opacity: 1;
+      pointer-events: all;
+   }
+
+   /* Hide the floating oval background — sidebar has its own bg */
+   .nav-background-oval {
+      display: none;
+   }
+
+   /* Nav list fills sidebar, stacks items vertically.
+      IMPORTANT: reset line-height:0 from mobile so .nav-label text is visible */
+   .nav-list {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: var(--spacing-sm) var(--spacing-sm);
+      margin: 0;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      gap: var(--spacing-xs);
+      line-height: var(--lh-normal);
+      /* CRITICAL: override mobile line-height:0 */
+   }
+
+   /* Hide the sliding indicator — CSS active state replaces it */
+   .nav-slider {
+      display: none;
+   }
+
+   /* Each nav item is a full-width horizontal row */
+   .nav-item {
+      justify-content: flex-start;
+      width: 100%;
+      height: 48px;
+      padding: 0 var(--spacing-md);
+      border-radius: var(--radius-lg);
+      gap: var(--spacing-md);
+      color: var(--clr-text-muted);
+      transition: background var(--transition-fast), color var(--transition-fast);
+   }
+
+   .nav-item:hover {
+      background: var(--clr-white-a05);
+      color: var(--clr-text-secondary);
+   }
+
+   /* Active state: gold highlight pill */
+   .nav-item.active {
+      background: var(--clr-accent-a20);
+      color: var(--clr-accent-500);
+      border: 1px solid var(--clr-accent-a30);
+   }
+
+   /* Icon stays same size */
+   .nav-item i {
+      font-size: var(--icon-lg);
+      width: var(--icon-lg);
+      height: var(--icon-lg);
+      flex-shrink: 0;
+      transform: none;
+   }
+
+   /* Show label text next to icon */
+   .nav-label {
+      display: block;
+      font-family: var(--ff-primary);
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   /* Keyboard navigation focus ring */
+   .nav-item:focus-visible {
+      outline: 2px solid var(--clr-accent-500);
+      outline-offset: -2px;
+   }
+
+   .nav-item:focus-visible::after {
+      display: none;
    }
 }
