@@ -45,36 +45,18 @@
 }
 
 /* ── Compass Dial Skeleton ── */
-
 .compass-skeleton-dial {
    display: flex;
    justify-content: center;
    align-items: center;
 }
 
-@media (max-width: 320px) {
-   .btn--compass-guide {
-      width: var(--icon-md);
-      min-width: var(--icon-md);
-      height: var(--icon-md);
-      min-height: var(--icon-md);
-      font-size: var(--fs-sm);
-   }
-}
-
-/* =============================================
-   Desktop Compass Layout (≥ 1024px)
-   ADDITIVE ONLY — zero changes to mobile/foldable above.
-   ============================================= */
-
-/* Mobile: wrapper is transparent to layout (display:contents = not a box) */
 .compass-desktop-grid {
    display: contents;
 }
 
+/* ── Desktop Layout (≥ 1024px) ── */
 @media (min-width: 1024px) {
-
-   /* Desktop: 2-column layout using grid areas */
    .compass-desktop-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -83,14 +65,13 @@
          "map    compass"
          "loc    compass"
          "info   compass";
-      gap: var(--spacing-lg);
+      gap: var(--spacing-xl);
       align-items: start;
-      /* left column cards align top within their rows */
       align-content: center;
-      /* grid row-group centered vertically in the grid container */
+      max-width: 1200px;
+      margin: 0 auto;
    }
 
-   /* Assign existing card classes to grid areas */
    .compass-desktop-grid .qibla-map-card {
       grid-area: map;
    }
@@ -103,16 +84,22 @@
       grid-area: info;
    }
 
-   /* Compass dial: centered both horizontally and vertically in its column area */
    .compass-desktop-grid .compass-outer-wrapper {
       grid-area: compass;
       align-self: center;
-      /* vertical center within the multi-row compass area */
       justify-self: center;
-      /* horizontal center within the compass column */
       width: min(420px, 100%);
-      /* respects column width, max 420px */
       margin: 0;
-      /* not needed — justify-self handles centering */
+   }
+}
+
+/* ── Extra Small Mobile (≤ 320px) ── */
+@media (max-width: 320px) {
+   .btn--compass-guide {
+      width: var(--icon-md);
+      min-width: var(--icon-md);
+      height: var(--icon-md);
+      min-height: var(--icon-md);
+      font-size: var(--fs-sm);
    }
 }
