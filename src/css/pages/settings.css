@@ -406,23 +406,52 @@
    line-height: var(--lh-normal);
 }
 
-/* ── Tablet & Foldable Overrides ── */
+/* ── Desktop Layout (≥ 1024px) ── */
+@media screen and (min-width: 1024px) {
+   .settings-page {
+      gap: var(--spacing-xl);
+   }
+
+   .settings-desktop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      align-items: start;
+   }
+
+   .settings-desktop-left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+   }
+
+   .settings-desktop-right {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+   }
+
+   .settings-desktop-grid .settings-loc-card,
+   .settings-desktop-grid .settings-preset-card,
+   .settings-desktop-grid .settings-card-spacing {
+      margin-bottom: 0;
+      margin-top: 0;
+   }
+
+   .settings-desktop-header {
+      grid-column: 1 / -1;
+   }
+}
+
+/* ── Tablet & Foldable (600px - 1023px) ── */
 @media screen and (min-width: 600px) and (max-width: 1023px) {
    .settings-page {
       gap: var(--spacing-lg);
    }
 }
 
-@media screen and (min-width: 1024px) {
-   .settings-page {
-      gap: var(--spacing-xl);
-   }
-}
-
-/* ── Medium-small screens (e.g. ~390px phones) ── */
+/* ── Small Mobile (≤ 390px) ── */
 @media (max-width: 390px) {
-
-   /* ── Uniform horizontal padding for ALL card headers ── */
    .settings-loc-header,
    .settings-preset-header {
       padding: var(--spacing-md);
@@ -441,7 +470,6 @@
       margin: 0 var(--spacing-md);
    }
 
-   /* ── Typography scale-down ── */
    .settings-loc-title,
    .settings-preset-title,
    .settings-card-title {
@@ -467,13 +495,9 @@
       font-size: var(--fs-xs);
    }
 
-   /* ── Icon scale-down to match smaller text ── */
    .settings-loc-map-icon,
    .settings-preset-calendar-icon,
-   .settings-loc-icon {
-      font-size: var(--icon-md);
-   }
-
+   .settings-loc-icon,
    .settings-card-chevron {
       font-size: var(--icon-md);
    }
@@ -484,7 +508,6 @@
       height: 20px;
    }
 
-   /* ── Inner content padding consistency ── */
    .settings-loc-desc,
    .settings-preset-desc {
       padding: 0 var(--spacing-md);
@@ -497,8 +520,8 @@
    }
 }
 
+/* ── Extra Small Mobile (≤ 360px) ── */
 @media (max-width: 360px) {
-
    .settings-item-info {
       font-size: var(--fs-xs);
    }
@@ -512,8 +535,8 @@
    }
 }
 
+/* ── Micro Mobile (≤ 320px) ── */
 @media (max-width: 320px) {
-
    .settings-loc-title,
    .settings-loc-regency,
    .settings-card-title,
@@ -528,44 +551,5 @@
    .settings-preset-desc,
    .settings-platform-notice {
       font-size: var(--fs-2xs);
-   }
-}
-
-/* =============================================
-   Desktop Settings Layout (≥ 1024px)
-   ADDITIVE ONLY — zero changes to mobile/foldable above.
-   ============================================= */
-
-@media (min-width: 1024px) {
-   .settings-desktop-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-xl);
-      align-items: start;
-   }
-
-   .settings-desktop-left {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-lg);
-   }
-
-   .settings-desktop-right {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-lg);
-   }
-
-   /* Remove margin from cards inside grid — gap handles spacing */
-   .settings-desktop-grid .settings-loc-card,
-   .settings-desktop-grid .settings-preset-card,
-   .settings-desktop-grid .settings-card-spacing {
-      margin-bottom: 0;
-      margin-top: 0;
-   }
-
-   /* Make settings title span full width above the grid */
-   .settings-desktop-header {
-      grid-column: 1 / -1;
    }
 }
