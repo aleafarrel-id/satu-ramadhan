@@ -15,7 +15,9 @@
    padding-left: 28px;
    cursor: pointer;
    transition: all var(--transition-fast);
-   width: 100%;
+   max-width: 100%;
+   flex-shrink: 1;
+   min-width: 0;
    min-height: 40px;
 }
 
@@ -51,6 +53,8 @@
    font-weight: var(--fw-bold);
    color: var(--clr-text-primary);
    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 /* =============================================

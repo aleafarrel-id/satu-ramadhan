@@ -264,14 +264,14 @@
    .sidebar-brand {
       display: flex;
       align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg) var(--spacing-md);
       flex-shrink: 0;
    }
 
    .sidebar-brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       object-fit: contain;
       border-radius: var(--radius-full);
       flex-shrink: 0;
@@ -286,7 +286,7 @@
 
    .sidebar-brand-name {
       font-family: var(--ff-primary);
-      font-size: var(--fs-sm);
+      font-size: var(--fs-base);
       font-weight: var(--fw-bold);
       color: var(--clr-text-primary);
       line-height: var(--lh-snug);
@@ -297,7 +297,7 @@
 
    .sidebar-brand-by {
       font-family: var(--ff-primary);
-      font-size: var(--fs-2xs);
+      font-size: var(--fs-xs);
       font-weight: var(--fw-medium);
       color: var(--clr-accent-500);
       line-height: var(--lh-snug);

@@ -202,10 +202,16 @@
       box-shadow: none;
    }
 
+   .tablet-mosque-hero__featured {
+      flex-shrink: 0;
+   }
+
    .tablet-mosque-hero__actions {
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
+      min-width: 0;
+      flex-shrink: 1;
    }
 
    .home-bento-bottom .tablet-full-grid-wrapper {
@@ -228,7 +234,19 @@
 
 /* ── Narrow Desktop (1024px – 1199px) ── */
 @media screen and (min-width: 1024px) and (max-width: 1199px) {
-   #home-btn-kiblat-tablet {
+
+   #home-btn-kiblat-tablet,
+   #org-toggle-tablet {
+      display: none;
+   }
+
+   /* Hide Imsak & sunrise on narrow desktop to avoid cramping */
+   .tablet-full-grid {
+      grid-template-columns: repeat(5, 1fr);
+   }
+
+   .tablet-full-grid .prayer-list-col[data-prayer="imsak"],
+   .tablet-full-grid .prayer-list-col[data-prayer="terbit"] {
       display: none;
    }
 }
@@ -330,10 +348,16 @@
       box-shadow: none;
    }
 
+   .tablet-mosque-hero__featured {
+      flex-shrink: 0;
+   }
+
    .tablet-mosque-hero__actions {
       display: flex;
       align-items: center;
       gap: var(--spacing-xs);
+      min-width: 0;
+      flex-shrink: 1;
    }
 
    .tablet-full-grid {

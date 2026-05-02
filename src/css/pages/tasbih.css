@@ -849,7 +849,11 @@
 
 @media screen and (min-width: 1024px) {
     .tasbih-panel {
-        max-width: 800px;
+        left: 240px;
+        right: 0;
+        width: auto;
+        max-width: none;
+        margin: 0;
     }
 }
 
