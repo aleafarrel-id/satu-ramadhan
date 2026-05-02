@@ -641,7 +641,9 @@
     }
 
     .sched-bento-hero-actions .org-toggle {
+        width: auto;
         flex: 1;
+        min-width: 0;
     }
 
     .sched-bento-right .qibla-map-card {
@@ -714,7 +716,9 @@
     }
 
     .sched-bento-hero-actions .org-toggle {
+        width: auto;
         flex: 1;
+        min-width: 0;
     }
 
     .sched-bento-right .qibla-map-card {

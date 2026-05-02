@@ -211,7 +211,12 @@
       align-items: center;
       gap: var(--spacing-sm);
       min-width: 0;
-      flex-shrink: 1;
+   }
+
+   .tablet-mosque-hero__actions .org-toggle {
+      width: auto;
+      flex: 1;
+      min-width: 0;
    }
 
    .home-bento-bottom .tablet-full-grid-wrapper {
@@ -357,7 +362,12 @@
       align-items: center;
       gap: var(--spacing-xs);
       min-width: 0;
-      flex-shrink: 1;
+   }
+
+   .tablet-mosque-hero__actions .org-toggle {
+      width: auto;
+      flex: 1;
+      min-width: 0;
    }
 
    .tablet-full-grid {

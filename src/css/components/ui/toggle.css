@@ -15,9 +15,7 @@
    padding-left: 28px;
    cursor: pointer;
    transition: all var(--transition-fast);
-   max-width: 100%;
-   flex-shrink: 1;
-   min-width: 0;
+   width: 100%;
    min-height: 40px;
 }
 
