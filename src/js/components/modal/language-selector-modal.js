@@ -11,6 +11,7 @@ import { impact } from '../../modules/system/haptic.js';
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 let _overlayEl = null;
 let _onSelectCallback = null;
@@ -38,7 +39,7 @@ export async function showLanguageSelectorModal({
     _onSelectCallback = onSelect;
 
     _overlayEl = createModalDOM(currentLang);
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     // Register back handlers
     registerModalDismiss(handleCancel);

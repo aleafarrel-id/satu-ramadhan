@@ -17,6 +17,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 // ─── Internal State ───────────────────────────────────────────────────────────
 
@@ -65,7 +66,7 @@ export async function showAudioModeSelectorModal({ currentMode, onSelect } = {})
     _onSelectCallback = onSelect;
 
     _overlayEl = _createModalDOM(currentMode);
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     registerModalDismiss(_handleCancel);
 

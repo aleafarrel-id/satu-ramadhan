@@ -11,6 +11,7 @@ import { impact } from '../../modules/system/haptic.js';
 import { formatDateToYYYYMMDD } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 const SWIPE_THRESHOLD_PX = 50;
 const WHEEL_COOLDOWN_MS  = 600;
@@ -171,7 +172,7 @@ export async function showDatePickerModal({ initialDate, onSelect, minDate, maxD
     }
 
     _overlayEl = createModalDOM();
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     // Bind swipe AFTER appending to DOM so the element is live in the document
     bindSwipeGesture(_overlayEl.querySelector('.date-picker-sheet'));

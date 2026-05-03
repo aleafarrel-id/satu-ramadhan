@@ -26,6 +26,7 @@ import { showDatePickerModal } from './date-picker-modal.js';
 import { formatDateShort, formatDateVerbose, calcRamadhanEndDates } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
@@ -49,7 +50,7 @@ export async function showPresetManagerModal({ onPresetsChanged } = {}) {
     _editingId = null;
 
     _overlayEl = createModalDOM();
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     registerModalDismiss(hideModal);
 

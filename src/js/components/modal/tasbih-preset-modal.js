@@ -16,6 +16,13 @@ import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
 
+/**
+ * Returns the correct mount target for the tasbih preset modal.
+ */
+function getTasbihModalRoot() {
+    return document.getElementById('tasbih-panel') ?? document.body;
+}
+
 let _overlayEl = null;
 let _releaseFocus = null;
 
@@ -41,7 +48,7 @@ export async function showTasbihPresetModal({ onComplete } = {}) {
     const customPresets = store.getState('tasbih.customPresets') || [];
 
     _overlayEl = createModalDOM();
-    document.body.appendChild(_overlayEl);
+    getTasbihModalRoot().appendChild(_overlayEl);
 
     registerModalDismiss(hideModal);
 

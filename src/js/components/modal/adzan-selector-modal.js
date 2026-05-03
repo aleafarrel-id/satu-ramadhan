@@ -14,6 +14,7 @@ import { AVAILABLE_ADZANS, resolveAudioFile, DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH 
 import { PrayerService } from '../../modules/notification/native-notification.js';
 import { isNative } from '../../modules/system/platform.js';
 import * as Notif from '../../modules/notification/notification.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 let _overlayEl = null;
 let _onSelectCallback = null;
@@ -48,7 +49,7 @@ export async function showAdzanSelectorModal({ currentAdzan, currentAdzanSubuh, 
     _state.activeTab = 'normal';
 
     _overlayEl = _createModalDOM();
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     _renderOptions();
 

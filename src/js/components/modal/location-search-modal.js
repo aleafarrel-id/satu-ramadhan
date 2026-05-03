@@ -12,6 +12,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import { handleManualLocationSelection } from '../../utils/location-feedback.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
@@ -34,7 +35,7 @@ export async function showLocationSearchModal({ onLocationSelected } = {}) {
 
     _onLocationSelected = onLocationSelected || null;
     _overlayEl = createModalDOM();
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     // Register with hardware back handler
     registerModalDismiss(hideModal);

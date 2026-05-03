@@ -192,6 +192,10 @@
     }
 }
 
+#tasbih-panel .tb-preset-overlay {
+    position: absolute;
+}
+
 @media screen and (max-width: 380px) {
     .tb-preset-input {
         padding: 10px 12px;

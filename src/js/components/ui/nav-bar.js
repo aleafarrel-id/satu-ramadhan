@@ -26,6 +26,7 @@ export async function render(container, onNavigate, initialActiveTabId = 'home')
     _container.innerHTML = '';
 
     await loadNS('components/ui/nav-bar');
+    await loadNS('common');
 
     // Sidebar brand (desktop only — hidden via CSS on mobile/foldable)
     const sidebarBrand = document.createElement('div');
@@ -34,7 +35,7 @@ export async function render(container, onNavigate, initialActiveTabId = 'home')
     sidebarBrand.innerHTML = `
         <img src="/favicon/favicon.png" alt="" class="sidebar-brand-logo" />
         <div class="sidebar-brand-text">
-            <span class="sidebar-brand-name">Satu Ramadhan</span>
+            <span class="sidebar-brand-name">${t('common:app_name')}</span>
             <span class="sidebar-brand-by">by Alea Farrel</span>
         </div>
     `;

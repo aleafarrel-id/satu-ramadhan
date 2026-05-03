@@ -534,7 +534,7 @@ function _bindEvents() {
     // Guard: native buttons and links already handle Enter/Space — do not intercept.
     _el.list.addEventListener('keydown', e => {
         if (e.key !== 'Enter' && e.key !== ' ') return;
-        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+        if (['BUTTON', 'A', 'INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
         const item = e.target.closest('.tasbih-list-item');
         if (!item) return;
         e.preventDefault();

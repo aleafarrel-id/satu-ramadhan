@@ -9,6 +9,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 // Utilities & Helpers
 import { t, loadNS } from '../../core/i18n.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -27,7 +28,7 @@ export async function showCalendarModal({ scheduleData, currentIndex, onSelectDa
     await loadNS('components/modal/calendar-modal');
 
     _overlayEl = createModalDOM(scheduleData, currentIndex, onSelectDay);
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     // Register with hardware back handler
     registerModalDismiss(hideCalendarModal);

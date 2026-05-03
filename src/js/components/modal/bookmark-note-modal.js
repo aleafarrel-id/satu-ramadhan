@@ -9,6 +9,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -24,7 +25,7 @@ export async function showBookmarkNoteModal(initialNote, onSave) {
     _onSaveCallback = onSave;
 
     _overlayEl = createModalDOM(initialNote || '');
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     registerModalDismiss(handleCancel);
 

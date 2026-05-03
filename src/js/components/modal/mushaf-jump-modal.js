@@ -11,6 +11,7 @@ import { getTotalPages, clampPage } from '../../modules/quran/mushaf/mushaf-api.
 // Utilities & Helpers
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 
 let _overlayEl = null;
 let _onJumpCallback = null;
@@ -27,7 +28,7 @@ export async function showMushafJumpModal({ current = 1, onJump } = {}) {
     _onJumpCallback = onJump;
 
     _overlayEl = createModalDOM(current);
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     registerModalDismiss(handleCancel);
 

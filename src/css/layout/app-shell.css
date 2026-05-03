@@ -333,4 +333,42 @@
    .page.active {
       display: block;
    }
+
+   /* ── Desktop Modal Portal ─────────────────────────────────────────────
+      The portal occupies the same CSS Grid area as .app-content ('content').
+      Grid allows multiple items in the same area — they stack via z-index.
+      
+      The critical property is transform:translate(0): it creates a new CSS
+      containing block, so any descendant with position:fixed is anchored
+      to this element (not the viewport). This scopes all sheet modals
+      visually within the content area, away from sidebar and header.
+      ──────────────────────────────────────────────────────────────────── */
+   #content-modal-portal {
+      /* Stack in the same cell as app-content */
+      grid-area: content;
+      /* Cover the full grid cell */
+      position: relative;
+      /* The key: creates a CSS containing block for position:fixed descendants */
+      transform: translate(0);
+      /* Match the content area's top-left decorative curve */
+      border-top-left-radius: 24px;
+      overflow: hidden;
+      /* Invisible / pass-through when no modal is active */
+      pointer-events: none;
+      /* Float above page content */
+      z-index: var(--z-modal);
+   }
+
+   /* When a modal overlay is injected, accept pointer events */
+   #content-modal-portal:not(:empty) {
+      pointer-events: auto;
+   }
+
+   /* Any overlay injected into the portal fills the entire portal area.
+      This overrides position:fixed (which would normally be viewport-relative)
+      and is the core of the containment mechanism. */
+   #content-modal-portal > * {
+      position: absolute !important;
+      inset: 0 !important;
+   }
 }

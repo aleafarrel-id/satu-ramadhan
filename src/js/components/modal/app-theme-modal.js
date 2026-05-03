@@ -8,6 +8,7 @@ import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { executeThemeTransition } from '../../utils/theme-transition.js';
 import { t, loadNS } from '../../core/i18n.js';
+import { getModalRoot } from '../../utils/modal-portal.js';
 import { store } from '../../core/store.js';
 import { isDarkPrayer, applyToDOM } from '../../core/theme.js';
 
@@ -31,7 +32,7 @@ export async function showAppThemeModal() {
     const currentTheme = store.getState('settings.theme') ?? 'auto';
 
     _overlayEl = createModalDOM(currentTheme);
-    document.body.appendChild(_overlayEl);
+    getModalRoot().appendChild(_overlayEl);
 
     registerModalDismiss(handleCancel);
 

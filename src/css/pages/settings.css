@@ -406,6 +406,32 @@
    line-height: var(--lh-normal);
 }
 
+/* ── Mobile Layout (Default) ── */
+.settings-desktop-grid {
+   display: flex;
+   flex-direction: column;
+   gap: var(--spacing-lg);
+}
+
+.settings-desktop-left,
+.settings-desktop-right {
+   display: contents;
+}
+
+.settings-desktop-grid .settings-loc-card,
+.settings-desktop-grid .settings-preset-card,
+.settings-desktop-grid .settings-card-spacing {
+   margin-top: 0;
+   margin-bottom: 0;
+}
+
+#settings-loc-card-container { order: 1; }
+#settings-preset-card-container { order: 2; }
+#settings-display-panel-container { order: 3; }
+#settings-panel-container { order: 4; }
+#settings-quran-panel-container { order: 5; }
+#settings-about-app-container { order: 6; }
+
 /* ── Desktop Layout (≥ 1024px) ── */
 @media screen and (min-width: 1024px) {
    .settings-page {
@@ -419,23 +445,20 @@
       align-items: start;
    }
 
-   .settings-desktop-left {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-lg);
-   }
-
+   .settings-desktop-left,
    .settings-desktop-right {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-lg);
    }
 
-   .settings-desktop-grid .settings-loc-card,
-   .settings-desktop-grid .settings-preset-card,
-   .settings-desktop-grid .settings-card-spacing {
-      margin-bottom: 0;
-      margin-top: 0;
+   #settings-loc-card-container,
+   #settings-preset-card-container,
+   #settings-panel-container,
+   #settings-display-panel-container,
+   #settings-quran-panel-container,
+   #settings-about-app-container {
+      order: 0;
    }
 
    .settings-desktop-header {
