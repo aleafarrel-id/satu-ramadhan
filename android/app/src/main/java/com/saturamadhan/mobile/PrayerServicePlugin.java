@@ -10,6 +10,10 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import android.app.ActivityManager;
+import android.app.NotificationManager;
+import android.os.PowerManager;
+
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 
@@ -177,6 +181,60 @@ public class PrayerServicePlugin extends Plugin {
         JSObject result = new JSObject();
         result.put("opened", opened);
         call.resolve(result);
+    }
+
+    /**
+     * Diagnostic method to safely check OS restrictions.
+     * Helpful for JavaScript to show tailored warnings if the OS is aggressively killing the app.
+     */
+    @PluginMethod()
+    public void checkDiagnostics(PluginCall call) {
+        Context context = getContext();
+        JSObject result = new JSObject();
+
+        try {
+            boolean isBackgroundRestricted = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                if (am != null) {
+                    isBackgroundRestricted = am.isBackgroundRestricted();
+                }
+            }
+            result.put("isBackgroundRestricted", isBackgroundRestricted);
+
+            boolean isIgnoringBatteryOptimizations = true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                if (pm != null) {
+                    isIgnoringBatteryOptimizations = pm.isIgnoringBatteryOptimizations(context.getPackageName());
+                }
+            }
+            result.put("isIgnoringBatteryOptimizations", isIgnoringBatteryOptimizations);
+
+            boolean canScheduleExactAlarms = true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                if (alarmManager != null) {
+                    canScheduleExactAlarms = alarmManager.canScheduleExactAlarms();
+                }
+            }
+            result.put("canScheduleExactAlarms", canScheduleExactAlarms);
+
+            boolean areNotificationsEnabled = true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nm != null) {
+                    areNotificationsEnabled = nm.areNotificationsEnabled();
+                }
+            }
+            result.put("areNotificationsEnabled", areNotificationsEnabled);
+
+            call.resolve(result);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check diagnostics: " + e.getMessage());
+            call.reject("Diagnostics failed", e);
+        }
     }
 
     // ── Internal Scheduling Logic ────────────────────────────────────

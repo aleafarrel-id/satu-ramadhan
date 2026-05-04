@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.PowerManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -28,6 +29,14 @@ public class PrayerAlarmReceiver extends BroadcastReceiver {
         if (!notificationsEnabled) {
             Log.d(TAG, "Alarm fired but notifications are disabled — silently dropping.");
             return;
+        }
+
+        // Extend Wakelock for 5 seconds to ensure CPU doesn't sleep before Service acquires its own WakeLock
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (pm != null) {
+            PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SatuRamadhan:AlarmReceiverWakeLock");
+            wakeLock.acquire(5000); 
+            Log.d(TAG, "Temporary Wakelock acquired to bridge service start");
         }
 
         String prayerKey = intent.getStringExtra(Constants.EXTRA_PRAYER_KEY);

@@ -5,7 +5,7 @@
 
 export const CONFIG = {
     appName: 'Satu Ramadhan',
-    version: '1.4-stable',
+    version: '1.5-stable',
     developer: 'Alea Farrel',
     privacyPolicyUrl: 'https://saturamadhan-policy.afarrel.workers.dev/'
 };
