@@ -157,8 +157,8 @@
 @media screen and (min-width: 600px) {
     .ss-modal {
         max-width: 100%;
-        padding-left: max(var(--spacing-lg), calc((100vw - 800px) / 2));
-        padding-right: max(var(--spacing-lg), calc((100vw - 800px) / 2));
+        padding-left: max(var(--spacing-lg), calc((100vw - 1000px) / 2));
+        padding-right: max(var(--spacing-lg), calc((100vw - 1000px) / 2));
     }
 }
 

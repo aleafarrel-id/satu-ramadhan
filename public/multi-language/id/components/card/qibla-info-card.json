@@ -1,5 +1,5 @@
 {
     "title": "ARAH KIBLAT",
     "calibration_guide": "Panduan Kalibrasi",
-    "no_gyroscope": "Perangkat tidak memiliki sensor gyroscope."
+    "no_gyroscope": "Perangkat tidak memiliki sensor kompas (magnetometer)."
 }

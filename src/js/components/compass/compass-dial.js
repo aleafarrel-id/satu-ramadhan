@@ -75,8 +75,9 @@ let _cachedContainer = null;
  * Updates the compass UI angles via CSS variables
  * @param {number} heading - The device heading (0-360)
  * @param {number} qiblaAngle - The angle to the Qibla relative to True North
+ * @param {boolean|null} hasGyroscope - Whether the device has a valid compass sensor
  */
-export function updateCompassUI(heading, qiblaAngle) {
+export function updateCompassUI(heading, qiblaAngle, hasGyroscope = null) {
     if (!_cachedContainer || !_cachedContainer.isConnected) {
         _cachedContainer = document.getElementById('compass-dial-container');
     }
@@ -84,4 +85,10 @@ export function updateCompassUI(heading, qiblaAngle) {
 
     _cachedContainer.style.setProperty('--heading', `${heading}deg`);
     _cachedContainer.style.setProperty('--qibla-angle', `${qiblaAngle}deg`);
+
+    if (hasGyroscope === false) {
+        _cachedContainer.classList.add('compass-container--muted');
+    } else {
+        _cachedContainer.classList.remove('compass-container--muted');
+    }
 }

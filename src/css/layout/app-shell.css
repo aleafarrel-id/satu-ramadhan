@@ -269,13 +269,6 @@
    ============================================= */
 
 @media (min-width: 1024px) {
-
-   /* Override tablet max-width: the sidebar needs full width */
-   /* Override #app background at desktop:
-      The curve notch on .app-content reveals #app's background.
-      By matching it to --clr-bg-card-solid (same as sidebar/header),
-      the curve looks seamless. Works for both light & dark theme
-      via the design token. */
    #app {
       background: var(--clr-bg-card-solid);
    }
@@ -298,13 +291,12 @@
    .app-content {
       grid-area: content;
       padding-bottom: var(--spacing-md);
-      /* Restore original theme gradient — no theme override */
       background: var(--clr-bg-gradient);
-      /* Curved join at top-left: sidebar+header panel vs content area */
       border-top-left-radius: 24px;
+      border-top: 1px solid var(--clr-border-light);
+      border-left: 1px solid var(--clr-border-light);
    }
 
-   /* Restore pattern overlay on top of the content background */
    .app-content::before {
       content: '';
       position: absolute;
@@ -315,59 +307,34 @@
       opacity: 0.65;
    }
 
-   /* Ensure content children sit above the absolute pattern */
-   .app-content > * {
+   .app-content>* {
       position: relative;
       z-index: 1;
    }
 
-   /* bottom-nav is assigned to sidebar area via navigation.css */
    .bottom-nav {
       grid-area: sidebar;
    }
 
-   /* At desktop pages don't need the bottom-nav compensation.
-      margin-top/bottom: auto (from base CSS) provides vertical centering
-      for short-content pages like compass within the flex app-content area.
-      For tall pages (home/schedule/settings), overflow makes margins resolve to 0 — safe. */
    .page.active {
       display: block;
    }
 
-   /* ── Desktop Modal Portal ─────────────────────────────────────────────
-      The portal occupies the same CSS Grid area as .app-content ('content').
-      Grid allows multiple items in the same area — they stack via z-index.
-      
-      The critical property is transform:translate(0): it creates a new CSS
-      containing block, so any descendant with position:fixed is anchored
-      to this element (not the viewport). This scopes all sheet modals
-      visually within the content area, away from sidebar and header.
-      ──────────────────────────────────────────────────────────────────── */
    #content-modal-portal {
-      /* Stack in the same cell as app-content */
       grid-area: content;
-      /* Cover the full grid cell */
       position: relative;
-      /* The key: creates a CSS containing block for position:fixed descendants */
       transform: translate(0);
-      /* Match the content area's top-left decorative curve */
       border-top-left-radius: 24px;
       overflow: hidden;
-      /* Invisible / pass-through when no modal is active */
       pointer-events: none;
-      /* Float above page content */
       z-index: var(--z-modal);
    }
 
-   /* When a modal overlay is injected, accept pointer events */
    #content-modal-portal:not(:empty) {
       pointer-events: auto;
    }
 
-   /* Any overlay injected into the portal fills the entire portal area.
-      This overrides position:fixed (which would normally be viewport-relative)
-      and is the core of the containment mechanism. */
-   #content-modal-portal > * {
+   #content-modal-portal>* {
       position: absolute !important;
       inset: 0 !important;
    }

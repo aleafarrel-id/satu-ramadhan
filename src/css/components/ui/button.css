@@ -39,7 +39,8 @@
 
 .btn--gold {
    background: var(--clr-accent-500);
-   color: #1a2a3a; /* Force dark color to prevent white-on-gold inversion in dark mode */
+   color: #1a2a3a;
+   /* Force dark color to prevent white-on-gold inversion in dark mode */
    font-weight: var(--fw-semibold);
 }
 
@@ -159,7 +160,7 @@
 @media (max-width: 360px) {
    .btn {
       font-size: var(--fs-2xs);
-      padding: 2px var(--spacing-xs);
+      padding: 10px var(--spacing-xs);
       min-height: 32px;
       min-width: 32px;
    }

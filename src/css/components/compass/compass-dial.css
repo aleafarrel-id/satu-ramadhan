@@ -186,6 +186,32 @@
     object-fit: contain;
 }
 
+/* ── Muted State (no compass sensor available) ── */
+
+.compass-container--muted {
+    pointer-events: none;
+}
+
+.compass-container--muted .compass-dial-wrapper {
+    transform: none;
+    filter: saturate(0.15) brightness(0.6);
+    opacity: 0.5;
+}
+
+.compass-container--muted .compass-needle {
+    opacity: 0.6;
+    filter: saturate(0);
+}
+
+.compass-container--muted .qibla-indicator-wrapper {
+    filter: saturate(0);
+}
+
+.compass-container--muted .compass-inner {
+    filter: saturate(0.1) brightness(0.65);
+    opacity: 0.5;
+}
+
 /* Responsive adjustments for varying screen sizes */
 
 /* ── Large Tablet (1024px and up) ── */

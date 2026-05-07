@@ -1,5 +1,5 @@
 {
     "title": "QIBLA DIRECTION",
     "calibration_guide": "Calibration Guide",
-    "no_gyroscope": "Device does not have a gyroscope sensor."
+    "no_gyroscope": "Device does not have a compass sensor (magnetometer)."
 }

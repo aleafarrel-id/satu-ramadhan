@@ -13,6 +13,8 @@ import { updateQiblaInfoCard } from '../../components/card/qibla-info-card.js';
 // Utilities & Modules
 import { doubleVibrate } from '../system/haptic.js';
 import { getMagneticDeclination } from './magnetic-declination.js';
+import * as Notification from '../notification/notification.js';
+import { t } from '../../core/i18n.js';
 
 const QIBLA_TOLERANCE_DEG = 2;
 const HAPTIC_COOLDOWN_MS = 2000;
@@ -25,10 +27,13 @@ const SMOOTHING_FACTOR = 0.25;
 const MIN_CHANGE_DEG = 0.1;
 
 /**
- * Global gyroscope detection cache.
+ * Global magnetometer hardware detection cache.
  * null = pending, true = available, false = absent
  */
 let _globalHasGyroscope = null;
+
+/** Ensures the toast for missing compass sensor fires only once per session. */
+let _noSensorToastShown = false;
 
 export default class QiblaCompass {
     constructor() {
@@ -72,27 +77,38 @@ export default class QiblaCompass {
 
     /**
      * Start listening to device orientation for live compass heading.
+     * Runs a proactive magnetometer hardware probe first (Generic Sensor API),
+     * then falls back to the event-based detection timeout.
      */
-    start() {
+    async start() {
         if (this._started) return;
         this._started = true;
 
+        // Fast-path: already confirmed absent in this session
         if (_globalHasGyroscope === false) {
             this._markNoGyroscope();
             return;
         }
 
-        this._orientationHandler = (event) => {
-            const hasWebkit = typeof event.webkitCompassHeading === 'number';
-            const hasAlpha = typeof event.alpha === 'number';
+        // Proactive hardware probe — no behavioral analysis, no false positives
+        if (_globalHasGyroscope === null) {
+            const hasMagnetometer = await this._probeMagnetometerHardware();
+            if (hasMagnetometer === false) {
+                _globalHasGyroscope = false;
+                this._markNoGyroscope();
+                return;
+            }
+        }
 
-            if (!hasWebkit && !hasAlpha) return;
+        this._orientationHandler = (event) => {
+            const hasAlpha = typeof event.alpha === 'number';
+            if (!hasAlpha) return;
 
             const isAbsoluteEvent = event.type === 'deviceorientationabsolute' || event.absolute === true;
-            if (!hasWebkit && !isAbsoluteEvent) return;
+            if (!isAbsoluteEvent) return;
 
-            // iOS webkitCompassHeading = True North, Android alpha = Magnetic North
-            const rawHeading = hasWebkit ? event.webkitCompassHeading : (360 - event.alpha);
+            // Android alpha = Magnetic North
+            const rawHeading = 360 - event.alpha;
 
             if (!Number.isFinite(rawHeading)) return;
 
@@ -103,31 +119,21 @@ export default class QiblaCompass {
                 this._clearGyroDetectTimer();
             }
 
-            // Apply declination only for alpha-based (Android); iOS already True North
-            const trueHeading = hasWebkit ? rawHeading : this._applyDeclination(rawHeading);
+            // Apply declination for alpha-based (Android)
+            const trueHeading = this._applyDeclination(rawHeading);
 
             this._heading = this._smoothHeading(trueHeading);
             this._scheduleUpdate();
         };
 
-        // iOS 13+ requires permission request
-        if (typeof DeviceOrientationEvent !== 'undefined' &&
-            typeof DeviceOrientationEvent.requestPermission === 'function') {
-            DeviceOrientationEvent.requestPermission()
-                .then(state => {
-                    if (state === 'granted') {
-                        this._listenOrientation();
-                    } else {
-                        this._markNoGyroscope();
-                    }
-                })
-                .catch(() => this._markNoGyroscope());
-        } else if (typeof DeviceOrientationEvent !== 'undefined') {
+        if (typeof DeviceOrientationEvent !== 'undefined') {
             this._listenOrientation();
         } else {
             this._markNoGyroscope();
         }
 
+        // Event-based fallback timeout (catches non-conformant browsers
+        // that silently provide no absolute orientation events)
         this._gyroDetectTimer = setTimeout(() => {
             if (!this._receivedOrientation) {
                 this._markNoGyroscope();
@@ -188,12 +194,75 @@ export default class QiblaCompass {
         window.addEventListener('deviceorientation', this._orientationHandler, true);
     }
 
+    /**
+     * Proactively checks magnetometer hardware availability via the Generic
+     * Sensor API before attaching DeviceOrientation listeners.
+     * This is hardware detection — immune to user motion false positives.
+     *
+     * @returns {Promise<boolean|null>} true = present, false = absent, null = unknown
+     * @private
+     */
+    async _probeMagnetometerHardware() {
+        // Try AbsoluteOrientationSensor (Chrome 67+ Android, requires magnetometer)
+        if (typeof AbsoluteOrientationSensor !== 'undefined') {
+            try {
+                const sensor = new AbsoluteOrientationSensor({ frequency: 1 });
+                await new Promise((resolve, reject) => {
+                    sensor.addEventListener('error', (e) => reject(e.error), { once: true });
+                    sensor.addEventListener('reading', () => { sensor.stop(); resolve(); }, { once: true });
+                    sensor.start();
+                    // Short timeout: if no reading in 800ms, still consider hardware present
+                    // (user may be stationary). We only fail on explicit hardware errors.
+                    setTimeout(() => { sensor.stop(); resolve(); }, 800);
+                });
+                return true;
+            } catch (e) {
+                if (e.name === 'NotSupportedError' || e.name === 'NotReadableError') {
+                    return false; // Hardware confirmed absent
+                }
+                // SecurityError / NotAllowedError = can't determine, fall through
+            }
+        }
+
+        // Try Magnetometer API directly (Chrome 67+)
+        if (typeof Magnetometer !== 'undefined') {
+            try {
+                const mag = new Magnetometer({ frequency: 1 });
+                await new Promise((resolve, reject) => {
+                    mag.addEventListener('error', (e) => reject(e.error), { once: true });
+                    mag.addEventListener('reading', () => { mag.stop(); resolve(); }, { once: true });
+                    mag.start();
+                    setTimeout(() => { mag.stop(); resolve(); }, 800);
+                });
+                return true;
+            } catch (e) {
+                if (e.name === 'NotSupportedError' || e.name === 'NotReadableError') {
+                    return false;
+                }
+            }
+        }
+
+        // Generic Sensor API not available; rely on event-based fallback 
+        return null;
+    }
+
     /** @private */
     _markNoGyroscope() {
         this._hasGyroscope = false;
         _globalHasGyroscope = false;
         this._clearGyroDetectTimer();
+        this._showNoSensorToast();
         this._update();
+    }
+
+    /**
+     * Fires a one-time toast informing the user their device lacks a compass sensor.
+     * @private
+     */
+    _showNoSensorToast() {
+        if (_noSensorToastShown) return;
+        _noSensorToastShown = true;
+        Notification.warning(t('pages/compass-page:toast_no_sensor'));
     }
 
     /** @private */
@@ -254,7 +323,7 @@ export default class QiblaCompass {
 
     /** @private */
     _update() {
-        updateCompassUI(this._heading, this._qiblaAngle);
+        updateCompassUI(this._heading, this._qiblaAngle, this._hasGyroscope);
         updateQiblaInfoCard(this._heading, this._qiblaAngle, this._hasGyroscope);
     }
 

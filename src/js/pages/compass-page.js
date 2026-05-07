@@ -186,7 +186,7 @@ async function renderContent(loc) {
     `;
 
     if (hasData && _compass) {
-        updateCompassUI(_compass.heading, _compass.qiblaAngle);
+        updateCompassUI(_compass.heading, _compass.qiblaAngle, _compass.hasGyroscope);
         updateQiblaInfoCard(_compass.heading, _compass.qiblaAngle, _compass.hasGyroscope);
     }
 
