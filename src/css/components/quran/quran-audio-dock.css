@@ -218,10 +218,12 @@
     font-size: var(--fs-3xl);
 }
 
-/* Stop/cancel button subtle */
+/* Stop/cancel button */
 .quran-audio-dock-btn[data-action="stop"],
 .quran-audio-dock-btn[data-action="dl-cancel"] {
-    opacity: 0.6;
+    color: var(--clr-danger);
+    background: rgba(255, 59, 59, 0.12);
+    opacity: 0.95;
 }
 
 /* ── Download Mode ── */
@@ -265,6 +267,13 @@
     .quran-audio-dock-btn:hover {
         color: var(--clr-quran-accent);
         background: var(--clr-quran-bg-alt);
+    }
+
+    .quran-audio-dock-btn[data-action="stop"]:hover,
+    .quran-audio-dock-btn[data-action="dl-cancel"]:hover {
+        color: var(--clr-danger);
+        background: rgba(255, 59, 59, 0.22);
+        opacity: 1;
     }
 
     .quran-audio-dock-btn[data-action="play-pause"]:hover,

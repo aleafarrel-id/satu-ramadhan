@@ -142,16 +142,10 @@ export function render(container) {
             store.setState('settings.notification', true);
             updateAdzanRowState(true, container);
             Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
-
-            if (!store.getState('settings.battery_opt_seen')) {
-                setTimeout(() => showBatterySafetyDialog(), 350);
-            }
             return;
         }
 
         // OS permission not yet granted — show rationale before OS prompt
-        let shouldShowBattery = false;
-
         await showPermissionDialogPreset('notification', {
             onConfirm: async () => {
                 const granted = await requestNotificationPermission();
@@ -159,10 +153,6 @@ export function render(container) {
                     store.setState('settings.notification', true);
                     updateAdzanRowState(true, container);
                     Notif.show(t('components/settings/settings-panel:notif_on'), 'success');
-
-                    // Tandai bahwa dialog baterai perlu dimunculkan nanti
-                    // (setelah dialog ini benar-benar selesai tertutup)
-                    shouldShowBattery = true;
                 } else {
                     notificationToggle.checked = false;
                     store.setState('settings.notification', false);
@@ -175,11 +165,6 @@ export function render(container) {
                 updateAdzanRowState(false, container);
             }
         });
-
-        // Dialog Notifikasi sudah dianimasikan keluar & dihapus dari DOM secara presisi
-        if (shouldShowBattery && !store.getState('settings.battery_opt_seen')) {
-            showBatterySafetyDialog();
-        }
     });
 
     adzanToggle?.addEventListener('change', (e) => {
