@@ -9,6 +9,7 @@ import { toggleOrg, getOrgDisplayNameAsync } from '../../modules/schedule/ramadh
 import { impact } from '../../modules/system/haptic.js';
 import * as notif from '../../modules/notification/notification.js';
 import { t } from '../../core/i18n.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 /**
  * Remove timezone notes, e.g. "04:12 (WIB)" → "04:12".
@@ -51,7 +52,7 @@ export function renderOrgToggle(orgName, id = 'org-toggle') {
     return `
         <button class="org-toggle" id="${id}">
             <span class="org-toggle__icon-circle"><i class='bx bxs-home'></i></span>
-            <span class="org-toggle__label" id="${id}-label">${orgName}</span>
+            <span class="org-toggle__label" id="${id}-label">${escapeHtml(orgName)}</span>
         </button>
     `;
 }

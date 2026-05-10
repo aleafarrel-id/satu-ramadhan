@@ -3,6 +3,7 @@
  */
 
 import { cleanTimeStr } from '../../utils/datetime.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 import { t } from '../../core/i18n.js';
 
 /** Template URL served by Vite or compiled by Rollup */
@@ -283,9 +284,9 @@ function injectTableRows(tbody, scheduleData) {
         if (isSunday) hijriCellClass += ' share-schedule__cell-hijri--sunday';
 
         const monthsShort = t('components/ui/header:months_short', { returnObjects: true }) || [];
-        const hijriDisplay = `${entry.hijriDay} ${entry.hijriMonthName || ''}`;
+        const hijriDisplay = `${escapeHtml(String(entry.hijriDay))} ${escapeHtml(entry.hijriMonthName || '')}`;
         const dateGregorian = entry.date instanceof Date
-            ? `${entry.date.getDate()} ${monthsShort[entry.date.getMonth()] || ''}`
+            ? `${escapeHtml(String(entry.date.getDate()))} ${escapeHtml(monthsShort[entry.date.getMonth()] || '')}`
             : '—';
 
         const tm = entry.timings || {};

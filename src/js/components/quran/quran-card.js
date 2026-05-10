@@ -168,7 +168,7 @@ export function renderEmptyState(container) {
  * Renders the error state.
  */
 export function renderErrorState(container, message = null) {
-   const errMsg = message || t('components/quran/quran-card:error_load');
+   const errMsg = escapeHtml(message || t('components/quran/quran-card:error_load'));
    safeClear(container);
    const errorEl = document.createElement('div');
    errorEl.className = 'quran-empty';
