@@ -25,6 +25,7 @@ import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js
 
 // Network
 import { initOfflineUpdater } from './modules/network/offline-updater.js';
+import { syncRemoteConfig } from './modules/network/remote-config.js';
 
 // Permission UI
 import { showPermissionDialogPreset } from './modules/permission/permission-dialog-configs.js';
@@ -67,6 +68,10 @@ export async function initApp() {
 
     // Hydrate persistent state before anything else
     await store.hydrate();
+
+    // Fire-and-forget: fetch latest Ramadhan config from Cloudflare Pages.
+    // Runs in the background; result is cached to storage and used on next getRamadhanConfig() call.
+    syncRemoteConfig().catch(() => {});
 
     // Initialize Theme globally before painting
     initTheme();
@@ -330,6 +335,9 @@ function initAppResumeListener() {
             if (state.isActive) {
                 console.log('[App] Resumed — syncing 30-day notifications');
                 syncNotifications();
+
+                // Refresh remote Ramadhan config in the background on resume
+                syncRemoteConfig().catch(() => {});
 
                 // Sync UI/Theme against clock drifts during sleep
                 import('./modules/prayer/prayer-watcher.js')

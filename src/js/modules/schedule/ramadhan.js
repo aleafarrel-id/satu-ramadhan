@@ -124,7 +124,7 @@ async function checkAndResetYear(jsonYear, basePresets) {
  * @returns {Promise<Array<object>>} merged preset list
  */
 export async function getAllPresets() {
-    const config = getRamadhanConfig();
+    const config = await getRamadhanConfig();
     const basePresets = config.presets || [];
 
     // Smart year reset
@@ -174,9 +174,9 @@ export async function getActivePreset() {
 export async function getSelectedOrg() {
     const org = store.getState('settings.org');
     if (org) return org;
-    
+
     // Fallback to default JSON on failure
-    const config = getRamadhanConfig();
+    const config = await getRamadhanConfig();
     return config.presets?.[0]?.id || 'nu';
 }
 
@@ -267,10 +267,10 @@ export async function getRamadhanTotalDays(org = null) {
  * @param {string|null} orgId - preset ID
  * @returns {string}
  */
-export function getOrgDisplayName(orgId = null) {
-    if (!orgId) return getRamadhanConfig().presets?.[0]?.name || 'Nahdlatul Ulama (NU)';
+export async function getOrgDisplayName(orgId = null) {
+    const config = await getRamadhanConfig();
+    if (!orgId) return config.presets?.[0]?.name || 'Nahdlatul Ulama (NU)';
 
-    const config = getRamadhanConfig();
     const preset = config.presets?.find(p => p.id === orgId);
     return preset?.name || orgId;
 }
@@ -301,7 +301,7 @@ export async function getOrgDescription(org = null) {
  */
 export async function updatePreset(id, newData) {
     const data = await getUserPresetsData();
-    const config = getRamadhanConfig();
+    const config = await getRamadhanConfig();
     const isBase = config.presets?.some(p => p.id === id);
 
     if (isBase) {
@@ -355,7 +355,7 @@ export async function deleteCustomPreset(id) {
     // Fallback if deleted preset was the active one
     const selectedId = await getSelectedOrg();
     if (selectedId === id) {
-        const config = getRamadhanConfig();
+        const config = await getRamadhanConfig();
         const fallbackId = config.presets?.[0]?.id || 'nu';
         await setSelectedOrg(fallbackId);
     }

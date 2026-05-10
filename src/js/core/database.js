@@ -3,12 +3,11 @@
  */
 
 import { logError } from '../utils/error-boundary.js';
-
-// Data
-import ramadhanData from '../../data/ramadhan.json';
+import { getCachedRemoteConfig } from '../modules/network/remote-config.js';
 
 let _provinces = null;
 let _regencies = null;
+let _ramadhan = null;
 
 /**
  * Fetch and cache the province list.
@@ -46,10 +45,34 @@ export async function fetchRegencies() {
     return _regencies;
 }
 
-let _ramadhan = null;
+/**
+ * Get the Ramadhan config, preferring the remote-cached version if it has
+ * a newer Hijri year than the local bundled file.
+ *
+ * Priority: remote cache (storage) > local public file
+ *
+ * @returns {Promise<object>}
+ */
+export async function getRamadhanConfig() {
+    if (_ramadhan) return _ramadhan;
 
-export function getRamadhanConfig() {
-    if (!_ramadhan) _ramadhan = ramadhanData;
+    // Load local file from public/data/ (always available, served as static asset)
+    let localData = null;
+    try {
+        const res = await fetch('./data/ramadhan.json');
+        localData = await res.json();
+    } catch (e) {
+        logError('[DB] Failed to load local ramadhan.json', e);
+    }
+
+    // Load remote-cached config persisted by remote-config.js
+    const remoteData = await getCachedRemoteConfig();
+
+    // Use remote data only if it's strictly newer than the local file
+    const localYear = localData?.tahunHijriah ?? 0;
+    const remoteYear = remoteData?.tahunHijriah ?? 0;
+
+    _ramadhan = (remoteYear > localYear ? remoteData : localData) ?? { presets: [] };
     return _ramadhan;
 }
 

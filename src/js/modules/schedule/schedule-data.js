@@ -129,8 +129,8 @@ async function computeHijriMonthDates(location) {
  * @param {Object} preset - Active preset with startDate/endDate
  * @returns {{ dates: Date[], hijriMeta: Object }}
  */
-function computeRamadhanFromPreset(preset) {
-    const config = getRamadhanConfig();
+async function computeRamadhanFromPreset(preset) {
+    const config = await getRamadhanConfig();
     const startDate = new Date(preset.startDate + 'T00:00:00');
     const endDate = new Date(preset.endDate + 'T00:00:00');
 
@@ -165,7 +165,7 @@ function computeRamadhanFromPreset(preset) {
  * @returns {Promise<{ dates: Date[], hijriMeta: Object }>}
  */
 async function computeCurrentHijriMonth(location) {
-    const config = getRamadhanConfig();
+    const config = await getRamadhanConfig();
 
     // Get today's data from monthly cache (uses getMonthlyPrayerTimes → DRY)
     const now = new Date();
