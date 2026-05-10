@@ -90,7 +90,7 @@
    background: linear-gradient(135deg, var(--clr-primary-500) 0%, var(--clr-primary-600) 100%);
    border-radius: var(--radius-xl);
    padding: var(--sp-5) var(--sp-6);
-   margin: var(--sp-4) var(--sp-4) var(--sp-6);
+   margin: var(--sp-4) var(--sp-2) var(--sp-6);
    box-shadow: 0 8px 24px var(--clr-primary-a20);
    position: relative;
    overflow: hidden;
@@ -771,7 +771,7 @@ body.has-audio-dock .quran-reader-ayah-list {
 @media screen and (max-width: 360px) {
    .quran-reader-surah-info-card {
       padding: var(--sp-4) var(--sp-4);
-      margin: var(--sp-3) var(--sp-3) var(--sp-5);
+      margin: var(--sp-3) var(--sp-2) var(--sp-5);
    }
 
    .quran-reader-surah-info-latin {
@@ -808,7 +808,7 @@ body.has-audio-dock .quran-reader-ayah-list {
 @media screen and (max-width: 320px) {
    .quran-reader-surah-info-card {
       padding: var(--sp-3) var(--sp-3);
-      margin: var(--sp-3) var(--sp-3) var(--sp-4);
+      margin: var(--sp-3) var(--sp-2) var(--sp-4);
    }
 
    .quran-reader-ayah-list {
