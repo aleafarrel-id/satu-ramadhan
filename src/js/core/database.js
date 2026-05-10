@@ -77,6 +77,15 @@ export async function getRamadhanConfig() {
 }
 
 /**
+ * Invalidate the in-memory Ramadhan config cache.
+ * Call this after a successful remote config fetch so the next
+ * getRamadhanConfig() call picks up the new data immediately.
+ */
+export function resetRamadhanCache() {
+    _ramadhan = null;
+}
+
+/**
  * Find province by ID
  * @param {string} id
  * @returns {Promise<object|null>}

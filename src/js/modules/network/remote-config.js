@@ -27,11 +27,11 @@ const FETCH_TIMEOUT_MS = 8000;
  * The updated config will be used on the next call to getRamadhanConfig().
  */
 export async function syncRemoteConfig() {
-    if (!navigator.onLine) return;
+    if (!navigator.onLine) return false;
 
     // Rate-limit: skip if fetched recently
     const lastFetch = await storage.get(LAST_FETCH_KEY);
-    if (lastFetch && Date.now() - lastFetch < FETCH_INTERVAL_MS) return;
+    if (lastFetch && Date.now() - lastFetch < FETCH_INTERVAL_MS) return false;
 
     try {
         const controller = new AbortController();
@@ -43,18 +43,22 @@ export async function syncRemoteConfig() {
         });
         clearTimeout(timeoutId);
 
-        if (!res.ok) return;
+        if (!res.ok) return false;
 
         const data = await res.json();
 
         // Basic shape validation before persisting
-        if (!data?.tahunHijriah || !Array.isArray(data?.presets)) return;
+        if (!data?.tahunHijriah || !Array.isArray(data?.presets)) return false;
 
         await storage.set(CACHE_KEY, data);
         await storage.set(LAST_FETCH_KEY, Date.now());
+
+        // Signal to caller that new data is available
+        return true;
     } catch (e) {
         // Network errors, timeouts, JSON parse errors — all fail silently
         logError('[RemoteConfig]', e);
+        return false;
     }
 }
 

@@ -114,7 +114,7 @@ async function computeHijriMonthDates(location) {
         const presetEnd = new Date(preset.endDate + 'T00:00:00');
 
         if (now >= presetStart && now <= presetEnd) {
-            return computeRamadhanFromPreset(preset);
+            return await computeRamadhanFromPreset(preset);
         }
     }
 

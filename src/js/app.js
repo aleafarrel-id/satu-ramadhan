@@ -13,6 +13,7 @@ import { isNative } from './modules/system/platform.js';
 import { store } from './core/store.js';
 import { initTheme } from './core/theme.js';
 import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
+import { resetRamadhanCache } from './core/database.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
     initNotificationService,
@@ -71,7 +72,7 @@ export async function initApp() {
 
     // Fire-and-forget: fetch latest Ramadhan config from Cloudflare Pages.
     // Runs in the background; result is cached to storage and used on next getRamadhanConfig() call.
-    syncRemoteConfig().catch(() => {});
+    syncRemoteConfig().then(updated => { if (updated) resetRamadhanCache(); }).catch(() => {});
 
     // Initialize Theme globally before painting
     initTheme();
@@ -337,7 +338,7 @@ function initAppResumeListener() {
                 syncNotifications();
 
                 // Refresh remote Ramadhan config in the background on resume
-                syncRemoteConfig().catch(() => {});
+                syncRemoteConfig().then(updated => { if (updated) resetRamadhanCache(); }).catch(() => {});
 
                 // Sync UI/Theme against clock drifts during sleep
                 import('./modules/prayer/prayer-watcher.js')
