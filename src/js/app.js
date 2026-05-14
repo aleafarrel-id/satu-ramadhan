@@ -37,6 +37,7 @@ import '../css/components/modal/permission-dialog.css';
 // Utilities & Helpers
 import { initPullToRefresh } from './utils/pull-to-refresh.js';
 import { initGlobalFocusManager } from './utils/focus-manager.js';
+import { checkForUpdate, requestReviewIfEligible } from './utils/store-services.js';
 
 // Router
 import * as router from './router.js';
@@ -72,7 +73,7 @@ export async function initApp() {
 
     // Fire-and-forget: fetch latest Ramadhan config from Cloudflare Pages.
     // Runs in the background; result is cached to storage and used on next getRamadhanConfig() call.
-    syncRemoteConfig().then(updated => { if (updated) resetRamadhanCache(); }).catch(() => {});
+    syncRemoteConfig().then(updated => { if (updated) resetRamadhanCache(); }).catch(() => { });
 
     // Initialize Theme globally before painting
     initTheme();
@@ -249,6 +250,12 @@ export async function initApp() {
     }, 4000);
 
     setTimeout(triggerPostSplashPermissions, POST_SPLASH_DIALOG_DELAY);
+
+    // Run Play Store flows sequentially (fire-and-forget):
+    (async () => {
+        await checkForUpdate();
+        await requestReviewIfEligible();
+    })();
 }
 
 /**
@@ -338,7 +345,7 @@ function initAppResumeListener() {
                 syncNotifications();
 
                 // Refresh remote Ramadhan config in the background on resume
-                syncRemoteConfig().then(updated => { if (updated) resetRamadhanCache(); }).catch(() => {});
+                syncRemoteConfig().then(updated => { if (updated) resetRamadhanCache(); }).catch(() => { });
 
                 // Sync UI/Theme against clock drifts during sleep
                 import('./modules/prayer/prayer-watcher.js')
@@ -367,11 +374,8 @@ async function triggerPostSplashPermissions() {
 
     const interruptedByNotif = await _requestNotificationIfNeeded();
 
-    // Jika dialog lokasi ditutup paksa demi menampilkan dialog perizinan,
-    // kembalikan dialog lokasinya (jika user masih belum set lokasi)
     if (interruptedByNotif) {
         if (!store.getState('location')) {
-            // Beri waktu agar dialog izin selesai tertutup
             await new Promise(resolve => setTimeout(resolve, 400));
             showLocationModal({
                 onLocationDetected: (location) => {
