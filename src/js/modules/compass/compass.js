@@ -105,7 +105,10 @@ export default class QiblaCompass {
         }
 
         this._orientationHandler = (event) => {
-            const hasWebkitHeading = typeof event.webkitCompassHeading === 'number'
+            // webkitCompassHeading is Safari/iOS-only — only use it on real iOS to avoid
+            // Android WebView quirks where the property may exist but is unreliable.
+            const hasWebkitHeading = IS_IOS_MOTION
+                && typeof event.webkitCompassHeading === 'number'
                 && isFinite(event.webkitCompassHeading)
                 && event.webkitCompassHeading >= 0;
             const hasAlpha = typeof event.alpha === 'number';
@@ -118,13 +121,17 @@ export default class QiblaCompass {
                 // iOS: webkitCompassHeading is already True North — no declination needed
                 trueHeading = event.webkitCompassHeading;
             } else {
-                // Android/generic: only accept absolute orientation events
+                // Android/generic: require a truly absolute event.
+                // Per spec, alpha is null when no magnetic north reference is available.
+                // This guards against WebViews that synthesize 'absolute' events from
+                // gyroscope alone (no magnetometer), producing drifting garbage data.
                 const isAbsoluteEvent = event.type === 'deviceorientationabsolute' || event.absolute === true;
                 if (!isAbsoluteEvent) return;
 
-                const rawHeading = 360 - event.alpha;
-                if (!Number.isFinite(rawHeading)) return;
+                // alpha === null means no magnetic north lock — treat as no sensor
+                if (event.alpha === null || !Number.isFinite(event.alpha)) return;
 
+                const rawHeading = 360 - event.alpha;
                 trueHeading = this._applyDeclination(rawHeading);
             }
 
@@ -221,15 +228,21 @@ export default class QiblaCompass {
         if (typeof AbsoluteOrientationSensor !== 'undefined') {
             try {
                 const sensor = new AbsoluteOrientationSensor({ frequency: 1 });
+                let gotReading = false;
                 await new Promise((resolve, reject) => {
                     sensor.addEventListener('error', (e) => reject(e.error), { once: true });
-                    sensor.addEventListener('reading', () => { sensor.stop(); resolve(); }, { once: true });
+                    sensor.addEventListener('reading', () => {
+                        gotReading = true;
+                        sensor.stop();
+                        resolve();
+                    }, { once: true });
                     sensor.start();
-                    // Short timeout: if no reading in 800ms, still consider hardware present
-                    // (user may be stationary). We only fail on explicit hardware errors.
+                    // Timeout: if no reading arrives, we cannot confirm presence.
+                    // Returning null (not true) is safer — falls back to event-based detection.
                     setTimeout(() => { sensor.stop(); resolve(); }, 800);
                 });
-                return true;
+                // Only confirm 'present' if a real reading was received.
+                return gotReading ? true : null;
             } catch (e) {
                 if (e.name === 'NotSupportedError' || e.name === 'NotReadableError') {
                     return false; // Hardware confirmed absent
@@ -242,13 +255,18 @@ export default class QiblaCompass {
         if (typeof Magnetometer !== 'undefined') {
             try {
                 const mag = new Magnetometer({ frequency: 1 });
+                let gotReading = false;
                 await new Promise((resolve, reject) => {
                     mag.addEventListener('error', (e) => reject(e.error), { once: true });
-                    mag.addEventListener('reading', () => { mag.stop(); resolve(); }, { once: true });
+                    mag.addEventListener('reading', () => {
+                        gotReading = true;
+                        mag.stop();
+                        resolve();
+                    }, { once: true });
                     mag.start();
                     setTimeout(() => { mag.stop(); resolve(); }, 800);
                 });
-                return true;
+                return gotReading ? true : null;
             } catch (e) {
                 if (e.name === 'NotSupportedError' || e.name === 'NotReadableError') {
                     return false;
@@ -256,7 +274,7 @@ export default class QiblaCompass {
             }
         }
 
-        // Generic Sensor API not available; rely on event-based fallback 
+        // Generic Sensor API not available; rely on event-based fallback
         return null;
     }
 
