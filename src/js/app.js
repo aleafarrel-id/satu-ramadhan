@@ -259,10 +259,32 @@ export async function initApp() {
 }
 
 /**
- * Handle navigation from bottom nav
+ * Handle navigation from bottom nav.
+ * For the compass page on iOS, we must request DeviceOrientationEvent
+ * permission before navigating — iOS only allows this from a user gesture.
  */
-function handleNavigation(tabId) {
+async function handleNavigation(tabId) {
+    if (tabId === 'compass') {
+        await _requestMotionPermissionIfNeeded();
+    }
     router.navigate(tabId);
+}
+
+/**
+ * Triggers the native iOS motion/orientation permission prompt.
+ * No-op on all other platforms (Android, desktop).
+ */
+async function _requestMotionPermissionIfNeeded() {
+    if (
+        typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+        try {
+            await DeviceOrientationEvent.requestPermission();
+        } catch {
+            // Already granted, denied, or non-iOS - handle it
+        }
+    }
 }
 
 /**

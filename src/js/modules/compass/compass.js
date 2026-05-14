@@ -20,6 +20,10 @@ const QIBLA_TOLERANCE_DEG = 2;
 const HAPTIC_COOLDOWN_MS = 2000;
 const GYRO_DETECT_TIMEOUT_MS = 1000;
 
+/** iOS 13+ requires DeviceOrientationEvent.requestPermission — detect once at module level. */
+const IS_IOS_MOTION = typeof DeviceOrientationEvent !== 'undefined' &&
+    typeof DeviceOrientationEvent.requestPermission === 'function';
+
 /** EMA smoothing factor (0–1). Lower = smoother, higher = responsive. */
 const SMOOTHING_FACTOR = 0.25;
 
@@ -101,16 +105,28 @@ export default class QiblaCompass {
         }
 
         this._orientationHandler = (event) => {
+            const hasWebkitHeading = typeof event.webkitCompassHeading === 'number'
+                && isFinite(event.webkitCompassHeading)
+                && event.webkitCompassHeading >= 0;
             const hasAlpha = typeof event.alpha === 'number';
-            if (!hasAlpha) return;
 
-            const isAbsoluteEvent = event.type === 'deviceorientationabsolute' || event.absolute === true;
-            if (!isAbsoluteEvent) return;
+            if (!hasWebkitHeading && !hasAlpha) return;
 
-            // Android alpha = Magnetic North
-            const rawHeading = 360 - event.alpha;
+            let trueHeading;
 
-            if (!Number.isFinite(rawHeading)) return;
+            if (hasWebkitHeading) {
+                // iOS: webkitCompassHeading is already True North — no declination needed
+                trueHeading = event.webkitCompassHeading;
+            } else {
+                // Android/generic: only accept absolute orientation events
+                const isAbsoluteEvent = event.type === 'deviceorientationabsolute' || event.absolute === true;
+                if (!isAbsoluteEvent) return;
+
+                const rawHeading = 360 - event.alpha;
+                if (!Number.isFinite(rawHeading)) return;
+
+                trueHeading = this._applyDeclination(rawHeading);
+            }
 
             if (!this._receivedOrientation) {
                 this._receivedOrientation = true;
@@ -118,9 +134,6 @@ export default class QiblaCompass {
                 _globalHasGyroscope = true;
                 this._clearGyroDetectTimer();
             }
-
-            // Apply declination for alpha-based (Android)
-            const trueHeading = this._applyDeclination(rawHeading);
 
             this._heading = this._smoothHeading(trueHeading);
             this._scheduleUpdate();
@@ -132,13 +145,14 @@ export default class QiblaCompass {
             this._markNoGyroscope();
         }
 
-        // Event-based fallback timeout (catches non-conformant browsers
-        // that silently provide no absolute orientation events)
+        // iOS sensors may take longer to warm up after permission is granted.
+        // Give extra headroom so we don't prematurely mark the sensor as absent.
+        const timeout = IS_IOS_MOTION ? 3000 : GYRO_DETECT_TIMEOUT_MS;
         this._gyroDetectTimer = setTimeout(() => {
             if (!this._receivedOrientation) {
                 this._markNoGyroscope();
             }
-        }, GYRO_DETECT_TIMEOUT_MS);
+        }, timeout);
     }
 
     /**
