@@ -18,7 +18,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -38,6 +40,9 @@ import org.json.JSONException;
 public class MurottalPlaybackService extends Service {
     private static final String TAG = "MurottalPlayback";
 
+    /** Max time to wait for MediaPlayer.prepareAsync() before triggering fallback. */
+    private static final int PREPARE_TIMEOUT_MS = 5_000;
+
     // --- Instance State ---
     private MediaPlayer mediaPlayer;
     private MediaSessionCompat mediaSession;
@@ -47,8 +52,16 @@ public class MurottalPlaybackService extends Service {
     private AudioFocusRequest audioFocusRequest;
 
     // --- Playlist State ---
-    private JSONArray playlist;       // Array of URI strings
-    private int currentIndex = 0;     // Current position in the playlist (0-based)
+    private JSONArray playlist;
+    private JSONArray fallbackPlaylist;
+    private boolean triedFallbackForCurrentIndex = false;
+    private boolean useFallbackFirst = false;
+    private boolean currentlyPlayingFallback = false;
+    private int currentIndex = 0;
+
+    // --- Prepare Timeout ---
+    private final Handler prepareTimeoutHandler = new Handler(Looper.getMainLooper());
+    private Runnable prepareTimeoutRunnable;
     private int surahIndex = 0;
     private String surahName = "";
     private int totalAyahs = 0;
@@ -184,6 +197,7 @@ public class MurottalPlaybackService extends Service {
 
     private void handlePlay(Intent intent) {
         String playlistJson = intent.getStringExtra(Constants.EXTRA_MUROTTAL_PLAYLIST);
+        String fallbackJson = intent.getStringExtra(Constants.EXTRA_MUROTTAL_FALLBACK_PLAYLIST);
         surahIndex = intent.getIntExtra(Constants.EXTRA_MUROTTAL_SURAH_INDEX, 0);
         surahName = intent.getStringExtra(Constants.EXTRA_MUROTTAL_SURAH_NAME);
         totalAyahs = intent.getIntExtra(Constants.EXTRA_MUROTTAL_TOTAL_AYAHS, 0);
@@ -209,6 +223,21 @@ public class MurottalPlaybackService extends Service {
             stopSelfCleanly();
             return;
         }
+
+        if (fallbackJson != null && !fallbackJson.isEmpty()) {
+            try {
+                fallbackPlaylist = new JSONArray(fallbackJson);
+            } catch (JSONException e) {
+                Log.w(TAG, "Failed to parse fallbackPlaylist JSON", e);
+            }
+        } else {
+            fallbackPlaylist = null;
+        }
+
+        // Probe primary CDN at the start of each new session.
+        // Within the session, useFallbackFirst protects subsequent ayahs from timeout.
+        useFallbackFirst = false;
+        currentlyPlayingFallback = false;
 
         if (playlist.length() == 0) {
             Log.e(TAG, "Empty playlist");
@@ -239,19 +268,109 @@ public class MurottalPlaybackService extends Service {
         playCurrentAyah();
     }
 
+    /**
+     * Safely extracts the fallback URI for the given playlist index.
+     * Returns null if unavailable or JSON null.
+     */
+    private String getFallbackUri(int index) {
+        if (fallbackPlaylist == null || index >= fallbackPlaylist.length()) return null;
+        try {
+            String uri = fallbackPlaylist.getString(index);
+            return (uri != null && !uri.equals("null")) ? uri : null;
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
     private void playCurrentAyah() {
+        triedFallbackForCurrentIndex = false;
         if (playlist == null || currentIndex >= playlist.length()) {
             Log.d(TAG, "Playlist complete or invalid");
             stopSelfCleanly();
             return;
         }
 
+        try {
+            String primaryUri = playlist.getString(currentIndex);
+            String fallbackUri = getFallbackUri(currentIndex);
+
+            // Circuit breaker: if primary recently failed, try fallback first to avoid timeout
+            if (useFallbackFirst && fallbackUri != null) {
+                Log.d(TAG, "Primary CDN recently failed, trying fallback first for ayah " + (currentIndex + 1));
+                currentlyPlayingFallback = true;
+                playWithUrl(fallbackUri);
+            } else {
+                Log.d(TAG, "Playing ayah " + (currentIndex + 1) + "/" + playlist.length() + " \u2192 " + primaryUri);
+                currentlyPlayingFallback = false;
+                playWithUrl(primaryUri);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error reading playlist", e);
+            stopSelfCleanly();
+        }
+    }
+
+    private void cancelPrepareTimeout() {
+        if (prepareTimeoutRunnable != null) {
+            prepareTimeoutHandler.removeCallbacks(prepareTimeoutRunnable);
+            prepareTimeoutRunnable = null;
+        }
+    }
+
+    private void schedulePrepareTimeout() {
+        cancelPrepareTimeout();
+        prepareTimeoutRunnable = () -> {
+            Log.w(TAG, "prepareAsync timed out after " + PREPARE_TIMEOUT_MS + "ms for ayah " + (currentIndex + 1));
+            tryAlternateUrlOrSkip();
+        };
+        prepareTimeoutHandler.postDelayed(prepareTimeoutRunnable, PREPARE_TIMEOUT_MS);
+    }
+
+    /**
+     * Tries the alternate CDN URL for the current ayah, or skips/stops on repeated failure.
+     * Called by both the prepare timeout and the MediaPlayer error listener to keep logic DRY.
+     */
+    private void tryAlternateUrlOrSkip() {
+        if (!triedFallbackForCurrentIndex) {
+            triedFallbackForCurrentIndex = true;
+            String alternateUri;
+
+            if (currentlyPlayingFallback) {
+                try { alternateUri = playlist.getString(currentIndex); } catch (JSONException e) { alternateUri = null; }
+                currentlyPlayingFallback = false;
+            } else {
+                alternateUri = getFallbackUri(currentIndex);
+                currentlyPlayingFallback = true;
+            }
+
+            if (alternateUri != null) {
+                Log.w(TAG, "Trying alternate URL for ayah " + (currentIndex + 1));
+                playWithUrl(alternateUri);
+                return;
+            }
+        }
+
+        // Both URLs failed (or no alternate available)
+        triedFallbackForCurrentIndex = false;
+        consecutiveErrors++;
+        if (consecutiveErrors >= 3) {
+            Log.e(TAG, "Too many consecutive errors, stopping playback");
+            stopSelfCleanly();
+            return;
+        }
+        if (playbackMode.equals("sequential") && currentIndex + 1 < playlist.length()) {
+            currentIndex++;
+            playCurrentAyah();
+        } else {
+            stopSelfCleanly();
+        }
+    }
+
+    private void playWithUrl(String uriStr) {
+        cancelPrepareTimeout();
         releaseMediaPlayer();
 
         try {
-            String uriStr = playlist.getString(currentIndex);
-            Log.d(TAG, "Playing ayah " + (currentIndex + 1) + "/" + playlist.length() + " → " + uriStr);
-
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -261,7 +380,10 @@ public class MurottalPlaybackService extends Service {
             mediaPlayer.setDataSource(this, Uri.parse(uriStr));
 
             mediaPlayer.setOnPreparedListener(mp -> {
+                cancelPrepareTimeout();
                 consecutiveErrors = 0;
+                // Remember which CDN succeeded so next ayah tries the working one first
+                useFallbackFirst = currentlyPlayingFallback;
                 mp.start();
                 isPlaying = true;
                 isPaused = false;
@@ -275,27 +397,18 @@ public class MurottalPlaybackService extends Service {
             mediaPlayer.setOnCompletionListener(mp -> onAyahComplete());
 
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+                cancelPrepareTimeout();
                 Log.e(TAG, "MediaPlayer error: what=" + what + " extra=" + extra);
-                consecutiveErrors++;
-                if (consecutiveErrors >= 3) {
-                    Log.e(TAG, "Too many consecutive errors, stopping playback");
-                    stopSelfCleanly();
-                    return true;
-                }
-                // Try to skip to next ayah on error
-                if (playbackMode.equals("sequential") && currentIndex + 1 < playlist.length()) {
-                    currentIndex++;
-                    playCurrentAyah();
-                } else {
-                    stopSelfCleanly();
-                }
+                tryAlternateUrlOrSkip();
                 return true;
             });
 
             mediaPlayer.prepareAsync();
+            schedulePrepareTimeout();
 
         } catch (Exception e) {
             Log.e(TAG, "Error setting up MediaPlayer", e);
+            cancelPrepareTimeout();
             stopSelfCleanly();
         }
     }

@@ -113,7 +113,8 @@ public class MurottalServicePlugin extends Plugin {
      */
     @PluginMethod()
     public void play(PluginCall call) {
-        String playlistJson = call.getString("playlist", "[]");
+        String playlistJson         = call.getString("playlist", "[]");
+        String fallbackPlaylistJson = call.getString("fallbackPlaylist", "[]");
         int surahIndex = call.getInt("surahIndex", 0);
         String surahName = call.getString("surahName", "");
         int totalAyahs = call.getInt("totalAyahs", 0);
@@ -130,6 +131,7 @@ public class MurottalServicePlugin extends Plugin {
         Intent intent = new Intent(context, MurottalPlaybackService.class);
         intent.setAction(Constants.ACTION_MUROTTAL_PLAY);
         intent.putExtra(Constants.EXTRA_MUROTTAL_PLAYLIST, playlistJson);
+        intent.putExtra(Constants.EXTRA_MUROTTAL_FALLBACK_PLAYLIST, fallbackPlaylistJson);
         intent.putExtra(Constants.EXTRA_MUROTTAL_SURAH_INDEX, surahIndex);
         intent.putExtra(Constants.EXTRA_MUROTTAL_SURAH_NAME, surahName);
         intent.putExtra(Constants.EXTRA_MUROTTAL_TOTAL_AYAHS, totalAyahs);

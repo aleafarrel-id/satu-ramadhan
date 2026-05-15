@@ -16,7 +16,8 @@ import { Capacitor } from '@capacitor/core';
 import { FileTransfer } from '@capacitor/file-transfer';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { store } from '../../core/store.js';
-import { getReciterUrlSegment, DEFAULT_RECITER_ID, buildAyahUrl } from '../../config/quran-audio.js';
+import { getReciterUrlSegment, DEFAULT_RECITER_ID, buildAyahUrl, buildFallbackAyahUrl, getReciterById } from '../../config/quran-audio.js';
+import { getGlobalAyahNumber } from './quran-api.js';
 
 const STORE_DOWNLOADS_PATH = 'quran.downloads';
 
@@ -184,21 +185,51 @@ async function _downloadLoop() {
                 current: _getDownloadedAyahs(reciterId, surahIndex).length,
                 total: totalAyahs,
             });
-        } catch (error) {
-            console.warn(`[DownloadManager] Failed to download ayah ${ayah}:`, error);
+        } catch (primaryError) {
+            console.warn(`[DownloadManager] Primary source failed for ayah ${ayah}, trying fallback:`, primaryError);
 
-            // Auto-pause on error (network failure, timeout, etc.)
-            _isPaused = true;
-            _queue.currentIndex = ayah;
+            // Retry once with fallback CDN (Islamic Network) before auto-pause
+            let downloadedViaFallback = false;
+            try {
+                const reciter = getReciterById(reciterId);
+                if (reciter?.islamicNetworkId) {
+                    const globalAyah  = await getGlobalAyahNumber(surahIndex, ayah);
+                    const fallbackUrl = buildFallbackAyahUrl(reciter.islamicNetworkId, globalAyah);
 
-            _emit('murottal:download-error', {
-                surahIndex,
-                surahName: _queue.surahName,
-                error: error?.message || 'Download failed',
-                current: _getDownloadedAyahs(reciterId, surahIndex).length,
-                total: totalAyahs,
-            });
-            return;
+                    // Re-resolve uri here — it may not be in scope if the primary error
+                    // happened before Filesystem.getUri() completed.
+                    const localPath = _buildLocalPath(reciterId, surahIndex, ayah);
+                    await _ensureDirectory(reciterId, surahIndex);
+                    const { uri } = await Filesystem.getUri({ directory: Directory.Data, path: localPath });
+
+                    await FileTransfer.downloadFile({ url: fallbackUrl, path: uri, progress: false });
+                    _markAyahDownloaded(reciterId, surahIndex, ayah);
+                    _queue.currentIndex = ayah + 1;
+                    _emit('murottal:download-progress', {
+                        surahIndex,
+                        surahName: _queue.surahName,
+                        current: _getDownloadedAyahs(reciterId, surahIndex).length,
+                        total: totalAyahs,
+                    });
+                    downloadedViaFallback = true;
+                }
+            } catch (fallbackError) {
+                console.warn(`[DownloadManager] Fallback also failed for ayah ${ayah}:`, fallbackError);
+            }
+
+            if (!downloadedViaFallback) {
+                // Both CDNs failed — auto-pause and notify UI
+                _isPaused = true;
+                _queue.currentIndex = ayah;
+                _emit('murottal:download-error', {
+                    surahIndex,
+                    surahName: _queue.surahName,
+                    error: primaryError?.message || 'Download failed',
+                    current: _getDownloadedAyahs(reciterId, surahIndex).length,
+                    total: totalAyahs,
+                });
+                return;
+            }
         }
     }
 

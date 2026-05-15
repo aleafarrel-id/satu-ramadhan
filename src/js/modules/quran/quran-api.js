@@ -15,6 +15,10 @@ const _cache = {
    latin: new Map()
 };
 
+// Lazily-computed cumulative ayah offset per surah (index 0 = Surah 1).
+// Derived from surah.json — never hardcoded.
+let _surahGlobalOffsets = null;
+
 /**
  * Ensures cache behaves like LRU by refreshing key order on access.
  */
@@ -55,6 +59,30 @@ export async function getSurahList() {
    if (_cache.surahList) return _cache.surahList;
    _cache.surahList = await _fetchJson('/quran/surah.json', 'Gagal memuat daftar surah');
    return _cache.surahList;
+}
+
+/**
+ * Returns the global Quran ayah number (1–6236) for a surah+ayah pair.
+ *
+ * Computes and caches the cumulative offset table lazily from the already-loaded
+ * surahList (`count` field in surah.json). In practice getSurahList() resolves
+ * instantly from cache because the Quran Reader always loads it first.
+ *
+ * @param {number} surahIndex - 1-based surah number
+ * @param {number} ayahNumber - 1-based ayah number within the surah
+ * @returns {Promise<number>}
+ */
+export async function getGlobalAyahNumber(surahIndex, ayahNumber) {
+   if (!_surahGlobalOffsets) {
+      const list = await getSurahList();
+      let offset = 1;
+      _surahGlobalOffsets = list.map(s => {
+         const start = offset;
+         offset += Number(s.count);
+         return start;
+      });
+   }
+   return _surahGlobalOffsets[surahIndex - 1] + (ayahNumber - 1);
 }
 
 /**

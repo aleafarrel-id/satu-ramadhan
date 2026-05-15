@@ -12,8 +12,11 @@
 
 // ─── Audio CDN ────────────────────────────────────────────────────────────────
 
-/** Base URL for the EveryAyah audio CDN. */
+/** Base URL for the EveryAyah audio CDN (primary). */
 export const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
+
+/** Base URL for the Islamic Network audio CDN (fallback). */
+export const ISLAMIC_NETWORK_BASE_URL = 'https://cdn.islamic.network/quran/audio/128';
 
 /** Zero-pads a number to 3 digits (e.g. 7 → '007'). */
 export const pad3 = (n) => String(n).padStart(3, '0');
@@ -30,12 +33,23 @@ export function buildAyahUrl(urlSegment, surahIndex, ayahNumber) {
     return `${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayahNumber)}.mp3`;
 }
 
+/**
+ * Builds the fallback audio URL using Islamic Network CDN.
+ * Requires a global ayah number (1–6236) — use getGlobalAyahNumber() from quran-api.js.
+ * @param {string} islamicNetworkId - e.g. 'ar.alafasy'
+ * @param {number} globalAyahNumber - sequential position across all surahs
+ * @returns {string}
+ */
+export function buildFallbackAyahUrl(islamicNetworkId, globalAyahNumber) {
+    return `${ISLAMIC_NETWORK_BASE_URL}/${islamicNetworkId}/${globalAyahNumber}.mp3`;
+}
+
 // ─── Reciters ─────────────────────────────────────────────────────────────────
 
 export const RECITERS = [
-    { id: 'alafasy', label: 'Mishary Rashid Alafasy', urlSegment: 'Alafasy_128kbps' },
-    { id: 'abdulbasit', label: 'Abdul Basit Abdul Samad', urlSegment: 'Abdul_Basit_Murattal_192kbps' },
-    { id: 'minshawi', label: 'Mohamed Siddiq El-Minshawi', urlSegment: 'Minshawi_Murattal_128kbps' },
+    { id: 'alafasy', label: 'Mishary Rashid Alafasy', urlSegment: 'Alafasy_128kbps', islamicNetworkId: 'ar.alafasy' },
+    { id: 'abdulbasit', label: 'Abdul Basit Abdul Samad', urlSegment: 'Abdul_Basit_Murattal_192kbps', islamicNetworkId: 'ar.abdulbasitmurattal' },
+    { id: 'minshawi', label: 'Mohamed Siddiq El-Minshawi', urlSegment: 'Minshawi_Murattal_128kbps', islamicNetworkId: 'ar.minshawi' },
 ];
 
 /** Default reciter used across the app. */

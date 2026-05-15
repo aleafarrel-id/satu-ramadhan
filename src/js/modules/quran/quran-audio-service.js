@@ -19,8 +19,8 @@
 
 import { NativeAudio } from '@capgo/native-audio';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { getReciterUrlSegment, buildAyahUrl } from '../../config/quran-audio.js';
-import { getSurahList } from './quran-api.js';
+import { getReciterUrlSegment, buildAyahUrl, buildFallbackAyahUrl, getReciterById } from '../../config/quran-audio.js';
+import { getSurahList, getGlobalAyahNumber } from './quran-api.js';
 import { isAudioOfflineEnabled } from './quran-settings.js';
 import { isNative } from '../system/platform.js';
 import { MurottalService, buildPlaylist, getReciterId } from './murottal-native-bridge.js';
@@ -67,6 +67,9 @@ let _completeListenerHandle = null;
 /** @type {HTMLAudioElement|null} */
 let _webAudioEl = null;
 
+/** Circuit breaker: when true, try fallback CDN first to avoid primary timeout. */
+let _useFallbackCdn = false;
+
 /** @type {PluginListenerHandle|null} */
 let _nativeStateListenerHandle = null;
 
@@ -108,6 +111,61 @@ function _teardownWebAudio() {
     _webAudioEl.oncanplay = null;
     _webAudioEl.onstalled = null;
     _webAudioEl = null;
+}
+
+/**
+ * Attempts to stream a single URL, wiring up all necessary event handlers.
+ * Resolves `true` when audio actually starts playing, `false` on error or abort.
+ * On success, `_webAudioEl` points to the active element.
+ *
+ * @param {string}   url
+ * @param {AbortSignal} signal
+ * @param {Function} onEnded - called when the element fires its `ended` event
+ * @returns {Promise<boolean>}
+ */
+function _tryStreamingUrl(url, signal, onEnded) {
+    _teardownWebAudio();
+    if (signal.aborted) return Promise.resolve(false);
+
+    _webAudioEl = new Audio(url);
+    _currentAssetId = 'web';
+    _webAudioEl.onended   = onEnded;
+    _webAudioEl.onwaiting = () => _setBuffering(true);
+    _webAudioEl.onplaying = () => _setBuffering(false);
+    _webAudioEl.onstalled = () => _setBuffering(true);
+
+    return new Promise((resolve) => {
+        const el = _webAudioEl;
+        let timeoutId;
+
+        const onPlaying = () => { cleanup(); resolve(true); };
+        const onError   = () => { cleanup(); resolve(false); };
+        const onAbort   = () => { cleanup(); resolve(false); };
+        const onTimeout = () => {
+            console.warn(`[AudioService] Web streaming timeout after 5000ms for ${url}`);
+            cleanup();
+            resolve(false);
+        };
+
+        function cleanup() {
+            clearTimeout(timeoutId);
+            el.removeEventListener('playing', onPlaying);
+            el.removeEventListener('error',   onError);
+            signal.removeEventListener('abort', onAbort);
+        }
+
+        el.addEventListener('playing', onPlaying, { once: true });
+        el.addEventListener('error',   onError,   { once: true });
+        signal.addEventListener('abort', onAbort,  { once: true });
+
+        // Enforce a strict 5-second timeout matching native Android
+        timeoutId = setTimeout(onTimeout, 5000);
+
+        el.play().catch(err => {
+            if (err.name === 'AbortError') { resolve(false); return; }
+            onError();
+        });
+    });
 }
 
 /**
@@ -258,69 +316,48 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
     //   false → Streaming path (Web, or Native with streaming mode)
     //   true  → Offline path (Native with local files)
     if (!isAudioOfflineEnabled()) {
-        _teardownWebAudio();
-
         if (signal.aborted) return false;
 
         const urlSegment = getReciterUrlSegment(reciterId);
-        const remoteUrl = buildAyahUrl(urlSegment, surahIndex, ayahNumber);
+        const primaryUrl = buildAyahUrl(urlSegment, surahIndex, ayahNumber);
+        const onEnded    = () => _onPlaybackComplete();
 
-        _webAudioEl = new Audio(remoteUrl);
-        _currentAssetId = 'web';
+        // Pre-compute fallback URL (only if reciter has an Islamic Network ID)
+        let fallbackUrl = null;
+        const reciter = getReciterById(reciterId);
+        if (reciter?.islamicNetworkId) {
+            const globalAyah = await getGlobalAyahNumber(surahIndex, ayahNumber);
+            fallbackUrl = buildFallbackAyahUrl(reciter.islamicNetworkId, globalAyah);
+        }
 
-        _webAudioEl.onended = () => _onPlaybackComplete();
+        // Circuit breaker: choose which CDN to try first
+        const firstUrl  = (_useFallbackCdn && fallbackUrl) ? fallbackUrl : primaryUrl;
+        const secondUrl = (_useFallbackCdn && fallbackUrl) ? primaryUrl  : fallbackUrl;
+        const firstIsFallback = (_useFallbackCdn && !!fallbackUrl);
 
-        // Keep buffering events on the element — they fire throughout playback
-        // (e.g. `waiting` fires mid-playback on slow connections too).
-        _webAudioEl.onwaiting = () => _setBuffering(true);
-        _webAudioEl.onplaying = () => _setBuffering(false);
-        _webAudioEl.onstalled = () => _setBuffering(true);
+        let success = await _tryStreamingUrl(firstUrl, signal, onEnded);
 
-        return new Promise((resolve) => {
-            const el = _webAudioEl;
+        if (success) {
+            _useFallbackCdn = firstIsFallback;
+            return true;
+        }
 
-            // `playing` fires when audio actually starts outputting sound.
-            // We resolve here instead of after `play()` to guarantee the
-            // user hears audio before we scroll the ayah card into view.
-            const onPlaying = () => {
-                cleanup();
-                resolve(true);
-            };
-
-            const onError = () => {
-                cleanup();
-                console.warn(`[AudioService] Web: failed to play ayah ${ayahNumber}`);
-                _emit('murottal:play-error', { surahIndex, ayahNumber });
-                resolve(false);
-            };
-
-            // If the signal is already aborted (rapid tap), resolve immediately.
-            const onAbort = () => {
-                cleanup();
-                resolve(false);
-            };
-
-            function cleanup() {
-                el.removeEventListener('playing', onPlaying);
-                el.removeEventListener('error', onError);
-                signal.removeEventListener('abort', onAbort);
+        // First failed — try the alternate CDN
+        if (!signal.aborted && secondUrl) {
+            console.warn(`[AudioService] First CDN failed, trying alternate for ayah ${ayahNumber}`);
+            success = await _tryStreamingUrl(secondUrl, signal, onEnded);
+            if (success) {
+                _useFallbackCdn = !firstIsFallback;
+                return true;
             }
+        }
 
-            el.addEventListener('playing', onPlaying, { once: true });
-            el.addEventListener('error', onError, { once: true });
-            signal.addEventListener('abort', onAbort, { once: true });
+        if (!success && !signal.aborted) {
+            console.warn(`[AudioService] Web: all sources failed for ayah ${ayahNumber}`);
+            _emit('murottal:play-error', { surahIndex, ayahNumber });
+        }
 
-            // `play()` initiates loading/buffering. The Promise above resolves
-            // only when the `playing` event fires, not when `play()` settles.
-            el.play().catch((err) => {
-                if (err.name === 'AbortError') {
-                    resolve(false);
-                    return;
-                }
-                console.warn(`[AudioService] Web: play() rejected for ayah ${ayahNumber}:`, err);
-                onError();
-            });
-        });
+        return success;
     }
 
     // ── Native Path ──────────────────────────────────────────────────────────
@@ -487,6 +524,9 @@ async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah,
 
     _isPlaying = false;
     _isPaused = false;
+    // Probe primary CDN at the start of each new session.
+    // Within the session, _useFallbackCdn protects subsequent ayahs from repeated timeouts.
+    _useFallbackCdn = false;
     await _cleanUpNativeResources();
 
     if (signal.aborted) return;
@@ -759,11 +799,12 @@ async function _nativePlaySurah(surahIndex, surahName, totalAyahs) {
     _setBuffering(true, true);
 
     try {
-        const playlist = await buildPlaylist(surahIndex, totalAyahs);
+        const { playlist, fallbackPlaylist } = await buildPlaylist(surahIndex, totalAyahs);
         const systemStrings = await _buildSystemStrings();
 
         await MurottalService.play({
             playlist: JSON.stringify(playlist),
+            fallbackPlaylist: JSON.stringify(fallbackPlaylist),
             surahIndex,
             surahName,
             totalAyahs,
@@ -813,11 +854,12 @@ async function _nativePlayAyah(surahIndex, ayahNumber, surahName) {
 
     try {
         // Build a full playlist from ayah 1 to totalAyahs so next/prev can work
-        const playlist = await buildPlaylist(surahIndex, totalAyahs);
+        const { playlist, fallbackPlaylist } = await buildPlaylist(surahIndex, totalAyahs);
         const systemStrings = await _buildSystemStrings();
 
         await MurottalService.play({
             playlist: JSON.stringify(playlist),
+            fallbackPlaylist: JSON.stringify(fallbackPlaylist),
             surahIndex,
             surahName,
             totalAyahs,

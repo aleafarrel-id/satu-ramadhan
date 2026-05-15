@@ -62,6 +62,7 @@ public final class Constants {
     public static final String PREF_MUROTTAL = "MurottalPlayback";
 
     public static final String EXTRA_MUROTTAL_PLAYLIST = "murottal_playlist";
+    public static final String EXTRA_MUROTTAL_FALLBACK_PLAYLIST = "murottal_fallback_playlist";
     public static final String EXTRA_MUROTTAL_SURAH_INDEX = "murottal_surah_index";
     public static final String EXTRA_MUROTTAL_SURAH_NAME = "murottal_surah_name";
     public static final String EXTRA_MUROTTAL_TOTAL_AYAHS = "murottal_total_ayahs";

@@ -14,8 +14,9 @@
 import { registerPlugin } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { store } from '../../core/store.js';
-import { DEFAULT_RECITER_ID, getReciterUrlSegment, buildAyahUrl } from '../../config/quran-audio.js';
+import { DEFAULT_RECITER_ID, getReciterUrlSegment, buildAyahUrl, buildFallbackAyahUrl, getReciterById } from '../../config/quran-audio.js';
 import { isAudioOfflineEnabled } from './quran-settings.js';
+import { getGlobalAyahNumber } from './quran-api.js';
 
 // ─── Plugin Registration ─────────────────────────────────────────────────────
 
@@ -33,43 +34,56 @@ export function getReciterId() {
 }
 
 /**
- * Builds a playlist of audio URIs for a surah, suitable for the
- * native MurottalPlaybackService.
+ * Builds primary and fallback playlists of audio URIs for a surah,
+ * suitable for the native MurottalPlaybackService.
  *
- * If offline mode is enabled, resolves each ayah to a local file:// URI.
- * Otherwise, builds streaming https:// URLs from everyayah.com.
+ * - Offline mode: resolves each ayah to a local file:// URI (no fallback needed).
+ * - Streaming mode: primary = EveryAyah CDN, fallback = Islamic Network CDN.
  *
  * @param {number} surahIndex - 1-based surah number
  * @param {number} totalAyahs - Total ayahs in this surah
- * @returns {Promise<string[]>} Array of URI strings
+ * @returns {Promise<{ playlist: string[], fallbackPlaylist: Array<string|null> }>}
  */
 export async function buildPlaylist(surahIndex, totalAyahs) {
-    const reciterId = getReciterId();
-    const urlSegment = getReciterUrlSegment(reciterId);
-    const uris = [];
+    const reciterId   = getReciterId();
+    const urlSegment  = getReciterUrlSegment(reciterId);
+    const reciter     = getReciterById(reciterId);
+    const playlist         = [];
+    const fallbackPlaylist = [];
 
-    if (isAudioOfflineEnabled()) {
-        // Offline mode: resolve local file URIs
-        for (let ayah = 1; ayah <= totalAyahs; ayah++) {
+    for (let ayah = 1; ayah <= totalAyahs; ayah++) {
+        let primaryUrl;
+        let isLocalUri = false;
+
+        if (isAudioOfflineEnabled()) {
             try {
                 const { uri } = await Filesystem.getUri({
                     directory: Directory.Data,
                     path: `murottal/${reciterId}/surah_${surahIndex}/ayah_${ayah}.mp3`,
                 });
-                uris.push(uri);
+                primaryUrl = uri;
+                isLocalUri = true;
             } catch {
-                // File not found — fall back to streaming for this ayah
-                uris.push(buildAyahUrl(urlSegment, surahIndex, ayah));
+                // File not downloaded — fall back to streaming for this ayah
+                primaryUrl = buildAyahUrl(urlSegment, surahIndex, ayah);
             }
+        } else {
+            primaryUrl = buildAyahUrl(urlSegment, surahIndex, ayah);
         }
-    } else {
-        // Streaming mode: build remote URLs
-        for (let ayah = 1; ayah <= totalAyahs; ayah++) {
-            uris.push(buildAyahUrl(urlSegment, surahIndex, ayah));
+
+        playlist.push(primaryUrl);
+
+        // Build fallback URL only for remote (streaming) URLs.
+        // Local file:// URIs do not need a CDN fallback.
+        if (!isLocalUri && reciter?.islamicNetworkId) {
+            const globalAyah = await getGlobalAyahNumber(surahIndex, ayah);
+            fallbackPlaylist.push(buildFallbackAyahUrl(reciter.islamicNetworkId, globalAyah));
+        } else {
+            fallbackPlaylist.push(null); // null = no CDN fallback for this ayah
         }
     }
 
-    return uris;
+    return { playlist, fallbackPlaylist };
 }
 
 /**
@@ -83,11 +97,12 @@ export async function buildPlaylist(surahIndex, totalAyahs) {
  *
  * @param {number} surahIndex
  * @param {number} ayahNumber - 1-based ayah number
- * @returns {Promise<string[]>} Array with one URI
+ * @returns {Promise<{ playlist: string[], fallbackPlaylist: Array<string|null> }>}
  */
 export async function buildSingleAyahPlaylist(surahIndex, ayahNumber) {
     const reciterId = getReciterId();
     const urlSegment = getReciterUrlSegment(reciterId);
+    const reciter    = getReciterById(reciterId);
 
     if (isAudioOfflineEnabled()) {
         try {
@@ -95,11 +110,17 @@ export async function buildSingleAyahPlaylist(surahIndex, ayahNumber) {
                 directory: Directory.Data,
                 path: `murottal/${reciterId}/surah_${surahIndex}/ayah_${ayahNumber}.mp3`,
             });
-            return [uri];
+            return { playlist: [uri], fallbackPlaylist: [null] };
         } catch {
             // Fallback to streaming
         }
     }
 
-    return [buildAyahUrl(urlSegment, surahIndex, ayahNumber)];
+    const primaryUrl = buildAyahUrl(urlSegment, surahIndex, ayahNumber);
+    let fallbackUrl  = null;
+    if (reciter?.islamicNetworkId) {
+        const globalAyah = await getGlobalAyahNumber(surahIndex, ayahNumber);
+        fallbackUrl = buildFallbackAyahUrl(reciter.islamicNetworkId, globalAyah);
+    }
+    return { playlist: [primaryUrl], fallbackPlaylist: [fallbackUrl] };
 }
