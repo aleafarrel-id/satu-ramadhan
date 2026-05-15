@@ -10,10 +10,32 @@
  * └──────────────────────────────────────────────────────────┘
  */
 
+// ─── Audio CDN ────────────────────────────────────────────────────────────────
+
+/** Base URL for the EveryAyah audio CDN. */
+export const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
+
+/** Zero-pads a number to 3 digits (e.g. 7 → '007'). */
+export const pad3 = (n) => String(n).padStart(3, '0');
+
+/**
+ * Builds the remote audio URL for a single ayah.
+ * Single source of truth for all EveryAyah URL construction.
+ * @param {string} urlSegment - e.g. 'Alafasy_128kbps'
+ * @param {number} surahIndex - 1-based surah number
+ * @param {number} ayahNumber - 1-based ayah number
+ * @returns {string}
+ */
+export function buildAyahUrl(urlSegment, surahIndex, ayahNumber) {
+    return `${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayahNumber)}.mp3`;
+}
+
+// ─── Reciters ─────────────────────────────────────────────────────────────────
+
 export const RECITERS = [
-    { id: 'alafasy',    label: 'Mishary Rashid Alafasy',     urlSegment: 'Alafasy_128kbps' },
-    { id: 'abdulbasit', label: 'Abdul Basit Abdul Samad',    urlSegment: 'Abdul_Basit_Murattal_192kbps' },
-    { id: 'minshawi',   label: 'Mohamed Siddiq El-Minshawi', urlSegment: 'Minshawi_Murattal_128kbps' },
+    { id: 'alafasy', label: 'Mishary Rashid Alafasy', urlSegment: 'Alafasy_128kbps' },
+    { id: 'abdulbasit', label: 'Abdul Basit Abdul Samad', urlSegment: 'Abdul_Basit_Murattal_192kbps' },
+    { id: 'minshawi', label: 'Mohamed Siddiq El-Minshawi', urlSegment: 'Minshawi_Murattal_128kbps' },
 ];
 
 /** Default reciter used across the app. */

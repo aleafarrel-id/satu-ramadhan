@@ -16,11 +16,8 @@ import { Capacitor } from '@capacitor/core';
 import { FileTransfer } from '@capacitor/file-transfer';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { store } from '../../core/store.js';
-import { getReciterUrlSegment, DEFAULT_RECITER_ID } from '../../config/quran-audio.js';
+import { getReciterUrlSegment, DEFAULT_RECITER_ID, buildAyahUrl } from '../../config/quran-audio.js';
 
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
 const STORE_DOWNLOADS_PATH = 'quran.downloads';
 
 // ─── Internal State ──────────────────────────────────────────────────────────
@@ -33,13 +30,6 @@ let _isCancelled = false;
 let _queue = null;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/**
- * Zero-pads a number to 3 digits.
- * @param {number} n
- * @returns {string} e.g. 1 → '001'
- */
-const pad3 = (n) => String(n).padStart(3, '0');
 
 /**
  * Returns the active reciter ID from the Store (or default).
@@ -57,7 +47,7 @@ function _getReciterId() {
  * @returns {string}
  */
 function _buildRemoteUrl(urlSegment, surahIndex, ayahNumber) {
-    return `${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayahNumber)}.mp3`;
+    return buildAyahUrl(urlSegment, surahIndex, ayahNumber);
 }
 
 /**

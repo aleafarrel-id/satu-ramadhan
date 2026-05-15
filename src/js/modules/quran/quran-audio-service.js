@@ -19,16 +19,12 @@
 
 import { NativeAudio } from '@capgo/native-audio';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { getReciterUrlSegment } from '../../config/quran-audio.js';
+import { getReciterUrlSegment, buildAyahUrl } from '../../config/quran-audio.js';
 import { getSurahList } from './quran-api.js';
 import { isAudioOfflineEnabled } from './quran-settings.js';
 import { isNative } from '../system/platform.js';
 import { MurottalService, buildPlaylist, getReciterId } from './murottal-native-bridge.js';
 import { t, loadNS } from '../../core/i18n.js';
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
 
 /** Prefix for NativeAudio asset IDs to avoid collisions. */
 const ASSET_PREFIX = 'murottal';
@@ -92,8 +88,6 @@ function _buildAssetId(surahIndex, ayahNumber) {
     return `${ASSET_PREFIX}_${surahIndex}_${ayahNumber}`;
 }
 
-/** @returns {string} Zero-padded 3-digit string (e.g. 7 → '007'). */
-const pad3 = (n) => String(n).padStart(3, '0');
 
 /** Dispatches a namespaced CustomEvent on `document`. */
 function _emit(eventName, detail = {}) {
@@ -269,7 +263,7 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
         if (signal.aborted) return false;
 
         const urlSegment = getReciterUrlSegment(reciterId);
-        const remoteUrl = `${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayahNumber)}.mp3`;
+        const remoteUrl = buildAyahUrl(urlSegment, surahIndex, ayahNumber);
 
         _webAudioEl = new Audio(remoteUrl);
         _currentAssetId = 'web';

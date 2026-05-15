@@ -14,19 +14,12 @@
 import { registerPlugin } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { store } from '../../core/store.js';
-import { DEFAULT_RECITER_ID, getReciterUrlSegment } from '../../config/quran-audio.js';
+import { DEFAULT_RECITER_ID, getReciterUrlSegment, buildAyahUrl } from '../../config/quran-audio.js';
 import { isAudioOfflineEnabled } from './quran-settings.js';
 
 // ─── Plugin Registration ─────────────────────────────────────────────────────
 
 export const MurottalService = registerPlugin('MurottalService');
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
-
-/** Zero-pads a number to 3 digits. */
-const pad3 = (n) => String(n).padStart(3, '0');
 
 // ─── Playlist Builder ────────────────────────────────────────────────────────
 
@@ -66,13 +59,13 @@ export async function buildPlaylist(surahIndex, totalAyahs) {
                 uris.push(uri);
             } catch {
                 // File not found — fall back to streaming for this ayah
-                uris.push(`${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayah)}.mp3`);
+                uris.push(buildAyahUrl(urlSegment, surahIndex, ayah));
             }
         }
     } else {
         // Streaming mode: build remote URLs
         for (let ayah = 1; ayah <= totalAyahs; ayah++) {
-            uris.push(`${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayah)}.mp3`);
+            uris.push(buildAyahUrl(urlSegment, surahIndex, ayah));
         }
     }
 
@@ -108,5 +101,5 @@ export async function buildSingleAyahPlaylist(surahIndex, ayahNumber) {
         }
     }
 
-    return [`${EVERYAYAH_BASE_URL}/${urlSegment}/${pad3(surahIndex)}${pad3(ayahNumber)}.mp3`];
+    return [buildAyahUrl(urlSegment, surahIndex, ayahNumber)];
 }
