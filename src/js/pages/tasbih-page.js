@@ -20,7 +20,7 @@ import { showConfirmModal } from '../components/modal/confirm-modal.js';
 import { showTasbihPresetModal } from '../components/modal/tasbih-preset-modal.js';
 import { escapeHtml } from '../utils/sanitize.js';
 import { trapFocus } from '../utils/a11y.js';
-import { impact, doubleVibrate } from '../modules/system/haptic.js';
+import { impact, doubleVibrate, lockVibrate } from '../modules/system/haptic.js';
 import { preloadAudio, playSingleClick, playDoubleClick } from '../modules/tasbih/tasbih-audio.js';
 import { isWeb } from '../modules/system/platform.js';
 import * as notif from '../modules/notification/notification.js';
@@ -43,6 +43,7 @@ let _svgW = 390;
 let _svgH = 460;
 let _resizeObserver = null;
 let _feedbackMode = 'haptic';
+let _isLocked = false;
 let _unsubscribeLanguage = null;
 
 function _getAllZikir() {
@@ -74,6 +75,7 @@ export async function init(container) {
     _activeZikirId = store.getState('tasbih.activeZikir') ?? 'subhanallah';
     _activeZikir = _getAllZikir().find(z => z.id === _activeZikirId) ?? _getAllZikir()[0];
     _feedbackMode = store.getState('tasbih.feedbackMode') ?? (isWeb ? 'audio' : 'haptic');
+    _isLocked = store.getState('tasbih.isLocked') ?? false;
 
     // Migrate from legacy single state if any
     if (Object.keys(_sessions).length === 0) {
@@ -91,6 +93,7 @@ export async function init(container) {
     _updateInfoCard();
     _updateBeads();
     _updateFeedbackToggleIcon();
+    _updateLockIcon();
     _initAudio();
 
     // Listen for language changes to re-render translations seamlessly
@@ -102,6 +105,7 @@ export async function init(container) {
             _bindEvents();
             _updateInfoCard();
             _updateFeedbackToggleIcon();
+            _updateLockIcon();
         });
     }
 }
@@ -219,11 +223,18 @@ function _renderHTML() {
 
             <!-- ── Beads Visual Area (full tap zone) ── -->
             <div class="tasbih-beads-area" id="tb-beads-area">
-                <!-- ── Feedback Mode Toggle (Top Right) ── -->
+            <!-- ── Feedback Mode Toggle + Lock (Top Right Capsule) ── -->
+            <div class="tasbih-controls-capsule">
+                <button class="tasbih-lock-btn" id="tb-lock-toggle"
+                    aria-label="${t('pages/tasbih-page:toggle_lock', { defaultValue: 'Kunci / Buka Kunci Tasbih' })}">
+                    <i class="bx bx-lock-open"></i>
+                </button>
+                <div class="tasbih-controls-divider"></div>
                 <button class="tasbih-feedback-btn" id="tb-feedback-toggle"
                     aria-label="${t('pages/tasbih-page:toggle_feedback', { defaultValue: 'Ganti mode umpan balik' })}">
                     <i class="bx bx-mobile-vibration"></i>
                 </button>
+            </div>
             </div>
 
             <!-- ── Floating Navigation (Bottom Left) ── -->
@@ -423,6 +434,7 @@ function _cacheElements() {
     _el.selectorModal = _container.querySelector('#tb-selector-modal');
     _el.list = _container.querySelector('#tb-list');
     _el.feedbackToggle = _container.querySelector('#tb-feedback-toggle');
+    _el.lockToggle = _container.querySelector('#tb-lock-toggle');
 
     if (_resizeObserver) {
         _resizeObserver.disconnect();
@@ -456,11 +468,20 @@ function _bindEvents() {
 
     // Feedback mode toggle (haptic ↔ audio)
     _el.feedbackToggle.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent bubbling to beads-area tap handler
+        e.stopPropagation();
         _toggleFeedbackMode();
     });
     _el.feedbackToggle.addEventListener('touchstart', (e) => {
-        e.stopPropagation(); // Prevent touchstart from incrementing counter
+        e.stopPropagation();
+    }, { passive: true });
+
+    // Lock toggle
+    _el.lockToggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        _toggleLock();
+    });
+    _el.lockToggle?.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
     }, { passive: true });
 
     // Settings opens selector
@@ -485,11 +506,26 @@ function _bindEvents() {
 
     // Tap the beads area → increment counter
     let _lastTap = 0;
+    let _lastShake = 0;
     const handleTap = (e) => {
         if (e.cancelable && e.type === 'touchstart') e.preventDefault();
+
+        // Locked state: respond immediately but throttle lightly to avoid
+        // touchstart + click double-fire on the same physical tap
+        if (_isLocked) {
+            const now = Date.now();
+            if (now - _lastShake < 100) return;
+            _lastShake = now;
+            _shakeLockIcon();
+            return;
+        }
+
+        // Throttle only applies to actual counting (prevent double-fire from
+        // simultaneous touchstart + click events on the same tap)
         const now = Date.now();
-        if (now - _lastTap < 80) return; // simple throttle
+        if (now - _lastTap < 80) return;
         _lastTap = now;
+
         _increment();
     };
 
@@ -1002,4 +1038,90 @@ function _updateFeedbackToggleIcon() {
     _el.feedbackToggle.addEventListener('animationend', () => {
         _el.feedbackToggle.classList.remove('animating');
     }, { once: true });
+}
+
+/**
+ * Toggles the tasbih lock state.
+ */
+function _toggleLock() {
+    _isLocked = !_isLocked;
+    store.setState('tasbih.isLocked', _isLocked);
+    _updateLockIcon();
+
+    if (_isLocked) {
+        impact('light');
+    }
+}
+
+/**
+ * Syncs the lock button icon and visual state.
+ */
+function _updateLockIcon() {
+    if (!_el.lockToggle) return;
+
+    const icon = _el.lockToggle.querySelector('i');
+    if (_isLocked) {
+        icon.className = 'bx bx-lock';
+        _el.lockToggle.classList.add('mode-locked');
+        _el.lockToggle.setAttribute('aria-pressed', 'true');
+    } else {
+        icon.className = 'bx bx-lock-open';
+        _el.lockToggle.classList.remove('mode-locked');
+        _el.lockToggle.setAttribute('aria-pressed', 'false');
+    }
+}
+
+/**
+ * Plays a shake animation on the lock icon when tapped while locked.
+ * Also triggers a distinctive feedback (haptic or audio depending on mode).
+ */
+function _shakeLockIcon() {
+    if (!_el.lockToggle) return;
+
+    // Distinctive feedback — different from single tap (light) and round complete (double)
+    if (_feedbackMode === 'audio') {
+        _playLockedAudioFeedback();
+    } else {
+        lockVibrate();
+    }
+
+    _el.lockToggle.classList.remove('shake');
+    void _el.lockToggle.offsetWidth; // force reflow
+    _el.lockToggle.classList.add('shake');
+    _el.lockToggle.addEventListener('animationend', () => {
+        _el.lockToggle.classList.remove('shake');
+    }, { once: true });
+}
+
+/**
+ * Synthesizes a short low-frequency "thud" via Web Audio API
+ * to signal that the counter is locked.
+ * Different timbre from the pre-recorded click/double-click SFX.
+ */
+function _playLockedAudioFeedback() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        // Low thud — 80Hz square wave for a distinctly "blocked" feel
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(80, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.08);
+
+        // Medium volume, quick decay
+        gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.12);
+
+        // Clean up after playback
+        oscillator.addEventListener('ended', () => ctx.close().catch(() => {}));
+    } catch (e) {
+        // Silently fail — audio context may be unavailable
+    }
 }

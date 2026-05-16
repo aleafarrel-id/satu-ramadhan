@@ -87,3 +87,28 @@ export async function doubleVibrate() {
         navigator.vibrate([100, 150, 100]);
     }
 }
+
+/**
+ * Trigger a distinctive "locked" feedback pattern.
+ * Medium tap + short pause + light tap — clearly different from:
+ *   - Normal count: single light impact
+ *   - Round complete: double equal-length vibration
+ * Web fallback: [80ms vibrate, 60ms pause, 30ms vibrate]
+ */
+export async function lockVibrate() {
+    if (isNative) {
+        try {
+            await Haptics.impact({ style: ImpactStyle.Medium });
+            await new Promise(r => setTimeout(r, 60));
+            await Haptics.impact({ style: ImpactStyle.Light });
+        } catch (e) {
+            console.warn('Haptic lockVibrate failed:', e);
+        }
+        return;
+    }
+
+    // Web Vibration API fallback
+    if (navigator.vibrate) {
+        navigator.vibrate([80, 60, 30]);
+    }
+}

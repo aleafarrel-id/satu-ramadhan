@@ -19,6 +19,9 @@ const initialState = {
     schedule: {
         carouselIndex: 0
     },
+    tasbih: {
+        isLocked: false
+    },
     map: {
         isLocked: true
     },

@@ -257,9 +257,17 @@ async function renderContent() {
                         ${renderShortcutCard()}
                     </div>
                 </div>
-                <div class="carousel-dots" id="home-carousel-dots">
-                    <span class="carousel-dot${savedCarouselIndex === 0 ? ' active' : ''}" data-index="0"></span>
-                    <span class="carousel-dot${savedCarouselIndex === 1 ? ' active' : ''}" data-index="1"></span>
+                <div class="carousel-dots-container">
+                    <button class="carousel-nav-btn carousel-nav-btn--prev" id="home-carousel-prev" type="button" aria-label="${t('common:prev', { defaultValue: 'Sebelumnya' })}">
+                        <i class='bx bx-chevron-left'></i>
+                    </button>
+                    <div class="carousel-dots" id="home-carousel-dots">
+                        <span class="carousel-dot${savedCarouselIndex === 0 ? ' active' : ''}" data-index="0"></span>
+                        <span class="carousel-dot${savedCarouselIndex === 1 ? ' active' : ''}" data-index="1"></span>
+                    </div>
+                    <button class="carousel-nav-btn carousel-nav-btn--next visible" id="home-carousel-next" type="button" aria-label="${t('common:next', { defaultValue: 'Berikutnya' })}">
+                        <i class='bx bx-chevron-right'></i>
+                    </button>
                 </div>
             </div>
             <div class="home-schedule-header">
@@ -320,7 +328,6 @@ async function renderContent() {
     bindLocationCardEvents(showLocationModalForHome, _container);
     bindScheduleEvents();
     bindCarouselEvents();
-    bindShortcutEvents();
 
     // Bind empty-state retry/search buttons (only present when _timings is null)
     _container.querySelector('#home-btn-retry')?.addEventListener('click', () => location.reload());
@@ -359,51 +366,71 @@ function bindScheduleEvents() {
 
 /**
  * Binds event listeners for the native scroll snap carousel.
- * Persists the active slide index to the store so the position
- * is restored when the user returns to the home page.
+ * Persists the active slide index to the store and updates UI indicators.
  */
 function bindCarouselEvents() {
     const carouselWrapper = document.getElementById('home-top-carousel');
-    const dots = document.querySelectorAll('.carousel-dot');
+    const dotsContainer = document.getElementById('home-carousel-dots');
+    const btnPrev = document.getElementById('home-carousel-prev');
+    const btnNext = document.getElementById('home-carousel-next');
 
-    if (!carouselWrapper || dots.length === 0) return;
+    if (!carouselWrapper || !dotsContainer) return;
 
-    /** Update dot indicators to match the currently visible slide. */
-    function _syncDots(index) {
+    const dots = dotsContainer.querySelectorAll('.carousel-dot');
+    const totalSlides = dots.length;
+
+    /** Update dot indicators and arrows to match the currently visible slide. */
+    function _syncNav(index) {
         dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        if (btnPrev) btnPrev.classList.toggle('visible', index > 0);
+        if (btnNext) btnNext.classList.toggle('visible', index < totalSlides - 1);
     }
 
-    // Save index to store and sync dots on every scroll-snap settle
+    // Update state and UI on scroll
     carouselWrapper.addEventListener('scroll', () => {
         const index = Math.round(carouselWrapper.scrollLeft / carouselWrapper.clientWidth);
-        _syncDots(index);
+        _syncNav(index);
         store.setState('home.carouselIndex', index);
     }, { passive: true });
 
-    // Restore persisted carousel position instantly (no slide animation on restore).
-    // Uses getBoundingClientRect instead of clientWidth * index to correctly account
-    // for the CSS gap between slides — keeps this logic immune to layout changes.
+    // Event delegation for the carousel wrapper (Navigation + Shortcuts)
+    carouselWrapper.parentElement.addEventListener('click', (e) => {
+        // Arrows
+        const btn = e.target.closest('.carousel-nav-btn');
+        if (btn) {
+            const index = store.getState('home.carouselIndex') ?? 0;
+            const direction = btn.classList.contains('carousel-nav-btn--prev') ? -1 : 1;
+            const nextIndex = Math.max(0, Math.min(totalSlides - 1, index + direction));
+            
+            carouselWrapper.scrollTo({
+                left: nextIndex * carouselWrapper.clientWidth,
+                behavior: 'smooth'
+            });
+            return;
+        }
+
+        // Shortcuts (Delegation fixes ID collision issues)
+        const shortcutBtn = e.target.closest('.shortcut-card__item');
+        if (shortcutBtn) {
+            const id = shortcutBtn.id.replace('shortcut-', '');
+            _handleShortcut(id);
+        }
+    });
+
+    // Initial sync
     const savedIndex = store.getState('home.carouselIndex') ?? 0;
+    _syncNav(savedIndex);
+
     if (savedIndex > 0) {
-        // requestAnimationFrame ensures slides have been painted and have real dimensions
         requestAnimationFrame(() => {
             const slides = carouselWrapper.querySelectorAll('.carousel-slide');
             const targetSlide = slides[savedIndex];
             if (!targetSlide) return;
-
             const containerRect = carouselWrapper.getBoundingClientRect();
             const slideRect = targetSlide.getBoundingClientRect();
-
-            // Disable scroll behavior temporarily to prevent animation during restore
             carouselWrapper.style.scrollBehavior = 'auto';
-
-            // Current scrollLeft + distance from container edge to slide edge = exact snap position
             carouselWrapper.scrollLeft = carouselWrapper.scrollLeft + (slideRect.left - containerRect.left);
-
-            // Re-enable smooth scrolling after the layout is applied
-            requestAnimationFrame(() => {
-                carouselWrapper.style.scrollBehavior = '';
-            });
+            requestAnimationFrame(() => { carouselWrapper.style.scrollBehavior = ''; });
         });
     }
 }
@@ -421,12 +448,11 @@ function bindViewSpecificEvents() {
 }
 
 /**
- * Binds event listeners for the shortcut actions.
+ * Internal handler for shortcut actions.
+ * @param {string} id - Shortcut menu ID
  */
-function bindShortcutEvents() {
-    const shortcuts = {
-        // Dynamic import resolves instantly from the ES module cache after app.js
-        // has already loaded tasbih-page.js — no network round-trip on click.
+function _handleShortcut(id) {
+    const handlers = {
         'tasbih': () => import('./tasbih-page.js').then(m => m.open()),
         'surah': () => {
             sessionStorage.setItem('quran_tab', 'surah');
@@ -444,13 +470,7 @@ function bindShortcutEvents() {
             router.navigate('compass');
         }
     };
-
-    Object.entries(shortcuts).forEach(([id, handler]) => {
-        const el = document.getElementById(`shortcut-${id}`);
-        if (el) {
-            el.addEventListener('click', handler);
-        }
-    });
+    handlers[id]?.();
 }
 
 /**

@@ -109,7 +109,7 @@
 }
 
 .tasbih-back-btn:active {
-    background: var(--clr-quran-hover);
+    background: var(--clr-quran-card-hover);
 }
 
 .tasbih-header-title {
@@ -135,7 +135,7 @@
 }
 
 .tasbih-settings-btn:active {
-    background: var(--clr-quran-hover);
+    background: var(--clr-quran-card-hover);
 }
 
 /* ─────────────────────────────────────────
@@ -276,7 +276,7 @@
 }
 
 .tasbih-fab-btn:active {
-    background: var(--clr-quran-hover);
+    background: var(--clr-quran-card-hover);
     color: var(--clr-quran-text);
 }
 
@@ -288,48 +288,96 @@
 }
 
 /* ─────────────────────────────────────────
-   Feedback Mode Toggle (Haptic / Audio)
+   Controls Capsule (Lock + Feedback)
 ───────────────────────────────────────── */
 
-.tasbih-feedback-btn {
+.tasbih-controls-capsule {
     position: absolute;
     top: var(--sp-4);
     right: var(--sp-4);
+    display: flex;
+    align-items: center;
+    background: var(--clr-quran-card-bg);
+    border: 1px solid var(--clr-quran-border);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 50;
+    overflow: hidden;
+}
+
+.tasbih-controls-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--clr-quran-border);
+    flex-shrink: 0;
+}
+
+/* Lock button — sits LEFT inside the capsule */
+.tasbih-lock-btn {
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--clr-quran-card-bg);
-    border: 1px solid var(--clr-quran-border);
-    border-radius: 50%;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: transparent;
+    border: none;
     color: var(--clr-quran-text-secondary);
     font-size: 20px;
     cursor: pointer;
-    z-index: 50;
     transition: background var(--transition-fast),
-        color var(--transition-fast),
-        border-color var(--transition-fast),
-        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        color var(--transition-fast);
     -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+}
+
+.tasbih-lock-btn:active {
+    background: var(--clr-quran-card-hover);
+    color: var(--clr-quran-text);
+}
+
+/* Locked state — accent color to make it unmistakably visible */
+.tasbih-lock-btn.mode-locked {
+    color: var(--clr-quran-accent);
+    background: color-mix(in srgb, var(--clr-quran-accent) 10%, transparent);
+}
+
+.tasbih-lock-btn:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--clr-quran-accent);
+}
+
+/* Feedback button — sits RIGHT inside the capsule */
+.tasbih-feedback-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--clr-quran-text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    transition: background var(--transition-fast),
+        color var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
 }
 
 .tasbih-feedback-btn:active {
-    background: var(--clr-quran-hover);
+    background: var(--clr-quran-card-hover);
     color: var(--clr-quran-text);
-    transform: scale(0.88);
 }
 
 .tasbih-feedback-btn:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--clr-quran-accent);
+    box-shadow: inset 0 0 0 2px var(--clr-quran-accent);
 }
 
 /* Audio mode active — accent visual indicator */
 .tasbih-feedback-btn.mode-audio {
     color: var(--clr-quran-accent);
-    border-color: var(--clr-quran-accent);
+    background: color-mix(in srgb, var(--clr-quran-accent) 10%, transparent);
 }
 
 /* Icon flip micro-animation on mode toggle */
@@ -349,6 +397,20 @@
 
 .tasbih-feedback-btn.animating i {
     animation: tasbihIconFlip 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Lock icon shake animation when tapped while locked */
+@keyframes tasbihLockShake {
+    0%   { transform: rotate(0deg) scale(1.1); }
+    20%  { transform: rotate(-14deg) scale(1.15); }
+    40%  { transform: rotate(12deg) scale(1.1); }
+    60%  { transform: rotate(-10deg) scale(1.05); }
+    80%  { transform: rotate(8deg) scale(1); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+
+.tasbih-lock-btn.shake i {
+    animation: tasbihLockShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
 /* Counter row: circular spinner + count/target */
@@ -919,12 +981,16 @@
         font-size: 18px;
     }
 
+    .tasbih-controls-capsule {
+        top: var(--sp-3);
+        right: var(--sp-3);
+    }
+
+    .tasbih-lock-btn,
     .tasbih-feedback-btn {
         width: 40px;
         height: 40px;
         font-size: 18px;
-        top: var(--sp-3);
-        right: var(--sp-3);
     }
 
     .tasbih-stats-row {
@@ -1008,12 +1074,20 @@
         height: 18px;
     }
 
+    .tasbih-controls-capsule {
+        top: var(--sp-2);
+        right: var(--sp-2);
+    }
+
+    .tasbih-lock-btn,
     .tasbih-feedback-btn {
         width: 36px;
         height: 36px;
         font-size: 16px;
-        top: var(--sp-2);
-        right: var(--sp-2);
+    }
+
+    .tasbih-controls-divider {
+        height: 16px;
     }
 
     .tasbih-counter-spinner {

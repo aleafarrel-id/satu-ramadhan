@@ -18,7 +18,8 @@
    width: 100%;
    gap: var(--spacing-md);
    scroll-snap-type: x mandatory;
-   scrollbar-width: none; /* Firefox */
+   scrollbar-width: none;
+   /* Firefox */
    -webkit-overflow-scrolling: touch;
    scroll-behavior: smooth;
    /* Declare horizontal-only scroll intent so the browser and PTR don't fight */
@@ -26,7 +27,8 @@
 }
 
 .top-carousel::-webkit-scrollbar {
-   display: none; /* Safari and Chrome */
+   display: none;
+   /* Safari and Chrome */
 }
 
 /* Ensure each slide takes full width and fills height for equality */
@@ -35,13 +37,13 @@
    min-width: 100%;
    scroll-snap-align: center;
    display: flex;
-   align-items: stretch; 
+   align-items: stretch;
 }
 
 /* Stretch the cards inside fully to equal bounds */
-.carousel-slide > .card {
+.carousel-slide>.card {
    width: 100%;
-   margin-bottom: 0 !important; 
+   margin-bottom: 0 !important;
    box-sizing: border-box;
 }
 
@@ -49,11 +51,19 @@
    Carousel Dots Indicators
    ============================================= */
 
+.carousel-dots-container {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+   margin-top: var(--spacing-sm);
+}
+
 .carousel-dots {
    display: flex;
    gap: 6px;
    justify-content: center;
-   margin-top: var(--spacing-sm);
+   align-items: center;
 }
 
 .carousel-dot {
@@ -70,4 +80,41 @@
    border-radius: 4px;
    background-color: var(--clr-primary-500);
    border-color: var(--clr-primary-500);
+}
+
+/* =============================================
+   Carousel Nav Buttons
+   ============================================= */
+
+.carousel-nav-btn {
+   width: 24px;
+   height: 24px;
+   padding: 10px;
+   background: transparent;
+   border: none;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: var(--clr-primary-500);
+   font-size: var(--fs-xl);
+   font-weight: var(--fw-bold);
+   cursor: pointer;
+   opacity: 0;
+   pointer-events: none;
+   transition: opacity 0.3s ease, color 0.2s ease, transform 0.2s ease;
+   touch-action: manipulation;
+   -webkit-tap-highlight-color: transparent;
+}
+
+.carousel-nav-btn.visible {
+   opacity: 1;
+   pointer-events: auto;
+}
+
+.carousel-nav-btn:hover {
+   color: var(--clr-primary-400);
+}
+
+.carousel-nav-btn:active {
+   transform: scale(0.85);
 }

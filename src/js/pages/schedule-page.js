@@ -435,9 +435,17 @@ async function renderDayView() {
                 <div class="carousel-slide">${renderCountdownCardSchedule(prayerState)}</div>
                 <div class="carousel-slide">${renderShortcutCard()}</div>
             </div>
-            <div class="carousel-dots" id="sched-carousel-dots">
-                <span class="carousel-dot${savedCarouselIndex === 0 ? ' active' : ''}" data-index="0"></span>
-                <span class="carousel-dot${savedCarouselIndex === 1 ? ' active' : ''}" data-index="1"></span>
+            <div class="carousel-dots-container">
+                <button class="carousel-nav-btn carousel-nav-btn--prev" id="sched-carousel-prev" type="button" aria-label="${t('common:prev', { defaultValue: 'Sebelumnya' })}">
+                    <i class='bx bx-chevron-left'></i>
+                </button>
+                <div class="carousel-dots" id="sched-carousel-dots">
+                    <span class="carousel-dot${savedCarouselIndex === 0 ? ' active' : ''}" data-index="0"></span>
+                    <span class="carousel-dot${savedCarouselIndex === 1 ? ' active' : ''}" data-index="1"></span>
+                </div>
+                <button class="carousel-nav-btn carousel-nav-btn--next visible" id="sched-carousel-next" type="button" aria-label="${t('common:next', { defaultValue: 'Berikutnya' })}">
+                    <i class='bx bx-chevron-right'></i>
+                </button>
             </div>
         </div>
     ` : '';
@@ -664,30 +672,53 @@ function _bindScheduleTabletEvents(orgName) {
  */
 function _bindScheduleCarouselEvents() {
     const carouselWrapper = document.getElementById('sched-top-carousel');
-    const dots = document.querySelectorAll('#sched-carousel-dots .carousel-dot');
+    const dotsContainer = document.getElementById('sched-carousel-dots');
+    const btnPrev = document.getElementById('sched-carousel-prev');
+    const btnNext = document.getElementById('sched-carousel-next');
 
-    if (!carouselWrapper || dots.length === 0) return;
+    if (!carouselWrapper || !dotsContainer) return;
 
-    function syncDots(index) {
+    const dots = dotsContainer.querySelectorAll('.carousel-dot');
+    const totalSlides = dots.length;
+
+    function _syncNav(index) {
         dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        if (btnPrev) btnPrev.classList.toggle('visible', index > 0);
+        if (btnNext) btnNext.classList.toggle('visible', index < totalSlides - 1);
     }
 
+    // Update state and UI on scroll
     carouselWrapper.addEventListener('scroll', () => {
         const index = Math.round(carouselWrapper.scrollLeft / carouselWrapper.clientWidth);
-        syncDots(index);
+        _syncNav(index);
         store.setState('schedule.carouselIndex', index);
     }, { passive: true });
 
+    // Event delegation for navigation buttons
+    carouselWrapper.parentElement.addEventListener('click', (e) => {
+        const btn = e.target.closest('.carousel-nav-btn');
+        if (btn) {
+            const index = store.getState('schedule.carouselIndex') ?? 0;
+            const direction = btn.classList.contains('carousel-nav-btn--prev') ? -1 : 1;
+            const nextIndex = Math.max(0, Math.min(totalSlides - 1, index + direction));
+            
+            carouselWrapper.scrollTo({
+                left: nextIndex * carouselWrapper.clientWidth,
+                behavior: 'smooth'
+            });
+        }
+    });
+
     const savedIndex = store.getState('schedule.carouselIndex') ?? 0;
+    _syncNav(savedIndex);
+
     if (savedIndex > 0) {
         requestAnimationFrame(() => {
             const slides = carouselWrapper.querySelectorAll('.carousel-slide');
             const targetSlide = slides[savedIndex];
             if (!targetSlide) return;
-
             const containerRect = carouselWrapper.getBoundingClientRect();
             const slideRect = targetSlide.getBoundingClientRect();
-
             carouselWrapper.style.scrollBehavior = 'auto';
             carouselWrapper.scrollLeft = carouselWrapper.scrollLeft + (slideRect.left - containerRect.left);
             requestAnimationFrame(() => { carouselWrapper.style.scrollBehavior = ''; });
