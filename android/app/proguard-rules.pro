@@ -80,3 +80,16 @@
 # Keep navigation bar plugin classes to prevent R8 from stripping internal 
 # components which may cause reflection failures in release builds.
 -keep class ee.forgr.capacitor_navigation_bar.** { *; }
+
+# ─── Capawesome App Review Plugin ───────────────────────────────────────────
+# AppReview.java is the implementation class (not the Plugin class) and is
+# NOT annotated with @CapacitorPlugin, so it is not covered by the annotation
+# rule above. It is instantiated from AppReviewPlugin.load() which itself is
+# called reflectively by the Capacitor bridge.
+-keep class io.capawesome.capacitorjs.plugins.appreview.** { *; }
+
+# ─── Capawesome App Update Plugin ───────────────────────────────────────────
+# AppUpdatePlugin uses Google Play Core (app-update) which relies on internal
+# reflection. Keep the entire package to prevent R8 from stripping or renaming
+# listener classes and internal helper classes.
+-keep class io.capawesome.capacitorjs.plugins.appupdate.** { *; }
