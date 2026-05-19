@@ -293,6 +293,7 @@
 .mushaf-page {
    background: linear-gradient(135deg, var(--clr-mushaf-page-start) 0%, var(--clr-mushaf-page-end) 100%);
    padding: var(--sp-3) var(--sp-4);
+   padding-bottom: max(var(--sp-3), env(safe-area-inset-bottom));
    overflow: hidden;
    direction: rtl;
    position: relative;
@@ -495,6 +496,7 @@
 @media (min-width: 480px) {
    .mushaf-page {
       padding: var(--sp-4) max(var(--sp-6), env(safe-area-inset-right)) var(--sp-4) max(var(--sp-6), env(safe-area-inset-left));
+      padding-bottom: max(var(--sp-4), env(safe-area-inset-bottom));
    }
 }
 
@@ -544,6 +546,7 @@
 
    .mushaf-page {
       padding: var(--sp-2) max(var(--sp-3), env(safe-area-inset-right)) var(--sp-2) max(var(--sp-3), env(safe-area-inset-left));
+      padding-bottom: max(var(--sp-2), env(safe-area-inset-bottom));
    }
 
    .mushaf-line--basmala .mushaf-word {
