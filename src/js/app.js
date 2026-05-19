@@ -37,6 +37,7 @@ import '../css/components/modal/permission-dialog.css';
 // Utilities & Helpers
 import { initPullToRefresh } from './utils/pull-to-refresh.js';
 import { initGlobalFocusManager } from './utils/focus-manager.js';
+import { initGlobalKeyboardHandler } from './utils/keyboard-handler.js';
 import { checkForUpdate, requestReviewIfEligible } from './utils/store-services.js';
 
 // Router
@@ -131,6 +132,9 @@ export async function initApp() {
 
     // Initialize hardware back button handler
     initBackHandler();
+
+    // Initialize Capacitor Keyboard Event Handler for Edge-to-Edge support
+    initGlobalKeyboardHandler();
 
     // Initialize native notification service (permissions)
     initNotificationService();
