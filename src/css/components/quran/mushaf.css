@@ -85,7 +85,8 @@
    align-items: center;
    justify-content: space-between;
    padding: var(--sp-2) var(--sp-3);
-   padding-top: max(var(--sp-2), env(safe-area-inset-top));
+   padding-top: var(--sp-6);
+   padding-top: max(var(--sp-6), env(safe-area-inset-top));
    background: var(--clr-quran-card-bg);
    flex-shrink: 0;
    min-height: var(--size-touch-target);
@@ -517,7 +518,8 @@
 
 @media screen and (max-width: 360px) {
    .mushaf-header {
-      padding: var(--sp-1) var(--sp-2);
+      padding-inline: var(--sp-2);
+      padding-bottom: var(--sp-1);
    }
 
    .mushaf-back-btn {

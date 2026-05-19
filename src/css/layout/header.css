@@ -199,7 +199,7 @@
 
    /* Fade in + remove base padding overrides */
    .app-header .header-brand-pill.is-active {
-      padding: 0; /* override mobile padding-right */
+      padding: 0;
       opacity: 1;
       pointer-events: all;
    }
@@ -214,6 +214,6 @@
       width: auto;
       font-size: var(--icon-md);
       opacity: 1;
-      transform: none; /* remove mobile translateX */
+      transform: none;
    }
 }

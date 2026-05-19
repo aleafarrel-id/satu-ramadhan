@@ -400,6 +400,7 @@
    ============================================= */
 
 @media (min-width: 1024px) {
+
    /* Quran modal stays position:fixed but offset from the 240px sidebar */
    .quran-page {
       left: 240px;
