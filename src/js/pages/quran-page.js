@@ -28,6 +28,7 @@ import { initPullToRefresh } from '../utils/pull-to-refresh.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../modules/system/back-handler.js';
 import { t, loadNS } from '../core/i18n.js';
 import { logError } from '../utils/error-boundary.js';
+import { setStatusBarOverride, clearStatusBarOverride } from '../core/theme.js';
 
 /* Module State */
 let _container = null;
@@ -46,6 +47,10 @@ const _dismissSearchAction = () => toggleSearchMode(false);
  */
 export async function render(container) {
    _container = container;
+
+   // Quran page has a white/light background — switch status bar icons to dark
+   // so they remain readable. Only affects teal (light) theme; dark is unaffected.
+   setStatusBarOverride(true);
 
    await loadNS('pages/quran-page');
    await loadNS('components/quran/quran-card');
@@ -242,6 +247,9 @@ function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
 export async function destroy() {
    if (_debounceTimer) clearTimeout(_debounceTimer);
    unregisterModalDismiss(_dismissSearchAction);
+
+   // Restore default theme status bar style when leaving this white-background page.
+   clearStatusBarOverride();
 
    if (_ptrCleanup) {
       _ptrCleanup();

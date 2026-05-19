@@ -11,6 +11,16 @@ let _watcherSubscribed = false;
 let _initialThemeSet = false;
 
 /**
+ * Tracks whether a page with a light/white background is currently open.
+ * When true and the active theme is light (teal), status bar icons switch to
+ * LIGHT (dark icons) so they remain readable against the white page.
+ * null = no override active.
+ * true  = page requests LIGHT icons (dark/black — readable on white bg).
+ * false = page requests DARK icons  (white — readable on dark bg). Not normally used.
+ */
+let _statusBarOverride = null;
+
+/**
  * Initializes the theme based on user state.
  * Must be called early in app startup to prevent FOUC.
  */
@@ -24,6 +34,58 @@ export function initTheme() {
         // will freeze the frame and execute this smoothly.
         applyThemeBackground(newTheme);
     });
+}
+
+/**
+ * Called by pages with a white/light background (e.g. Quran, Tasbih, Mushaf)
+ * to switch the status bar icons to dark/black while they are open.
+ *
+ * Only has a visual effect when the active theme is light (teal). Dark and
+ * auto-dark themes already use white icons which remain correct regardless.
+ *
+ * @example
+ * // On page open:
+ * import { setStatusBarOverride } from '../../core/theme.js';
+ * setStatusBarOverride(true);
+ *
+ * // On page close/destroy:
+ * clearStatusBarOverride();
+ */
+export function setStatusBarOverride(lightIcons = true) {
+    _statusBarOverride = lightIcons;
+    _applyStatusBarStyle();
+}
+
+/**
+ * Removes the page-level status bar override and reverts to the theme default.
+ * Must be called in every destroy() / close() that called setStatusBarOverride().
+ */
+export function clearStatusBarOverride() {
+    _statusBarOverride = null;
+    _applyStatusBarStyle();
+}
+
+/**
+ * Applies the correct status bar icon style based on the current theme
+ * and any active page-level override. Separate from background color —
+ * the background remains transparent; only icon appearance changes.
+ * @private
+ */
+function _applyStatusBarStyle() {
+    if (!isNative) return;
+
+    const currentIsDark = document.documentElement.dataset.theme === 'dark';
+
+    // Determine whether icons should be light (white) or dark (black).
+    // Rule: DARK icons only when theme is light (teal) AND a white-bg page override is active.
+    // In all other cases keep the default DARK style (white icons).
+    const useLightIcons = !currentIsDark && _statusBarOverride === true;
+
+    try {
+        StatusBar.setStyle({ style: useLightIcons ? Style.Light : Style.Dark });
+    } catch (err) {
+        console.warn('[Theme] Failed to set StatusBar style', err);
+    }
 }
 
 /**
@@ -210,15 +272,21 @@ export function applyToDOM(finalDark) {
 
     if (isNative) {
         try {
-            StatusBar.setStyle({ style: Style.Dark });
-            StatusBar.setBackgroundColor({ color: finalDark ? '#031013' : '#0a3540' });
-            
+            // Status bar: fully transparent — content renders seamlessly behind it.
+            // Icon appearance is controlled separately via _applyStatusBarStyle().
+            StatusBar.setBackgroundColor({ color: '#00000000' });
+
             NavigationBar.setNavigationBarColor({
                 color: finalDark ? '#031013' : '#0a3540',
                 darkButtons: false
             });
+
+            // Re-evaluate icon style now that the theme has changed.
+            // This also respects any active white-page override.
+            _applyStatusBarStyle();
         } catch (err) {
             console.warn('[Theme] Failed to set native StatusBar or NavigationBar', err);
         }
     }
 }
+

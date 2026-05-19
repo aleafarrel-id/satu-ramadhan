@@ -24,6 +24,7 @@ import { impact, doubleVibrate, lockVibrate } from '../modules/system/haptic.js'
 import { preloadAudio, playSingleClick, playDoubleClick } from '../modules/tasbih/tasbih-audio.js';
 import { isWeb } from '../modules/system/platform.js';
 import * as notif from '../modules/notification/notification.js';
+import { setStatusBarOverride, clearStatusBarOverride } from '../core/theme.js';
 
 // ── Module State ───────────────────────────────────────────────────────────────
 
@@ -117,6 +118,10 @@ export function open() {
     if (_isOpen || !_container) return;
     _isOpen = true;
 
+    // Tasbih has a white/cream background — switch status bar icons to dark
+    // so they are readable when the teal (light) theme is active.
+    setStatusBarOverride(true);
+
     _container.setAttribute('aria-hidden', 'false');
     _container.removeAttribute('inert');
     _container.classList.add('tasbih-active');
@@ -129,6 +134,9 @@ export function open() {
 export function close() {
     if (!_isOpen || !_container) return;
     _isOpen = false;
+
+    // Restore default theme status bar style when closing Tasbih.
+    clearStatusBarOverride();
 
     // Release focus trap — restores focus to the element that was active
     // before the panel was opened (better than a bare blur() to body).

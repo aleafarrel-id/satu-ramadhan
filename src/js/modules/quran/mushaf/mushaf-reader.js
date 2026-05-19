@@ -25,6 +25,7 @@ import { makeAccessibleBtn } from '../../../utils/a11y.js';
 import { registerModalDismiss, unregisterModalDismiss } from '../../system/back-handler.js';
 import { store } from '../../../core/store.js';
 import { logError } from '../../../utils/error-boundary.js';
+import { setStatusBarOverride, clearStatusBarOverride } from '../../../core/theme.js';
 
 const TOTAL_PAGES = MushafApi.getTotalPages();
 const INITIAL_WINDOW = 4;
@@ -199,6 +200,10 @@ export async function open(startPage = 1, options = {}) {
    _currentPage = MushafApi.clampPage(startPage);
    _onCloseCallback = options.onClose;
 
+   // Mushaf has a white/cream paper background — switch status bar icons to dark
+   // so they are readable. Only takes effect in teal (light) theme; dark ignores it.
+   setStatusBarOverride(true);
+
    await loadNS('modules/quran/mushaf/mushaf-reader');
 
    // Pre-emptive cleanup of any previous residues (crucial for rapid navigation)
@@ -277,6 +282,9 @@ export async function close() {
    if (!_isOpen || _isClosing) return;
    _isClosing = true;
 
+   // Restore status bar icons to the normal theme style when leaving Mushaf.
+   clearStatusBarOverride();
+
    dismissTooltip();
    _detachListeners();
    destroyPicker();
@@ -335,6 +343,9 @@ export function destroy() {
    if (_isClosing) return; // Prevent abrupt structural interference while animating close
    _isOpen = false;
    _buildGeneration++; // Cancel any in-flight build
+
+   // Restore status bar icons (mirrors close() cleanup for the forced-destroy path).
+   clearStatusBarOverride();
 
    dismissTooltip();
    _disposePanzoom();
