@@ -50,7 +50,7 @@ export async function render(container) {
 
    // Quran page has a white/light background — switch status bar icons to dark
    // so they remain readable. Only affects teal (light) theme; dark is unaffected.
-   setStatusBarOverride(true);
+   setStatusBarOverride('quran');
 
    await loadNS('pages/quran-page');
    await loadNS('components/quran/quran-card');
@@ -249,7 +249,7 @@ export async function destroy() {
    unregisterModalDismiss(_dismissSearchAction);
 
    // Restore default theme status bar style when leaving this white-background page.
-   clearStatusBarOverride();
+   clearStatusBarOverride('quran');
 
    if (_ptrCleanup) {
       _ptrCleanup();

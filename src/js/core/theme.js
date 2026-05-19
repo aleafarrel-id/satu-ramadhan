@@ -10,15 +10,7 @@ import { isNative } from '../modules/system/platform.js';
 let _watcherSubscribed = false;
 let _initialThemeSet = false;
 
-/**
- * Tracks whether a page with a light/white background is currently open.
- * When true and the active theme is light (teal), status bar icons switch to
- * LIGHT (dark icons) so they remain readable against the white page.
- * null = no override active.
- * true  = page requests LIGHT icons (dark/black — readable on white bg).
- * false = page requests DARK icons  (white — readable on dark bg). Not normally used.
- */
-let _statusBarOverride = null;
+let _statusBarOverrides = new Set();
 
 /**
  * Initializes the theme based on user state.
@@ -51,8 +43,8 @@ export function initTheme() {
  * // On page close/destroy:
  * clearStatusBarOverride();
  */
-export function setStatusBarOverride(lightIcons = true) {
-    _statusBarOverride = lightIcons;
+export function setStatusBarOverride(requesterId = 'default') {
+    _statusBarOverrides.add(requesterId);
     _applyStatusBarStyle();
 }
 
@@ -60,8 +52,8 @@ export function setStatusBarOverride(lightIcons = true) {
  * Removes the page-level status bar override and reverts to the theme default.
  * Must be called in every destroy() / close() that called setStatusBarOverride().
  */
-export function clearStatusBarOverride() {
-    _statusBarOverride = null;
+export function clearStatusBarOverride(requesterId = 'default') {
+    _statusBarOverrides.delete(requesterId);
     _applyStatusBarStyle();
 }
 
@@ -79,7 +71,7 @@ function _applyStatusBarStyle() {
     // Determine whether icons should be light (white) or dark (black).
     // Rule: DARK icons only when theme is light (teal) AND a white-bg page override is active.
     // In all other cases keep the default DARK style (white icons).
-    const useLightIcons = !currentIsDark && _statusBarOverride === true;
+    const useLightIcons = !currentIsDark && _statusBarOverrides.size > 0;
 
     try {
         StatusBar.setStyle({ style: useLightIcons ? Style.Light : Style.Dark });

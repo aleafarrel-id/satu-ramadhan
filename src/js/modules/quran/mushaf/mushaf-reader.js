@@ -202,7 +202,7 @@ export async function open(startPage = 1, options = {}) {
 
    // Mushaf has a white/cream paper background — switch status bar icons to dark
    // so they are readable. Only takes effect in teal (light) theme; dark ignores it.
-   setStatusBarOverride(true);
+   setStatusBarOverride('mushaf');
 
    await loadNS('modules/quran/mushaf/mushaf-reader');
 
@@ -283,7 +283,7 @@ export async function close() {
    _isClosing = true;
 
    // Restore status bar icons to the normal theme style when leaving Mushaf.
-   clearStatusBarOverride();
+   clearStatusBarOverride('mushaf');
 
    dismissTooltip();
    _detachListeners();
@@ -345,7 +345,7 @@ export function destroy() {
    _buildGeneration++; // Cancel any in-flight build
 
    // Restore status bar icons (mirrors close() cleanup for the forced-destroy path).
-   clearStatusBarOverride();
+   clearStatusBarOverride('mushaf');
 
    dismissTooltip();
    _disposePanzoom();
