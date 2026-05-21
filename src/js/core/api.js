@@ -274,7 +274,6 @@ export async function getPrayerTimesByCoords(latitude, longitude, date = new Dat
         for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
             if (attempt > 0) {
                 const delay = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
-                console.log(`[API] Retry attempt ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
                 await sleep(delay);
             }
 
@@ -586,7 +585,6 @@ export async function getQiblaDirection(latitude, longitude) {
         for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
             if (attempt > 0) {
                 const delay = Math.pow(2, attempt - 1) * 1000;
-                console.log(`[API] Qibla retry ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
                 await sleep(delay);
             }
 
