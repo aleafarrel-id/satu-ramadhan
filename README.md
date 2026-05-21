@@ -24,6 +24,12 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan
 
 </div>
 
+> [!WARNING] > **Pemberitahuan untuk Pengguna di Luar Indonesia:**
+>
+> Saat ini, **Satu Ramadhan** menggunakan metode perhitungan waktu shalat yang didasarkan murni pada standar **Kementerian Agama Republik Indonesia (Kemenag RI)**. Data ini diambil langsung dari **API Aladhan** atau dikalkulasi secara lokal menggunakan _Adhan library_. Oleh karena itu, akurasi jadwal shalat dijamin presisi hanya untuk wilayah **Indonesia**. Penggunaan di luar wilayah Indonesia mungkin tidak seakurat metode lokal setempat.
+>
+> _Pengembangan ke depannya akan mengintegrasikan berbagai metode standar kalkulasi internasional untuk mendukung pengguna di luar Indonesia._
+
 ---
 
 ## ✨ Fitur Utama
