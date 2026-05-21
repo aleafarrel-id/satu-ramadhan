@@ -461,7 +461,6 @@ export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
         for (let attempt = 0; attempt <= MAX_RETRY_CYCLES; attempt++) {
             if (attempt > 0) {
                 const delay = Math.pow(2, attempt - 1) * 1000;
-                console.log(`[API] Monthly: Retry attempt ${attempt}/${MAX_RETRY_CYCLES} after ${delay}ms`);
                 await sleep(delay);
             }
 
