@@ -295,12 +295,12 @@ function injectTableRows(tbody, scheduleData) {
             '<tr class="share-schedule__row">' +
                 `<td class="${hijriCellClass}">${hijriDisplay}</td>` +
                 `<td class="share-schedule__cell-date">${dateGregorian}</td>` +
-                `<td class="share-schedule__cell-time share-schedule__cell-imsak">${cleanTimeStr(tm.imsak) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.subuh) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.dzuhur) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.ashar) || '—'}</td>` +
-                `<td class="share-schedule__cell-time share-schedule__cell-maghrib">${cleanTimeStr(tm.magrib) || '—'}</td>` +
-                `<td class="share-schedule__cell-time">${cleanTimeStr(tm.isya) || '—'}</td>` +
+                `<td class="share-schedule__cell-time share-schedule__cell-imsak">${escapeHtml(cleanTimeStr(tm.imsak) || '—')}</td>` +
+                `<td class="share-schedule__cell-time">${escapeHtml(cleanTimeStr(tm.subuh) || '—')}</td>` +
+                `<td class="share-schedule__cell-time">${escapeHtml(cleanTimeStr(tm.dzuhur) || '—')}</td>` +
+                `<td class="share-schedule__cell-time">${escapeHtml(cleanTimeStr(tm.ashar) || '—')}</td>` +
+                `<td class="share-schedule__cell-time share-schedule__cell-maghrib">${escapeHtml(cleanTimeStr(tm.magrib) || '—')}</td>` +
+                `<td class="share-schedule__cell-time">${escapeHtml(cleanTimeStr(tm.isya) || '—')}</td>` +
             '</tr>';
     }
 

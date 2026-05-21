@@ -15,6 +15,7 @@ import { PrayerService } from '../../modules/notification/native-notification.js
 import { isNative } from '../../modules/system/platform.js';
 import * as Notif from '../../modules/notification/notification.js';
 import { getModalRoot } from '../../utils/modal-portal.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
 let _onSelectCallback = null;
@@ -327,16 +328,17 @@ function _renderOptions() {
 
     const optionsHTML = adzansToShow.map(({ id, labelKey }) => {
         const isSelected = id === currentAdzan;
+        const safeLabel = escapeHtml(t(labelKey));
         return `
-            <div class="adzan-option ${isSelected ? 'selected' : ''}" data-id="${id}">
-                <button class="adzan-select-area" aria-label="Pilih Adzan ${t(labelKey)}">
+            <div class="adzan-option ${isSelected ? 'selected' : ''}" data-id="${escapeHtml(id)}">
+                <button class="adzan-select-area" aria-label="Pilih Adzan ${safeLabel}">
                     <i class='bx bx-headphone adzan-icon'></i>
                     <div class="adzan-info">
-                        <span class="adzan-label">${t(labelKey)}</span>
+                        <span class="adzan-label">${safeLabel}</span>
                     </div>
                 </button>
                 <div class="adzan-actions">
-                    <button class="adzan-preview-btn" aria-label="Putar Preview Adzan ${t(labelKey)}">
+                    <button class="adzan-preview-btn" aria-label="Putar Preview Adzan ${safeLabel}">
                         <i class='bx bx-play-circle'></i>
                     </button>
                     <i class='bx bx-check adzan-check'></i>

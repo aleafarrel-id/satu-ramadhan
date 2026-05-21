@@ -12,6 +12,7 @@ import { formatDateToYYYYMMDD } from '../../utils/datetime.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { getModalRoot } from '../../utils/modal-portal.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 const SWIPE_THRESHOLD_PX = 50;
 const WHEEL_COOLDOWN_MS  = 600;
@@ -325,7 +326,7 @@ function createModalDOM() {
                     ${(() => {
                         const daysShort = t('components/ui/header:days_short', { returnObjects: true }) || [];
                         const reorderedDays = [...daysShort.slice(1), daysShort[0]];
-                        return reorderedDays.map((w, i) => `<div data-weekday="${i}">${w}</div>`).join('');
+                        return reorderedDays.map((w, i) => `<div data-weekday="${i}">${escapeHtml(w)}</div>`).join('');
                     })()}
                 </div>
                 <div class="date-picker-days" id="dp-days"></div>
@@ -415,7 +416,7 @@ function renderCalendar() {
             isSelected      ? 'date-picker-cell--selected' : '',
         ].filter(Boolean).join(' ');
 
-        html += `<div class="${classes}" data-date="${formatDateToYYYYMMDD(cellDate)}" data-weekday="${weekday}">${cellDate.getDate()}</div>`;
+        html += `<div class="${classes}" data-date="${escapeHtml(formatDateToYYYYMMDD(cellDate))}" data-weekday="${weekday}">${cellDate.getDate()}</div>`;
     }
 
     daysEl.innerHTML = html;
