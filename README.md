@@ -140,127 +140,314 @@ npx cap open android
 satu-ramadhan/
 │
 ├── index.html                    # Entry point HTML utama
-├── vite.config.js                # Konfigurasi Vite (chunking, build target)
-├── capacitor.config.json         # Konfigurasi Capacitor (Android bridge)
-├── postcss.config.js             # PostCSS + cssnano untuk CSS production
-├── package.json
+├── vite.config.js                # Konfigurasi Vite (code splitting, build target, sourcemap)
+├── capacitor.config.json         # Konfigurasi Capacitor (Android bridge, webDir)
+├── postcss.config.js             # PostCSS + cssnano (minifikasi CSS production)
+├── package.json                  # Dependencies & scripts (dev, build, preview)
 │
-├── android/                      # Native Android project (Capacitor)
+├── assets/
+│   └── previews/                 # Screenshot preview fitur aplikasi
 │
-├── public/                       # Static assets (tidak di-bundle Vite)
+├── android/                      # Native Android project (dikelola Capacitor)
+│
+├── public/                       # Static assets — di-serve langsung, tidak di-bundle Vite
+│   ├── theme-boot.js             # Script tema awal, dijalankan sebelum render (cegah FOUC)
+│   │
 │   ├── assets/
-│   │   ├── icon/                 # Icon aplikasi (launcher icons)
-│   │   ├── mosque/               # Aset gambar masjid
-│   │   └── tiles/                # Map tiles untuk Leaflet
-│   ├── audio/                    # Audio Adzan (MP3/AAC)
+│   │   ├── icon/                 # Icon aplikasi (launcher, adaptive icon)
+│   │   ├── mosque/               # Aset ilustrasi masjid (gambar dekoratif)
+│   │   └── tiles/                # Map tiles offline untuk Leaflet
+│   │
+│   ├── audio/                    # File audio Adzan (MP3/AAC) per muadzin
+│   │
 │   ├── data/
-│   │   ├── province.json         # Data provinsi Indonesia
-│   │   ├── regency.json          # Data kabupaten/kota Indonesia
-│   │   └── ramadhan.json         # Konfigurasi jadwal Ramadhan
-│   ├── favicon/                  # Favicon & app icon
-│   ├── multi-language/
-│   │   ├── id/                   # Terjemahan Bahasa Indonesia
-│   │   └── en/                   # Terjemahan Bahasa Inggris
-│   ├── quran/                    # Data Al-Quran (surah, juz, tajwid, dll.)
-│   └── theme-boot.js             # Script tema awal (cegah FOUC)
+│   │   ├── province.json         # Data 38 provinsi Indonesia
+│   │   ├── regency.json          # Data 500+ kabupaten/kota Indonesia
+│   │   └── ramadhan.json         # Konfigurasi jadwal Ramadhan (bisa dioverride remote)
+│   │
+│   ├── favicon/                  # Favicon & PWA icon berbagai ukuran
+│   │
+│   ├── multi-language/           # Namespace terjemahan i18next (lazy-loaded per halaman)
+│   │   ├── id/                   # Bahasa Indonesia
+│   │   │   ├── common.json       # String umum (tombol, label, pesan error)
+│   │   │   ├── pages/            # Namespace per halaman
+│   │   │   │   ├── home-page.json
+│   │   │   │   ├── schedule-page.json
+│   │   │   │   ├── quran-page.json
+│   │   │   │   ├── tasbih-page.json
+│   │   │   │   ├── compass-page.json
+│   │   │   │   ├── settings-page.json
+│   │   │   │   └── quran-pages/  # Namespace sub-halaman Al-Quran
+│   │   │   ├── components/       # Namespace komponen (modal, card)
+│   │   │   ├── modules/          # Namespace modul (notifikasi, permission)
+│   │   │   └── utils/            # Namespace utilitas
+│   │   └── en/                   # Bahasa Inggris (struktur sama dengan id/)
+│   │
+│   └── quran/                    # Data Al-Quran statis (di-fetch saat dibutuhkan)
+│       ├── surah.json            # Index 114 surah (nama, jumlah ayat, jenis)
+│       ├── juz.json              # Index 30 juz
+│       ├── surah/                # Teks Arab per surah (surah_001.json dst.)
+│       ├── latin/                # Transliterasi Latin per surah
+│       ├── translation/          # Terjemahan (id/, en/)
+│       ├── tajweed/              # Data markup Tajwid per surah
+│       └── mushaf/               # Data halaman Mushaf (mushaf-index.json, page-*.json)
 │
 └── src/                          # Source code aplikasi
-    ├── main.js                   # Entry point JavaScript
+    ├── main.js                   # Entry point JS — import CSS utama & bootstrap app
     │
     ├── data/
-    │   └── tasbih.json           # Preset data zikir bawaan
+    │   └── tasbih.json           # Preset zikir bawaan (6 dzikir + custom slot)
     │
     ├── templates/
-    │   └── share-schedule/       # Template HTML jadwal Imsakiyah (share)
+    │   └── share-schedule/
+    │       ├── share-schedule.html  # Template HTML jadwal Imsakiyah siap cetak
+    │       └── share-schedule.css   # Styling template share (portrait, print-ready)
     │
     ├── css/
-    │   ├── main.css              # Entry CSS utama
+    │   ├── main.css              # Entry CSS — import semua layer base & layout
+    │   │
     │   ├── base/
-    │   │   ├── variables.css     # CSS custom properties (design tokens)
-    │   │   ├── reset.css         # CSS reset & normalisasi
-    │   │   └── typography.css    # Sistem tipografi global
-    │   ├── layout/               # CSS layout (app shell, nav, dll.)
+    │   │   ├── variables.css     # Design tokens: warna, radius, spacing (teal & dark)
+    │   │   ├── reset.css         # CSS reset & normalisasi lintas browser
+    │   │   └── typography.css    # Sistem tipografi: font stack, ukuran, line-height
+    │   │
+    │   ├── layout/
+    │   │   ├── app-shell.css     # Struktur dasar app (viewport, scroll container)
+    │   │   ├── header.css        # App header & status bar overlay
+    │   │   └── navigation.css    # Bottom navigation bar
+    │   │
     │   ├── pages/
-    │   │   ├── home.css
-    │   │   ├── schedule.css
-    │   │   ├── quran.css
-    │   │   ├── tasbih.css
-    │   │   ├── compass.css
-    │   │   └── settings.css
-    │   └── components/           # CSS komponen UI (modal, card, skeleton, dll.)
+    │   │   ├── home.css          # Halaman utama (countdown, prayer card grid/list)
+    │   │   ├── schedule.css      # Halaman jadwal Imsakiyah bulanan
+    │   │   ├── quran.css         # Halaman daftar surah & navigasi Quran
+    │   │   ├── tasbih.css        # Halaman Tasbih (info card, beads area, selector)
+    │   │   ├── compass.css       # Halaman Kompas Kiblat
+    │   │   └── settings.css      # Halaman Pengaturan
+    │   │
+    │   └── components/
+    │       ├── card/
+    │       │   ├── card.css               # Base card style
+    │       │   ├── location-card.css      # Kartu lokasi aktif
+    │       │   ├── qibla-info-card.css    # Info derajat Kiblat
+    │       │   ├── qibla-map-card.css     # Peta rute Ka'bah (Leaflet)
+    │       │   ├── share-schedule-card.css# Kartu shortcut share jadwal
+    │       │   └── shortcut-card.css      # Kartu shortcut navigasi cepat
+    │       ├── modal/
+    │       │   ├── confirm-modal.css
+    │       │   ├── adzan-selector-modal.css
+    │       │   ├── audio-mode-selector-modal.css
+    │       │   ├── calendar-modal.css
+    │       │   ├── date-picker-modal.css
+    │       │   ├── location-modal.css
+    │       │   ├── location-search-modal.css
+    │       │   ├── language-selector-modal.css
+    │       │   ├── compass-guide-modal.css
+    │       │   ├── mushaf-guide-modal.css
+    │       │   ├── mushaf-jump-modal.css
+    │       │   ├── preset-manager-modal.css
+    │       │   ├── share-schedule-modal.css
+    │       │   ├── tasbih-preset-modal.css
+    │       │   ├── bookmark-note-modal.css
+    │       │   ├── about-app-modal.css
+    │       │   └── permission-dialog.css
+    │       ├── quran/
+    │       │   ├── quran-reader.css       # Layout & tipografi reader per ayat
+    │       │   ├── quran-tajweed.css      # Warna-warni kode Tajwid
+    │       │   ├── quran-audio-dock.css   # Floating audio player Quran
+    │       │   ├── quran-dock.css         # Bottom dock navigasi Quran
+    │       │   ├── quran-header.css       # Header reader (nama surah, search)
+    │       │   ├── quran-card.css         # Kartu surah di daftar
+    │       │   ├── quran-bookmark.css     # Tampilan halaman bookmark
+    │       │   └── mushaf.css             # Mode baca Mushaf (page-flip)
+    │       ├── tasbih/
+    │       │   └── tasbih-beads.css       # Animasi manik-manik SVG 3D
+    │       ├── skeleton/
+    │       │   ├── skeleton-home.css
+    │       │   ├── skeleton-schedule.css
+    │       │   └── skeleton-compass.css
+    │       └── ui/
+    │           ├── button.css             # Varian tombol (primary, ghost, icon)
+    │           ├── toggle.css             # Switch toggle on/off
+    │           ├── carousel.css           # Komponen carousel (home countdown)
+    │           ├── empty-state.css        # Tampilan state kosong / error
+    │           ├── splash-screen.css      # Splash screen saat startup
+    │           ├── theme-transition.css   # Animasi transisi ganti tema
+    │           └── quran-backdrop.css     # Overlay backdrop reader Quran
     │
     └── js/
-        ├── app.js                # App bootstrap & lifecycle
-        ├── router.js             # Client-side router (page navigation)
+        ├── app.js                # Bootstrap aplikasi, inisialisasi semua modul inti
+        ├── router.js             # Client-side router berbasis hash/path, lazy-load halaman
         │
-        ├── config/
-        │   ├── version-config.js # Konstanta versi & nama aplikasi
-        │   ├── adzan-sounds.js   # Daftar pilihan suara Adzan
-        │   ├── languages.js      # Konfigurasi bahasa yang tersedia
-        │   └── quran-audio.js    # Konfigurasi audio tilawah Quran
+        ├── config/               # Konstanta & konfigurasi statis seluruh aplikasi
+        │   ├── version-config.js # Versi app, nama developer, URL privacy policy
+        │   ├── adzan-sounds.js   # Registry pilihan suara Adzan (nama, path file)
+        │   ├── languages.js      # Daftar bahasa yang didukung (kode, label)
+        │   ├── quran-audio.js    # Konfigurasi sumber audio tilawah
+        │   └── quran-languages.js# Konfigurasi bahasa terjemahan Quran
         │
-        ├── core/                 # Fondasi & layanan inti aplikasi
-        │   ├── store.js          # State management (pub/sub + persistence)
-        │   ├── api.js            # HTTP client & prayer time API
-        │   ├── database.js       # Loader data JSON lokal (provinsi, kota)
-        │   ├── i18n.js           # Inisialisasi internasionalisasi (i18next)
-        │   ├── theme.js          # Manajemen tema (teal/dark) & status bar
-        │   ├── geolocation.js    # GPS & lokasi perangkat
-        │   ├── local-calculator.js # Kalkulasi waktu shalat offline (Adhan.js)
-        │   ├── location-search.js  # Pencarian lokasi manual
-        │   ├── nominatim.js      # Reverse geocoding via Nominatim
-        │   └── storage.js        # Wrapper Capacitor Preferences (key-value)
+        ├── core/                   # Layanan fondasi — dipakai lintas seluruh aplikasi
+        │   ├── store.js            # State management: pub/sub + persistence ke storage
+        │   ├── api.js              # HTTP client: prayer time API (Aladhan), retry, cache
+        │   ├── database.js         # Loader & cache JSON lokal (province, regency, ramadhan)
+        │   ├── i18n.js             # Setup i18next: namespace lazy-load, language detection
+        │   ├── theme.js            # Manajemen tema teal/dark, status bar color override
+        │   ├── geolocation.js      # Akuisisi GPS: native Capacitor + web fallback
+        │   ├── local-calculator.js # Kalkulasi waktu shalat offline via Adhan.js
+        │   ├── location-search.js  # Pencarian lokasi manual (autocomplete + validasi)
+        │   ├── nominatim.js        # Reverse geocoding nama kota via Nominatim API
+        │   └── storage.js          # Abstraksi Capacitor Preferences (get/set/remove)
         │
-        ├── pages/                # Controller setiap halaman
-        │   ├── home-page.js      # Halaman utama (waktu shalat countdown)
-        │   ├── schedule-page.js  # Halaman jadwal Imsakiyah bulanan
-        │   ├── quran-page.js     # Halaman Al-Quran (surah/juz list)
-        │   ├── tasbih-page.js    # Halaman Tasbih digital
-        │   ├── compass-page.js   # Halaman Kompas Kiblat
-        │   ├── settings-page.js  # Halaman Pengaturan
-        │   └── quran-pages/      # Sub-halaman Al-Quran (reader, mushaf)
+        ├── pages/                # Controller halaman — di-lazy-load oleh router
+        │   ├── home-page.js      # Halaman utama: countdown, prayer card, shortcut
+        │   ├── schedule-page.js  # Jadwal Imsakiyah: kalender, notif toggle, generate
+        │   ├── quran-page.js     # Entry point Quran: routing surah/juz/bookmark/mushaf
+        │   ├── tasbih-page.js    # Tasbih digital: manik SVG, sesi, selector zikir
+        │   ├── compass-page.js   # Kompas Kiblat: sensor + peta Leaflet + derajat
+        │   ├── settings-page.js  # Pengaturan: lokasi, tema, bahasa, adzan, Quran
+        │   └── quran-pages/      # Sub-halaman Al-Quran (di-route dari quran-page.js)
+        │       ├── surah-page.js    # Daftar & pilih surah
+        │       ├── juz-page.js      # Daftar & pilih juz
+        │       ├── bookmark-page.js # Kelola bookmark ayat tersimpan
+        │       └── mushaf-page.js   # Mode baca Mushaf (page-flip interaktif)
         │
-        ├── modules/              # Fitur-fitur modular yang berdiri sendiri
+        ├── modules/        # Modul fitur mandiri — business logic tanpa DOM langsung
         │   ├── prayer/
-        │   │   ├── prayer-times.js    # Kalkulasi & format waktu shalat
-        │   │   └── prayer-watcher.js  # Watcher real-time waktu shalat
+        │   │   ├── prayer-times.js      # Kalkulasi & format 5 waktu shalat + imsak
+        │   │   └── prayer-watcher.js    # Watcher interval real-time, trigger notifikasi
+        │   │
         │   ├── quran/
-        │   │   ├── quran-api.js           # Fetcher data Quran (surah/juz/ayat)
-        │   │   ├── quran-reader.js        # Rendering reader & interaksi ayat
-        │   │   ├── quran-tajweed.js       # Engine pewarnaan Tajwid
-        │   │   ├── quran-audio-service.js # Service audio tilawah per ayat
-        │   │   ├── quran-download-manager.js # Unduh audio tilawah offline
-        │   │   ├── bookmark-manager.js    # Simpan & kelola bookmark ayat
-        │   │   └── mushaf/                # Mode baca Mushaf (page-flip)
-        │   ├── compass/          # Sensor kompas & kalkulasi arah Kiblat
-        │   ├── notification/     # Notifikasi Adzan lokal (Capacitor)
-        │   ├── schedule/         # Generate jadwal Imsakiyah & export PDF
-        │   ├── share/            # Share jadwal via html-to-image
-        │   ├── tasbih/           # Audio & haptic feedback tasbih
-        │   ├── network/          # Remote config & network utilities
-        │   ├── permission/       # Runtime permission handler (GPS, notif)
-        │   └── system/           # Platform utils, back handler, haptic
+        │   │   ├── quran-api.js              # Fetch & cache data surah/juz/ayat/tajwid
+        │   │   ├── quran-reader.js           # Render ayat, interaksi tap, highlight
+        │   │   ├── quran-tajweed.js          # Parser & engine pewarnaan Tajwid otomatis
+        │   │   ├── quran-audio-service.js    # Manajemen playback audio tilawah per ayat
+        │   │   ├── quran-download-manager.js # Download & cache audio tilawah offline
+        │   │   ├── quran-settings.js         # Persistensi preferensi reader (font, dll.)
+        │   │   ├── quran-nav.js              # Navigasi antar surah/ayat dalam reader
+        │   │   ├── quran-utility.js          # Helper konversi nomor ayat, surah, juz
+        │   │   ├── bookmark-manager.js       # CRUD bookmark ayat (store + validasi)
+        │   │   ├── murottal-native-bridge.js # Bridge audio native Capacitor untuk murottal
+        │   │   └── mushaf/
+        │   │       ├── mushaf-api.js         # Fetch index & data per halaman Mushaf
+        │   │       ├── mushaf-reader.js      # Engine page-flip + panzoom + navigasi
+        │   │       └── mushaf-ui.js          # Overlay UI Mushaf (header, page indicator)
+        │   │
+        │   ├── compass/
+        │   │   ├── compass.js               # Engine kompas: sensor magnetometer + Kiblat
+        │   │   └── magnetic-declination.js  # Koreksi deklinasi magnetik per koordinat
+        │   │
+        │   ├── notification/
+        │   │   ├── notification.js          # API notifikasi: schedule, cancel, toast UI
+        │   │   ├── notification-sync.js     # Sinkronisasi jadwal notifikasi Adzan harian
+        │   │   └── native-notification.js   # Bridge Capacitor LocalNotifications
+        │   │
+        │   ├── schedule/
+        │   │   ├── schedule-data.js         # Fetch & format jadwal shalat satu bulan
+        │   │   ├── ramadhan.js              # Kalkulasi periode Ramadhan + Imsak
+        │   │   └── countdown.js             # Logika countdown ke waktu shalat berikutnya
+        │   │
+        │   ├── share/
+        │   │   ├── share-schedule-builder.js  # Build HTML jadwal untuk di-capture
+        │   │   └── share-schedule-exporter.js # Ekspor ke gambar via html-to-image + share
+        │   │
+        │   ├── tasbih/
+        │   │   ├── tasbih-audio.js          # Preload & putar efek suara klik tasbih
+        │   │   └── tasbih-gesture.js        # Deteksi gesture swipe buka panel tasbih
+        │   │
+        │   ├── network/
+        │   │   ├── remote-config.js         # Fetch & cache konfigurasi remote (ramadhan)
+        │   │   └── offline-updater.js       # Update data lokal saat koneksi tersedia
+        │   │
+        │   ├── permission/
+        │   │   ├── permission-dialog.js         # Dialog UI permintaan izin (GPS, notif)
+        │   │   └── permission-dialog-configs.js # Konfigurasi teks & flow tiap jenis izin
+        │   │
+        │   └── system/
+        │       ├── platform.js     # Deteksi runtime: native Android vs web browser
+        │       ├── back-handler.js # Manajemen tombol Back Android (stack modal)
+        │       └── haptic.js       # Wrapper haptic feedback (impact, double, lock)
         │
-        ├── components/           # Komponen UI yang dapat digunakan ulang
-        │   ├── modal/            # Dialog & bottom sheet (konfirmasi, preset)
-        │   ├── card/             # Kartu informasi waktu shalat
-        │   ├── prayer/           # Komponen UI waktu shalat
-        │   ├── quran/            # Komponen UI reader Quran
-        │   ├── compass/          # Komponen UI kompas
-        │   ├── schedule/         # Komponen UI jadwal
-        │   ├── settings/         # Komponen UI pengaturan
-        │   ├── skeleton/         # Skeleton loading screen
-        │   └── ui/               # Komponen UI generik (toast, badge, dll.)
+        ├── components/     # Komponen UI yang dapat digunakan ulang lintas halaman
+        │   ├── card/
+        │   │   ├── countdown-card.js        # Kartu countdown ke shalat berikutnya
+        │   │   ├── location-card.js         # Kartu lokasi aktif + tombol ganti
+        │   │   ├── prayer-card.js           # Kartu grid/list 5 waktu shalat hari ini
+        │   │   ├── prayer-list.js           # Tampilan list waktu shalat (alternatif grid)
+        │   │   ├── qibla-info-card.js       # Kartu info derajat & jarak Ka'bah
+        │   │   ├── qibla-map-card.js        # Peta interaktif rute ke Ka'bah (Leaflet)
+        │   │   ├── qibla-map-card-markup.js # Template HTML markup peta Kiblat
+        │   │   ├── schedule-card.js         # Kartu jadwal shalat per hari (list view)
+        │   │   ├── share-schedule-card.js   # Kartu aksi generate & share jadwal
+        │   │   └── shortcut-card.js         # Kartu shortcut navigasi cepat di home
+        │   │
+        │   ├── modal/
+        │   │   ├── confirm-modal.js                # Dialog konfirmasi aksi (hapus, reset)
+        │   │   ├── adzan-selector-modal.js         # Pilih suara Adzan dengan preview audio
+        │   │   ├── audio-mode-selector-modal.js    # Pilih mode audio tilawah Quran
+        │   │   ├── calendar-modal.js               # Kalender navigasi jadwal bulan
+        │   │   ├── date-picker-modal.js            # Date picker Hijriah & Masehi
+        │   │   ├── location-modal.js               # Konfirmasi atau ganti lokasi
+        │   │   ├── location-search-modal.js        # Pencarian kota dengan autocomplete
+        │   │   ├── language-selector-modal.js      # Pilih bahasa terjemahan Quran
+        │   │   ├── app-language-modal.js           # Pilih bahasa antarmuka aplikasi
+        │   │   ├── app-theme-modal.js              # Pilih tema tampilan (Teal/Dark)
+        │   │   ├── compass-guide-modal.js          # Panduan kalibrasi kompas
+        │   │   ├── mushaf-guide-modal.js           # Panduan penggunaan Mushaf
+        │   │   ├── mushaf-jump-modal.js            # Lompat ke halaman Mushaf tertentu
+        │   │   ├── preset-manager-modal.js         # Kelola preset notifikasi & jadwal
+        │   │   ├── share-schedule-modal.js         # Preview & share jadwal Imsakiyah
+        │   │   ├── tasbih-preset-modal.js          # Tambah/edit preset zikir kustom
+        │   │   ├── bookmark-note-modal.js          # Tambah catatan pada bookmark ayat
+        │   │   └── about-app-modal.js              # Tentang aplikasi (versi, developer)
+        │   │
+        │   ├── quran/
+        │   │   ├── quran-card.js            # Kartu surah di halaman daftar
+        │   │   ├── quran-header.js          # Header reader (nama surah, navigasi)
+        │   │   ├── quran-dock.js            # Bottom dock (juz, surah, halaman)
+        │   │   ├── quran-audio-dock.js      # Floating player audio tilawah
+        │   │   ├── quran-picker.js          # Picker navigasi cepat surah/juz
+        │   │   └── quran-search.js          # Pencarian surah & ayat
+        │   │
+        │   ├── prayer/
+        │   │   └── prayer-widgets.js        # Widget waktu shalat ringkas (header app)
+        │   │
+        │   ├── compass/
+        │   │   └── compass-dial.js          # Render SVG jarum kompas animasi
+        │   │
+        │   ├── schedule/
+        │   │   └── schedule-swipe.js        # Gesture swipe antar hari di jadwal
+        │   │
+        │   ├── settings/
+        │   │   ├── settings-panel.js        # Panel utama pengaturan (accordion)
+        │   │   ├── settings-display-panel.js# Panel pengaturan tampilan (tema, bahasa)
+        │   │   ├── settings-loc-card.js     # Kartu pengaturan lokasi
+        │   │   ├── settings-preset-card.js  # Kartu preset jadwal Ramadhan
+        │   │   ├── settings-quran-panel.js  # Panel pengaturan reader Quran
+        │   │   └── settings-about-app.js    # Bagian info versi & tentang aplikasi
+        │   │
+        │   ├── skeleton/
+        │   │   ├── skeleton-home.js         # Skeleton loading halaman utama
+        │   │   ├── skeleton-schedule.js     # Skeleton loading halaman jadwal
+        │   │   └── skeleton-compass.js      # Skeleton loading halaman kompas
+        │   │
+        │   └── ui/
+        │       ├── header.js                # App header (judul halaman, aksi)
+        │       ├── nav-bar.js               # Bottom navigation bar (tab switcher)
+        │       └── empty-state.js           # Tampilan state kosong / koneksi gagal
         │
-        └── utils/                # Fungsi helper & utilitas
-            ├── a11y.js           # Aksesibilitas (focus trap, ARIA)
-            ├── datetime.js       # Format tanggal & waktu Islami
-            ├── dom-utils.js      # Helper manipulasi DOM
-            ├── error-boundary.js # Penanganan error global
-            ├── sanitize.js       # Sanitasi HTML (XSS prevention)
-            ├── pull-to-refresh.js# Gesture pull-to-refresh
-            ├── tooltip.js        # Komponen tooltip
-            └── ...               # Dan utilitas lainnya
+        └── utils/                  # Fungsi helper murni — tanpa side effect
+            ├── a11y.js             # Aksesibilitas: focus trap, ARIA, keyboard nav
+            ├── datetime.js         # Format tanggal Masehi & Hijriah, countdown string
+            ├── dom-utils.js        # Helper DOM: query, insert, class manipulation
+            ├── error-boundary.js   # Penanganan error global & logging terpusat
+            ├── sanitize.js         # Escape HTML untuk mencegah XSS injection
+            ├── pull-to-refresh.js  # Gesture pull-to-refresh dengan threshold & animasi
+            ├── tooltip.js          # Komponen tooltip posisioning dinamis
+            ├── focus-manager.js    # Manajemen fokus keyboard antar komponen
+            ├── modal-portal.js     # Portal rendering modal ke document.body
+            ├── keyboard-handler.js # Global keyboard shortcut handler
+            ├── location-feedback.js# Feedback UI saat proses deteksi lokasi
+            ├── store-services.js   # Helper query state store yang sering dipakai
+            └── theme-transition.js # Animasi crossfade saat ganti tema
 ```
 
 ---
