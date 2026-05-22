@@ -24,15 +24,14 @@ export function buildPageHTML(pageData, tajweedMap = null) {
    const pageNum = parseInt(pageData.page, 10);
    const openingClass = (pageNum === 1 || pageNum === 2) ? ' mushaf-page--opening' : '';
 
-   let linesHTML = '';
-   for (const line of pageData.lines) {
+   const linesHTML = pageData.lines.map(line => {
       switch (line.type) {
-         case 'surah-header': linesHTML += _buildSurahHeaderHTML(line); break;
-         case 'basmala':      linesHTML += _buildBasmalaHTML();          break;
+         case 'surah-header': return _buildSurahHeaderHTML(line);
+         case 'basmala':      return _buildBasmalaHTML();
          case 'text':
-         default:             linesHTML += _buildTextLineHTML(line, tajweedMap); break;
+         default:             return _buildTextLineHTML(line, tajweedMap);
       }
-   }
+   }).join('');
 
    return `<div class="mushaf-page${openingClass}" data-page="${_esc(pageData.page)}"><div class="mushaf-lines">${linesHTML}</div></div>`;
 }
