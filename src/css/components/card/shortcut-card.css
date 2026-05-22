@@ -38,10 +38,16 @@
    min-width: 0;
 }
 
-.shortcut-card__item:hover,
 .shortcut-card__item:active {
    transform: scale(0.95);
    opacity: 0.8;
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .shortcut-card__item:hover {
+      transform: scale(0.95);
+      opacity: 0.8;
+   }
 }
 
 /* Claymorphism icon box */
