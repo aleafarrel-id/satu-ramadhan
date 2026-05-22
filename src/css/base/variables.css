@@ -413,10 +413,10 @@
    --clr-schedule-nav-bg: rgba(13, 34, 43, 0.4);
 
    /* Pure gold aesthetic for segmented pills - no dark overlays, just transparent accent */
-   --clr-nav-arrows-bg: rgba(212, 175, 55, 0.08);
-   --clr-nav-arrows-border: rgba(212, 175, 55, 0.25);
-   --clr-nav-arrows-active: rgba(212, 175, 55, 0.25);
-   --clr-nav-arrows-text: rgba(212, 175, 55, 0.6);
+   --clr-nav-arrows-bg: var(--clr-accent-a10);
+   --clr-nav-arrows-border: var(--clr-accent-a30);
+   --clr-nav-arrows-active: var(--clr-accent-a25);
+   --clr-nav-arrows-text: var(--clr-accent-500);
    --clr-nav-arrows-active-text: var(--clr-accent-500);
 
    /* Base Text (Dark context requires lighter text) */
