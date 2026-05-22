@@ -76,6 +76,10 @@ const _transitionManager = {
    }
 };
 
+let _prefetchTimeout = null;
+let _expandTimeout = null;
+let _promoteClearTimer = null;
+
 /**
  * Safely destroys PageFlip and re-creates _bookContainer.
  * PageFlip.destroy() removes the root element from DOM; we must
@@ -120,9 +124,14 @@ function _resetState() {
    _cachedPageHPad = 32;
    _isTwoPageView = false;
    _transitionManager.clear();
+
+   // Null-out deferred timers so no stale references survive after teardown
+   _prefetchTimeout = null;
+   _expandTimeout = null;
+   _promoteClearTimer = null;
 }
 
-/** Removes all event listeners and cleans up picker. */
+/** Removes all event listeners, cancels pending timers, and cleans up picker. */
 function _detachListeners() {
    if (_tajweedSubId) {
       store.unsubscribe(_tajweedSubId);
@@ -133,6 +142,20 @@ function _detachListeners() {
    document.removeEventListener('visibilitychange', _onVisibilityChange);
    _detachSwipeHandlers();
    if (_resizeTimeout) clearTimeout(_resizeTimeout);
+
+   // Cancel deferred timers eagerly — close() has animation awaits before _resetState(),
+   // so these could otherwise fire against already-null DOM references.
+   if (_expandTimeout) { clearTimeout(_expandTimeout); _expandTimeout = null; }
+   if (_prefetchTimeout) { clearTimeout(_prefetchTimeout); _prefetchTimeout = null; }
+   if (_promoteClearTimer !== null) {
+      if (_promoteClearTimer.isIdle && window.cancelIdleCallback) {
+         window.cancelIdleCallback(_promoteClearTimer.id);
+      } else {
+         clearTimeout(_promoteClearTimer.id);
+      }
+      _promoteClearTimer = null;
+   }
+
    closePicker();
 }
 
@@ -428,6 +451,17 @@ function _onPointerDown(e) {
 
 function _promoteAdjacentPages() {
    if (!_bookContainer) return;
+
+   // Clean up any pending clear tasks from previous taps
+   if (_promoteClearTimer !== null) {
+      if (_promoteClearTimer.isIdle && window.cancelIdleCallback) {
+         window.cancelIdleCallback(_promoteClearTimer.id);
+      } else {
+         clearTimeout(_promoteClearTimer.id);
+      }
+      _promoteClearTimer = null;
+   }
+
    const pagesToPromote = [];
    for (let delta = -1; delta <= 1; delta++) {
       const target = _currentPage + delta;
@@ -437,10 +471,23 @@ function _promoteAdjacentPages() {
    }
 
    pagesToPromote.forEach(p => { p.style.willChange = 'transform'; });
-   const schedule = window.requestIdleCallback || ((cb) => setTimeout(cb, 0));
-   schedule(() => {
+
+   const clearTask = () => {
       pagesToPromote.forEach(p => { p.style.willChange = ''; });
-   }, { timeout: 1200 });
+      _promoteClearTimer = null;
+   };
+
+   if (window.requestIdleCallback) {
+      _promoteClearTimer = {
+         id: window.requestIdleCallback(clearTask, { timeout: 1200 }),
+         isIdle: true
+      };
+   } else {
+      _promoteClearTimer = {
+         id: setTimeout(clearTask, 1200),
+         isIdle: false
+      };
+   }
 }
 
 function _onPointerUp(e) {
@@ -606,7 +653,7 @@ function _enterZoomMode() {
       _zoomBtnEl.classList.add('is-active');
       _zoomBtnEl.innerHTML = `<i class='bx bx-collapse-alt'></i>`;
    }
-   
+
    Notif.show(t('modules/quran/mushaf/mushaf-reader:zoom_toast'), 'info');
    if (_overlay) _overlay.classList.add('is-zoom-mode');
 
@@ -777,7 +824,9 @@ function _onPageFlip(e) {
 
    if (_isExpanding) return;
 
-   setTimeout(_checkAndExpand, 500);
+   if (_expandTimeout) clearTimeout(_expandTimeout);
+   _expandTimeout = setTimeout(_checkAndExpand, 500);
+
    _prefetchAdjacent();
 }
 
@@ -813,7 +862,12 @@ async function _checkAndExpand() {
       for (let i = pages.length - 1; i >= 0; i--) {
          html += MushafUI.buildPageHTML(pages[i], hasTajweed);
          if (!_isTwoPageView) html += MushafUI.buildEmptyPageHTML();
+         // Yield to main thread to prevent UI freeze during heavy Tajweed calculation
+         await new Promise(r => setTimeout(r, 0));
       }
+
+      if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
+
       _bookContainer.insertAdjacentHTML('afterbegin', html);
 
       // Re-compute flipIndex after DOM change for accurate positioning
@@ -845,7 +899,12 @@ async function _checkAndExpand() {
       for (let i = pages.length - 1; i >= 0; i--) {
          html += MushafUI.buildPageHTML(pages[i], hasTajweed);
          if (!_isTwoPageView) html += MushafUI.buildEmptyPageHTML();
+         // Yield to main thread
+         await new Promise(r => setTimeout(r, 0));
       }
+
+      if (!_isOpen || !_bookContainer || !_pageFlip) { _isExpanding = false; return; }
+
       _bookContainer.insertAdjacentHTML('beforeend', html);
 
       _windowStart = newStart;
@@ -865,9 +924,16 @@ async function _reloadWindow(targetPage) {
    _destroyPageFlip(true);
    _calcWindow(targetPage);
 
-   await _buildAndMountPageFlip(targetPage);
-   _isReloading = false;
-   _lastVisibilityPage = targetPage;
+   // try/finally guarantees _isReloading is always reset, even on network errors.
+   // Without this, a single failed fetch permanently deadlocks all future reloads.
+   try {
+      await _buildAndMountPageFlip(targetPage);
+   } catch (e) {
+      logError('[Mushaf]', e);
+   } finally {
+      _isReloading = false;
+      _lastVisibilityPage = targetPage;
+   }
 }
 
 /**
@@ -876,17 +942,26 @@ async function _reloadWindow(targetPage) {
  * @private
  */
 function _prefetchAdjacent() {
-   const schedule = window.requestIdleCallback || ((cb) => setTimeout(cb, 0));
-   schedule(() => {
-      if (!_isOpen) return;
-      // Aggressive prefetch: preload up to 10 pages ahead/behind
-      const PREFETCH_RANGE = 10;
-      const prefetchEnd = Math.min(TOTAL_PAGES, _windowEnd + PREFETCH_RANGE);
-      const prefetchStart = Math.max(1, _windowStart - PREFETCH_RANGE);
+   if (_prefetchTimeout) clearTimeout(_prefetchTimeout);
 
-      for (let i = _windowEnd + 1; i <= prefetchEnd; i++) MushafApi.getPage(i);
-      for (let i = prefetchStart; i < _windowStart; i++) MushafApi.getPage(i);
-   }, { timeout: 1000 });
+   _prefetchTimeout = setTimeout(() => {
+      const prefetchTask = () => {
+         if (!_isOpen) return;
+         // Aggressive prefetch: preload up to 10 pages ahead/behind
+         const PREFETCH_RANGE = 10;
+         const prefetchEnd = Math.min(TOTAL_PAGES, _windowEnd + PREFETCH_RANGE);
+         const prefetchStart = Math.max(1, _windowStart - PREFETCH_RANGE);
+
+         for (let i = _windowEnd + 1; i <= prefetchEnd; i++) MushafApi.getPage(i);
+         for (let i = prefetchStart; i < _windowStart; i++) MushafApi.getPage(i);
+      };
+
+      if (window.requestIdleCallback) {
+         window.requestIdleCallback(prefetchTask, { timeout: 1000 });
+      } else {
+         setTimeout(prefetchTask, 500); // Fallback to 500ms if requestIdleCallback is unsupported
+      }
+   }, 300);
 }
 
 function _togglePicker() { isPickerOpen() ? closePicker() : _openPicker(); }

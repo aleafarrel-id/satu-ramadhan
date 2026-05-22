@@ -27,9 +27,9 @@ export function buildPageHTML(pageData, tajweedMap = null) {
    const linesHTML = pageData.lines.map(line => {
       switch (line.type) {
          case 'surah-header': return _buildSurahHeaderHTML(line);
-         case 'basmala':      return _buildBasmalaHTML();
+         case 'basmala': return _buildBasmalaHTML();
          case 'text':
-         default:             return _buildTextLineHTML(line, tajweedMap);
+         default: return _buildTextLineHTML(line, tajweedMap);
       }
    }).join('');
 
@@ -104,6 +104,8 @@ function _buildTextLineHTML(line, tajweedMap) {
    return `<div class="mushaf-line mushaf-line--text"><span class="mushaf-word">${_esc(fullText)}</span></div>`;
 }
 
+const _verseOffsetsCache = {};
+
 /**
  * Collects aligned tajweed rules for all words in a line.
  * Tracks per-verse character offsets to correctly map tajweed data
@@ -116,9 +118,6 @@ function _buildTextLineHTML(line, tajweedMap) {
 function _collectAlignedRules(words, tajweedMap) {
    const aligned = [];
    let lineOffset = 0; // Current character position in the full line text
-
-   // Cache to avoid splitting the same verse string multiple times
-   const verseOffsetsCache = {};
 
    for (let i = 0; i < words.length; i++) {
       const w = words[i];
@@ -135,8 +134,8 @@ function _collectAlignedRules(words, tajweedMap) {
       const parts = w.location.split(':');
       const surahNum = parseInt(parts[0], 10);
       const verseNum = parseInt(parts[1], 10);
-      const wordIdx  = parseInt(parts[2], 10);
-      
+      const wordIdx = parseInt(parts[2], 10);
+
       const verseKey = `verse_${verseNum}`;
       const cacheKey = `${surahNum}:${verseNum}`;
 
@@ -154,16 +153,16 @@ function _collectAlignedRules(words, tajweedMap) {
       }
 
       // Compute absolute offset for this word index on-demand
-      if (!verseOffsetsCache[cacheKey]) {
+      if (!_verseOffsetsCache[cacheKey]) {
          const verseText = bundle.text.verse[verseKey] || '';
          // Remove invisible marking chars (e.g. BOM, LRM, RLM) that shift the string length 
          // without affecting rendered tajweed mapping
          const cleanText = verseText.replace(/^[\uFEFF\u200B-\u200D\u200E\u200F]+/, '');
-         
+
          const vWords = cleanText.split(' ');
          const offsets = [];
          let currentOff = 0;
-         
+
          // quran.com 'location' skips isolated waqf and structural marks. We must skip them in the array 
          // so that offsets[wordIdx - 1] perfectly aligns with the real base text.
          const ISOLATED_MARKERS = /^[\u06D6-\u06DC\u06DF\u06DE\u06E9\u06DD]+$/;
@@ -173,10 +172,10 @@ function _collectAlignedRules(words, tajweedMap) {
             }
             currentOff += vw.length + 1; // +1 for the space
          }
-         verseOffsetsCache[cacheKey] = offsets;
+         _verseOffsetsCache[cacheKey] = offsets;
       }
 
-      const offsets = verseOffsetsCache[cacheKey];
+      const offsets = _verseOffsetsCache[cacheKey];
       // wordIdx is 1-based. Fallback to 0 if out of bounds
       const verseOffset = offsets[wordIdx - 1] || 0;
 
