@@ -1,0 +1,11 @@
+{
+    "section": "METODE PERHITUNGAN",
+    "mode_auto": "Otomatis",
+    "mode_manual": "Manual",
+    "ihtiyat_value": "+{{minutes}} menit",
+    "desc": "Metode hisab waktu shalat ditentukan secara otomatis berdasarkan lokasi Anda.",
+    "btn_change": "Ubah Metode",
+    "btn_reset": "Reset ke Otomatis",
+    "method_changed": "Metode diubah ke {{name}}",
+    "method_reset": "Kembali ke metode otomatis"
+}

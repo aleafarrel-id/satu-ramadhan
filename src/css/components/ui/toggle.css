@@ -19,8 +19,14 @@
    min-height: 40px;
 }
 
-.org-toggle:active {
+.org-toggle:active:not(.org-toggle--static) {
    transform: scale(0.97);
+}
+
+.org-toggle--static {
+   cursor: default;
+   background: var(--clr-primary-a10);
+   border: 1px solid var(--clr-primary-a20);
 }
 
 .org-toggle__icon-circle {

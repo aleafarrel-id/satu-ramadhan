@@ -6,6 +6,8 @@ import { getRamadhanConfig } from '../../core/database.js';
 import { getPrayerTimesByCoords } from '../../core/api.js';
 import * as storage from '../../core/storage.js';
 import { store } from '../../core/store.js';
+import { isIndonesiaMode, getActiveMethodShortName } from '../../core/calculation-resolver.js';
+import { t } from '../../core/i18n.js';
 
 const USER_PRESETS_KEY = 'user_presets';
 const SAVED_YEAR_KEY = 'saved_year';
@@ -131,6 +133,29 @@ export async function getAllPresets() {
     await checkAndResetYear(config.tahunHijriah, basePresets);
 
     const { overrides, customs } = await getUserPresetsData();
+
+    // INTERCEPT: Non-Indonesian Mode
+    if (!isIndonesiaMode()) {
+        const globalId = 'global_ramadan';
+        const override = overrides[globalId];
+        
+        const defaultGlobal = {
+            id: globalId,
+            name: 'Ramadan',
+            startDate: basePresets[0]?.startDate || '2026-02-18',
+            endDate: basePresets[0]?.endDate || '2026-03-19',
+            description: t('components/settings/settings-preset-card:global_desc', { defaultValue: 'Based on global astronomical observation.' }),
+            isCustom: false,
+            isOverridden: !!override
+        };
+        
+        if (override) {
+            defaultGlobal.startDate = override.startDate || defaultGlobal.startDate;
+            defaultGlobal.endDate = override.endDate || defaultGlobal.endDate;
+        }
+        
+        return [defaultGlobal];
+    }
 
     // Merge overrides into base presets
     const merged = basePresets.map(preset => {
@@ -268,6 +293,8 @@ export async function getRamadhanTotalDays(org = null) {
  * @returns {string}
  */
 export async function getOrgDisplayName(orgId = null) {
+    if (!isIndonesiaMode()) return getActiveMethodShortName();
+
     const config = await getRamadhanConfig();
     if (!orgId) return config.presets?.[0]?.name || 'Nahdlatul Ulama (NU)';
 
@@ -280,6 +307,8 @@ export async function getOrgDisplayName(orgId = null) {
  * @returns {Promise<string>}
  */
 export async function getOrgDisplayNameAsync() {
+    if (!isIndonesiaMode()) return getActiveMethodShortName();
+
     const preset = await getActivePreset();
     return preset?.name || 'Nahdlatul Ulama (NU)';
 }

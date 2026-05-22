@@ -8,7 +8,7 @@
 import { PRAYER_LIST, getTubeFillPercent, parseTimeToDate, getPrayerName } from '../../modules/prayer/prayer-times.js';
 
 // UI Components
-import { renderFeaturedCard as renderFeaturedCardShared } from '../prayer/prayer-widgets.js';
+import { renderFeaturedCard as renderFeaturedCardShared, renderOrgToggle as renderOrgToggleShared } from '../prayer/prayer-widgets.js';
 
 const TUBE_LAYOUT = [
     { type: 'stacked', items: ['terbit', 'subuh', 'imsak'] },
@@ -32,10 +32,7 @@ export function renderPrayerCard(timings, orgName, prayerState) {
         <div class="schedule-bottom" id="tube-grid">
             ${renderTubeGrid(timings, prayerState)}
             <div class="schedule-org-cell">
-                <button class="org-toggle" id="org-toggle">
-                    <span class="org-toggle__icon-circle"><i class='bx bxs-home'></i></span>
-                    <span class="org-toggle__label" id="org-label">${orgName}</span>
-                </button>
+                ${renderOrgToggleShared(orgName, 'org-toggle')}
             </div>
         </div>
     `;

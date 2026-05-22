@@ -44,6 +44,10 @@ const initialState = {
         },
         adzan_selected: 'makkah',
         adzan_subuh: 'makkah',
+        calculation: {
+            method: null,
+            isAutoDetected: true
+        },
         quran: {
             tajweed: true,
             transliteration: true,

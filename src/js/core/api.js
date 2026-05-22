@@ -13,6 +13,7 @@ import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
 // Local offline fallback (no network required)
 import { calculateLocalDayTimes, calculateLocalMonthlyTimes, calculateLocalQibla } from './local-calculator.js';
 import { store } from './store.js';
+import { getActiveMethodConfig } from './calculation-resolver.js';
 
 // UI Feedback
 import { warning } from '../modules/notification/notification.js';
@@ -26,7 +27,6 @@ const API_MIRRORS = [
 
 const CACHE_PREFIX = 'prayer_cache_';
 const MONTHLY_CACHE_PREFIX = 'monthly_cache_';
-const METHOD = 20; // Kemenag RI
 const REQUEST_TIMEOUT_MS = 4000;
 const MAX_RETRY_CYCLES = 1;
 const MIRROR_STORAGE_KEY = 'last_working_mirror';
@@ -142,7 +142,8 @@ function isValidResponse(data) {
  * @throws on any failure
  */
 async function tryMirror(baseUrl, dateStr, latitude, longitude) {
-    const url = `${baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${METHOD}`;
+    const { id: methodId } = getActiveMethodConfig();
+    const url = `${baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
 
     const response = await fetchWithTimeout(url);
 
@@ -205,14 +206,15 @@ function sleep(ms) {
  */
 function transformTimings(apiData, dateStr) {
     const timings = apiData.data.timings;
+    const { ihtiyatMinutes } = getActiveMethodConfig();
 
-    // Ihtiyat (Kemenag RI): +2 min precaution for all prayer times except Sunrise
-    const subuh = adjustTimeStr(timings.Fajr, 2);
+    // Ihtiyat precaution per active method
+    const subuh = adjustTimeStr(timings.Fajr, ihtiyatMinutes);
     const terbit = cleanTimeStr(timings.Sunrise);  // Pure astronomical, no Ihtiyat
-    const dzuhur = adjustTimeStr(timings.Dhuhr, 2);
-    const ashar = adjustTimeStr(timings.Asr, 2);
-    const magrib = adjustTimeStr(timings.Maghrib, 2);
-    const isya = adjustTimeStr(timings.Isha, 2);
+    const dzuhur = adjustTimeStr(timings.Dhuhr, ihtiyatMinutes);
+    const ashar = adjustTimeStr(timings.Asr, ihtiyatMinutes);
+    const magrib = adjustTimeStr(timings.Maghrib, ihtiyatMinutes);
+    const isya = adjustTimeStr(timings.Isha, ihtiyatMinutes);
 
     // Imsak = adjusted Fajr − 10 minutes
     const imsak = adjustTimeStr(subuh, -10);
@@ -255,8 +257,9 @@ async function withDeduplication(key, fetcher) {
  * Tries multiple API mirrors with retry & exponential backoff
  */
 export async function getPrayerTimesByCoords(latitude, longitude, date = new Date()) {
+    const { id: methodId } = getActiveMethodConfig();
     const dateStr = formatDate(date);
-    const cacheKey = `${CACHE_PREFIX}${latitude.toFixed(2)}_${longitude.toFixed(2)}_${dateStr}`;
+    const cacheKey = `${CACHE_PREFIX}${methodId}_${latitude.toFixed(2)}_${longitude.toFixed(2)}_${dateStr}`;
 
     return withDeduplication(cacheKey, async () => {
         // Check cache first
@@ -352,7 +355,8 @@ function isValidMonthlyResponse(data) {
  * @returns {Promise<object>} parsed JSON data
  */
 async function tryMirrorMonthly(baseUrl, year, month, latitude, longitude) {
-    const url = `${baseUrl}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${METHOD}`;
+    const { id: methodId } = getActiveMethodConfig();
+    const url = `${baseUrl}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
 
     const response = await fetchWithTimeout(url);
 
@@ -405,16 +409,18 @@ async function tryAllMirrorsMonthly(year, month, latitude, longitude) {
  * @returns {Array<object>}
  */
 function transformMonthlyData(apiDays) {
+    const { ihtiyatMinutes } = getActiveMethodConfig();
+
     return apiDays.map(day => {
         const t = day.timings;
 
-        // Ihtiyat (Kemenag RI): +2 min for all prayers except Sunrise
-        const subuh = adjustTimeStr(t.Fajr, 2);
+        // Ihtiyat precaution per active method
+        const subuh = adjustTimeStr(t.Fajr, ihtiyatMinutes);
         const terbit = cleanTimeStr(t.Sunrise);
-        const dzuhur = adjustTimeStr(t.Dhuhr, 2);
-        const ashar = adjustTimeStr(t.Asr, 2);
-        const magrib = adjustTimeStr(t.Maghrib, 2);
-        const isya = adjustTimeStr(t.Isha, 2);
+        const dzuhur = adjustTimeStr(t.Dhuhr, ihtiyatMinutes);
+        const ashar = adjustTimeStr(t.Asr, ihtiyatMinutes);
+        const magrib = adjustTimeStr(t.Maghrib, ihtiyatMinutes);
+        const isya = adjustTimeStr(t.Isha, ihtiyatMinutes);
         const imsak = adjustTimeStr(subuh, -10);
 
         return {
@@ -442,7 +448,8 @@ function transformMonthlyData(apiDays) {
  * @returns {Promise<Array|null>} array of day objects, or null on failure
  */
 export async function getMonthlyPrayerTimes(latitude, longitude, year, month) {
-    const cacheKey = `${MONTHLY_CACHE_PREFIX}${latitude.toFixed(2)}_${longitude.toFixed(2)}_${year}_${month}`;
+    const { id: methodId } = getActiveMethodConfig();
+    const cacheKey = `${MONTHLY_CACHE_PREFIX}${methodId}_${latitude.toFixed(2)}_${longitude.toFixed(2)}_${year}_${month}`;
 
     return withDeduplication(cacheKey, async () => {
         // Check cache first

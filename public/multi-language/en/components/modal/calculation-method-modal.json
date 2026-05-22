@@ -1,0 +1,9 @@
+{
+    "title": "Calculation Method",
+    "subtitle": "Select the calculation method suitable for your region",
+    "badge_auto": "Recommended",
+    "selected_feedback": "{{name}} method selected",
+    "region_label": "Region",
+    "ihtiyat_label": "Precaution",
+    "ihtiyat_value": "+{{minutes}} min"
+}

@@ -6,6 +6,7 @@
 // Core & Libraries
 import { getCurrentPrayer, getPrayerName } from '../../modules/prayer/prayer-times.js';
 import { toggleOrg, getOrgDisplayNameAsync } from '../../modules/schedule/ramadhan.js';
+import { isIndonesiaMode } from '../../core/calculation-resolver.js';
 import { impact } from '../../modules/system/haptic.js';
 import * as notif from '../../modules/notification/notification.js';
 import { t } from '../../core/i18n.js';
@@ -49,12 +50,21 @@ export function renderFeaturedCard(timings, prayerState = null) {
  * @returns {string} HTML string
  */
 export function renderOrgToggle(orgName, id = 'org-toggle') {
-    return `
-        <button class="org-toggle" id="${id}">
-            <span class="org-toggle__icon-circle"><i class='bx bxs-home'></i></span>
-            <span class="org-toggle__label" id="${id}-label">${escapeHtml(orgName)}</span>
-        </button>
-    `;
+    if (isIndonesiaMode()) {
+        return `
+            <button class="org-toggle" id="${id}">
+                <span class="org-toggle__icon-circle"><i class='bx bxs-home'></i></span>
+                <span class="org-toggle__label" id="${id}-label">${escapeHtml(orgName)}</span>
+            </button>
+        `;
+    } else {
+        return `
+            <div class="org-toggle org-toggle--static" id="${id}">
+                <span class="org-toggle__icon-circle"><i class='bx bxs-institution'></i></span>
+                <span class="org-toggle__label" id="${id}-label">${escapeHtml(orgName)}</span>
+            </div>
+        `;
+    }
 }
 
 /**
@@ -63,6 +73,10 @@ export function renderOrgToggle(orgName, id = 'org-toggle') {
  * @param {Function} [onToggle] - optional callback after toggling
  */
 export async function handleOrgToggle(labelId = 'org-toggle-label', onToggle) {
+    if (!isIndonesiaMode()) {
+        return;
+    }
+
     impact('medium');
 
     await toggleOrg();

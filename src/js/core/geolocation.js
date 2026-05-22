@@ -56,7 +56,9 @@ export async function findNearestRegency(lat, lng) {
         }
     }
 
-    if (nearest) {
+    // Only return if within reasonable distance (e.g. 500km radius from any Indonesian point)
+    // Prevents matching users in Russia/Europe to Indonesia if Nominatim fails
+    if (nearest && minDist <= 500) {
         const province = await getProvinceById(nearest.province_id);
         return {
             regency: nearest,
@@ -151,6 +153,7 @@ export async function detectLocation(forceRefresh = false) {
                     districtName: nomResult.districtName || '',
                     provinceId: localMatch?.province?.id || nomResult.provinceId,
                     provinceName: nomResult.provinceName || localMatch?.province?.name || '',
+                    countryCode: nomResult.countryCode || null,
                     latitude: coords.latitude,
                     longitude: coords.longitude,
                 };
@@ -171,6 +174,7 @@ export async function detectLocation(forceRefresh = false) {
                 districtName: '',
                 provinceId: result.province?.id,
                 provinceName: result.province?.name,
+                countryCode: 'ID',
                 latitude: coords.latitude,
                 longitude: coords.longitude,
             };
@@ -225,8 +229,8 @@ export function openLocationSettings() {
  * @param {number} locationData.longitude
  * @returns {Promise<object>} The saved location
  */
-export async function setManualLocation({ regencyId, regencyName, districtName, provinceId, provinceName, latitude, longitude }) {
-    const location = { regencyId, regencyName, districtName: districtName || '', provinceId, provinceName, latitude, longitude };
+export async function setManualLocation({ regencyId, regencyName, districtName, provinceId, provinceName, countryCode, latitude, longitude }) {
+    const location = { regencyId, regencyName, districtName: districtName || '', provinceId, provinceName, countryCode: countryCode || null, latitude, longitude };
     await storage.set(STORAGE_KEY, location);
     return location;
 }

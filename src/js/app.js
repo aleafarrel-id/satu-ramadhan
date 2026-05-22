@@ -11,6 +11,7 @@ import { isNative } from './modules/system/platform.js';
 
 // State & Core Services
 import { store } from './core/store.js';
+import { applyAutoDetectedMethod } from './core/calculation-resolver.js';
 import { initTheme } from './core/theme.js';
 import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
 import { resetRamadhanCache } from './core/database.js';
@@ -113,6 +114,26 @@ export async function initApp() {
 
         await refreshCurrentPage();
     });
+
+    // Global location-switch listener:
+    // When the user's location changes, try to auto-detect the calculation method
+    // based on their country.
+    let _lastCountryCode = store.getState('location')?.countryCode || null;
+    
+    const handleLocationChange = (loc, isUserAction = true) => {
+        if (loc && loc.countryCode) {
+            // Force reset to auto only when country actually changes (user moved abroad),
+            // or when it's an explicit user action (manual location search/selection).
+            const countryChanged = loc.countryCode !== _lastCountryCode;
+            _lastCountryCode = loc.countryCode;
+            applyAutoDetectedMethod(loc.countryCode, isUserAction && countryChanged);
+        }
+    };
+    // The subscriber fires when location changes from the store
+    store.subscribe('location', (loc) => handleLocationChange(loc, true));
+    
+    // On cold start, we do NOT force reset, just apply if needed
+    handleLocationChange(store.getState('location'), false);
 
     // Set dynamic app name, version, and developer on splash screen
     const splashTitleEl = document.querySelector('.splash-title');

@@ -6,7 +6,7 @@
 
 **Pendamping ibadah Islam yang lengkap, privat, dan gratis.**
 
-Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan
+Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · 🌍 Global Support
 
 <br/>
 
@@ -16,7 +16,7 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan
 
 <br/>
 
-[![Version](https://img.shields.io/badge/version-1.9--stable-brightgreen?style=flat-square)](package.json)
+[![Version](https://img.shields.io/badge/version-2.0--stable-brightgreen?style=flat-square)](package.json)
 [![Platform](https://img.shields.io/badge/platform-Android%208.0%2B-blue?style=flat-square&logo=android)](https://play.google.com/store/apps/details?id=com.saturamadhan.mobile)
 [![License](https://img.shields.io/badge/license-Private-red?style=flat-square)](LICENSE)
 [![Made with Vite](https://img.shields.io/badge/built%20with-Vite-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
@@ -60,8 +60,8 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan
       <img src="assets/previews/6.png" alt="Tasbih Digital" width="320" />
     </td>
     <td width="50%" valign="top">
-      <h3>⚙️ Kustomisasi Penuh</h3>
-      <p>Tema tampilan (Teal/Dark), bahasa (ID/EN), metode hisab (organisasi), dan pilihan suara Adzan atau hanya notifikasi semuanya bisa disesuaikan sesuai preferensi.</p>
+      <h3>⚙️ Kustomisasi Penuh & Global</h3>
+      <p>Tema tampilan (Teal/Dark), bahasa (ID/EN), dan pilihan suara Adzan bisa disesuaikan. Metode hisab waktu shalat kini terdeteksi <strong>otomatis berdasarkan negara</strong> — mendukung 23+ metode global (MUIS, JAKIM, ISNA, MWL, Umm Al-Qura, Kemenag, dll.).</p>
       <img src="assets/previews/8.png" alt="Kustomisasi Penuh" width="320" />
     </td>
   </tr>
@@ -92,14 +92,6 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan
 | **Internasionalisasi** | [i18next](https://www.i18next.com/) + HTTP Backend               |
 | **CSS**                | Vanilla CSS (PostCSS + cssnano)                                  |
 | **Share Jadwal**       | [html-to-image](https://github.com/bubkoo/html-to-image)         |
-
----
-
-## ⚠️ Pemberitahuan untuk Pengguna di Luar Indonesia:
-
-> Saat ini, **Satu Ramadhan** menggunakan metode perhitungan waktu shalat yang didasarkan murni pada standar **Kementerian Agama Republik Indonesia (Kemenag RI)**. Data ini diambil langsung dari **API Aladhan** atau dikalkulasi secara lokal menggunakan _Adhan library_. Oleh karena itu, akurasi jadwal shalat dijamin presisi hanya untuk wilayah **Indonesia**. Penggunaan di luar wilayah Indonesia mungkin tidak seakurat metode lokal setempat.
->
-> _Pengembangan ke depannya akan mengintegrasikan berbagai metode standar kalkulasi internasional untuk mendukung pengguna di luar Indonesia._
 
 ---
 
@@ -204,7 +196,9 @@ satu-ramadhan/
     ├── main.js                   # Entry point JS — import CSS utama & bootstrap app
     │
     ├── data/
-    │   └── tasbih.json           # Preset zikir bawaan (6 dzikir + custom slot)
+    │   ├── tasbih.json           # Preset zikir bawaan (6 dzikir + custom slot)
+    │   ├── calculation-methods.json  # Registry 23+ metode hisab (angles, madhab, ihtiyat)
+    │   └── country-method-map.json   # Mapping ISO countryCode → calculation method ID
     │
     ├── templates/
     │   └── share-schedule/
@@ -293,17 +287,18 @@ satu-ramadhan/
         │   ├── quran-audio.js    # Konfigurasi sumber audio tilawah
         │   └── quran-languages.js# Konfigurasi bahasa terjemahan Quran
         │
-        ├── core/                   # Layanan fondasi — dipakai lintas seluruh aplikasi
-        │   ├── store.js            # State management: pub/sub + persistence ke storage
-        │   ├── api.js              # HTTP client: prayer time API (Aladhan), retry, cache
-        │   ├── database.js         # Loader & cache JSON lokal (province, regency, ramadhan)
-        │   ├── i18n.js             # Setup i18next: namespace lazy-load, language detection
-        │   ├── theme.js            # Manajemen tema teal/dark, status bar color override
-        │   ├── geolocation.js      # Akuisisi GPS: native Capacitor + web fallback
-        │   ├── local-calculator.js # Kalkulasi waktu shalat offline via Adhan.js
-        │   ├── location-search.js  # Pencarian lokasi manual (autocomplete + validasi)
-        │   ├── nominatim.js        # Reverse geocoding nama kota via Nominatim API
-        │   └── storage.js          # Abstraksi Capacitor Preferences (get/set/remove)
+        ├── core/                       # Layanan fondasi — dipakai lintas seluruh aplikasi
+        │   ├── store.js                # State management: pub/sub + persistence ke storage
+        │   ├── api.js                  # HTTP client: prayer time API (Aladhan), retry, cache
+        │   ├── database.js             # Loader & cache JSON lokal (province, regency, ramadhan)
+        │   ├── i18n.js                 # Setup i18next: namespace lazy-load, language detection
+        │   ├── theme.js                # Manajemen tema teal/dark, status bar color override
+        │   ├── geolocation.js          # Akuisisi GPS: native Capacitor + web fallback
+        │   ├── local-calculator.js     # Kalkulasi waktu shalat offline via Adhan.js
+        │   ├── calculation-resolver.js # Single source of truth: metode hisab aktif
+        │   ├── location-search.js      # Pencarian lokasi manual (autocomplete + validasi)
+        │   ├── nominatim.js            # Reverse geocoding nama kota + countryCode via Nominatim
+        │   └── storage.js              # Abstraksi Capacitor Preferences (get/set/remove)
         │
         ├── pages/                # Controller halaman — di-lazy-load oleh router
         │   ├── home-page.js      # Halaman utama: countdown, prayer card, shortcut
@@ -425,12 +420,13 @@ satu-ramadhan/
         │   │   └── schedule-swipe.js        # Gesture swipe antar hari di jadwal
         │   │
         │   ├── settings/
-        │   │   ├── settings-panel.js        # Panel utama pengaturan (accordion)
-        │   │   ├── settings-display-panel.js# Panel pengaturan tampilan (tema, bahasa)
-        │   │   ├── settings-loc-card.js     # Kartu pengaturan lokasi
-        │   │   ├── settings-preset-card.js  # Kartu preset jadwal Ramadhan
-        │   │   ├── settings-quran-panel.js  # Panel pengaturan reader Quran
-        │   │   └── settings-about-app.js    # Bagian info versi & tentang aplikasi
+        │   │   ├── settings-panel.js             # Panel utama pengaturan (accordion)
+        │   │   ├── settings-display-panel.js     # Panel pengaturan tampilan (tema, bahasa)
+        │   │   ├── settings-loc-card.js          # Kartu pengaturan lokasi
+        │   │   ├── settings-preset-card.js       # Kartu preset jadwal Ramadhan
+        │   │   ├── settings-calculation-panel.js # Panel metode hisab (baru)
+        │   │   ├── settings-quran-panel.js       # Panel pengaturan reader Quran
+        │   │   └── settings-about-app.js         # Bagian info versi & tentang aplikasi
         │   │
         │   ├── skeleton/
         │   │   ├── skeleton-home.js         # Skeleton loading halaman utama
@@ -491,6 +487,7 @@ satu-ramadhan/
 - **State Terpusat** — `store.js` sebagai single source of truth dengan pub/sub pattern
 - **Offline-first** — data waktu shalat dikalkulasi lokal via Adhan.js (tanpa internet)
 - **Zero Dependency UI** — tidak menggunakan framework UI (React/Vue), murni Vanilla JS
+- **Global Calculation** — `calculation-resolver.js` auto-detect metode hisab per negara
 
 ---
 

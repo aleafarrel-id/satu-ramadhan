@@ -1,0 +1,234 @@
+{
+    "methods": [
+        {
+            "id": 0,
+            "name": "Jafari / Shia Ithna-Ashari",
+            "shortName": "Jafari",
+            "region": "Iran, Iraq",
+            "fajrAngle": 16,
+            "ishaAngle": 14,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 1,
+            "name": "University of Islamic Sciences, Karachi",
+            "shortName": "Karachi",
+            "region": "Pakistan, Bangladesh",
+            "fajrAngle": 18,
+            "ishaAngle": 18,
+            "madhab": "hanafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 2,
+            "name": "Islamic Society of North America (ISNA)",
+            "shortName": "ISNA",
+            "region": "USA, Canada",
+            "fajrAngle": 15,
+            "ishaAngle": 15,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 3,
+            "name": "Muslim World League",
+            "shortName": "MWL",
+            "region": "Europe, Far East",
+            "fajrAngle": 18,
+            "ishaAngle": 17,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 4,
+            "name": "Umm Al-Qura University, Makkah",
+            "shortName": "Umm al-Qura",
+            "region": "Arabian Peninsula",
+            "fajrAngle": 18.5,
+            "ishaAngle": 90,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 5,
+            "name": "Egyptian General Authority of Survey",
+            "shortName": "Egypt",
+            "region": "Africa, Syria, Lebanon",
+            "fajrAngle": 19.5,
+            "ishaAngle": 17.5,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 7,
+            "name": "Institute of Geophysics, University of Tehran",
+            "shortName": "Tehran",
+            "region": "Iran",
+            "fajrAngle": 17.7,
+            "ishaAngle": 14,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 8,
+            "name": "Gulf Region",
+            "shortName": "Gulf",
+            "region": "Gulf Countries",
+            "fajrAngle": 19.5,
+            "ishaAngle": 90,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 9,
+            "name": "Kuwait",
+            "shortName": "Kuwait",
+            "region": "Kuwait",
+            "fajrAngle": 18,
+            "ishaAngle": 17.5,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 10,
+            "name": "Qatar",
+            "shortName": "Qatar",
+            "region": "Qatar",
+            "fajrAngle": 18,
+            "ishaAngle": 90,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 11,
+            "name": "Majlis Ugama Islam Singapura (MUIS)",
+            "shortName": "MUIS",
+            "region": "Singapore",
+            "fajrAngle": 20,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 12,
+            "name": "Union Organization islamique de France",
+            "shortName": "UOIF",
+            "region": "France",
+            "fajrAngle": 12,
+            "ishaAngle": 12,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 13,
+            "name": "Diyanet İşleri Başkanlığı, Turkey",
+            "shortName": "Diyanet",
+            "region": "Turkey",
+            "fajrAngle": 18,
+            "ishaAngle": 17,
+            "madhab": "hanafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 14,
+            "name": "Spiritual Administration of Muslims of Russia",
+            "shortName": "Russia",
+            "region": "Russia",
+            "fajrAngle": 16,
+            "ishaAngle": 15,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 15,
+            "name": "Moonsighting Committee Worldwide",
+            "shortName": "Moonsighting",
+            "region": "Worldwide",
+            "fajrAngle": 18,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 16,
+            "name": "Dubai",
+            "shortName": "Dubai",
+            "region": "UAE",
+            "fajrAngle": 18.2,
+            "ishaAngle": 18.2,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 17,
+            "name": "Jabatan Kemajuan Islam Malaysia (JAKIM)",
+            "shortName": "JAKIM",
+            "region": "Malaysia",
+            "fajrAngle": 20,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 18,
+            "name": "Tunisia",
+            "shortName": "Tunisia",
+            "region": "Tunisia",
+            "fajrAngle": 18,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 19,
+            "name": "Algeria",
+            "shortName": "Algeria",
+            "region": "Algeria",
+            "fajrAngle": 18,
+            "ishaAngle": 17,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 20,
+            "name": "Kementerian Agama Republik Indonesia (Kemenag RI)",
+            "shortName": "Kemenag RI",
+            "region": "Indonesia",
+            "fajrAngle": 20,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 2
+        },
+        {
+            "id": 21,
+            "name": "Morocco",
+            "shortName": "Morocco",
+            "region": "Morocco",
+            "fajrAngle": 19,
+            "ishaAngle": 17,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 22,
+            "name": "Comunidade Islamica de Lisboa",
+            "shortName": "Lisboa",
+            "region": "Portugal",
+            "fajrAngle": 18,
+            "ishaAngle": 17,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        },
+        {
+            "id": 23,
+            "name": "Ministry of Awqaf, Islamic Affairs and Holy Places, Jordan",
+            "shortName": "Jordan",
+            "region": "Jordan",
+            "fajrAngle": 18,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 1
+        }
+    ]
+}

@@ -13,6 +13,7 @@ import {
     deleteCustomPreset,
     resetBasePreset,
 } from '../../modules/schedule/ramadhan.js';
+import { isIndonesiaMode } from '../../core/calculation-resolver.js';
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
 import * as notif from '../../modules/notification/notification.js';
@@ -666,6 +667,8 @@ function createModalDOM() {
     const overlay = document.createElement('div');
     overlay.className = 'preset-mgr-overlay';
 
+    const isIndo = isIndonesiaMode();
+
     overlay.innerHTML = `
         <div class="preset-mgr-sheet">
             <div class="preset-mgr-header">
@@ -675,12 +678,14 @@ function createModalDOM() {
                 <div class="preset-mgr-list" data-focus-group="preset-mgr-list" data-focus-direction="vertical"></div>
                 <div class="preset-mgr-add-form"></div>
             </div>
+            ${isIndo ? `
             <div class="preset-mgr-footer">
                 <button class="btn btn--outline preset-mgr-add-btn">
                     <i class='bx bx-plus'></i>
                     <span>${t('components/modal/preset-manager-modal:add_preset_btn')}</span>
                 </button>
             </div>
+            ` : ''}
         </div>
     `;
 

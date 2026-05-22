@@ -2,5 +2,6 @@
     "title": "JADWAL RAMADAN",
     "desc": "Kelola organisasi serta tanggal awal-akhir Ramadhan",
     "btn_manage": "Kelola Preset",
-    "unknown": "Tidak diketahui"
+    "unknown": "Tidak diketahui",
+    "global_desc": "Berdasarkan perhitungan astronomi global."
 }

@@ -2,5 +2,6 @@
     "title": "RAMADAN SCHEDULE",
     "desc": "Manage organization and Ramadan start/end dates",
     "btn_manage": "Manage Presets",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "global_desc": "Based on global astronomical observation."
 }

@@ -6,12 +6,14 @@ import '../../css/components/modal/language-selector-modal.css';
 import '../../css/components/modal/audio-mode-selector-modal.css';
 import '../../css/components/modal/adzan-selector-modal.css';
 import '../../css/components/modal/about-app-modal.css';
+import '../../css/components/modal/calculation-method-modal.css';
 
 import { CONFIG } from '../config/version-config.js';
 
 import * as settingsPanel from '../components/settings/settings-panel.js';
 import * as settingsQuranPanel from '../components/settings/settings-quran-panel.js';
 import * as settingsLocCard from '../components/settings/settings-loc-card.js';
+import * as settingsCalculationPanel from '../components/settings/settings-calculation-panel.js';
 import * as settingsPresetCard from '../components/settings/settings-preset-card.js';
 import * as settingsDisplayPanel from '../components/settings/settings-display-panel.js';
 import * as settingsAboutApp from '../components/settings/settings-about-app.js';
@@ -45,6 +47,7 @@ export async function render(container) {
 
     await loadNS('pages/settings-page');
     await loadNS('components/settings/settings-loc-card');
+    await loadNS('components/settings/settings-calculation-panel');
     await loadNS('components/settings/settings-preset-card');
     await loadNS('components/settings/settings-display-panel');
     await loadNS('components/settings/settings-panel');
@@ -62,6 +65,7 @@ export async function render(container) {
             <div class="settings-desktop-grid">
                 <div class="settings-desktop-left">
                     <div id="settings-loc-card-container"></div>
+                    <div id="settings-calculation-panel-container"></div>
                     <div id="settings-preset-card-container"></div>
                     <div id="settings-quran-panel-container"></div>
                     <div id="settings-about-app-container"></div>
@@ -77,6 +81,7 @@ export async function render(container) {
     `;
 
     const locCardContainer = wrapper.querySelector('#settings-loc-card-container');
+    const calcPanelContainer = wrapper.querySelector('#settings-calculation-panel-container');
     const presetCardContainer = wrapper.querySelector('#settings-preset-card-container');
     const displayPanelContainer = wrapper.querySelector('#settings-display-panel-container');
     const panelContainer = wrapper.querySelector('#settings-panel-container');
@@ -86,6 +91,7 @@ export async function render(container) {
     // Render all components concurrently into the offline wrapper
     await Promise.all([
         locCardContainer && settingsLocCard.render(locCardContainer),
+        calcPanelContainer && settingsCalculationPanel.render(calcPanelContainer),
         presetCardContainer && settingsPresetCard.render(presetCardContainer),
         displayPanelContainer && settingsDisplayPanel.render(displayPanelContainer),
         panelContainer && settingsPanel.render(panelContainer),
@@ -106,6 +112,7 @@ export async function render(container) {
 export function destroy() {
     ++_renderGen;
     settingsLocCard.destroy();
+    settingsCalculationPanel.destroy();
     settingsPresetCard.destroy();
     settingsDisplayPanel.destroy();
     settingsPanel.destroy();

@@ -14,6 +14,7 @@ import * as storage from '../../core/storage.js';
 import { loadNS, t } from '../../core/i18n.js';
 import { success, error, info } from '../notification/notification.js';
 import { logError } from '../../utils/error-boundary.js';
+import { getActiveMethodConfig } from '../../core/calculation-resolver.js';
 
 let _recoveryDismissed = false;
 
@@ -83,7 +84,9 @@ async function checkCurrentMonthCacheIsFallback() {
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
 
-    const cacheKey = `monthly_cache_${loc.latitude.toFixed(2)}_${loc.longitude.toFixed(2)}_${year}_${month}`;
+    // Cache key must include methodId to match the format used by api.js
+    const { id: methodId } = getActiveMethodConfig();
+    const cacheKey = `monthly_cache_${methodId}_${loc.latitude.toFixed(2)}_${loc.longitude.toFixed(2)}_${year}_${month}`;
     const monthlyData = await storage.get(cacheKey);
 
     if (!monthlyData || !Array.isArray(monthlyData) || monthlyData.length === 0) {
@@ -112,10 +115,15 @@ async function promptUpdate() {
             const loc = store.getState('location');
             if (loc && loc.latitude && loc.longitude) {
                 const now = new Date();
-                const cacheKeyMonthly = `monthly_cache_${loc.latitude.toFixed(2)}_${loc.longitude.toFixed(2)}_${now.getFullYear()}_${now.getMonth() + 1}`;
+                // Cache keys must include methodId to match the format used by api.js
+                const { id: methodId } = getActiveMethodConfig();
+                const cacheKeyMonthly = `monthly_cache_${methodId}_${loc.latitude.toFixed(2)}_${loc.longitude.toFixed(2)}_${now.getFullYear()}_${now.getMonth() + 1}`;
                 await storage.remove(cacheKeyMonthly);
                 // Also remove day cache just in case
-                const cacheKeyDay = `prayer_cache_${loc.latitude.toFixed(2)}_${loc.longitude.toFixed(2)}_${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yyyy = now.getFullYear();
+                const cacheKeyDay = `prayer_cache_${methodId}_${loc.latitude.toFixed(2)}_${loc.longitude.toFixed(2)}_${dd}-${mm}-${yyyy}`;
                 await storage.remove(cacheKeyDay);
             }
 

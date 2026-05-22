@@ -17,19 +17,21 @@
 
 import { Coordinates, CalculationMethod, Madhab, PrayerTimes, Qibla } from 'adhan';
 import { adjustTimeStr, cleanTimeStr, PRAYER_KEY_MAP } from '../utils/datetime.js';
+import { getActiveMethodConfig } from './calculation-resolver.js';
 
-// ─── Kemenag RI Calculation Parameters ────────────────────────────────────────
+// ─── Dynamic Calculation Parameters ────────────────────────────────────────
 
 /**
- * Build Kemenag RI-compliant adhan calculation parameters.
- * Uses MuslimWorldLeague as base, then overrides angles per Kemenag RI standard.
+ * Build adhan calculation parameters based on active method config.
+ * Uses MuslimWorldLeague as base, then overrides angles and madhab.
  * @returns {adhan.CalculationParameters}
  */
-function getKemenagParams() {
+function getCalculationParams() {
+    const config = getActiveMethodConfig();
     const params = CalculationMethod.MuslimWorldLeague();
-    params.fajrAngle = 20;              // Kemenag RI: 20°
-    params.ishaAngle = 18;              // Kemenag RI: 18°
-    params.madhab   = Madhab.Shafi;     // Asr: shadow length 1x
+    params.fajrAngle = config.fajrAngle;
+    params.ishaAngle = config.ishaAngle;
+    params.madhab   = config.madhab === 'hanafi' ? Madhab.Hanafi : Madhab.Shafi;
     return params;
 }
 
@@ -176,7 +178,7 @@ function buildWeekdayObj(date) {
  */
 export function calculateLocalDayTimes(lat, lng, date = new Date()) {
     const coordinates = new Coordinates(lat, lng);
-    const params      = getKemenagParams();
+    const params      = getCalculationParams();
     const pt          = new PrayerTimes(coordinates, date, params);
 
     const adhanMap = PRAYER_KEY_MAP.adhan;
@@ -189,13 +191,15 @@ export function calculateLocalDayTimes(lat, lng, date = new Date()) {
     const rawMaghrib = dateToHHmm(pt.maghrib);
     const rawIsha    = dateToHHmm(pt.isha);
 
-    // Apply Ihtiyat (+2 min precaution) — Kemenag RI standard
-    const subuh  = adjustTimeStr(rawFajr,    2);
+    const { ihtiyatMinutes } = getActiveMethodConfig();
+
+    // Apply Ihtiyat precaution per active method
+    const subuh  = adjustTimeStr(rawFajr,    ihtiyatMinutes);
     const terbit = cleanTimeStr(rawSunrise);    // Sunrise: no Ihtiyat
-    const dzuhur = adjustTimeStr(rawDhuhr,   2);
-    const ashar  = adjustTimeStr(rawAsr,     2);
-    const magrib = adjustTimeStr(rawMaghrib, 2);
-    const isya   = adjustTimeStr(rawIsha,    2);
+    const dzuhur = adjustTimeStr(rawDhuhr,   ihtiyatMinutes);
+    const ashar  = adjustTimeStr(rawAsr,     ihtiyatMinutes);
+    const magrib = adjustTimeStr(rawMaghrib, ihtiyatMinutes);
+    const isya   = adjustTimeStr(rawIsha,    ihtiyatMinutes);
 
     // Imsak = Subuh − 10 min
     const imsak = adjustTimeStr(subuh, -10);

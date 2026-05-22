@@ -5,6 +5,7 @@
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { getRamadhanConfig } from '../../core/database.js';
 import { getActivePreset, getHijriOffset } from './ramadhan.js';
+import { isIndonesiaMode } from '../../core/calculation-resolver.js';
 import { t } from '../../core/i18n.js';
 
 /**
@@ -108,8 +109,8 @@ async function computeHijriMonthDates(location) {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
-    // Check if today is within Ramadhan preset range
-    if (preset) {
+    // Check if today is within Ramadhan preset range (Indonesia only)
+    if (isIndonesiaMode() && preset) {
         const presetStart = new Date(preset.startDate + 'T00:00:00');
         const presetEnd = new Date(preset.endDate + 'T00:00:00');
 
@@ -118,7 +119,7 @@ async function computeHijriMonthDates(location) {
         }
     }
 
-    // Outside Ramadhan — detect current Hijri month from API
+    // Outside Ramadhan or Non-Indonesia — detect current Hijri month from API
     return await computeCurrentHijriMonth(location);
 }
 
@@ -196,8 +197,8 @@ async function computeCurrentHijriMonth(location) {
     const apiHijriYear = parseInt(todayEntry.hijri.year, 10);
     const apiMonthDays = todayEntry.hijri.month.days || 30;
 
-    // Get the calibrated offset
-    const offset = await getHijriOffset(location);
+    // Get the calibrated offset (only for Indonesia, 0 otherwise)
+    const offset = isIndonesiaMode() ? await getHijriOffset(location) : 0;
 
     // Apply offset to get the corrected Hijri day
     const correctedHijriDay = apiHijriDay + offset;

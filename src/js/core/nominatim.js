@@ -153,6 +153,7 @@ function normalizeResult(result) {
         provinceName: addr.state || addr.country || '',
         latitude: parseFloat(result.lat),
         longitude: parseFloat(result.lon),
+        countryCode: addr.country_code?.toUpperCase() || null,
         source: 'nominatim',
     };
 }

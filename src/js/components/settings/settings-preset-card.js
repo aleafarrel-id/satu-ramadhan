@@ -5,6 +5,8 @@
 
 // Core & Libraries
 import { getActivePreset } from '../../modules/schedule/ramadhan.js';
+import { isIndonesiaMode } from '../../core/calculation-resolver.js';
+import { store } from '../../core/store.js';
 
 // Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
@@ -16,6 +18,8 @@ import { escapeHtml } from '../../utils/sanitize.js';
 import { showPresetManagerModal } from '../modal/preset-manager-modal.js';
 
 let _container = null;
+let _subId = null;
+let _calcSubId = null;
 
 /**
  * Format a YYYY-MM-DD date string for display using translated short month names.
@@ -34,6 +38,18 @@ function formatDate(dateStr) {
 export async function render(container) {
     _container = container;
     await renderCardContent();
+
+    if (!_subId) {
+        _subId = store.subscribe('location', () => {
+            renderCardContent();
+        });
+    }
+    
+    if (!_calcSubId) {
+        _calcSubId = store.subscribe('settings.calculation', () => {
+            renderCardContent();
+        });
+    }
 }
 
 /**
@@ -50,6 +66,14 @@ export async function refreshPresetCard() {
  */
 export function destroy() {
     _container = null;
+    if (_subId) {
+        store.unsubscribe(_subId);
+        _subId = null;
+    }
+    if (_calcSubId) {
+        store.unsubscribe(_calcSubId);
+        _calcSubId = null;
+    }
 }
 
 /**
@@ -57,6 +81,7 @@ export function destroy() {
  */
 async function renderCardContent() {
     const preset = await getActivePreset();
+    const indoMode = isIndonesiaMode();
 
     const name = preset?.name || t('components/settings/settings-preset-card:unknown');
     const startStr = preset?.startDate ? formatDate(preset.startDate) : '-';
@@ -80,7 +105,7 @@ async function renderCardContent() {
             <div class="settings-card-collapse">
                 <div class="settings-card-collapse-inner">
                     <p class="settings-preset-desc">
-                        ${t('components/settings/settings-preset-card:desc')}
+                        ${escapeHtml(preset?.description || t('components/settings/settings-preset-card:desc'))}
                     </p>
                     <div class="settings-preset-actions">
                         <button class="btn btn--gold" id="btn-manage-presets">

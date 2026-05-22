@@ -1,0 +1,11 @@
+{
+    "section": "CALCULATION METHOD",
+    "mode_auto": "Automatic",
+    "mode_manual": "Manual",
+    "ihtiyat_value": "+{{minutes}} min",
+    "desc": "The prayer time calculation method is automatically determined by your location.",
+    "btn_change": "Change Method",
+    "btn_reset": "Reset to Automatic",
+    "method_changed": "Method changed to {{name}}",
+    "method_reset": "Reverted to automatic method"
+}
