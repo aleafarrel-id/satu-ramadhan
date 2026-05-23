@@ -625,6 +625,12 @@ function _bindEvents() {
                     const updated = customPresets.filter(p => p.id !== id);
                     store.setState('tasbih.customPresets', updated);
 
+                    // Clean up zombie session state to prevent memory leaks
+                    if (_sessions[id]) {
+                        delete _sessions[id];
+                        store.setState('tasbih.sessions', _sessions);
+                    }
+
                     if (store.getState('tasbih.activeZikir') === id || _activeZikirId === id) {
                         store.setState('tasbih.activeZikir', 'subhanallah');
                         _changeZikir('subhanallah'); // Switches visually to default
@@ -649,9 +655,10 @@ function _increment() {
     let roundComplete = false;
 
     if (target > 0 && _count === target) {
-        // Transition tap (e.g. from 33 -> 0)
+        // Transition tap (e.g. from 33 -> 1 of next round/dzikir)
         _physicalCount++;
-        _triggerFeedback('double');
+        _totalCount++;
+        _triggerFeedback('single'); // 1st tap of the new round
 
         const isCustomPreset = _activeZikir.id.startsWith('custom_') || _activeZikir.id === 'custom';
 
@@ -671,11 +678,18 @@ function _increment() {
 
                 // Change zikir (implicitly calls _saveState to store current round, then loads next id state)
                 _changeZikir(nextId);
+                
+                // Increment the count for the newly loaded dzikir
+                _count++;
             }
-            return; // Exit early since _changeZikir handles UI re-render
+            
+            _saveState();
+            _updateInfoCard();
+            _updateBeads();
+            return; // Exit early since UI is updated
         } else {
             // Normal Round Complete for Custom Presets
-            _count = 0;
+            _count = 1;
             _round++;
             roundComplete = true;
         }
@@ -684,7 +698,12 @@ function _increment() {
         _count++;
         _totalCount++;
         _physicalCount++;
-        _triggerFeedback('single');
+        
+        if (target > 0 && _count === target) {
+            _triggerFeedback('double'); // Play double exactly when reaching target
+        } else {
+            _triggerFeedback('single');
+        }
     }
 
     _saveState();
@@ -1128,7 +1147,7 @@ function _playLockedAudioFeedback() {
         oscillator.stop(ctx.currentTime + 0.12);
 
         // Clean up after playback
-        oscillator.addEventListener('ended', () => ctx.close().catch(() => {}));
+        oscillator.addEventListener('ended', () => ctx.close().catch(() => { }));
     } catch (e) {
         // Silently fail — audio context may be unavailable
     }
