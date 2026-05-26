@@ -2,6 +2,9 @@
   "appId": "com.saturamadhan.mobile",
   "appName": "Satu Ramadhan",
   "webDir": "dist",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "auto"
+  },
   "plugins": {
     "SplashScreen": {
       "launchAutoHide": true,
@@ -16,7 +19,7 @@
       "backgroundColor": "#0a3540"
     },
     "Keyboard": {
-      "resize": "none",
+      "resize": "native",
       "resizeOnFullScreen": false
     }
   }

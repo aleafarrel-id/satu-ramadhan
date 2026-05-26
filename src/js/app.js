@@ -121,13 +121,16 @@ export async function initApp() {
     let _lastCountryCode = store.getState('location')?.countryCode || null;
     
     const handleLocationChange = (loc, isUserAction = true) => {
-        if (loc && loc.countryCode) {
-            // Force reset to auto only when country actually changes (user moved abroad),
-            // or when it's an explicit user action (manual location search/selection).
-            const countryChanged = loc.countryCode !== _lastCountryCode;
-            _lastCountryCode = loc.countryCode;
-            applyAutoDetectedMethod(loc.countryCode, isUserAction && countryChanged);
-        }
+        if (!loc) return;
+
+        // Backward compat: legacy data may lack countryCode.
+        // If regencyId is present, the location came from the local Indonesian DB.
+        const countryCode = loc.countryCode || (loc.regencyId ? 'ID' : null);
+        if (!countryCode) return;
+
+        const countryChanged = countryCode !== _lastCountryCode;
+        _lastCountryCode = countryCode;
+        applyAutoDetectedMethod(countryCode, isUserAction && countryChanged);
     };
     // The subscriber fires when location changes from the store
     store.subscribe('location', (loc) => handleLocationChange(loc, true));

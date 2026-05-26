@@ -79,6 +79,7 @@ async function searchLocalDB(query) {
         provinceName: provinceMap.get(reg.province_id) || null,
         latitude: reg.latitude,
         longitude: reg.longitude,
+        countryCode: 'ID', // Local DB exclusively contains Indonesian regions
         source: 'local',
     }));
 

@@ -14,6 +14,8 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(PrayerServicePlugin.class);
         super.onCreate(savedInstanceState);
 
+        // Enable edge-to-edge layout — WebView fills the full screen including status/nav bars.
+        // Layout/inset management is handled entirely by CSS (env(safe-area-inset-*)).
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         WindowInsetsControllerCompat insetsController =
