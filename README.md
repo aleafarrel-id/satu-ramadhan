@@ -44,7 +44,7 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · �
   <tr>
     <td width="50%" valign="top">
       <h3>📖 Al-Quran, Tajwid, Latin & Terjemah</h3>
-      <p>Al-Quran 30 Juz lengkap dengan Tajwid berwarna otomatis, transliterasi Latin, terjemahan Bahasa Indonesia dan Inggris, serta audio murottal per ayat.</p>
+      <p>Al-Quran 30 Juz lengkap dengan Tajwid berwarna otomatis, transliterasi Latin, terjemahan Bahasa Indonesia dan Inggris, audio murottal per ayat, serta sistem Bookmark pintar berbasis Folder.</p>
       <img src="assets/previews/7.png" alt="Al-Quran dengan Tajwid" width="320" />
     </td>
     <td width="50%" valign="top">
@@ -250,6 +250,8 @@ satu-ramadhan/
     │       │   ├── share-schedule-modal.css
     │       │   ├── tasbih-preset-modal.css
     │       │   ├── bookmark-note-modal.css
+    │       │   ├── bookmark-folder-modal.css
+    │       │   ├── calculation-method-modal.css
     │       │   ├── about-app-modal.css
     │       │   └── permission-dialog.css
     │       ├── quran/
@@ -400,6 +402,9 @@ satu-ramadhan/
         │   │   ├── share-schedule-modal.js         # Preview & share jadwal Imsakiyah
         │   │   ├── tasbih-preset-modal.js          # Tambah/edit preset zikir kustom
         │   │   ├── bookmark-note-modal.js          # Tambah catatan pada bookmark ayat
+        │   │   ├── bookmark-folder-modal.js        # Buat/edit nama folder bookmark
+        │   │   ├── bookmark-move-modal.js          # Pindahkan bookmark antar folder (tagging)
+        │   │   ├── calculation-method-modal.js     # Pilih metode hisab kalkulasi
         │   │   └── about-app-modal.js              # Tentang aplikasi (versi, developer)
         │   │
         │   ├── quran/
