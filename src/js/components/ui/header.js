@@ -76,7 +76,7 @@ function updateTime() {
     }
 }
 
-// ─── Audio Pill Sync ─────────────────────────────────────────────────────────
+// Audio Pill Sync 
 
 function _onBrandClick() {
     const state = AudioService.getPlaybackState();

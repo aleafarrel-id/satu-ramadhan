@@ -12,14 +12,14 @@
  * @module tasbih-audio
  */
 
-// ── Asset Paths ────────────────────────────────────────────────────────────────
+// Asset Paths 
 // Resolved relative to `base: './'` in vite.config.js.
 // Files live in public/audio/sfx/ and are copied verbatim to dist/.
 
 const CLICK_URL     = './audio/sfx/mouse-click.mp3';
 const DBL_CLICK_URL = './audio/sfx/double-mouse-click.mp3';
 
-// ── Module State ───────────────────────────────────────────────────────────────
+// Module State 
 
 /** @type {AudioContext|null} */
 let _ctx = null;
@@ -33,7 +33,7 @@ let _dblClickBuffer = null;
 /** Whether preload has completed successfully */
 let _ready = false;
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
+// Helpers 
 
 /**
  * Lazily creates (or resumes) the shared AudioContext.
@@ -82,7 +82,7 @@ function _playBuffer(buffer) {
     source.start(0);
 }
 
-// ── Public API ─────────────────────────────────────────────────────────────────
+// Public API 
 
 /**
  * Pre-fetches and decodes both SFX files into memory.

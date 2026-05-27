@@ -35,7 +35,7 @@ export function initPullToRefresh(options) {
     const scroller = typeof scrollElement === 'string' ? document.querySelector(scrollElement) : scrollElement;
     if (!scroller) return () => { };
 
-    // ─── Spinner element (absolute overlay, no DOM restructuring) ───────────
+    // Spinner element (absolute overlay, no DOM restructuring) 
     let ptrEl = document.createElement('div');
     ptrEl.className = `custom-ptr ptr-${theme}`;
     ptrEl.innerHTML = `
@@ -67,7 +67,7 @@ export function initPullToRefresh(options) {
     let animFrameId = null;
     let isTouchDown = false;
 
-    // ─── CSS Variable Helpers (GPU-composited, zero-reflow) ─────────────────
+    // CSS Variable Helpers (GPU-composited, zero-reflow) 
 
     /**
      * Writes `--ptr-y` CSS Custom Property on the scroller and toggles the

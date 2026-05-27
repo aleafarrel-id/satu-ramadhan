@@ -2,17 +2,15 @@
  * App Language Registry
  * Single source of truth for all supported UI languages.
  *
- * ┌─────────────────────────────────────────────────────────┐
  * │  To add a new language:                                 │
  * │  1. Add an entry to APP_LANGUAGES below                 │
  * │  2. Create  public/multi-language/<code>/common.json    │
  * │  3. Done — i18n service & UI picker adapt automatically │
- * └─────────────────────────────────────────────────────────┘
  */
 
 export const APP_LANGUAGES = [
     { code: 'id', label: 'Indonesia', nativeLabel: 'Bahasa Indonesia', flag: '🇮🇩' },
-    { code: 'en', label: 'English',   nativeLabel: 'English',          flag: '🇬🇧' },
+    { code: 'en', label: 'English', nativeLabel: 'English', flag: '🇬🇧' },
 ];
 
 /** Fallback when 'auto' can't match the device locale to any supported code. */

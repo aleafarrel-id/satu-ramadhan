@@ -17,9 +17,9 @@ import { showPermissionDialog } from './permission-dialog.js';
 import { t, loadNS } from '../../core/i18n.js';
 import * as Notif from '../notification/notification.js';
 
-/* ─────────────────────────────────────────────
+/* 
    Content Registry
-   ───────────────────────────────────────────── */
+ */
 
 /**
  * Returns dynamic permission dialog configurations based on the
@@ -103,9 +103,9 @@ function getPermissionConfigs() {
     };
 }
 
-/* ─────────────────────────────────────────────
+/* 
    Helpers
-   ───────────────────────────────────────────── */
+ */
 
 /**
  * Show a permission dialog using a named content preset.

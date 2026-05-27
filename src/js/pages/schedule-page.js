@@ -626,7 +626,6 @@ function bindEvents() {
                     const newVal = !currentVal;
                     store.setState(storeKey, newVal);
 
-                    // Optimistic UI update
                     if (toggleBtn) {
                         const icon = toggleBtn.querySelector('i');
                         if (icon) {
@@ -701,7 +700,7 @@ function _bindScheduleCarouselEvents() {
             const index = store.getState('schedule.carouselIndex') ?? 0;
             const direction = btn.classList.contains('carousel-nav-btn--prev') ? -1 : 1;
             const nextIndex = Math.max(0, Math.min(totalSlides - 1, index + direction));
-            
+
             carouselWrapper.scrollTo({
                 left: nextIndex * carouselWrapper.clientWidth,
                 behavior: 'smooth'

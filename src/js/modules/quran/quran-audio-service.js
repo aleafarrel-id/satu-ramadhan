@@ -32,7 +32,7 @@ const ASSET_PREFIX = 'murottal';
 /** Whether to use the native background service for playback. */
 const USE_NATIVE_SERVICE = isNative;
 
-// ─── Internal State ──────────────────────────────────────────────────────────
+// Internal State 
 
 let _isPlaying = false;
 let _isPaused = false;
@@ -200,7 +200,7 @@ async function _removeCompleteListener() {
     _completeListenerHandle = null;
 }
 
-// ─── Native Service Bridge ───────────────────────────────────────────────────
+// Native Service Bridge 
 
 /**
  * Builds the i18n systemStrings payload for the native service notification.
@@ -294,7 +294,7 @@ async function _removeNativeListeners() {
     }
 }
 
-// ─── Core Playback Logic (Web/Fallback Path) ─────────────────────────────────
+// Core Playback Logic (Web/Fallback Path) 
 
 /**
  * Loads and plays the audio file for a specific ayah.
@@ -360,7 +360,7 @@ async function _playAyahFile(surahIndex, ayahNumber, signal) {
         return success;
     }
 
-    // ── Native Path ──────────────────────────────────────────────────────────
+ // Native Path 
     const assetId = _buildAssetId(surahIndex, ayahNumber);
 
     try {
@@ -479,7 +479,7 @@ function _onPlaybackComplete() {
     _gotoAyah(nextAyah, _playController.signal);
 }
 
-// ─── Public API ──────────────────────────────────────────────────────────────
+// Public API 
 
 async function _cleanUpNativeResources() {
     try {
@@ -541,7 +541,7 @@ async function _initPlayback(mode, surahIndex, surahName, totalAyahs, startAyah,
     await _gotoAyah(startAyah, signal);
 }
 
-// ─── Platform-Routed Public API ──────────────────────────────────────────────
+// Platform-Routed Public API 
 
 /**
  * Plays an entire surah sequentially, auto-advancing through each ayah.
@@ -779,7 +779,7 @@ export async function destroy() {
     await stop();
 }
 
-// ─── Native Service Playback Helpers ─────────────────────────────────────────
+// Native Service Playback Helpers 
 
 /**
  * Plays a full surah via the native background foreground service.
@@ -877,7 +877,7 @@ async function _nativePlayAyah(surahIndex, ayahNumber, surahName) {
     }
 }
 
-// ─── Rehydration (Background → Foreground Sync) ─────────────────────────────
+// Rehydration (Background → Foreground Sync) 
 
 /**
  * Syncs JS state with the native background service.

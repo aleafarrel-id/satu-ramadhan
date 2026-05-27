@@ -51,7 +51,7 @@ let _searchDebounceTimer = null;
 let _targetVerseNumber = null;
 let _storeSubId = null;
 
-// ─── Murottal Event Tracking ─────────────────────────────────────────────────
+// Murottal Event Tracking 
 let _murottalEventHandlers = [];
 
 /**
@@ -1114,7 +1114,7 @@ async function _handleToggleBookmark(ayah, btnEl) {
    }
 }
 
-// ─── Murottal Banner Click Handler ───────────────────────────────────────────
+// Murottal Banner Click Handler 
 
 /**
  * Handles clicks on banner action buttons.
@@ -1229,7 +1229,7 @@ async function _startRedownloadWithPermission(surahIndex, totalAyahs, surahTitle
    });
 }
 
-// ─── Murottal Event System ───────────────────────────────────────────────────
+// Murottal Event System 
 
 /**
  * Registers document-level listeners for all murottal events.

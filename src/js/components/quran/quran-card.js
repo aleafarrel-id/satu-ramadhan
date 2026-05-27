@@ -186,8 +186,9 @@ export function renderErrorState(container, message = null) {
  * @param {Function} onClick - Handler for opening the bookmarked verse
  * @param {Function} [onDelete] - Handler for removing the bookmark
  * @param {Function} [onEditNote] - Handler for editing the custom note
+ * @param {Function} [onToggleCategory] - Handler for managing folder tags
  */
-export function createBookmarkCard(bookmark, surah, onClick, onDelete, onEditNote) {
+export function createBookmarkCard(bookmark, surah, onClick, onDelete, onEditNote, onToggleCategory) {
    const card = document.createElement('div');
    card.className = 'surah-card bookmark-card';
    card.setAttribute('data-focus-item', '');
@@ -240,33 +241,106 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete, onEditNot
 
    const actionsContainer = card.querySelector('.bookmark-actions');
 
-   // Edit button
-   if (onEditNote) {
-      const editBtn = document.createElement('button');
-      editBtn.className = 'bookmark-action-btn bookmark-action-btn--edit';
-      editBtn.setAttribute('aria-label', t('components/quran/quran-card:edit_note') || 'Edit Note');
-      editBtn.innerHTML = `<i class='bx bx-pencil'></i>`;
-      editBtn.addEventListener('click', (e) => {
+   const hasActions = onDelete || onEditNote || onToggleCategory;
+   if (hasActions) {
+      const kebabBtn = document.createElement('button');
+      kebabBtn.className = 'bookmark-action-btn bookmark-action-btn--menu';
+      kebabBtn.setAttribute('aria-label', t('components/quran/quran-card:menu'));
+      kebabBtn.innerHTML = `<i class='bx bx-dots-vertical-rounded'></i>`;
+      kebabBtn.addEventListener('click', (e) => {
          e.stopPropagation();
-         onEditNote(bookmark, card);
+         _showBookmarkDropdown(kebabBtn, bookmark, card, onEditNote, onToggleCategory, onDelete);
       });
-      actionsContainer.appendChild(editBtn);
-   }
-
-   // Delete button
-   if (onDelete) {
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'bookmark-action-btn bookmark-action-btn--delete';
-      deleteBtn.setAttribute('aria-label', t('components/quran/quran-card:delete_bookmark'));
-      deleteBtn.innerHTML = `<i class='bx bx-trash'></i>`;
-      deleteBtn.addEventListener('click', (e) => {
-         e.stopPropagation();
-         onDelete(bookmark, card);
-      });
-      actionsContainer.appendChild(deleteBtn);
+      actionsContainer.appendChild(kebabBtn);
    }
 
    return card;
+}
+
+/**
+ * Closes any open bookmark card dropdown.
+ */
+function _closeActiveDropdown() {
+   document.querySelectorAll('.bookmark-card-dropdown').forEach(d => d.remove());
+}
+
+/**
+ * Opens a kebab dropdown menu anchored to the given button.
+ * @param {HTMLElement} anchorEl
+ * @param {Object} bookmark
+ * @param {HTMLElement} cardEl
+ * @param {Function} [onEditNote]
+ * @param {Function} [onToggleCategory]
+ * @param {Function} [onDelete]
+ */
+function _showBookmarkDropdown(anchorEl, bookmark, cardEl, onEditNote, onToggleCategory, onDelete) {
+   _closeActiveDropdown();
+
+   const rect = anchorEl.getBoundingClientRect();
+   const dropdown = document.createElement('div');
+   dropdown.className = 'bookmark-action-dropdown bookmark-card-dropdown active';
+
+   // Runtime-computed coordinates (cannot be expressed in CSS)
+   dropdown.style.top = `${rect.bottom + 8}px`;
+   dropdown.style.right = `${window.innerWidth - rect.right}px`;
+
+   if (onEditNote) {
+      const editItem = document.createElement('button');
+      editItem.className = 'bookmark-dropdown-item';
+      editItem.innerHTML = `<i class='bx bx-pencil'></i> <span>${t('components/quran/quran-card:edit_note')}</span>`;
+      editItem.addEventListener('click', (e) => {
+         e.stopPropagation();
+         dropdown.remove();
+         onEditNote(bookmark, cardEl);
+      });
+      dropdown.appendChild(editItem);
+   }
+
+   if (onToggleCategory) {
+      const moveItem = document.createElement('button');
+      moveItem.className = 'bookmark-dropdown-item';
+      moveItem.innerHTML = `<i class='bx bx-folder'></i> <span>${t('components/quran/quran-card:move_to_folder')}</span>`;
+      moveItem.addEventListener('click', (e) => {
+         e.stopPropagation();
+         dropdown.remove();
+         onToggleCategory(bookmark, cardEl);
+      });
+      dropdown.appendChild(moveItem);
+   }
+
+   if (onDelete) {
+      const deleteItem = document.createElement('button');
+      deleteItem.className = 'bookmark-dropdown-item bookmark-dropdown-item--danger';
+      deleteItem.innerHTML = `<i class='bx bx-trash'></i> <span>${t('components/quran/quran-card:delete_bookmark')}</span>`;
+      deleteItem.addEventListener('click', (e) => {
+         e.stopPropagation();
+         dropdown.remove();
+         onDelete(bookmark, cardEl);
+      });
+      dropdown.appendChild(deleteItem);
+   }
+
+   document.body.appendChild(dropdown);
+
+   // Close on outside click
+   setTimeout(() => {
+      const closeHandler = (e) => {
+         if (!dropdown.contains(e.target)) {
+            dropdown.remove();
+            document.removeEventListener('click', closeHandler);
+         }
+      };
+      document.addEventListener('click', closeHandler);
+
+      // Close on scroll inside list wrapper
+      const scrollParent = cardEl.closest('.bookmark-list-wrapper');
+      if (scrollParent) {
+         scrollParent.addEventListener('scroll', () => {
+            dropdown.remove();
+            document.removeEventListener('click', closeHandler);
+         }, { once: true });
+      }
+   }, 10);
 }
 
 /**

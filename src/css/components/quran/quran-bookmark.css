@@ -20,12 +20,17 @@
    font-size: var(--fs-2xs);
 }
 
-/* Relative context for delete and edit button */
+/* Relative context for action dropdown */
 .bookmark-card {
    position: relative;
 }
 
-/* ── Edit & Delete Buttons (Preset Mgr Style) ── */
+/* Prevent card bounce when pressing action buttons */
+.bookmark-card:active:has(.bookmark-action-btn:active) {
+   transform: none;
+}
+
+/* Edit & Delete Buttons */
 .bookmark-actions {
    display: flex;
    gap: var(--spacing-xs);
@@ -60,15 +65,6 @@
    font-size: var(--icon-md);
 }
 
-.bookmark-action-btn--delete {
-   color: var(--clr-cal-sunday);
-   border-color: rgba(248, 113, 113, 0.2);
-}
-
-.bookmark-action-btn--delete:active {
-   background: rgba(248, 113, 113, 0.1);
-}
-
 .bookmark-action-btn--edit {
    color: var(--clr-quran-text-secondary);
    border-color: var(--clr-quran-border);
@@ -78,18 +74,122 @@
    background: var(--clr-quran-bg-alt);
 }
 
+.bookmark-action-btn--move {
+   color: var(--clr-quran-text-secondary);
+   border-color: var(--clr-quran-border);
+}
+
+.bookmark-action-btn--move:active {
+   background: var(--clr-quran-bg-alt);
+}
+
+.bookmark-action-btn--delete {
+   color: var(--clr-cal-sunday);
+   border-color: var(--clr-border-light);
+}
+
+.bookmark-action-btn--delete:active {
+   background: var(--clr-white-a05);
+}
+
+.bookmark-action-btn--menu {
+   color: var(--clr-quran-text-secondary);
+   border-color: transparent;
+}
+
+.bookmark-action-btn--menu:active {
+   background: var(--clr-quran-bg-alt);
+}
+
 @media (hover: hover) and (pointer: fine) {
    .bookmark-action-btn:hover {
       background: var(--clr-white-a05);
    }
 
-   .bookmark-action-btn--delete:hover {
-      color: var(--clr-danger);
-      background: rgba(248, 113, 113, 0.1);
-   }
-
    .bookmark-action-btn--edit:hover {
       color: var(--clr-quran-accent);
+      background: var(--clr-quran-bg-alt);
+   }
+
+   .bookmark-action-btn--move:hover {
+      color: var(--clr-quran-accent);
+      background: var(--clr-quran-bg-alt);
+   }
+
+   .bookmark-action-btn--delete:hover {
+      color: var(--clr-danger);
+      background: var(--clr-white-a05);
+   }
+
+   .bookmark-action-btn--menu:hover {
+      color: var(--clr-quran-accent);
+      background: var(--clr-quran-bg-alt);
+   }
+}
+
+/* Action Dropdown Menu */
+.bookmark-action-dropdown {
+   position: absolute;
+   top: calc(100% + var(--sp-2));
+   right: 0;
+   background: var(--clr-quran-bg);
+   border: 1px solid var(--clr-quran-border);
+   border-radius: var(--radius-md);
+   box-shadow: var(--shadow-md);
+   z-index: 10;
+   display: flex;
+   flex-direction: column;
+   min-width: 160px;
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(-5px);
+   transition: all var(--transition-fast);
+   padding: var(--sp-1) 0;
+}
+
+.bookmark-action-dropdown.active {
+   opacity: 1;
+   visibility: visible;
+   transform: translateY(0);
+}
+
+.bookmark-dropdown-item {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-3);
+   padding: var(--sp-3) var(--sp-4);
+   background: transparent;
+   border: none;
+   width: 100%;
+   text-align: left;
+   font-family: var(--ff-primary);
+   font-size: var(--fs-sm);
+   font-weight: var(--fw-medium);
+   color: var(--clr-quran-text);
+   cursor: pointer;
+   transition: background var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+}
+
+.bookmark-dropdown-item i {
+   font-size: var(--icon-md);
+   color: var(--clr-quran-text-secondary);
+}
+
+.bookmark-dropdown-item:active {
+   background: var(--clr-quran-bg-alt);
+}
+
+.bookmark-dropdown-item--danger {
+   color: var(--clr-cal-sunday);
+}
+
+.bookmark-dropdown-item--danger i {
+   color: var(--clr-cal-sunday);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .bookmark-dropdown-item:hover {
       background: var(--clr-quran-bg-alt);
    }
 }
@@ -99,7 +199,7 @@
    visibility: hidden;
 }
 
-/* ── Note Badge ── */
+/* Note Badge */
 .bookmark-note-container {
    margin-top: var(--spacing-xs);
 }
@@ -124,7 +224,7 @@
    font-size: var(--fs-2xs);
 }
 
-/* ── Deletion Animation ── */
+/* Deletion Animation */
 .bookmark-card-exit {
    animation: bookmarkCardExit 0.3s ease-out forwards;
    pointer-events: none;
@@ -143,10 +243,154 @@
    }
 }
 
-/* ── Ayah Action Active State ── */
+/* Ayah Action Active State */
 .quran-ayah-action-btn.bookmarked {
    opacity: 1;
    color: var(--clr-quran-accent);
 }
 
+/* 
+   FOLDER CAROUSEL
+ */
 
+.bookmark-folder-bar {
+   padding: var(--sp-4) 0 var(--sp-3);
+   flex-shrink: 0;
+}
+
+.bookmark-folder-scroll {
+   display: flex;
+   align-items: center;
+   gap: var(--sp-2);
+   overflow-x: auto;
+   scroll-snap-type: x mandatory;
+   -webkit-overflow-scrolling: touch;
+   padding: var(--sp-1) var(--sp-4);
+   scrollbar-width: none;
+}
+
+.bookmark-folder-scroll::-webkit-scrollbar {
+   display: none;
+}
+
+/* Folder Chip */
+.bookmark-folder-chip {
+   display: inline-flex;
+   align-items: center;
+   gap: var(--sp-2);
+   padding: var(--sp-2) var(--sp-4);
+   border-radius: var(--radius-full);
+   background: var(--clr-quran-bg-alt);
+   border: 1px solid var(--clr-quran-border);
+   color: var(--clr-quran-text-secondary);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-semibold);
+   white-space: nowrap;
+   cursor: pointer;
+   scroll-snap-align: start;
+   flex-shrink: 0;
+   transition:
+      background var(--transition-fast),
+      color var(--transition-fast),
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+   -webkit-tap-highlight-color: transparent;
+   user-select: none;
+   -webkit-user-select: none;
+}
+
+.bookmark-folder-chip:active {
+   transform: scale(0.95);
+}
+
+/* Active state — chip is selected */
+.bookmark-folder-chip--active {
+   background: var(--clr-quran-accent);
+   border-color: var(--clr-quran-accent);
+   color: var(--clr-quran-bg);
+}
+
+/* Add folder button */
+.bookmark-folder-chip--add {
+   border-style: dashed;
+   color: var(--clr-quran-text-secondary);
+   background: transparent;
+}
+
+.bookmark-folder-chip--add:active {
+   background: var(--clr-quran-bg-alt);
+}
+
+/* Count badge inside chip */
+.bookmark-folder-chip__count {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   min-width: 18px;
+   height: 18px;
+   padding: 0 var(--sp-1);
+   background: var(--clr-primary-a15);
+   border-radius: var(--radius-full);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-bold);
+   line-height: var(--lh-none);
+   transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.bookmark-folder-chip--active .bookmark-folder-chip__count {
+   background: rgba(255, 255, 255, 0.25);
+   color: var(--clr-quran-bg);
+}
+
+/* Hover (pointer devices) */
+@media (hover: hover) and (pointer: fine) {
+   .bookmark-folder-chip:not(.bookmark-folder-chip--active):hover {
+      background: var(--clr-quran-bg-alt);
+      border-color: var(--clr-quran-accent);
+      color: var(--clr-quran-accent);
+   }
+
+   .bookmark-folder-chip--add:hover {
+      background: var(--clr-quran-bg-alt);
+   }
+}
+
+/* List Wrapper */
+.bookmark-list-wrapper {
+   flex: 1;
+   overflow-y: auto;
+   -webkit-overflow-scrolling: touch;
+   position: relative;
+   /* Prevent .quran-empty from covering the carousel */
+   min-height: 50vh;
+   /* Ensure empty state has room to show */
+}
+
+.bookmark-list-wrapper::-webkit-scrollbar {
+   display: none;
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] .bookmark-folder-chip__count {
+   background: rgba(255, 255, 255, 0.15);
+   color: var(--clr-text-primary);
+}
+
+[data-theme="dark"] .bookmark-folder-chip--active {
+   color: var(--clr-text-primary);
+}
+
+[data-theme="dark"] .bookmark-folder-chip--active .bookmark-folder-chip__count {
+   color: var(--clr-text-primary);
+}
+
+/* Card action dropdown (appended to body, positioned via JS) */
+.bookmark-card-dropdown {
+   position: fixed;
+   top: auto;
+   right: auto;
+   left: auto;
+   z-index: 9999;
+   min-width: 160px;
+}

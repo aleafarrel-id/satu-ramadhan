@@ -21,7 +21,7 @@ import { getGlobalAyahNumber } from './quran-api.js';
 
 const STORE_DOWNLOADS_PATH = 'quran.downloads';
 
-// ─── Internal State ──────────────────────────────────────────────────────────
+// Internal State 
 
 let _isDownloading = false;
 let _isPaused = false;
@@ -30,7 +30,7 @@ let _isCancelled = false;
 /** @type {{ surahIndex: number, reciterId: string, totalAyahs: number, currentIndex: number, surahName: string }|null} */
 let _queue = null;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// Helpers 
 
 /**
  * Returns the active reciter ID from the Store (or default).
@@ -71,7 +71,7 @@ function _emit(eventName, detail = {}) {
     document.dispatchEvent(new CustomEvent(eventName, { detail }));
 }
 
-// ─── Store Sync ──────────────────────────────────────────────────────────────
+// Store Sync 
 
 /**
  * Returns the array of downloaded ayah numbers for a surah+reciter,
@@ -108,7 +108,7 @@ function _markAyahDownloaded(reciterId, surahIndex, ayahNumber) {
     store.setState(`${STORE_DOWNLOADS_PATH}.${reciterId}`, reciterData);
 }
 
-// ─── Download Loop ───────────────────────────────────────────────────────────
+// Download Loop 
 
 /**
  * Core sequential download loop. Downloads one ayah at a time,
@@ -288,7 +288,7 @@ function _clearSurahRecord(reciterId, surahIndex) {
     store.setState(`${STORE_DOWNLOADS_PATH}.${reciterId}`, reciterData);
 }
 
-// ─── Public API ──────────────────────────────────────────────────────────────
+// Public API 
 
 /**
  * Starts downloading all ayahs for a surah.

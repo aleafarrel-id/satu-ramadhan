@@ -2,15 +2,13 @@
  * Quran Audio / Reciter Configuration
  * Centralized registry of available Quran reciters (Qari).
  *
- * ┌──────────────────────────────────────────────────────────┐
- * │  To add a new Qari:                                      │
+ * │  To add a new Qari:                                       │
  * │  1. Add an entry to RECITERS below                        │
  * │  2. Use the everyayah.com folder name as `urlSegment`     │
  * │  3. Done — download manager adapts automatically          │
- * └──────────────────────────────────────────────────────────┘
  */
 
-// ─── Audio CDN ────────────────────────────────────────────────────────────────
+// Audio CDN 
 
 /** Base URL for the EveryAyah audio CDN (primary). */
 export const EVERYAYAH_BASE_URL = 'https://everyayah.com/data';
@@ -44,7 +42,7 @@ export function buildFallbackAyahUrl(islamicNetworkId, globalAyahNumber) {
     return `${ISLAMIC_NETWORK_BASE_URL}/${islamicNetworkId}/${globalAyahNumber}.mp3`;
 }
 
-// ─── Reciters ─────────────────────────────────────────────────────────────────
+// Reciters 
 
 export const RECITERS = [
     { id: 'alafasy', label: 'Mishary Rashid Alafasy', urlSegment: 'Alafasy_128kbps', islamicNetworkId: 'ar.alafasy' },

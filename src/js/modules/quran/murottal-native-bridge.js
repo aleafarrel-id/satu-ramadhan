@@ -18,11 +18,11 @@ import { DEFAULT_RECITER_ID, getReciterUrlSegment, buildAyahUrl, buildFallbackAy
 import { isAudioOfflineEnabled } from './quran-settings.js';
 import { getGlobalAyahNumber } from './quran-api.js';
 
-// ─── Plugin Registration ─────────────────────────────────────────────────────
+// Plugin Registration 
 
 export const MurottalService = registerPlugin('MurottalService');
 
-// ─── Playlist Builder ────────────────────────────────────────────────────────
+// Playlist Builder 
 
 /**
  * Returns the active reciter ID from settings.

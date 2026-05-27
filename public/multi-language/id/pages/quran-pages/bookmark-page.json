@@ -1,5 +1,6 @@
 {
     "empty": "Belum ada ayat yang ditandai",
+    "empty_folder": "Belum ada bookmark di folder ini",
     "error_load": "Gagal memuat bookmark",
     "confirm_delete_title": "Hapus Bookmark",
     "confirm_delete_msg": "Apakah Anda yakin ingin menghapus bookmark untuk QS. {{surah}} ayat {{verse}}?",
@@ -7,5 +8,29 @@
     "edit_note": "Edit Catatan",
     "note_placeholder": "Misal: Ayat Kursi",
     "save_note": "Simpan",
-    "note_saved_notif": "Catatan berhasil disimpan"
+    "note_saved_notif": "Catatan berhasil disimpan",
+
+    "folder_all": "Semua",
+    "folder_last_read": "Terakhir Dibaca",
+    "folder_memorization": "Hafalan",
+    "folder_add_label": "Folder Baru",
+    "folder_create_title": "Buat Folder Baru",
+    "folder_create_btn": "Buat Folder",
+    "folder_name_placeholder": "Nama folder...",
+    "folder_manage_title": "Kelola Folder",
+    "folder_rename_title": "Ubah Nama",
+    "folder_rename_btn": "Simpan Nama",
+    "folder_delete_title": "Hapus",
+    "folder_delete_msg": "Folder \"{{name}}\" akan dihapus. (Koleksi ayat di dalamnya tidak akan terhapus).",
+    "folder_delete_confirm_btn": "Hapus Folder",
+    "folder_default_label": "Folder Default",
+    "folder_created_notif": "Folder \"{{name}}\" berhasil dibuat",
+    "folder_renamed_notif": "Nama folder berhasil diubah",
+    "folder_deleted_notif": "Folder \"{{name}}\" dihapus",
+    "folder_name_empty": "Nama folder tidak boleh kosong",
+    "folder_name_duplicate": "Nama folder sudah digunakan",
+    "folder_name_too_long": "Nama folder maksimal 30 karakter",
+
+    "move_to_folder_title": "Simpan ke Kategori",
+    "move_success_notif": "Kategori diperbarui"
 }

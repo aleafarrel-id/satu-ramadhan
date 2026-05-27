@@ -75,9 +75,9 @@
     opacity: 0.1;
 }
 
-/* ─────────────────────────────────────────
+/* 
    Header
-───────────────────────────────────────── */
+ */
 
 .tasbih-header {
     display: flex;
@@ -139,9 +139,9 @@
     background: var(--clr-quran-card-hover);
 }
 
-/* ─────────────────────────────────────────
+/* 
    Info Card (Dzikir Name + Counter)
-───────────────────────────────────────── */
+ */
 
 .tasbih-info-card {
     background: var(--clr-quran-card-bg);
@@ -232,9 +232,9 @@
     border-top: 1px solid var(--clr-quran-border);
 }
 
-/* ─────────────────────────────────────────
+/* 
    Floating Action Buttons (Bottom Nav)
-───────────────────────────────────────── */
+ */
 .tasbih-fab-nav {
     position: absolute;
     bottom: calc(var(--sp-6) + env(safe-area-inset-bottom));
@@ -288,9 +288,9 @@
     opacity: 0.7;
 }
 
-/* ─────────────────────────────────────────
+/* 
    Controls Capsule (Lock + Feedback)
-───────────────────────────────────────── */
+ */
 
 .tasbih-controls-capsule {
     position: absolute;
@@ -562,9 +562,9 @@
     background: var(--clr-quran-bg-alt);
 }
 
-/* ─────────────────────────────────────────
+/* 
    Beads Visual Area (tap zone)
-───────────────────────────────────────── */
+ */
 
 .tasbih-beads-area {
     flex: 1;
@@ -586,9 +586,9 @@
     pointer-events: none;
 }
 
-/* ─────────────────────────────────────────
+/* 
    Bottom Sheet — Dzikir Selector
-───────────────────────────────────────── */
+ */
 
 .tasbih-selector-modal {
     position: absolute;
@@ -732,9 +732,9 @@
     line-height: 1.2;
 }
 
-/* ─────────────────────────────────────────
+/* 
    Inline Edit Form
-───────────────────────────────────────── */
+ */
 
 .tb-inline-form {
     padding: var(--sp-4);
@@ -879,9 +879,9 @@
     background: transparent;
 }
 
-/* ─────────────────────────────────────────
+/* 
    Animations
-───────────────────────────────────────── */
+ */
 
 @keyframes tasbihCountBump {
     0% {

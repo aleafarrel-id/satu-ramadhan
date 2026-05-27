@@ -1,5 +1,6 @@
 {
     "empty": "No bookmarked verses yet",
+    "empty_folder": "No bookmarks in this folder yet",
     "error_load": "Failed to load bookmarks",
     "confirm_delete_title": "Remove Bookmark",
     "confirm_delete_msg": "Are you sure you want to remove the bookmark for Surah {{surah}} verse {{verse}}?",
@@ -7,5 +8,29 @@
     "edit_note": "Edit Note",
     "note_placeholder": "e.g., Ayatul Kursi",
     "save_note": "Save",
-    "note_saved_notif": "Note saved successfully"
+    "note_saved_notif": "Note saved successfully",
+
+    "folder_all": "All",
+    "folder_last_read": "Last Read",
+    "folder_memorization": "Memorization",
+    "folder_add_label": "New Folder",
+    "folder_create_title": "Create New Folder",
+    "folder_create_btn": "Create Folder",
+    "folder_name_placeholder": "Folder name...",
+    "folder_manage_title": "Manage Folder",
+    "folder_rename_title": "Rename",
+    "folder_rename_btn": "Save Name",
+    "folder_delete_title": "Delete",
+    "folder_delete_msg": "Folder \"{{name}}\" will be deleted. (The verses inside will not be deleted).",
+    "folder_delete_confirm_btn": "Delete Folder",
+    "folder_default_label": "Default Folder",
+    "folder_created_notif": "Folder \"{{name}}\" created",
+    "folder_renamed_notif": "Folder renamed successfully",
+    "folder_deleted_notif": "Folder \"{{name}}\" deleted",
+    "folder_name_empty": "Folder name cannot be empty",
+    "folder_name_duplicate": "Folder name already exists",
+    "folder_name_too_long": "Folder name must be 30 characters or less",
+
+    "move_to_folder_title": "Save to Category",
+    "move_success_notif": "Categories updated"
 }

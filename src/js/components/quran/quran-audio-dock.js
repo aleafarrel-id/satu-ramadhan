@@ -16,7 +16,7 @@ import * as DownloadManager from '../../modules/quran/quran-download-manager.js'
 import * as AudioService from '../../modules/quran/quran-audio-service.js';
 import { t, loadNS } from '../../core/i18n.js';
 
-// ─── Internal State ──────────────────────────────────────────────────────────
+// Internal State 
 
 let _container = null;
 let _dockEl = null;
@@ -26,7 +26,7 @@ let _currentMode = null; // 'download' | 'playback'
 /** @type {Array<[string, Function]>} */
 let _eventHandlers = [];
 
-// ─── DOM References ──────────────────────────────────────────────────────────
+// DOM References 
 
 let _infoTextEl = null;
 let _infoSubTextEl = null;
@@ -37,7 +37,7 @@ let _playPauseBtnIcon = null;
 let _dlPauseResumeBtnIcon = null;
 let _progressBarEl = null;
 
-// ─── Lifecycle ───────────────────────────────────────────────────────────────
+// Lifecycle 
 
 /**
  * Initializes the audio dock. Must be called once during quran-page render.
@@ -83,7 +83,7 @@ export function destroy() {
     document.body.classList.remove('has-audio-dock');
 }
 
-// ─── DOM Construction ────────────────────────────────────────────────────────
+// DOM Construction 
 
 /**
  * Builds the dock DOM element with all child elements pre-created.
@@ -183,7 +183,7 @@ function _createControlBtn(action, iconClass, ariaLabel) {
     return btn;
 }
 
-// ─── Show / Hide ─────────────────────────────────────────────────────────────
+// Show / Hide 
 
 /**
  * Shows the dock in the specified mode.
@@ -224,7 +224,7 @@ function _hide() {
     document.body.classList.remove('has-audio-dock');
 }
 
-// ─── State Updates ───────────────────────────────────────────────────────────
+// State Updates 
 
 /**
  * Updates the dock for download progress.
@@ -308,7 +308,7 @@ function _syncInitialState() {
     }
 }
 
-// ─── Click Handling ──────────────────────────────────────────────────────────
+// Click Handling 
 
 /**
  * Delegated click handler on the dock element.
@@ -360,7 +360,7 @@ function _onDockClick(e) {
     }
 }
 
-// ─── Event System ────────────────────────────────────────────────────────────
+// Event System 
 
 /**
  * Registers document-level listeners for murottal events.
@@ -400,7 +400,7 @@ function _unregisterEvents() {
     _eventHandlers = [];
 }
 
-// ─── Event Handlers ──────────────────────────────────────────────────────────
+// Event Handlers 
 
 function _onDownloadProgress(e) {
     _updateDownloadProgress(

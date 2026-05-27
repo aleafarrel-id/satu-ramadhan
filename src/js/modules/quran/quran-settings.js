@@ -65,7 +65,7 @@ export function setTranslationLanguage(langCode) {
    store.setState('settings.quran.translationLanguage', langCode);
 }
 
-// ─── Audio Mode ───────────────────────────────────────────────────────────────
+// Audio Mode 
 
 /**
  * Returns the currently selected audio playback mode.

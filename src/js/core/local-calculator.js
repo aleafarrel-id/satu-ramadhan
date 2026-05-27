@@ -19,7 +19,7 @@ import { Coordinates, CalculationMethod, Madhab, PrayerTimes, Qibla } from 'adha
 import { adjustTimeStr, cleanTimeStr, PRAYER_KEY_MAP } from '../utils/datetime.js';
 import { getActiveMethodConfig } from './calculation-resolver.js';
 
-// ─── Dynamic Calculation Parameters ────────────────────────────────────────
+// Dynamic Calculation Parameters 
 
 /**
  * Build adhan calculation parameters based on active method config.
@@ -35,7 +35,7 @@ function getCalculationParams() {
     return params;
 }
 
-// ─── Time Helpers ──────────────────────────────────────────────────────────────
+// Time Helpers 
 
 /**
  * Convert a JavaScript Date object to "HH:mm" string in local time.
@@ -60,7 +60,7 @@ function formatDateDDMMYYYY(date) {
     return `${dd}-${mm}-${yyyy}`;
 }
 
-// ─── Hijri Date Helpers ────────────────────────────────────────────────────────
+// Hijri Date Helpers 
 
 /**
  * Compute the total number of days in the current Hijri month.
@@ -125,7 +125,7 @@ function generateOfflineHijri(date) {
     };
 }
 
-// ─── Gregorian / Weekday Helpers ───────────────────────────────────────────────
+// Gregorian / Weekday Helpers 
 
 const ENGLISH_MONTHS = [
     'January', 'February', 'March',     'April',   'May',      'June',
@@ -158,7 +158,7 @@ function buildWeekdayObj(date) {
     return { en: ENGLISH_DAYS[date.getDay()] };
 }
 
-// ─── Public API ────────────────────────────────────────────────────────────────
+// Public API 
 
 /**
  * Calculate prayer times for a single day, entirely offline.

@@ -119,7 +119,7 @@ export async function initApp() {
     // When the user's location changes, try to auto-detect the calculation method
     // based on their country.
     let _lastCountryCode = store.getState('location')?.countryCode || null;
-    
+
     const handleLocationChange = (loc, isUserAction = true) => {
         if (!loc) return;
 
@@ -134,7 +134,7 @@ export async function initApp() {
     };
     // The subscriber fires when location changes from the store
     store.subscribe('location', (loc) => handleLocationChange(loc, true));
-    
+
     // On cold start, we do NOT force reset, just apply if needed
     handleLocationChange(store.getState('location'), false);
 
@@ -198,7 +198,7 @@ export async function initApp() {
     const navEl = document.getElementById('bottom-nav');
     if (navEl) navBar.render(navEl, handleNavigation);
 
-    // ── Cold-Start Murottal Rehydration ────────────────────────────────────────
+    // Cold-Start Murottal Rehydration 
     // Covers the case where the app was fully killed (force-close / swipe-dismiss)
     // while murottal was playing. In this scenario, the native foreground service
     // keeps running but the JS layer starts from scratch with all state reset.

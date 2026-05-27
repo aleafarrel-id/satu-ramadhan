@@ -26,7 +26,7 @@ import { isWeb } from '../modules/system/platform.js';
 import * as notif from '../modules/notification/notification.js';
 import { setStatusBarOverride, clearStatusBarOverride } from '../core/theme.js';
 
-// ── Module State ───────────────────────────────────────────────────────────────
+// Module State 
 
 let _container = null;
 let _isOpen = false;
@@ -55,7 +55,7 @@ function _getAllZikir() {
 /** Cached DOM element references */
 const _el = {};
 
-// ── Initialization ─────────────────────────────────────────────────────────────
+// Initialization 
 
 /**
  * Initialize the Tasbih compartment — called once on app startup.
@@ -111,7 +111,7 @@ export async function init(container) {
     }
 }
 
-// ── Open / Close API ──────────────────────────────────────────────────────────
+// Open / Close API 
 
 /** Open the Tasbih panel (called from gesture module). */
 export function open() {
@@ -155,7 +155,7 @@ export function isOpen() {
     return _isOpen;
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
+// Render 
 
 /** Build the complete DOM tree. Runs once on init. */
 function _renderHTML() {
@@ -420,7 +420,7 @@ function _buildListHTML() {
     `}).join('');
 }
 
-// ── Element Caching ────────────────────────────────────────────────────────────
+// Element Caching 
 
 function _cacheElements() {
     _el.page = _container.querySelector('.tasbih-page');
@@ -469,7 +469,7 @@ function _cacheElements() {
     }
 }
 
-// ── Event Binding ──────────────────────────────────────────────────────────────
+// Event Binding 
 
 function _bindEvents() {
     _el.backBtn.addEventListener('click', close);
@@ -648,7 +648,7 @@ function _bindEvents() {
     });
 }
 
-// ── Counter Logic ──────────────────────────────────────────────────────────────
+// Counter Logic 
 
 function _increment() {
     const target = _activeZikir.target;
@@ -712,7 +712,7 @@ function _increment() {
     _animateBeadsArea();
 }
 
-// ── UI Update Functions ────────────────────────────────────────────────────────
+// UI Update Functions 
 
 /**
  * Update the info card text and spinner progress.
@@ -817,7 +817,7 @@ function _animateBeadsArea() {
     }, { once: true });
 }
 
-// ── Dzikir Selector ────────────────────────────────────────────────────────────
+// Dzikir Selector 
 
 function _openSelector() {
     _el.selectorModal.classList.add('active');
@@ -835,7 +835,7 @@ function _closeSelector() {
     }, 300);
 }
 
-// ── Change Zikir Logic & Inline Editing ────────────────────────────────────────
+// Change Zikir Logic & Inline Editing 
 
 let _openInlineId = null;
 
@@ -961,7 +961,7 @@ function _changeZikir(id) {
     _updateBeads();
 }
 
-// ── Persistence ────────────────────────────────────────────────────────────────
+// Persistence 
 
 function _saveState() {
     if (!_sessions[_activeZikirId]) _sessions[_activeZikirId] = { count: 0, round: 1 };
@@ -990,7 +990,7 @@ function _nextZikir() {
     _changeZikir(all[index].id);
 }
 
-// ── Feedback Mode (Haptic / Audio) ─────────────────────────────────────────────
+// Feedback Mode (Haptic / Audio) 
 
 /**
  * Preloads audio assets for SFX feedback.

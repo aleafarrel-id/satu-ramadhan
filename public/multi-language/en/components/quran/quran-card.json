@@ -4,7 +4,10 @@
     "not_found": "Surah not found",
     "error_load": "Failed to Load Al-Qur'an",
     "delete_bookmark": "Delete bookmark",
+    "edit_note": "Edit note",
+    "move_to_folder": "Categories",
     "ayat": "Verse {{verseNumber}}",
     "makkiyah": "Makki",
-    "madaniyah": "Madani"
+    "madaniyah": "Madani",
+    "menu": "Menu"
 }

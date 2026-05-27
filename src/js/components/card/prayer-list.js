@@ -83,9 +83,9 @@ function renderPrayerColumns(timings, prayerState) {
 }
 
 /**
- * ─────────────────────────────────────────────────────────────
+ * 
  * TABLET/FOLDABLE SPECIFIC COMPONENTS (BENTO LAYOUT)
- * ─────────────────────────────────────────────────────────────
+ * 
  */
 
 /**
@@ -219,10 +219,10 @@ export function updateTabletMosqueImage(prayerState) {
 }
 
 /**
- * ─────────────────────────────────────────────────────────────
+ * 
  * SCHEDULE-PAGE TABLET COMPONENTS
  * Isolated variants to avoid ID collision with home-page bento.
- * ─────────────────────────────────────────────────────────────
+ * 
  */
 
 /**

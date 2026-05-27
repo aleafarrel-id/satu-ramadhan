@@ -19,13 +19,13 @@ import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { getModalRoot } from '../../utils/modal-portal.js';
 
-// ─── Internal State ───────────────────────────────────────────────────────────
+// Internal State 
 
 let _overlayEl = null;
 let _onSelectCallback = null;
 let _releaseFocus = null;
 
-// ─── Mode Definitions ─────────────────────────────────────────────────────────
+// Mode Definitions 
 
 /** @returns {Array<{value: string, icon: string, labelKey: string, descKey: string}>} */
 function _getModes() {
@@ -45,7 +45,7 @@ function _getModes() {
     ];
 }
 
-// ─── Public API ───────────────────────────────────────────────────────────────
+// Public API 
 
 /**
  * Shows the audio mode selection dialog.
@@ -81,7 +81,7 @@ export async function showAudioModeSelectorModal({ currentMode, onSelect } = {})
     _bindEvents();
 }
 
-// ─── Event Handlers ───────────────────────────────────────────────────────────
+// Event Handlers 
 
 function _handleSelect(modeValue, e) {
     if (e) e.stopPropagation();
@@ -106,7 +106,7 @@ function _handleCancel(e) {
     _hideModal();
 }
 
-// ─── DOM ─────────────────────────────────────────────────────────────────────
+// DOM 
 
 function _bindEvents() {
     if (!_overlayEl) return;
