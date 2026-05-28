@@ -4,7 +4,7 @@
 
 import { getMonthlyPrayerTimes } from '../../core/api.js';
 import { getRamadhanConfig } from '../../core/database.js';
-import { getActivePreset, getHijriOffset } from './ramadhan.js';
+import { getActivePreset } from './ramadhan.js';
 import { isIndonesiaMode } from '../../core/calculation-resolver.js';
 import { t } from '../../core/i18n.js';
 
@@ -43,10 +43,9 @@ export async function fetchScheduleData(location) {
 
         if (!hijriMeta.isPresetBased && timings?.hijri) {
             const apiDay = parseInt(timings.hijri.day, 10);
-            const adjustedDay = apiDay + hijriMeta.offset;
 
-            if (adjustedDay >= 1 && adjustedDay <= (hijriMeta.totalDays || 30)) {
-                hijriDay = adjustedDay;
+            if (apiDay >= 1 && apiDay <= (hijriMeta.totalDays || 30)) {
+                hijriDay = apiDay;
             }
         }
 
@@ -197,71 +196,34 @@ async function computeCurrentHijriMonth(location) {
     const apiHijriYear = parseInt(todayEntry.hijri.year, 10);
     const apiMonthDays = todayEntry.hijri.month.days || 30;
 
-    // Get the calibrated offset (only for Indonesia, 0 otherwise)
-    const offset = isIndonesiaMode() ? await getHijriOffset(location) : 0;
-
-    // Apply offset to get the corrected Hijri day
-    const correctedHijriDay = apiHijriDay + offset;
-
-    // Determine which Hijri month we're actually in (after offset correction)
-    let effectiveMonth = apiHijriMonth;
-    let effectiveYear = apiHijriYear;
-    let effectiveDay = correctedHijriDay;
-    let monthTotalDays = apiMonthDays;
-
-    if (correctedHijriDay < 1) {
-        // Offset pushed us back to the previous Hijri month
-        effectiveMonth = apiHijriMonth - 1;
-        if (effectiveMonth < 1) {
-            effectiveMonth = 12;
-            effectiveYear--;
-        }
-        // We don't know exact days of previous month, use 30 as default
-        monthTotalDays = 30;
-        effectiveDay = monthTotalDays + correctedHijriDay; // correctedHijriDay is negative or 0
-    } else if (correctedHijriDay > apiMonthDays) {
-        // Offset pushed us into the next Hijri month
-        effectiveMonth = apiHijriMonth + 1;
-        if (effectiveMonth > 12) {
-            effectiveMonth = 1;
-            effectiveYear++;
-        }
-        effectiveDay = correctedHijriDay - apiMonthDays;
-        // We'll try to get correct month length from adjacent data
-        monthTotalDays = 30;
-    }
+    // No offset applied outside Ramadhan — the Hijri calendar self-corrects each new month.
+    // Ramadhan is handled authoritatively by computeRamadhanFromPreset().
 
     // Calculate the Gregorian start date of this Hijri month
-    // startDate = today - (effectiveDay - 1) days
+    // startDate = today - (apiHijriDay - 1) days
     const startDate = new Date(now);
     startDate.setHours(0, 0, 0, 0);
-    startDate.setDate(startDate.getDate() - (effectiveDay - 1));
-
-    // Try to determine actual month length from API data
-    // Look for the transition point in monthly data where Hijri month changes
-    if (monthTotalDays === apiMonthDays || correctedHijriDay >= 1 && correctedHijriDay <= apiMonthDays) {
-        monthTotalDays = apiMonthDays;
-    }
+    startDate.setDate(startDate.getDate() - (apiHijriDay - 1));
 
     // Generate all dates for this Hijri month
     const dates = [];
-    for (let i = 0; i < monthTotalDays; i++) {
+    for (let i = 0; i < apiMonthDays; i++) {
         const d = new Date(startDate);
         d.setDate(d.getDate() + i);
         dates.push(d);
     }
 
     const hijriMonths = t('components/ui/header:hijri_months', { returnObjects: true }) || [];
-    const monthName = hijriMonths[effectiveMonth - 1] || `Bulan ${effectiveMonth}`;
+    const monthName = hijriMonths[apiHijriMonth - 1] || `Bulan ${apiHijriMonth}`;
 
     return {
         dates,
         hijriMeta: {
-            monthNumber: effectiveMonth,
+            monthNumber: apiHijriMonth,
             monthName,
-            year: effectiveYear || config.tahunHijriah,
-            totalDays: monthTotalDays,
-            offset,
+            year: apiHijriYear || config.tahunHijriah,
+            totalDays: apiMonthDays,
+            offset: 0,
         },
     };
 }

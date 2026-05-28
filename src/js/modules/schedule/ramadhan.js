@@ -20,8 +20,14 @@ const HIJRI_OFFSET_KEY = 'hijri_offset';
  * Example: If NU says 1 Ramadhan = Feb 19, but API says Feb 19 = 2 Ramadhan,
  * then offset = 1 - 2 = -1 (preset is 1 day behind the API).
  *
- * This offset is applied to all Hijri month calculations so that
- * months outside Ramadhan stay calibrated to the local authority.
+ * IMPORTANT SCOPE LIMITATION:
+ * This function is ONLY valid for the Ramadhan month context.
+ * Differences between NU/Muhammadiyah (±1 day) are independent per-month
+ * and DO NOT propagate to subsequent Hijri months, as the calendar
+ * self-corrects at the start of each new month (29-30 days max).
+ *
+ * Ramadhan is handled authoritatively by computeRamadhanFromPreset() without offset.
+ * This remains for diagnostic purposes or future per-month preset implementations.
  *
  * @param {{ latitude: number, longitude: number }} location
  * @returns {Promise<number>} offset in days (negative = preset behind API)
