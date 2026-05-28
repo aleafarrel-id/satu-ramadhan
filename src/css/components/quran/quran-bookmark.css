@@ -371,6 +371,11 @@
    display: none;
 }
 
+/* Fix Empty State Alignment for Bookmarks */
+.bookmark-list-wrapper .quran-empty {
+   padding-bottom: var(--sp-6);
+}
+
 /* Dark Mode Overrides */
 [data-theme="dark"] .bookmark-folder-chip__count {
    background: rgba(255, 255, 255, 0.15);
