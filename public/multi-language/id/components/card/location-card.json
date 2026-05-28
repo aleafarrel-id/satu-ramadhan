@@ -10,5 +10,6 @@
     "fail_retry": "Gagal mendeteksi lokasi, silakan coba lagi",
     "fail_gps": "Gagal mendeteksi lokasi, pastikan GPS aktif",
     "set_success": "Lokasi diatur: {{name}}",
-    "unknown_location": "Lokasi Tidak Diketahui"
+    "unknown_location": "Lokasi Tidak Diketahui",
+    "offline_estimate": "Offline Estimasi"
 }

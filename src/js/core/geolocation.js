@@ -4,11 +4,15 @@
 
 // Core & Libraries
 import { Geolocation } from '@capacitor/geolocation';
-import { fetchRegencies, getProvinceById } from './database.js';
+import { fetchRegencies, getProvinceById, fetchWorldCities } from './database.js';
 import { reverseGeocodeNominatim } from './nominatim.js';
 import * as storage from './storage.js';
 
+
 const STORAGE_KEY = 'user_location';
+
+let _worldCityTree = null;
+
 
 /**
  * Convert degrees to radians
@@ -164,25 +168,56 @@ export async function detectLocation(forceRefresh = false) {
             console.warn('[Geolocation] Nominatim reverse failed, using offline fallback:', nomErr.message);
         }
 
-        // Strategy 2: Offline fallback — Haversine nearest regency
-        const result = await findNearestRegency(coords.latitude, coords.longitude);
+        // Strategy 2: Offline world geocoder — determine country via KD-Tree,
+        // then route to the appropriate regional resolver.
+        try {
+            const { buildCityTree, findNearestCity } = await import('../utils/world-geocoder.js');
+            const cities = await fetchWorldCities();
 
-        if (result) {
-            const location = {
-                regencyId: result.regency.id,
-                regencyName: result.regency.name,
-                districtName: '',
-                provinceId: result.province?.id,
-                provinceName: result.province?.name,
-                countryCode: 'ID',
-                latitude: coords.latitude,
-                longitude: coords.longitude,
-            };
-            await storage.set(STORAGE_KEY, location);
-            return location;
+            if (cities.length > 0) {
+                if (!_worldCityTree) {
+                    _worldCityTree = buildCityTree(cities);
+                }
+
+                const nearest = findNearestCity(_worldCityTree, coords.latitude, coords.longitude);
+
+                if (nearest && nearest.countryCode === 'ID') {
+                    const result = await findNearestRegency(coords.latitude, coords.longitude);
+                    if (result) {
+                        const location = {
+                            regencyId:    result.regency.id,
+                            regencyName:  result.regency.name,
+                            districtName: '',
+                            provinceId:   result.province?.id,
+                            provinceName: result.province?.name,
+                            countryCode:  'ID',
+                            latitude:     coords.latitude,
+                            longitude:    coords.longitude,
+                        };
+                        await storage.set(STORAGE_KEY, location);
+                        return location;
+                    }
+                } else if (nearest) {
+                    const location = {
+                        regencyId:    `offline_${nearest.countryCode}_${Date.now()}`,
+                        regencyName:  nearest.name,
+                        districtName: '',
+                        provinceId:   null,
+                        provinceName: nearest.countryCode,
+                        countryCode:  nearest.countryCode,
+                        latitude:     coords.latitude,
+                        longitude:    coords.longitude,
+                        source:       'offline-world',
+                    };
+                    await storage.set(STORAGE_KEY, location);
+                    return location;
+                }
+            }
+        } catch (offlineErr) {
+            console.warn('[Geolocation] World geocoder fallback failed:', offlineErr.message);
         }
     } catch (error) {
-        console.warn('Geolocation failed:', error.message);
+        console.warn('[Geolocation] Location detection failed:', error.message);
     }
 
     return null;
@@ -190,6 +225,7 @@ export async function detectLocation(forceRefresh = false) {
 
 /**
  * Check if Device GPS/Location Services is enabled using cordova-plugin-diagnostic
+
  * Returns true if enabled or on platform without plugin, false if disabled.
  * @returns {Promise<boolean>}
  */

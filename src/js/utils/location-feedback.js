@@ -51,8 +51,14 @@ export async function detectLocationWithFeedback(forceRefresh = true) {
             const displayName = location.districtName
                 ? `${location.districtName}, ${location.regencyName}`
                 : location.regencyName;
-            notif.success(t('components/card/location-card:detected', { name: displayName }));
+
+            const offlineLabel = location.source === 'offline-world'
+                ? ` (${t('components/card/location-card:offline_estimate')})`
+                : '';
+
+            notif.success(t('components/card/location-card:detected', { name: `${displayName}${offlineLabel}` }));
             return location;
+
         } else {
             notif.error(t('components/card/location-card:fail_retry') || 'Gagal mendeteksi lokasi, silakan coba lagi');
             return null;

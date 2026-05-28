@@ -13,7 +13,8 @@ import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
 // Local offline fallback (no network required)
 import { calculateLocalDayTimes, calculateLocalMonthlyTimes, calculateLocalQibla } from './local-calculator.js';
 import { store } from './store.js';
-import { getActiveMethodConfig } from './calculation-resolver.js';
+import { getActiveMethodConfig, getActiveShafaqParam } from './calculation-resolver.js';
+
 
 // UI Feedback
 import { warning } from '../modules/notification/notification.js';
@@ -143,7 +144,10 @@ function isValidResponse(data) {
  */
 async function tryMirror(baseUrl, dateStr, latitude, longitude) {
     const { id: methodId } = getActiveMethodConfig();
-    const url = `${baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
+    const shafaq = getActiveShafaqParam();
+    let url = `${baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
+    if (shafaq) url += `&shafaq=${encodeURIComponent(shafaq)}`;
+
 
     const response = await fetchWithTimeout(url);
 
@@ -356,7 +360,10 @@ function isValidMonthlyResponse(data) {
  */
 async function tryMirrorMonthly(baseUrl, year, month, latitude, longitude) {
     const { id: methodId } = getActiveMethodConfig();
-    const url = `${baseUrl}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
+    const shafaq = getActiveShafaqParam();
+    let url = `${baseUrl}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
+    if (shafaq) url += `&shafaq=${encodeURIComponent(shafaq)}`;
+
 
     const response = await fetchWithTimeout(url);
 

@@ -26,10 +26,27 @@ export function getActiveMethodConfig() {
  * @returns {number}
  */
 export function detectMethodByCountryCode(countryCode) {
-    if (!countryCode) return MWL_ID; // default global
+    if (!countryCode) return MWL_ID;
     const code = countryCode.toUpperCase();
     return countryMapData.map[code] ?? countryMapData.default;
 }
+
+/**
+ * Returns the Aladhan API shafaq parameter for the active location's country,
+ * or null when the country has no shafaq override defined.
+ *
+ * Used by api.js to append &shafaq=... to prayer time requests for countries
+ * (e.g. Scandinavia) that require a specific twilight definition.
+ *
+ * @returns {string|null}
+ */
+export function getActiveShafaqParam() {
+    const loc = store.getState('location');
+    if (!loc?.countryCode) return null;
+    const code = loc.countryCode.toUpperCase();
+    return countryMapData.shafaqOverrides?.[code] ?? null;
+}
+
 
 /**
  * Get the shortName label to display on org-toggle for non-Indonesia.

@@ -8,6 +8,7 @@ import { getCachedRemoteConfig } from '../modules/network/remote-config.js';
 let _provinces = null;
 let _regencies = null;
 let _ramadhan = null;
+let _worldCities = null;
 
 /**
  * Fetch and cache the province list.
@@ -44,6 +45,28 @@ export async function fetchRegencies() {
 
     return _regencies;
 }
+
+/**
+ * Fetch and cache the world cities dataset for offline geocoding.
+ * Populated by GeoNames cities15000 via scripts/generate-world-cities.js.
+ * Excludes Indonesian cities (covered at higher precision by regency.json).
+ *
+ * @returns {Promise<Array<[number, number, string, string]>>}
+ */
+export async function fetchWorldCities() {
+    if (_worldCities) return _worldCities;
+
+    try {
+        const res = await fetch('./data/world-cities.json');
+        _worldCities = await res.json();
+    } catch (e) {
+        logError('[DB]', e);
+        _worldCities = [];
+    }
+
+    return _worldCities;
+}
+
 
 /**
  * Get the Ramadhan config, preferring the remote-cached version if it has

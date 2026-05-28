@@ -10,5 +10,6 @@
     "fail_retry": "Failed to detect location, please try again",
     "fail_gps": "Failed to detect location, ensure GPS is active",
     "set_success": "Location set: {{name}}",
-    "unknown_location": "Unknown Location"
+    "unknown_location": "Unknown Location",
+    "offline_estimate": "Offline Estimate"
 }

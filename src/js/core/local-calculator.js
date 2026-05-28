@@ -15,27 +15,45 @@
  * so they are drop-in replacements for the API layer.
  */
 
-import { Coordinates, CalculationMethod, Madhab, PrayerTimes, Qibla } from 'adhan';
-import { adjustTimeStr, cleanTimeStr, PRAYER_KEY_MAP } from '../utils/datetime.js';
-import { getActiveMethodConfig } from './calculation-resolver.js';
-
-// Dynamic Calculation Parameters 
+import { Coordinates, CalculationMethod, Madhab, PrayerTimes, Qibla, HighLatitudeRule, Shafaq } from 'adhan';
+import { adjustTimeStr, cleanTimeStr } from '../utils/datetime.js';
+import { getActiveMethodConfig, getActiveShafaqParam } from './calculation-resolver.js';
 
 /**
  * Build adhan calculation parameters based on active method config.
- * Uses MuslimWorldLeague as base, then overrides angles and madhab.
+ * @param {number} lat - Latitude of the calculation point.
  * @returns {adhan.CalculationParameters}
  */
-function getCalculationParams() {
+function getCalculationParams(lat) {
     const config = getActiveMethodConfig();
     const params = CalculationMethod.MuslimWorldLeague();
     params.fajrAngle = config.fajrAngle;
     params.ishaAngle = config.ishaAngle;
-    params.madhab   = config.madhab === 'hanafi' ? Madhab.Hanafi : Madhab.Shafi;
+    params.madhab    = config.madhab === 'hanafi' ? Madhab.Hanafi : Madhab.Shafi;
+
+    // Activate high-latitude compensation only above ±48° latitude.
+    // Excluded for methods using a fixed Isha interval (ishaAngle === 90,
+    // e.g. Umm al-Qura, Gulf) to avoid conflicting with adhan's internal flag.
+    if (Math.abs(lat) > 48 && config.ishaAngle !== 90) {
+        params.highLatitudeRule = HighLatitudeRule.MiddleOfTheNight;
+    }
+
+    // Apply shafaq twilight definition for countries that require it (e.g. Scandinavia).
+    // Shafaq.Ahmer (red twilight) is standard when the white twilight never fully disappears.
+    const shafaqValue = getActiveShafaqParam();
+    if (shafaqValue && typeof Shafaq !== 'undefined') {
+        const shafaqMap = {
+            ahmer:   Shafaq.Ahmer,
+            abyad:   Shafaq.Abyad,
+            general: Shafaq.General,
+        };
+        if (shafaqMap[shafaqValue]) {
+            params.shafaq = shafaqMap[shafaqValue];
+        }
+    }
+
     return params;
 }
-
-// Time Helpers 
 
 /**
  * Convert a JavaScript Date object to "HH:mm" string in local time.
@@ -60,17 +78,11 @@ function formatDateDDMMYYYY(date) {
     return `${dd}-${mm}-${yyyy}`;
 }
 
-// Hijri Date Helpers 
-
 /**
  * Compute the total number of days in the current Hijri month.
  *
  * Strategy: iterate forward from `date` until the Hijri month changes,
  * then back-calculate: totalDays = hijriDay + (daysToNextMonth - 1).
- *
- * Example:
- *   Today is Hijri day 8. After +22 days the month changes.
- *   → total days in this month = 8 + 22 - 1 = 29.
  *
  * @param {Date}   date     - The reference Gregorian date
  * @param {number} hijriDay - The Hijri day number of `date`
@@ -81,13 +93,12 @@ function computeHijriMonthDays(date, hijriDay) {
     const baseMonth = parseInt(fmt.format(date), 10);
 
     for (let offset = 1; offset <= 31; offset++) {
-        // Use addition to avoid mutating the original date
         const check = new Date(date.getTime() + offset * 86_400_000);
         if (parseInt(fmt.format(check), 10) !== baseMonth) {
             return hijriDay + (offset - 1);
         }
     }
-    return 30; // safe fallback
+    return 30;
 }
 
 /**
@@ -97,8 +108,8 @@ function computeHijriMonthDays(date, hijriDay) {
  * Returns an object shape identical to the Aladhan API's hijri field:
  *   { day: "8", month: { number: 10, days: 29 }, year: "1447" }
  *
- * Note: The Hijri *offset* for NU/Muhammadiyah presets is NOT applied here.
- * It is applied downstream by schedule-data.js, exactly as it is for API data.
+ * The Hijri offset for NU/Muhammadiyah presets is applied downstream
+ * by schedule-data.js, exactly as it is for API data.
  *
  * @param {Date} date - Gregorian date to convert
  * @returns {{ day: string, month: { number: number, days: number }, year: string }}
@@ -108,12 +119,12 @@ function generateOfflineHijri(date) {
         day: 'numeric', month: 'numeric', year: 'numeric',
     });
 
-    const parts   = fmt.formatToParts(date);
-    const get     = (type) => parts.find(p => p.type === type)?.value ?? '0';
+    const parts    = fmt.formatToParts(date);
+    const get      = (type) => parts.find(p => p.type === type)?.value ?? '0';
 
-    const day     = get('day');
-    const month   = parseInt(get('month'), 10);
-    const year    = get('year');
+    const day      = get('day');
+    const month    = parseInt(get('month'), 10);
+    const year     = get('year');
     const hijriDay = parseInt(day, 10);
 
     const days = computeHijriMonthDays(date, hijriDay);
@@ -124,8 +135,6 @@ function generateOfflineHijri(date) {
         year,
     };
 }
-
-// Gregorian / Weekday Helpers 
 
 const ENGLISH_MONTHS = [
     'January', 'February', 'March',     'April',   'May',      'June',
@@ -158,8 +167,6 @@ function buildWeekdayObj(date) {
     return { en: ENGLISH_DAYS[date.getDay()] };
 }
 
-// Public API 
-
 /**
  * Calculate prayer times for a single day, entirely offline.
  *
@@ -178,12 +185,9 @@ function buildWeekdayObj(date) {
  */
 export function calculateLocalDayTimes(lat, lng, date = new Date()) {
     const coordinates = new Coordinates(lat, lng);
-    const params      = getCalculationParams();
+    const params      = getCalculationParams(lat);
     const pt          = new PrayerTimes(coordinates, date, params);
 
-    const adhanMap = PRAYER_KEY_MAP.adhan;
-
-    // Raw HH:mm strings from adhan (local device time)
     const rawFajr    = dateToHHmm(pt.fajr);
     const rawSunrise = dateToHHmm(pt.sunrise);
     const rawDhuhr   = dateToHHmm(pt.dhuhr);
@@ -193,15 +197,13 @@ export function calculateLocalDayTimes(lat, lng, date = new Date()) {
 
     const { ihtiyatMinutes } = getActiveMethodConfig();
 
-    // Apply Ihtiyat precaution per active method
     const subuh  = adjustTimeStr(rawFajr,    ihtiyatMinutes);
-    const terbit = cleanTimeStr(rawSunrise);    // Sunrise: no Ihtiyat
+    const terbit = cleanTimeStr(rawSunrise);
     const dzuhur = adjustTimeStr(rawDhuhr,   ihtiyatMinutes);
     const ashar  = adjustTimeStr(rawAsr,     ihtiyatMinutes);
     const magrib = adjustTimeStr(rawMaghrib, ihtiyatMinutes);
     const isya   = adjustTimeStr(rawIsha,    ihtiyatMinutes);
 
-    // Imsak = Subuh − 10 min
     const imsak = adjustTimeStr(subuh, -10);
 
     return {
@@ -232,14 +234,11 @@ export function calculateLocalDayTimes(lat, lng, date = new Date()) {
  * @returns {Array<object>}
  */
 export function calculateLocalMonthlyTimes(lat, lng, year, month) {
-    // Number of days in the target Gregorian month
     const daysInMonth = new Date(year, month, 0).getDate();
-
     const results = [];
 
     for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month - 1, day);
-
+        const date       = new Date(year, month - 1, day);
         const dayTimings = calculateLocalDayTimes(lat, lng, date);
 
         results.push({
