@@ -138,7 +138,7 @@ function _buildCreateDOM(defaultValue, titleOverride) {
     const label = document.createElement('label');
     label.className = 'bookmark-mgr-label';
     label.setAttribute('for', 'bkmgr-folder-input');
-    label.textContent = t(`${NS}:folder_name_placeholder`);
+    label.textContent = t(`${NS}:folder_name_label`);
 
     const input = document.createElement('input');
     input.type = 'text';

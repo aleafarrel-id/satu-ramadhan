@@ -9,14 +9,14 @@
     "note_placeholder": "Misal: Ayat Kursi",
     "save_note": "Simpan",
     "note_saved_notif": "Catatan berhasil disimpan",
-
     "folder_all": "Semua",
     "folder_last_read": "Terakhir Dibaca",
     "folder_memorization": "Hafalan",
     "folder_add_label": "Folder Baru",
     "folder_create_title": "Buat Folder Baru",
     "folder_create_btn": "Buat Folder",
-    "folder_name_placeholder": "Nama folder...",
+    "folder_name_placeholder": "Nama Folder...",
+    "folder_name_label": "Nama Folder",
     "folder_manage_title": "Kelola Folder",
     "folder_rename_title": "Ubah Nama",
     "folder_rename_btn": "Simpan Nama",
@@ -30,7 +30,6 @@
     "folder_name_empty": "Nama folder tidak boleh kosong",
     "folder_name_duplicate": "Nama folder sudah digunakan",
     "folder_name_too_long": "Nama folder maksimal 30 karakter",
-
     "move_to_folder_title": "Simpan ke Kategori",
     "move_success_notif": "Kategori diperbarui"
 }

@@ -5,6 +5,7 @@
 // Core & Libraries
 import { Geolocation } from '@capacitor/geolocation';
 import { fetchRegencies, getProvinceById, fetchWorldCities } from './database.js';
+import { getCurrentLang } from './i18n.js';
 import { reverseGeocodeNominatim } from './nominatim.js';
 import * as storage from './storage.js';
 
@@ -12,6 +13,23 @@ import * as storage from './storage.js';
 const STORAGE_KEY = 'user_location';
 
 let _worldCityTree = null;
+
+/**
+ * Resolve a ISO 3166-1 alpha-2 country code to a localized country name.
+ * Uses the Intl.DisplayNames API (supported Chrome 81+, Safari 14.1+, Android WebView 81+).
+ * Gracefully falls back to the raw code if the API is unavailable.
+ * @param {string} countryCode - e.g. 'FI', 'MY'
+ * @returns {string} Localized country name, e.g. 'Finlandia' or 'Finland'
+ */
+function getCountryName(countryCode) {
+    if (!countryCode) return '';
+    try {
+        const lang = getCurrentLang();
+        return new Intl.DisplayNames([lang], { type: 'region' }).of(countryCode.toUpperCase()) || countryCode;
+    } catch {
+        return countryCode;
+    }
+}
 
 
 /**
@@ -203,7 +221,7 @@ export async function detectLocation(forceRefresh = false) {
                         regencyName:  nearest.name,
                         districtName: '',
                         provinceId:   null,
-                        provinceName: nearest.countryCode,
+                        provinceName: getCountryName(nearest.countryCode),
                         countryCode:  nearest.countryCode,
                         latitude:     coords.latitude,
                         longitude:    coords.longitude,

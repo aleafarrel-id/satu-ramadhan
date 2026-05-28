@@ -5,10 +5,6 @@
  *   - Folder carousel at the top (scrolls with content)
  *   - Bookmark list filtered by active folder
  *   - Long-press a folder chip to manage (rename/delete)
- *
-
-
-
  *   - Search works cross-folder (not limited to active folder)
  */
 
@@ -317,7 +313,6 @@ async function _renderBookmarkList(container) {
  */
 async function _handleFolderSelect(folderId) {
     if (_activeFolderId === folderId) return;
-    impact('light');
     _activeFolderId = folderId;
 
 
@@ -342,7 +337,6 @@ async function _handleFolderSelect(folderId) {
  * Opens the create-folder modal.
  */
 async function _handleAddFolder() {
-    impact('light');
     showCreateFolderModal(async (name) => {
         if (!name) return;
 
@@ -554,8 +548,6 @@ function _handleEditNote(bookmark, cardEl) {
  * @param {HTMLElement} cardEl
  */
 async function _handleToggleCategory(bookmark, cardEl) {
-    impact('light');
-
     const [folders, countByFolder] = await Promise.all([
         BookmarkManager.getAllFolders(),
         BookmarkManager.getCountByFolder(),

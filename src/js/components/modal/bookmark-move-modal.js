@@ -12,6 +12,7 @@ const NS = 'pages/quran-pages/bookmark-page';
 
 let _overlayEl = null;
 let _releaseFocus = null;
+let _boundDismiss = null;
 
 
 /**
@@ -33,7 +34,8 @@ export async function showBookmarkCategoryModal(folders, countByFolder, activeFo
     _overlayEl = _buildDOM(folders, countByFolder, activeFolderIds, onToggle, onClose);
     getModalRoot().appendChild(_overlayEl);
 
-    registerModalDismiss(() => _handleDismiss(onClose));
+    _boundDismiss = () => _handleDismiss(onClose);
+    registerModalDismiss(_boundDismiss);
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => _overlayEl?.classList.add('active'));
@@ -56,8 +58,11 @@ function _handleDismiss(onClose) {
 
 function _hideModal() {
     if (!_overlayEl) return;
-    // Removing the back handler is important, but we don't have the exact reference here
-    // unless we store it. We assume caller or next modal will override.
+    if (_boundDismiss) {
+        unregisterModalDismiss(_boundDismiss);
+        _boundDismiss = null;
+    }
+    
     _overlayEl.classList.remove('active');
 
     const sheet = _overlayEl.querySelector('.bookmark-mgr-sheet');

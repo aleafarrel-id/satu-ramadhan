@@ -9,14 +9,14 @@
     "note_placeholder": "e.g., Ayatul Kursi",
     "save_note": "Save",
     "note_saved_notif": "Note saved successfully",
-
     "folder_all": "All",
     "folder_last_read": "Last Read",
     "folder_memorization": "Memorization",
     "folder_add_label": "New Folder",
     "folder_create_title": "Create New Folder",
     "folder_create_btn": "Create Folder",
-    "folder_name_placeholder": "Folder name...",
+    "folder_name_placeholder": "Folder Name...",
+    "folder_name_label": "Folder Name",
     "folder_manage_title": "Manage Folder",
     "folder_rename_title": "Rename",
     "folder_rename_btn": "Save Name",
@@ -30,7 +30,6 @@
     "folder_name_empty": "Folder name cannot be empty",
     "folder_name_duplicate": "Folder name already exists",
     "folder_name_too_long": "Folder name must be 30 characters or less",
-
     "move_to_folder_title": "Save to Category",
     "move_success_notif": "Categories updated"
 }
