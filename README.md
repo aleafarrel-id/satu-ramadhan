@@ -77,6 +77,7 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · �
 - ✅ **Tanpa iklan** — tidak ada SDK iklan atau tracking pihak ketiga
 - ✅ **Tanpa server** — semua preferensi disimpan lokal di perangkat
 - ✅ **GPS aman** — koordinat hanya dipakai untuk hitung waktu shalat dan arah kiblat, tidak pernah disimpan
+- ✅ **Offline First** — dilengkapi database geocoder lokal (KD-Tree) untuk kalkulasi waktu shalat dan arah kiblat tanpa koneksi internet
 
 ---
 
@@ -163,7 +164,8 @@ satu-ramadhan/
 │   ├── data/
 │   │   ├── province.json         # Data 38 provinsi Indonesia
 │   │   ├── regency.json          # Data 500+ kabupaten/kota Indonesia
-│   │   └── ramadhan.json         # Konfigurasi jadwal Ramadhan (bisa dioverride remote)
+│   │   ├── ramadhan.json         # Konfigurasi jadwal Ramadhan (bisa dioverride remote)
+│   │   └── world-cities.json     # Dataset kota global untuk offline geocoding
 │   │
 │   ├── favicon/                  # Favicon & PWA icon berbagai ukuran
 │   │
@@ -456,7 +458,8 @@ satu-ramadhan/
             ├── keyboard-handler.js # Global keyboard shortcut handler
             ├── location-feedback.js# Feedback UI saat proses deteksi lokasi
             ├── store-services.js   # Helper query state store yang sering dipakai
-            └── theme-transition.js # Animasi crossfade saat ganti tema
+            ├── theme-transition.js # Animasi crossfade saat ganti tema
+            └── world-geocoder.js   # KD-Tree engine untuk pencarian kota offline terdekat
 ```
 
 ---
