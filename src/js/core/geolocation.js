@@ -190,11 +190,20 @@ export async function detectLocation(forceRefresh = false) {
         // then route to the appropriate regional resolver.
         try {
             const { buildCityTree, findNearestCity } = await import('../utils/world-geocoder.js');
-            const cities = await fetchWorldCities();
+            
+            // Load both datasets in parallel (these are cached in memory after first load)
+            const [cities, regencies] = await Promise.all([
+                fetchWorldCities(),
+                fetchRegencies()
+            ]);
 
-            if (cities.length > 0) {
+            if (cities.length > 0 || regencies.length > 0) {
                 if (!_worldCityTree) {
-                    _worldCityTree = buildCityTree(cities);
+                    // Combine global cities and Indonesian regencies into a unified KD-Tree.
+                    // This prevents border-hijacking where an Indonesian user gets mapped to a foreign city 
+                    // simply because Indonesian data was excluded from the global world-cities.json payload.
+                    const idCities = regencies.map(r => [r.latitude, r.longitude, r.name, 'ID']);
+                    _worldCityTree = buildCityTree([...cities, ...idCities]);
                 }
 
                 const nearest = findNearestCity(_worldCityTree, coords.latitude, coords.longitude);

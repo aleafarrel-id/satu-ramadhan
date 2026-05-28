@@ -99,6 +99,18 @@
     line-height: 22px;
 }
 
+/* ── Multiline Shape Shifting ── */
+.notif--multiline {
+    border-radius: var(--radius-xl, 16px);
+}
+
+.notif--multiline .notif__message {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 /* ── Type Variants ── */
 
 /* Success */
@@ -168,4 +180,4 @@
         font-size: var(--fs-2xs);
         line-height: 16px;
     }
-}
+}

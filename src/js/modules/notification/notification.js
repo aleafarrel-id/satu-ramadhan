@@ -57,6 +57,10 @@ export function show(message, type = 'info', duration = DEFAULT_DURATION) {
 
     // Trigger enter animation
     requestAnimationFrame(() => {
+        // Check for horizontal overflow (indicates text is too long and would wrap if allowed)
+        if (msgSpan.scrollWidth > msgSpan.clientWidth) {
+            el.classList.add('notif--multiline');
+        }
         el.classList.add('notif--visible');
     });
 
