@@ -8,6 +8,8 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import android.content.res.Configuration;
+import android.util.Log;
 
 /**
  * Local Capacitor plugin replacing @capgo/capacitor-navigation-bar.
@@ -37,6 +39,8 @@ public class NavigationBarPlugin extends Plugin {
 
     // Fallback teal color if an invalid/null color string is received
     private static final int FALLBACK_COLOR = Color.parseColor("#0a3540");
+    private int lastColor = FALLBACK_COLOR;
+    private boolean lastDarkButtons = false;
 
     /**
      * Sets the navigation bar area color and button icon appearance.
@@ -67,6 +71,9 @@ public class NavigationBarPlugin extends Plugin {
                     }
                 }
                 
+                lastColor = parsedColor;
+                lastDarkButtons = darkButtons;
+                
                 // Update the root DecorView background. This fills any empty space
                 // created by the WebView margins (left, right, bottom), perfectly
                 // coloring the navigation bar area regardless of orientation.
@@ -88,6 +95,33 @@ public class NavigationBarPlugin extends Plugin {
                 call.resolve();
             } catch (Exception ex) {
                 call.reject("Failed to set navigation bar appearance", ex);
+            }
+        });
+    }
+
+    /**
+     * Re-applies the last set color and icon style when the device configuration changes
+     * (e.g., when rotating the screen to landscape).
+     */
+    @Override
+    protected void handleOnConfigurationChanged(Configuration newConfig) {
+        super.handleOnConfigurationChanged(newConfig);
+        getBridge().executeOnMainThread(() -> {
+            try {
+                if (getActivity() != null && getActivity().getWindow() != null) {
+                    getActivity().getWindow().getDecorView().setBackgroundColor(lastColor);
+                    
+                    WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(
+                        getActivity().getWindow(),
+                        getActivity().getWindow().getDecorView()
+                    );
+                    insetsController.setAppearanceLightNavigationBars(lastDarkButtons);
+                }
+                if (getBridge().getWebView() != null) {
+                    getBridge().getWebView().setBackgroundColor(lastColor);
+                }
+            } catch (Exception ex) {
+                Log.w("NavigationBarPlugin", "Failed to restore navigation bar appearance on configuration change", ex);
             }
         });
     }
