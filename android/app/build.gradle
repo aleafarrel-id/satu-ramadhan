@@ -7,7 +7,7 @@ android {
         applicationId "com.saturamadhan.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
+        versionCode 15
         versionName "2.0-stable"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -21,9 +21,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            ndk {
-                debugSymbolLevel 'SYMBOL_TABLE'
-            }
+            ndk.debugSymbolLevel 'SYMBOL_TABLE'
         }
     }
 }
