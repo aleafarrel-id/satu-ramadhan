@@ -154,18 +154,24 @@
 .quran-reader-surah-meta {
    display: flex;
    align-items: center;
-   gap: var(--sp-2);
-   font-size: var(--fs-xs);
-   color: var(--clr-text-secondary);
-   font-family: var(--ff-primary);
-   font-weight: var(--fw-medium);
+   flex-wrap: wrap;
+   gap: var(--sp-2) var(--sp-2);
 }
 
-.quran-reader-meta-dot {
-   width: 3px;
-   height: 3px;
-   background: var(--clr-text-secondary);
-   border-radius: var(--radius-full);
+.quran-reader-meta-tag {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-semibold);
+   color: var(--clr-text-primary);
+   padding: var(--spacing-xs) var(--spacing-sm);
+   background: var(--clr-white-a15);
+   border: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-pill);
+   white-space: nowrap;
+   letter-spacing: var(--ls-tight);
+   text-shadow: var(--shadow-sm);
+   backdrop-filter: blur(4px);
+   -webkit-backdrop-filter: blur(4px);
 }
 
 /* Main Action Button (Download / Play) */
@@ -412,12 +418,12 @@
 .quran-reader-ayah-list {
    display: flex;
    flex-direction: column;
-   padding: 0 var(--sp-4) var(--sp-8);
+   padding: 0 var(--sp-4) calc(var(--sp-12) + env(safe-area-inset-bottom, 0px));
    transition: padding-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.has-audio-dock .quran-reader-ayah-list {
-   padding-bottom: calc(var(--sp-12) + 130px);
+   padding-bottom: calc(var(--sp-12) + 130px + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── Bismillah Header ── */
@@ -783,7 +789,7 @@ body.has-audio-dock .quran-reader-ayah-list {
    }
 
    .quran-reader-ayah-list {
-      padding: 0 var(--sp-3) var(--sp-6);
+      padding: 0 var(--sp-3) calc(var(--sp-8) + env(safe-area-inset-bottom, 0px));
    }
 
    .quran-ayah-card {

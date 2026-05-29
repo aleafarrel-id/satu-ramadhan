@@ -474,9 +474,8 @@ function _createSurahBannerElement(surah) {
       <div class="quran-reader-surah-info-latin">${surahNum}. ${surah.title}</div>
       <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
       <div class="quran-reader-surah-meta">
-         <span>${typeText}</span>
-         <span class="quran-reader-meta-dot"></span>
-         <span>${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
+         <span class="quran-reader-meta-tag">${typeText}</span>
+         <span class="quran-reader-meta-tag">${t('modules/quran/quran-reader:verse_count', { count: surah.count })}</span>
       </div>
    `;
 
