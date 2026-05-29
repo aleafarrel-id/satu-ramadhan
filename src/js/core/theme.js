@@ -1,11 +1,21 @@
 /**
  * Theme Manager Core
  * Evaluates 'dark', 'teal', or 'auto' and applies it to the DOM safely.
+ *
+ * NOTE — Native bar plugins:
+ * StatusBar and NavigationBar are local Capacitor plugins defined in
+ * android/app/src/main/java/com/saturamadhan/mobile/.
+ * They use only WindowInsetsControllerCompat (zero deprecated APIs).
+ * See NavigationBarPlugin.java and LocalStatusBarPlugin.java for details.
  */
 import { store } from './store.js';
-import { StatusBar, Style } from '@capacitor/status-bar';
-import { NavigationBar } from '@capgo/capacitor-navigation-bar';
+import { registerPlugin } from '@capacitor/core';
 import { isNative } from '../modules/system/platform.js';
+
+// Local Capacitor plugins — registered by MainActivity.java.
+// Plugin names match the originals so behavior is transparent to callers.
+const StatusBar = registerPlugin('StatusBar');
+const NavigationBar = registerPlugin('NavigationBar');
 
 let _watcherSubscribed = false;
 let _initialThemeSet = false;
@@ -74,7 +84,9 @@ function _applyStatusBarStyle() {
     const useLightIcons = !currentIsDark && _statusBarOverrides.size > 0;
 
     try {
-        StatusBar.setStyle({ style: useLightIcons ? Style.Light : Style.Dark });
+        // 'LIGHT' → dark (black) icons for light-background pages (Quran, Tasbih, Mushaf)
+        // 'DARK'  → light (white) icons for dark/teal-background pages (Home, Schedule, etc.)
+        StatusBar.setStyle({ style: useLightIcons ? 'LIGHT' : 'DARK' });
     } catch (err) {
         console.warn('[Theme] Failed to set StatusBar style', err);
     }
@@ -264,10 +276,13 @@ export function applyToDOM(finalDark) {
 
     if (isNative) {
         try {
-            // Status bar: fully transparent — content renders seamlessly behind it.
-            // Icon appearance is controlled separately via _applyStatusBarStyle().
-            StatusBar.setBackgroundColor({ color: '#00000000' });
+            // Status bar: transparent by default with edge-to-edge active.
+            // No setBackgroundColor() needed — WindowCompat.setDecorFitsSystemWindows(false)
+            // in MainActivity already handles this.
 
+            // Navigation bar: color comes from the WebView CSS content showing through
+            // the transparent nav bar (edge-to-edge). We only control icon appearance.
+            // darkButtons: false = white/light icons (correct for teal and dark backgrounds)
             NavigationBar.setNavigationBarColor({
                 color: finalDark ? '#031013' : '#0a3540',
                 darkButtons: false
@@ -277,7 +292,7 @@ export function applyToDOM(finalDark) {
             // This also respects any active white-page override.
             _applyStatusBarStyle();
         } catch (err) {
-            console.warn('[Theme] Failed to set native StatusBar or NavigationBar', err);
+            console.warn('[Theme] Failed to set native NavigationBar or StatusBar', err);
         }
     }
 }

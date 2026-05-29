@@ -105,6 +105,7 @@
    --clr-bg-gradient: linear-gradient(135deg, #0a3540 0%, #1a4a5a 50%, #0f3545 100%);
    --clr-bg-dark: #061922;
    --clr-bg-overlay: rgba(10, 53, 64, 0.85);
+   --nav-bar-solid-bg: #0a3540;
 
    /* ── Component Primitives ── */
    --clr-tube-bg: #1E4152;
@@ -403,6 +404,7 @@
    /* Deep Abyssal Teal - Provides luxury depth and perfect contrast for OLED (Premium Ocean) */
    --clr-bg-gradient: linear-gradient(135deg, #010a0d 0%, #081d24 50%, #020c0e 100%);
    --clr-bg-dark: #01080a;
+   --nav-bar-solid-bg: #031013;
 
    /* UI Surface Layers (Softer elevated cards) */
    --clr-bg-card: rgba(13, 34, 43, 0.75);
