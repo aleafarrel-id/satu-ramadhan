@@ -27,3 +27,6 @@ ios
 
 # AI Agent
 .agent/*
+
+# Firebase Credentials
+android/app/google-services.json
