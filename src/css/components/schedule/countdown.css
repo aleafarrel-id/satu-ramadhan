@@ -72,8 +72,12 @@
 
 @media (max-width: 360px) {
    .countdown__digit-box {
-      width: 40px;
-      padding: var(--spacing-xs) var(--spacing-xs);
+      width: 46px;
+      padding: var(--spacing-sm) var(--spacing-sm);
+   }
+
+   .countdown__prayer-name {
+      font-size: var(--fs-lg);
    }
 
    .countdown__number {
