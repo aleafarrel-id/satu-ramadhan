@@ -9,7 +9,8 @@
  */
 
 import { store } from '../../core/store.js';
-import { DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
+import { QURAN_LANGUAGES, DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
+import { resolveLanguage } from '../../core/i18n.js';
 import { Capacitor } from '@capacitor/core';
 
 /** @typedef {'offline'|'streaming'} AudioMode */
@@ -57,15 +58,69 @@ export function getTranslationLanguage() {
 }
 
 /**
- * Sets translation language.
- * @param {string} langCode 
+ * Sets translation language (internal / programmatic use).
+ * Does NOT affect the autoSync flag.
+ * @param {string} langCode
  */
 export function setTranslationLanguage(langCode) {
    if (!langCode || typeof langCode !== 'string') return;
    store.setState('settings.quran.translationLanguage', langCode);
 }
 
-// Audio Mode 
+/**
+ * Sets translation language from a manual user action via the Settings panel.
+ * Marks autoSync = false so this choice persists until the next UI language change.
+ * @param {string} langCode
+ */
+export function setTranslationLanguageManual(langCode) {
+   if (!langCode || typeof langCode !== 'string') return;
+   store.setState('settings.quran.translationLanguage', langCode);
+   store.setState('settings.quran.translationAutoSync', false);
+}
+
+/**
+ * Returns whether translation language is currently auto-synced to the UI language.
+ * @returns {boolean}
+ */
+export function getTranslationAutoSync() {
+   const val = store.getState('settings.quran.translationAutoSync');
+   // Default true — new installs start in auto-sync mode
+   return val !== undefined ? val : true;
+}
+
+/**
+ * Initializes the Smart Auto-Sync Translation system.
+ *
+ * Behavior:
+ *   - On Startup: If autoSync is true, translation follows the saved UI language.
+ *     If autoSync is false (user customized it previously), the custom choice is preserved.
+ *   - On UI language change: The custom override is ALWAYS cleared, and the
+ *     translation immediately syncs to the new UI language (if supported).
+ *
+ * Must be called once after store.hydrate() and initI18n().
+ */
+export function initTranslationSync() {
+   const syncTranslation = (rawUiLang, isFromEvent = false) => {
+      if (!isFromEvent && !getTranslationAutoSync()) return;
+
+      const resolvedLang = resolveLanguage(rawUiLang);
+
+      const isSupportedTranslation = QURAN_LANGUAGES.some(l => l.code === resolvedLang);
+
+      if (isSupportedTranslation) {
+         store.setState('settings.quran.translationLanguage', resolvedLang);
+      }
+   };
+   syncTranslation(store.getState('settings.language') ?? 'auto', false);
+
+   store.subscribe('settings.language', (newRawLang) => {
+      store.setState('settings.quran.translationAutoSync', true);
+      syncTranslation(newRawLang, true);
+   });
+}
+
+
+// Audio Mode
 
 /**
  * Returns the currently selected audio playback mode.

@@ -11,7 +11,7 @@ import * as Notif from '../../modules/notification/notification.js';
 import {
    getTajweedEnabled, setTajweedEnabled,
    getTransliterationEnabled, setTransliterationEnabled,
-   getTranslationLanguage, setTranslationLanguage,
+   getTranslationLanguage, setTranslationLanguageManual,
    getAudioMode, setAudioMode,
 } from '../../modules/quran/quran-settings.js';
 import { t } from '../../core/i18n.js';
@@ -23,7 +23,7 @@ import { showAudioModeSelectorModal } from '../modal/audio-mode-selector-modal.j
 // Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 
-// Mode Labels 
+// Mode Labels
 
 /** Returns a display label for the given AudioMode value. */
 function _getAudioModeLabel(mode) {
@@ -32,7 +32,7 @@ function _getAudioModeLabel(mode) {
       : t('components/modal/audio-mode-selector-modal:mode_streaming_label');
 }
 
-// Render 
+// Render
 
 export function render(container) {
    const tajweedChecked = getTajweedEnabled();
@@ -99,7 +99,7 @@ export function render(container) {
    _bindEvents(container);
 }
 
-// Event Bindings 
+// Event Bindings
 
 function _bindEvents(container) {
    // Tajweed toggle
@@ -140,7 +140,8 @@ function _bindEvents(container) {
                const langData = QURAN_LANGUAGES.find(l => l.code === value);
                if (langData) {
                   translationLabel.textContent = langData.label;
-                  setTranslationLanguage(value);
+                  // Mark as manual override and disables auto-sync until next UI language change
+                  setTranslationLanguageManual(value);
                   Notif.show(
                      t('components/settings/settings-quran-panel:translation_changed', { label: langData.label }),
                      'success'
@@ -173,7 +174,7 @@ function _bindEvents(container) {
    }
 }
 
-// Lifecycle 
+// Lifecycle
 
 export function destroy() {
    // No persistent listeners — all bound to container innerHTML

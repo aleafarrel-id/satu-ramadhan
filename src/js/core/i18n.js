@@ -91,7 +91,7 @@ export function getCurrentLang() {
  * @param {string} lang
  * @returns {string} A code from SUPPORTED_CODES
  */
-function resolveLanguage(lang) {
+export function resolveLanguage(lang) {
     if (lang !== 'auto') return lang;
 
     const deviceLang = (navigator.language || '').toLowerCase();

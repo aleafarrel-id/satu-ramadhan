@@ -14,6 +14,7 @@ import { store } from './core/store.js';
 import { applyAutoDetectedMethod } from './core/calculation-resolver.js';
 import { initTheme } from './core/theme.js';
 import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
+import { initTranslationSync } from './modules/quran/quran-settings.js';
 import { resetRamadhanCache } from './core/database.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
@@ -87,6 +88,10 @@ export async function initApp() {
     // Initialize i18n — must run after hydrate (reads saved language)
     // and before any render (components may call t())
     await initI18n();
+
+    // Smart Auto-Sync: keep Quran translation in sync with UI language.
+    // Must run after initI18n() so the store subscription fires correctly.
+    initTranslationSync();
 
     // Global language-switch listener:
     // When the user changes language in Settings, re-render the global shell

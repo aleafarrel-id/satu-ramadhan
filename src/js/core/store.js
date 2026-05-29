@@ -53,6 +53,7 @@ const initialState = {
             tajweed: true,
             transliteration: true,
             translationLanguage: 'id',
+            translationAutoSync: true,
             reciterId: 'alafasy',
             audioMode: 'offline'
         }
