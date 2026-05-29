@@ -72,6 +72,9 @@
             </intent-filter>
         </receiver>
 
+        <!-- Disable Advertising ID collection to comply with Google Play Policy for ad-free apps -->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+
     </application>
 
     <!-- Permissions -->
