@@ -1,0 +1,6 @@
+{
+    "heading": "Menuju <span class=\"countdown__prayer-name\" id=\"cd-prayer-name\">{{name}}</span>",
+    "hours": "JAM",
+    "minutes": "MIN",
+    "seconds": "SAAT"
+}

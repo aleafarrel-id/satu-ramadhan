@@ -1,0 +1,6 @@
+{
+    "title": "Benarkan Akses Lokasi",
+    "desc": "Untuk memaparkan jadual solat yang tepat mengikut lokasi anda, aplikasi memerlukan akses GPS peranti.",
+    "btn_gps": "Akses Lokasi",
+    "btn_manual": "Pilih Manual"
+}

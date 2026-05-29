@@ -1,0 +1,9 @@
+{
+    "schedule_today": "Jadual Hari Ini",
+    "error_no_location_title": "Tetapkan Lokasi Anda",
+    "error_no_location_desc": "Jadual solat akan dipaparkan setelah lokasi ditetapkan melalui Tetapan.",
+    "error_offline_title": "Gagal Memuatkan Jadual",
+    "error_offline_desc": "Periksa sambungan internet anda dan cuba lagi.",
+    "btn_search_location": "Cari Lokasi",
+    "btn_change_location_offline": "Tukar Lokasi Manual"
+}

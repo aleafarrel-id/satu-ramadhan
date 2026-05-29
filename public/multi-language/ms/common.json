@@ -1,0 +1,20 @@
+{
+    "close": "Tutup",
+    "cancel": "Batal",
+    "delete": "Padam",
+    "save": "Simpan",
+    "retry": "Cuba Lagi",
+    "change": "Tukar",
+    "set": "Tetapkan",
+    "add": "Tambah",
+    "app_loading": "Sedang Memuatkan Aplikasi",
+    "app_name": "Satu Ramadhan",
+    "offline_mode_toast": "Sambungan lemah, menggunakan kalkulasi tempatan.",
+    "offline_recovery_title": "Sambungan Berjaya",
+    "offline_recovery_message": "Anda sedang menggunakan jadual luar talian. Ingin memuat turun kemas kini yang lebih tepat melalui internet?",
+    "offline_recovery_confirm": "Kemas Kini",
+    "offline_recovery_cancel": "Langkau",
+    "offline_recovery_success": "Jadual berjaya dikemas kini dari internet.",
+    "offline_recovery_failed": "Gagal mengemas kini jadual. Rangkaian mungkin bermasalah.",
+    "offline_recovery_skipped": "Kekal menggunakan jadual luar talian."
+}

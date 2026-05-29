@@ -1,0 +1,22 @@
+{
+  "title": "Tasbih",
+  "back": "Kembali",
+  "select_dzikir": "Pilih Zikir",
+  "change_dzikir": "Tukar Zikir",
+  "round": "Pusingan:",
+  "total": "Jumlah:",
+  "reset_round": "Reset Pusingan",
+  "clean_total": "Padam Jumlah",
+  "confirm_clean_title": "Padam Jumlah Zikir",
+  "confirm_clean_desc": "Adakah anda pasti ingin memadamkan keseluruhan jumlah kiraan untuk zikir ini?",
+  "confirm_clean_yes": "Ya, Padam",
+  "confirm_clean_no": "Batal",
+  "target": "Sasaran: {{value}}",
+  "target_free": "Bebas",
+  "custom_dzikir_name": "Sasaran Bebas",
+  "confirm_delete_preset_title": "Padam Preset?",
+  "confirm_delete_preset_desc": "Adakah anda pasti ingin memadamkan preset '{{presetName}}'?",
+  "add": "Tambah",
+  "preset_deleted": "Preset berjaya dipadamkan",
+  "preset_updated": "Preset berjaya dikemas kini"
+}

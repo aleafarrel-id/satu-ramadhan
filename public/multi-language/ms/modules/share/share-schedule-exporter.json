@@ -1,0 +1,22 @@
+{
+    "save_success": "Jadual berjaya disimpan ke Galeri",
+    "save_error": "Gagal menyimpan jadual ke Galeri",
+    "share_error": "Gagal berkongsi jadual",
+    "share_unsupported": "Peranti tidak menyokong, sila gunakan butang Muat Turun.",
+    "tpl_title": "Jadual Imsakiah & Waktu Solat",
+    "tpl_qibla": "Arah Kiblat",
+    "tpl_th_hari": "Hari",
+    "tpl_th_tanggal": "Tarikh",
+    "tpl_th_imsak": "Imsak",
+    "tpl_th_subuh": "Subuh",
+    "tpl_th_dzuhur": "Zohor",
+    "tpl_th_ashar": "Asar",
+    "tpl_th_maghrib": "Maghrib",
+    "tpl_th_isya": "Isyak",
+    "tpl_note_1": "* Waktu solat berdasarkan pengiraan astronomi oleh sumber data berkaitan",
+    "tpl_note_2": "* Jadual dijana secara automatik oleh aplikasi {{appName}}",
+    "default_filename": "jadual-imsakiah",
+    "default_filename_png": "jadual-imsakiah.png",
+    "share_title": "Jadual Imsakiah",
+    "share_dialog_title": "Kongsi Jadual"
+}

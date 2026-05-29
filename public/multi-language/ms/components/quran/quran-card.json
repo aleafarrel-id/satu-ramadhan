@@ -1,0 +1,13 @@
+{
+    "verse_count": "{{count}} Ayat",
+    "loading": "Memuatkan Al-Qur'an",
+    "not_found": "Surah tidak ditemui",
+    "error_load": "Gagal Memuatkan Al-Qur'an",
+    "delete_bookmark": "Padam penanda",
+    "edit_note": "Sunting nota",
+    "move_to_folder": "Kategori",
+    "ayat": "Ayat {{verseNumber}}",
+    "makkiyah": "Makkiyah",
+    "madaniyah": "Madaniyah",
+    "menu": "Menu"
+}

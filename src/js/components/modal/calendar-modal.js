@@ -212,7 +212,6 @@ function buildCalendarGrid(selectedDate, animClass = '') {
             </div>
         </div>
         <div class="cal-modal__hint">
-            <i class='bx bx-info-circle'></i>
             <span>${hintText}</span>
         </div>
     `;

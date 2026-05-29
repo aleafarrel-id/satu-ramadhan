@@ -1,0 +1,15 @@
+{
+    "header": "LOKASI ANDA",
+    "not_set": "Lokasi belum ditetapkan",
+    "hint": "Ketik untuk menetapkan lokasi",
+    "btn_set": "Tetapkan",
+    "btn_change": "Tukar",
+    "detecting": "Mengesan Lokasi...",
+    "gps_off": "GPS belum diaktifkan",
+    "detected": "Lokasi dikesan: {{name}}",
+    "fail_retry": "Gagal mengesan lokasi, sila cuba lagi",
+    "fail_gps": "Gagal mengesan lokasi, pastikan GPS aktif",
+    "set_success": "Lokasi ditetapkan: {{name}}",
+    "unknown_location": "Lokasi Tidak Diketahui",
+    "offline_estimate": "Anggaran Luar Talian"
+}

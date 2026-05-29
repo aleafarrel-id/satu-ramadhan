@@ -1,0 +1,9 @@
+{
+    "title": "Tema Aplikasi",
+    "theme_dark": "Gelap",
+    "theme_dark_desc": "Skema warna gelap premium",
+    "theme_teal": "Teal",
+    "theme_teal_desc": "Skema warna standard aplikasi",
+    "theme_auto": "Dinamik",
+    "theme_auto_desc": "Bertukar secara automatik mengikut waktu"
+}

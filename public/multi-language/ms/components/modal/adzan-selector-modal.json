@@ -1,0 +1,12 @@
+{
+    "title": "Pilih Azan",
+    "selector_label": "Pilihan Azan",
+    "tab_normal": "Waktu Normal",
+    "tab_subuh": "Waktu Subuh",
+    "makkah": "Makkah",
+    "malaysia": "Malaysia",
+    "kuwait": "Kuwait",
+    "mesir": "Mesir",
+    "selected_feedback": "{{adzan}} Dipilih",
+    "preview_feedback": "Memainkan: {{adzan}}"
+}

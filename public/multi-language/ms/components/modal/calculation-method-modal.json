@@ -1,0 +1,9 @@
+{
+    "title": "Kaedah Pengiraan",
+    "subtitle": "Pilih kaedah hisab yang sesuai dengan wilayah anda",
+    "badge_auto": "Disyorkan",
+    "selected_feedback": "Kaedah {{name}} dipilih",
+    "region_label": "Wilayah",
+    "ihtiyat_label": "Ihtiyat",
+    "ihtiyat_value": "+{{minutes}} minit"
+}

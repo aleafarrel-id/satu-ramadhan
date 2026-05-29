@@ -1,0 +1,18 @@
+{
+    "downloading_surah": "Memuat turun Surah",
+    "progress_ayat": "{{current}} / {{total}} Ayat",
+    "cancel_download": "Batal",
+    "download_paused": "Dijeda",
+    "now_playing": "{{surahName}} - Ayat {{ayahNumber}}",
+    "now_playing_ayah": "Ayat {{ayahNumber}}",
+    "play": "Main",
+    "pause": "Jeda",
+    "prev": "Sebelumnya",
+    "next": "Seterusnya",
+    "stop": "Berhenti",
+    "close": "Tutup",
+    "resume": "Teruskan",
+    "notif_channel_name": "Pemutaran Murattal",
+    "notif_channel_desc": "Kawal pemutaran Murattal Al-Quran",
+    "notif_ayah_label": "Ayat"
+}

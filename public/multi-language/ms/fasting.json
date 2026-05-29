@@ -1,0 +1,138 @@
+{
+    "sunnah_senin": {
+        "name": "Puasa Isnin",
+        "type": "sunnah",
+        "icon": "bx-sun",
+        "description": "Puasa sunat yang dianjurkan oleh Rasulullah SAW pada setiap hari Isnin. Pada hari tersebut amalan-amalan diangkat (dilaporkan) kepada Allah.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ يَوْمَ اْلاِثْنَيْنِ سُنَّةً ِللهِ تَعَالَى",
+            "latin": "Nawaitu sauma yaumal itsnaini sunnatan lillahi ta'ala.",
+            "translation": "Sahaja aku berpuasa hari Isnin, sunat kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_kamis": {
+        "name": "Puasa Khamis",
+        "type": "sunnah",
+        "icon": "bx-sun",
+        "description": "Puasa sunat yang dianjurkan oleh Rasulullah SAW pada setiap hari Khamis. Pada hari tersebut amalan-amalan diangkat (dilaporkan) kepada Allah.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ يَوْمَ الْخَمِيْسِ سُنَّةً ِللهِ تَعَالَى",
+            "latin": "Nawaitu sauma yaumal khamiisi sunnatan lillahi ta'ala.",
+            "translation": "Sahaja aku berpuasa hari Khamis, sunat kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_ayyamul_bidh": {
+        "name": "Puasa Ayyamul Bidh",
+        "type": "sunnah",
+        "icon": "bx-moon",
+        "description": "Puasa sunat pada pertengahan bulan Hijriah (pertengahan bulan Islam - tarikh 13, 14, 15). Keutamaannya seperti berpuasa sepanjang tahun.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ اَيَّامَ اْلبِيْضِ سُنَّةً ِللهِ تَعَالَى",
+            "latin": "Nawaitu sauma ayyaamal bidhi sunnatan lillahi ta'ala.",
+            "translation": "Sahaja aku berpuasa Ayyamul Bidh, sunat kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_syawal": {
+        "name": "Puasa Syawal",
+        "type": "sunnah",
+        "icon": "bx-calendar-star",
+        "description": "Puasa sunat enam hari di bulan Syawal selepas perayaan Aidilfitri. Pahalanya seumpama berpuasa setahun penuh.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ الشَّوَّالِ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnatis syawwaali lillaahi ta'aalaa.",
+            "translation": "Sahaja aku berniat puasa sunat Syawal esok hari kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_arafah": {
+        "name": "Puasa Arafah",
+        "type": "sunnah",
+        "icon": "bx-star",
+        "description": "Puasa sunat pada tarikh 9 Zulhijah bagi mereka yang tidak mengerjakan wukuf di Arafah. Dapat menghapuskan dosa setahun yang lalu dan setahun yang akan datang.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ عَرَفَةَ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmi 'arafata lillaahi ta'aalaa.",
+            "translation": "Sahaja aku berniat puasa sunat Arafah esok hari kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_tarwiyah": {
+        "name": "Puasa Tarwiyah",
+        "type": "sunnah",
+        "icon": "bx-star",
+        "description": "Puasa sunat pada tarikh 8 Zulhijah. Dapat menghapuskan dosa satu tahun yang lalu.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ التَّرْوِيَةِ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmit tarwiyati lillaahi ta'aalaa.",
+            "translation": "Sahaja aku berniat puasa sunat Tarwiyah esok hari kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_asyura": {
+        "name": "Puasa Asyura",
+        "type": "sunnah",
+        "icon": "bx-shield",
+        "description": "Puasa sunat pada tarikh 10 Muharam. Menghapuskan dosa setahun yang lalu.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ عَاشُورَاءَ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmi 'aasyuuraa-a lillaahi ta'aalaa.",
+            "translation": "Sahaja aku berniat puasa sunat Asyura esok hari kerana Allah Ta'ala."
+        }
+    },
+    "sunnah_tasua": {
+        "name": "Puasa Tasu'a",
+        "type": "sunnah",
+        "icon": "bx-shield",
+        "description": "Puasa sunat pada tarikh 9 Muharam (sebelum Asyura) untuk menyelisihi (berbeza dengan) kebiasaan Yahudi.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ تَاسُوعَاءَ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmi taasuu'aa-a lillaahi ta'aalaa.",
+            "translation": "Sahaja aku berniat puasa sunat Tasu'a esok hari kerana Allah Ta'ala."
+        }
+    },
+    "wajib_ramadhan": {
+        "name": "Puasa Ramadan",
+        "type": "mandatory",
+        "icon": "bx-calendar-check",
+        "description": "Puasa wajib selama sebulan penuh di bulan Ramadan. Rukun Islam yang keempat.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ فَرْضِ شَهْرِ رَمَضَانَ هذِهِ السَّنَةِ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i fardhi syahri Ramadhaana haadzihis sanati lillaahi ta'aalaa.",
+            "translation": "Sahaja aku berniat puasa fardu bulan Ramadan tahun ini kerana Allah Ta'ala."
+        }
+    },
+    "haram": {
+        "name": "Diharamkan Berpuasa",
+        "type": "forbidden",
+        "icon": "bx-error-circle",
+        "description": "Diharamkan berpuasa pada hari raya Aidilfitri (1 Syawal), Aidiladha (10 Zulhijah), dan Hari Tasyrik (11, 12, 13 Zulhijah)."
+    },
+    "common": {
+        "type_sunnah": "Sunat",
+        "type_mandatory": "Wajib",
+        "type_forbidden": "Haram",
+        "niat_title": "Niat Puasa",
+        "doa_title": "Doa Berbuka",
+        "doa_berbuka": {
+            "arabic": "اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ بِرَحْمَتِكَ يَا أَرْحَمَ الرَّاحِمِينَ",
+            "latin": "Allahumma laka shumtu wa bika aamantu wa 'alaa rizqika afthartu birahmatika yaa arhamar raahimiin.",
+            "translation": "Ya Allah, bagi-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka, dengan rahmat-Mu wahai Tuhan Yang Maha Penyayang.",
+            "riwayat": "Riwayat Abu Daud no. 2358 (dari Mu'adz bin Zuhrah)"
+        },
+        "doa_berbuka_list": [
+            {
+                "arabic": "اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ بِرَحْمَتِكَ يَا أَرْحَمَ الرَّاحِمِينَ",
+                "latin": "Allahumma laka shumtu wa bika aamantu wa 'alaa rizqika afthartu birahmatika yaa arhamar raahimiin.",
+                "translation": "Ya Allah, bagi-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka, dengan rahmat-Mu wahai Tuhan Yang Maha Penyayang.",
+                "riwayat": "Riwayat Abu Daud no. 2358 (dari Mu'adz bin Zuhrah)"
+            },
+            {
+                "arabic": "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
+                "latin": "Dzahabazh zhama'u wabtallatil 'uruuqu wa tsabatal ajru insyaa Allah.",
+                "translation": "Telah hilang rasa haus, telah basah urat-urat, dan telah tetap ganjaran insya-Allah.",
+                "riwayat": "Riwayat Abu Daud no. 2357 (dari Abdullah bin Umar), disahihkan oleh Al-Albani"
+            }
+        ],
+        "out_of_month": "Jadual harian hanya tersedia untuk bulan ini.",
+        "legend_haram_puasa": "Haram (Puasa)",
+        "hint_long_press": "Tekan lama pada hari yang bertanda untuk perincian puasa",
+        "legend_format": "Puasa {{type}}"
+    }
+}

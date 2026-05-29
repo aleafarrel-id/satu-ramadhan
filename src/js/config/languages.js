@@ -10,11 +10,12 @@
 
 export const APP_LANGUAGES = [
     { code: 'id', label: 'Indonesia', nativeLabel: 'Bahasa Indonesia', flag: '🇮🇩' },
+    { code: 'ms', label: 'Melayu', nativeLabel: 'Bahasa Melayu', flag: '🇲🇾' },
     { code: 'en', label: 'English', nativeLabel: 'English', flag: '🇬🇧' },
 ];
 
 /** Fallback when 'auto' can't match the device locale to any supported code. */
-export const FALLBACK_LANG = 'id';
+export const FALLBACK_LANG = 'en';
 
 /** Derived set of valid language codes — never duplicate manually. */
 export const SUPPORTED_CODES = APP_LANGUAGES.map(l => l.code);

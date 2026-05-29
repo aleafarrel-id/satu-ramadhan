@@ -1,0 +1,7 @@
+{
+    "error_no_location_title": "Lokasi Belum Ditetapkan",
+    "error_no_location_desc": "Arah kiblat akan dipaparkan setelah lokasi anda ditetapkan.",
+    "error_no_compass_title": "Kompas Tidak Tersedia",
+    "error_no_compass_desc": "Arah kiblat tidak dapat dikira atau sensor kompas tidak tersedia.",
+    "toast_no_sensor": "Peranti ini tidak mempunyai sensor kompas."
+}

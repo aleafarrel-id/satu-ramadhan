@@ -1,0 +1,62 @@
+{
+    "days": [
+        "Ahad",
+        "Isnin",
+        "Selasa",
+        "Rabu",
+        "Khamis",
+        "Jumaat",
+        "Sabtu"
+    ],
+    "days_short": [
+        "Aha",
+        "Isn",
+        "Sel",
+        "Rab",
+        "Kha",
+        "Jum",
+        "Sab"
+    ],
+    "months": [
+        "Januari",
+        "Februari",
+        "Mac",
+        "April",
+        "Mei",
+        "Jun",
+        "Julai",
+        "Ogos",
+        "September",
+        "Oktober",
+        "November",
+        "Disember"
+    ],
+    "months_short": [
+        "Jan",
+        "Feb",
+        "Mac",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul",
+        "Ogo",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Dis"
+    ],
+    "hijri_months": [
+        "Muharram",
+        "Safar",
+        "Rabiul Awal",
+        "Rabiul Akhir",
+        "Jamadil Awal",
+        "Jamadil Akhir",
+        "Rejab",
+        "Syaaban",
+        "Ramadan",
+        "Syawal",
+        "Zulkaedah",
+        "Zulhijjah"
+    ]
+}

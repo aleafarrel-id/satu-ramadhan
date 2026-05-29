@@ -1,0 +1,13 @@
+{
+  "target_free": "Bebas",
+  "modal_create_title": "Sasaran Baru",
+  "modal_edit_title": "Sunting Sasaran",
+  "form_name_label": "Tajuk Zikir",
+  "form_name_ph": "Contoh: Membaca Selawat",
+  "form_target_label": "Jumlah Sasaran",
+  "form_target_ph": "0 untuk tiada had",
+  "suggestion_title": "Syor",
+  "err_name_empty": "Nama zikir tidak boleh kosong.",
+  "preset_saved": "Preset berjaya disimpan",
+  "preset_created": "Preset berjaya dicipta"
+}

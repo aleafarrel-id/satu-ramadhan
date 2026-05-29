@@ -1,0 +1,13 @@
+{
+    "error_no_location_title": "Lokasi Belum Ditetapkan",
+    "error_no_location_desc": "Jadual akan dipaparkan setelah lokasi anda ditetapkan.",
+    "error_offline_title": "Gagal Memuatkan Jadual",
+    "error_offline_desc": "Periksa sambungan internet anda dan cuba lagi.",
+    "toast_adzan_muted": "Azan {{prayer}} dimatikan",
+    "toast_adzan_unmuted": "Azan {{prayer}} dihidupkan",
+    "toast_notif_muted": "Notifikasi {{prayer}} dimatikan",
+    "toast_notif_unmuted": "Notifikasi {{prayer}} diaktifkan",
+    "back_to_today": "Kembali ke Hari Ini",
+    "calendar_header": "Kalendar",
+    "fasting-header": "Status Puasa"
+}

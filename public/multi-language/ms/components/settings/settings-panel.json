@@ -1,0 +1,12 @@
+{
+    "section_notif": "NOTIFIKASI",
+    "notif_time": "Notifikasi Waktu",
+    "adzan_sound": "Suara Azan",
+    "web_only_notice": "Ciri ini hanya tersedia dalam aplikasi natif.",
+    "notif_on": "Notifikasi diaktifkan",
+    "notif_off": "Notifikasi dimatikan",
+    "adzan_on": "Suara azan dihidupkan",
+    "adzan_off": "Suara azan dimatikan",
+    "perm_denied": "Kebenaran notifikasi ditolak",
+    "battery_opt": "Proses Latar Belakang"
+}
