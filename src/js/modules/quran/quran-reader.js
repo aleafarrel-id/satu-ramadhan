@@ -89,18 +89,25 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
 
    // Subscribe to global store for reactive settings changes
    _storeSubId = store.subscribe('settings.quran', () => {
-      if (_isOpen && _currentReaderData.length && !_isReaderSearchActive) {
-         const renderId = _renderCtx.incrementAndGet();
-         const currentH = _scrollContainer ? _scrollContainer.scrollHeight : 0;
-         const currentScroll = _scrollContainer ? _scrollContainer.scrollTop : 0;
+      if (!_isOpen || !_currentReaderData.length) return;
 
-         _renderItems(_currentReaderData, renderId).then(() => {
-            if (_scrollContainer) {
-               // maintain approximate scroll position if DOM height changed
-               _scrollContainer.scrollTop = currentScroll;
-            }
-         });
+      if (_isReaderSearchActive) {
+         // Re-render filtered results to properly update ayah cards (e.g. play button visibility)
+         const input = _readerHeaderInstance?.getSearchInput();
+         const query = input ? input.value.trim() : '';
+         
+         _filterVerses(query);
+         return;
       }
+
+      const renderId = _renderCtx.incrementAndGet();
+      const currentScroll = _scrollContainer ? _scrollContainer.scrollTop : 0;
+
+      _renderItems(_currentReaderData, renderId).then(() => {
+         if (_scrollContainer) {
+            _scrollContainer.scrollTop = currentScroll;
+         }
+      });
    });
 
    // Pre-fetch list for dropdown natively handled by API
