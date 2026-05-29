@@ -48,7 +48,7 @@
 }
 
 .fasting-modal-header {
-   padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+   padding: clamp(var(--spacing-md), 5vw, var(--spacing-lg)) clamp(var(--spacing-md), 5vw, var(--spacing-lg)) var(--spacing-md);
    display: flex;
    align-items: center;
    gap: var(--spacing-md);
@@ -56,13 +56,13 @@
 }
 
 .fasting-modal-icon-wrapper {
-   width: 44px;
-   height: 44px;
+   width: clamp(36px, 10vw, 44px);
+   height: clamp(36px, 10vw, 44px);
    border-radius: var(--radius-full);
    display: flex;
    align-items: center;
    justify-content: center;
-   font-size: 24px;
+   font-size: clamp(18px, 6vw, 24px);
    background: var(--clr-info-a10);
    color: var(--clr-info);
    border: 1px solid var(--clr-info-a30);
@@ -86,7 +86,7 @@
 
 .fasting-modal-title {
    font-family: var(--ff-decorative);
-   font-size: var(--fs-xl);
+   font-size: clamp(var(--fs-lg), 6vw, var(--fs-xl));
    font-weight: var(--fw-bold);
    color: var(--clr-quran-text);
    line-height: var(--lh-snug);
@@ -94,7 +94,7 @@
 
 .fasting-modal-type {
    font-family: var(--ff-primary);
-   font-size: var(--fs-xs);
+   font-size: clamp(10px, 3vw, var(--fs-xs));
    font-weight: var(--fw-semibold);
    color: var(--clr-info);
    text-transform: uppercase;
@@ -110,7 +110,7 @@
 }
 
 .fasting-modal-body {
-   padding: var(--spacing-lg);
+   padding: clamp(var(--spacing-md), 5vw, var(--spacing-lg));
    overflow-y: auto;
    -webkit-overflow-scrolling: touch;
    scrollbar-width: none;
@@ -124,7 +124,7 @@
 
 .fasting-modal-desc {
    font-family: var(--ff-primary);
-   font-size: var(--fs-sm);
+   font-size: clamp(13px, 3.5vw, var(--fs-sm));
    color: var(--clr-quran-text-secondary);
    line-height: var(--lh-relaxed);
    margin-bottom: var(--spacing-xl);
@@ -132,7 +132,7 @@
 
 .fasting-modal-section-title {
    font-family: var(--ff-primary);
-   font-size: var(--fs-xs);
+   font-size: clamp(11px, 3.2vw, var(--fs-xs));
    font-weight: var(--fw-bold);
    color: var(--clr-quran-text);
    margin-bottom: var(--spacing-md);
@@ -151,14 +151,14 @@
 .fasting-modal-content-card {
    background: var(--clr-quran-card-bg);
    border-radius: var(--radius-lg);
-   padding: var(--spacing-lg) var(--spacing-md);
+   padding: clamp(var(--spacing-md), 5vw, var(--spacing-lg)) clamp(12px, 4vw, var(--spacing-md));
    margin-bottom: var(--spacing-lg);
    border: 1px solid var(--clr-quran-border);
 }
 
 .fasting-modal-arabic {
    font-family: var(--ff-mushaf-arabic);
-   font-size: 32px;
+   font-size: clamp(24px, 7vw, 32px);
    color: var(--clr-quran-text);
    text-align: right;
    line-height: var(--lh-loose);
@@ -168,7 +168,7 @@
 
 .fasting-modal-latin {
    font-family: var(--ff-primary);
-   font-size: var(--fs-sm);
+   font-size: clamp(13px, 3.5vw, var(--fs-sm));
    color: var(--clr-quran-text);
    font-style: italic;
    margin-bottom: var(--spacing-sm);
@@ -177,14 +177,14 @@
 
 .fasting-modal-translation {
    font-family: var(--ff-primary);
-   font-size: var(--fs-sm);
+   font-size: clamp(13px, 3.5vw, var(--fs-sm));
    color: var(--clr-quran-text-secondary);
    line-height: var(--lh-relaxed);
 }
 
 .fasting-modal-riwayat {
    font-family: var(--ff-primary);
-   font-size: var(--fs-xs);
+   font-size: clamp(11px, 3vw, var(--fs-xs));
    color: var(--clr-accent-600);
    font-style: italic;
    margin-top: var(--spacing-md);
@@ -204,7 +204,7 @@
 }
 
 .fasting-modal-footer {
-   padding: var(--spacing-md) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+   padding: var(--spacing-md) clamp(var(--spacing-md), 5vw, var(--spacing-lg)) calc(clamp(var(--spacing-md), 5vw, var(--spacing-lg)) + env(safe-area-inset-bottom));
    border-top: 1px solid var(--clr-quran-border);
    background: var(--clr-quran-bg);
 }
