@@ -11,23 +11,21 @@ let _overlayEl = null;
 
 export function showFastingDetailsModal(fastingId) {
     if (_overlayEl) removeModal();
-    
+
     // Fetch from i18n namespace
     const data = t(`fasting:${fastingId}`, { returnObjects: true });
     if (!data || typeof data === 'string') return;
 
-    // Yield to the main thread to allow touch ripples or other UI feedback
-    // to paint before locking the thread with heavy DOM injection.
-    setTimeout(() => {
+    // Use rAF to yield to the main thread (allow long-press ripple to paint),
+    // then immediately mount the DOM and trigger the animation in the next frame.
+    requestAnimationFrame(() => {
         _overlayEl = createModalDOM(data);
         getModalRoot().appendChild(_overlayEl);
 
         registerModalDismiss(hideModal);
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => _overlayEl.classList.add('active'));
-        });
-    }, 10);
+        requestAnimationFrame(() => _overlayEl.classList.add('active'));
+    });
 }
 
 function hideModal() {
@@ -55,7 +53,7 @@ function removeModal() {
 function createModalDOM(data) {
     const overlay = document.createElement('div');
     overlay.className = 'fasting-modal-overlay';
-    
+
     // Type styling
     const typeClass = `fasting-modal-sheet--${data.type}`;
     let typeLabel = t('fasting:common.type_sunnah') || 'Sunnah';
@@ -63,7 +61,7 @@ function createModalDOM(data) {
     if (data.type === 'forbidden') typeLabel = t('fasting:common.type_forbidden') || 'Haram';
 
     let contentHtml = `<p class="fasting-modal-desc">${data.description}</p>`;
-    
+
     if (data.niat) {
         const titleNiat = t('fasting:common.niat_title') || 'Niat Puasa';
         contentHtml += `
@@ -77,18 +75,36 @@ function createModalDOM(data) {
     }
 
     if (data.type !== 'forbidden') {
-        const doaBerbuka = t('fasting:common.doa_berbuka', { returnObjects: true });
+        const doaBerbukaList = t('fasting:common.doa_berbuka_list', { returnObjects: true });
+        const doaBerbukaSingle = t('fasting:common.doa_berbuka', { returnObjects: true });
         const titleDoa = t('fasting:common.doa_title') || 'Doa Berbuka';
-        
-        if (doaBerbuka && typeof doaBerbuka === 'object') {
+
+        // Resolve doa items: prefer array list, fallback to single object wrapped in array
+        const doaItems = (Array.isArray(doaBerbukaList) && doaBerbukaList.length > 0)
+            ? doaBerbukaList
+            : (doaBerbukaSingle && typeof doaBerbukaSingle === 'object')
+                ? [doaBerbukaSingle]
+                : [];
+
+        if (doaItems.length > 0) {
             contentHtml += `
                 <div class="fasting-modal-section-title"><i class='bx bx-food-menu'></i> ${titleDoa}</div>
-                <div class="fasting-modal-content-card">
-                    <div class="fasting-modal-arabic">${doaBerbuka.arabic}</div>
-                    <div class="fasting-modal-latin">${doaBerbuka.latin}</div>
-                    <div class="fasting-modal-translation">"${doaBerbuka.translation}"</div>
-                </div>
             `;
+            doaItems.forEach((doa, index) => {
+                const riwayatHtml = doa.riwayat
+                    ? `<div class="fasting-modal-riwayat">${doa.riwayat}</div>`
+                    : '';
+                const doaNumberLabel = doaItems.length > 1 ? ` ${index + 1}` : '';
+                contentHtml += `
+                    <div class="fasting-modal-content-card">
+                        ${doaItems.length > 1 ? `<div class="fasting-modal-doa-label">${titleDoa}${doaNumberLabel}</div>` : ''}
+                        <div class="fasting-modal-arabic">${doa.arabic}</div>
+                        <div class="fasting-modal-latin">${doa.latin}</div>
+                        <div class="fasting-modal-translation">"${doa.translation}"</div>
+                        ${riwayatHtml}
+                    </div>
+                `;
+            });
         }
     }
 

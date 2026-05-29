@@ -221,13 +221,21 @@ export function renderScheduleCardSkeleton() {
 
             <!-- Date nav skeleton -->
             <div class="schedule-nav" style="margin-top: var(--spacing-lg)">
-                <div class="schedule-nav__info">
-                    <div class="skeleton skeleton--text-lg" style="width: 55%"></div>
-                    <div class="skeleton skeleton--text-xs skeleton--mt-sm" style="width: 40%"></div>
+                <div class="schedule-nav__header">
+                    <div class="skeleton skeleton--text-2xs skeleton--w-30"></div>
                 </div>
-                <div class="schedule-nav__arrows">
-                    <div class="skeleton skeleton--nav-arrow"></div>
-                    <div class="skeleton skeleton--nav-arrow"></div>
+                <div class="schedule-nav__row">
+                    <div class="skeleton skeleton--icon-square"></div>
+                    <div class="schedule-nav__info">
+                        <div class="skeleton skeleton--text-sm skeleton--w-65"></div>
+                        <div class="skeleton skeleton--text-xs skeleton--mt-sm skeleton--w-45"></div>
+                    </div>
+                    <div class="schedule-nav__controls">
+                        <div class="schedule-nav__arrows">
+                            <div class="skeleton skeleton--nav-arrow"></div>
+                            <div class="skeleton skeleton--nav-arrow"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -255,13 +263,21 @@ export function renderScheduleCardBottomSkeleton() {
     return `
         <!-- Date nav skeleton -->
         <div class="schedule-nav">
-            <div class="schedule-nav__info">
-                <div class="skeleton skeleton--text-lg" style="width: 55%"></div>
-                <div class="skeleton skeleton--text-xs skeleton--mt-sm" style="width: 40%"></div>
+            <div class="schedule-nav__header">
+                <div class="skeleton skeleton--text-2xs skeleton--w-30"></div>
             </div>
-            <div class="schedule-nav__arrows">
-                <div class="skeleton skeleton--nav-arrow"></div>
-                <div class="skeleton skeleton--nav-arrow"></div>
+            <div class="schedule-nav__row">
+                <div class="skeleton skeleton--icon-square"></div>
+                <div class="schedule-nav__info">
+                    <div class="skeleton skeleton--text-sm skeleton--w-65"></div>
+                    <div class="skeleton skeleton--text-xs skeleton--mt-sm skeleton--w-45"></div>
+                </div>
+                <div class="schedule-nav__controls">
+                    <div class="schedule-nav__arrows">
+                        <div class="skeleton skeleton--nav-arrow"></div>
+                        <div class="skeleton skeleton--nav-arrow"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -290,24 +306,27 @@ function renderDateNav(entry, dayIndex, totalDays = 30) {
     const isNextDisabled = dayIndex >= totalDays - 1;
 
     return `
-        <div class="schedule-nav" data-focus-group="schedule-nav" data-focus-direction="horizontal">
-            <div class="schedule-nav__info">
-                <div class="schedule-nav__title-pill" id="btn-calendar-modal" role="button" tabindex="0" data-focus-item>
-                    <span class="schedule-nav__badge-icon"><i class='bx bxs-calendar'></i></span>
-                    <span class="schedule-nav__title">${escapeHtml(hijriDay)} ${escapeHtml(hijriMonthName)} ${escapeHtml(hijriYear)}</span>
-                </div>
-                <span class="schedule-nav__subtitle">${dayOfWeek}, ${dateFormatted}</span>
+        <div class="schedule-nav" id="btn-calendar-modal" role="button" tabindex="0" data-focus-group="schedule-nav" data-focus-direction="vertical" aria-label="Open Calendar">
+            <div class="schedule-nav__header">
+                ${t('pages/schedule-page:calendar_header')}
             </div>
-            <div class="schedule-nav__controls">
-                <div class="schedule-nav__arrows">
-                    <button class="schedule-nav__btn schedule-nav__btn--prev${isPrevDisabled ? ' disabled' : ''}"
-                            id="schedule-prev" ${isPrevDisabled ? 'disabled' : ''} data-focus-item>
-                        <i class='bx bxs-chevron-left'></i>
-                    </button>
-                    <button class="schedule-nav__btn schedule-nav__btn--next${isNextDisabled ? ' disabled' : ''}"
-                            id="schedule-next" ${isNextDisabled ? 'disabled' : ''} data-focus-item>
-                        <i class='bx bxs-chevron-right'></i>
-                    </button>
+            <div class="schedule-nav__row">
+                <i class='bx bx-calendar schedule-nav__icon'></i>
+                <div class="schedule-nav__info">
+                    <div class="schedule-nav__title">${escapeHtml(hijriDay)} ${escapeHtml(hijriMonthName)} ${escapeHtml(hijriYear)}</div>
+                    <div class="schedule-nav__subtitle">${dayOfWeek}, ${dateFormatted}</div>
+                </div>
+                <div class="schedule-nav__controls">
+                    <div class="schedule-nav__arrows">
+                        <button class="schedule-nav__btn schedule-nav__btn--prev${isPrevDisabled ? ' disabled' : ''}"
+                                id="schedule-prev" ${isPrevDisabled ? 'disabled' : ''} data-focus-item>
+                            <i class='bx bx-chevron-left'></i>
+                        </button>
+                        <button class="schedule-nav__btn schedule-nav__btn--next${isNextDisabled ? ' disabled' : ''}"
+                                id="schedule-next" ${isNextDisabled ? 'disabled' : ''} data-focus-item>
+                            <i class='bx bx-chevron-right'></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -418,20 +437,20 @@ function formatGregorianDateFromObj(date, months) {
  */
 function renderFastingBadgeHtml(entry) {
     if (!entry || !entry.date) return '';
-    
+
     // Build a hijri object from entry-level data (preset-aware)
     // rather than timings.hijri (raw API/offline, not offset-aware)
     const hijri = {
         day: String(entry.hijriDay),
         month: { number: entry.hijriMonthNumber || 0 }
     };
-    
+
     // Guard: skip if we don't have month info
     if (!hijri.month.number) return '';
-    
+
     const fastingEvents = analyzeFastingDayOffline(hijri, entry.date);
     if (!fastingEvents || fastingEvents.length === 0) return '';
-    
+
     const primaryId = fastingEvents.includes('haram') ? 'haram' : fastingEvents[0];
     const data = t(`fasting:${primaryId}`, { returnObjects: true });
     if (!data || typeof data === 'string') return '';
@@ -439,8 +458,11 @@ function renderFastingBadgeHtml(entry) {
     const typeClass = `schedule-fasting-card--${data.type}`;
 
     return `
-        <button class="card card--container schedule-fasting-card ${typeClass}" data-fasting-id="${primaryId}">
-            <div class="schedule-fasting-card__content">
+        <button class="card card--container schedule-fasting-card" data-fasting-id="${primaryId}">
+            <div class="schedule-fasting-card__header">
+                ${t('pages/schedule-page:fasting-header')}
+            </div>
+            <div class="schedule-fasting-card__inner schedule-fasting-card__inner--${data.type}">
                 <i class='bx ${data.icon} schedule-fasting-card__icon'></i>
                 <span class="schedule-fasting-card__text">${escapeHtml(data.name)}</span>
                 <i class='bx bx-chevron-right schedule-fasting-card__chevron'></i>

@@ -14,7 +14,9 @@
    opacity: 0;
    visibility: hidden;
    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
-   contain: layout style;
+   contain: layout style paint;
+   /* Pre-promote to GPU layer so first-frame animation is jank-free */
+   will-change: opacity;
 }
 
 .fasting-modal-overlay.active {
@@ -112,6 +114,8 @@
    overflow-y: auto;
    -webkit-overflow-scrolling: touch;
    scrollbar-width: none;
+   /* Isolate scroll repaints from the outer fixed overlay */
+   contain: layout style paint;
 }
 
 .fasting-modal-body::-webkit-scrollbar {
@@ -176,6 +180,27 @@
    font-size: var(--fs-sm);
    color: var(--clr-quran-text-secondary);
    line-height: var(--lh-relaxed);
+}
+
+.fasting-modal-riwayat {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   color: var(--clr-accent-600);
+   font-style: italic;
+   margin-top: var(--spacing-md);
+   padding-top: var(--spacing-sm);
+   border-top: 1px solid var(--clr-quran-border);
+   line-height: var(--lh-relaxed);
+}
+
+.fasting-modal-doa-label {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-weight: var(--fw-bold);
+   color: var(--clr-accent-400);
+   text-transform: uppercase;
+   letter-spacing: var(--ls-wide);
+   margin-bottom: var(--spacing-sm);
 }
 
 .fasting-modal-footer {

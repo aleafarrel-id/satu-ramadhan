@@ -582,13 +582,15 @@ function bindEvents() {
 
     unbindSwipeEvents();
 
-    document.getElementById('schedule-prev')?.addEventListener('click', () => {
+    document.getElementById('schedule-prev')?.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (_currentDayIndex > 0) {
             navigateWithAnimation('right');
         }
     });
 
-    document.getElementById('schedule-next')?.addEventListener('click', () => {
+    document.getElementById('schedule-next')?.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (_currentDayIndex < lastIndex) {
             navigateWithAnimation('left');
         }

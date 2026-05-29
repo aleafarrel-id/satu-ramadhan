@@ -42,6 +42,7 @@
    will-change: transform;
    backface-visibility: hidden;
    -webkit-backface-visibility: hidden;
+   touch-action: pan-y;
 }
 
 .cal-modal-overlay.active .cal-modal {

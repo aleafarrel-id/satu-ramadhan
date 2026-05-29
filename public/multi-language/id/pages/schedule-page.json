@@ -7,5 +7,7 @@
     "toast_adzan_unmuted": "Adzan {{prayer}} dinyalakan",
     "toast_notif_muted": "Notifikasi {{prayer}} dimatikan",
     "toast_notif_unmuted": "Notifikasi {{prayer}} diaktifkan",
-    "back_to_today": "Kembali ke Hari Ini"
+    "back_to_today": "Kembali ke Hari Ini",
+    "calendar_header": "Kalender",
+    "fasting-header": "Status Puasa"
 }

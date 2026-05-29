@@ -261,9 +261,14 @@ function createModalDOM(currentIndex, scheduleData, onSelectDay) {
                 }
             };
 
+            let startX = 0;
+            let startY = 0;
+
             const startPress = (e) => {
                 // Ignore right clicks
                 if (e.pointerType === 'mouse' && e.button !== 0) return;
+                startX = e.clientX;
+                startY = e.clientY;
                 pressTimer = setTimeout(handleLongPress, 500);
             };
 
@@ -271,10 +276,20 @@ function createModalDOM(currentIndex, scheduleData, onSelectDay) {
                 if (pressTimer) clearTimeout(pressTimer);
             };
 
+            const movePress = (e) => {
+                if (!pressTimer) return;
+                const dx = Math.abs(e.clientX - startX);
+                const dy = Math.abs(e.clientY - startY);
+                if (dx > 10 || dy > 10) {
+                    cancelPress();
+                }
+            };
+
             cell.addEventListener('pointerdown', startPress);
             cell.addEventListener('pointerup', cancelPress);
             cell.addEventListener('pointercancel', cancelPress);
             cell.addEventListener('pointerleave', cancelPress);
+            cell.addEventListener('pointermove', movePress);
 
             // Keep click for navigation
             makeAccessibleBtn(cell, async () => {
@@ -319,6 +334,38 @@ function createModalDOM(currentIndex, scheduleData, onSelectDay) {
     });
 
     addEscHandler(overlay, hideCalendarModal);
+
+    // --- Touch Swipe Support for changing months ---
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    overlay.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length === 0) return;
+        touchStartX = e.touches[0].screenX;
+        touchStartY = e.touches[0].screenY;
+    }, { passive: true });
+
+    overlay.addEventListener('touchend', (e) => {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
+
+        // Check if the swipe is primarily horizontal and > 50px
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0) {
+                // Swiped Left -> Next Month
+                _currentMonthOffset++;
+                renderGrid('next');
+            } else {
+                // Swiped Right -> Prev Month
+                _currentMonthOffset--;
+                renderGrid('prev');
+            }
+        }
+    }, { passive: true });
 
     return overlay;
 }

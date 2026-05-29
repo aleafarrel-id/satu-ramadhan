@@ -234,6 +234,13 @@
     border-radius: 50%;
 }
 
+.skeleton--icon-square {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
 .skeleton--badge-flex {
     height: 36px;
     border-radius: var(--radius-lg);
@@ -267,13 +274,21 @@
     border-radius: var(--radius-sm);
 }
 
+.skeleton--text-2xs {
+    height: 8px;
+    border-radius: var(--radius-sm);
+}
+
 .skeleton--text-base {
     height: 12px;
     border-radius: var(--radius-sm);
 }
 
 .skeleton--w-80 { width: 80%; }
+.skeleton--w-65 { width: 65%; }
 .skeleton--w-60 { width: 60%; }
+.skeleton--w-45 { width: 45%; }
+.skeleton--w-30 { width: 30%; }
 .skeleton--w-120px { width: 120px; }
 
 /* ── Home Bento Skeletons ── */

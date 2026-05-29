@@ -7,5 +7,7 @@
     "toast_adzan_unmuted": "Adzan {{prayer}} unmuted",
     "toast_notif_muted": "{{prayer}} notification muted",
     "toast_notif_unmuted": "{{prayer}} notification enabled",
-    "back_to_today": "Back to Today"
+    "back_to_today": "Back to Today",
+    "calendar_header": "Calendar",
+    "fasting-header": "Fasting Status"
 }

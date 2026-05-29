@@ -101,7 +101,7 @@
     "haram": {
         "name": "Diharamkan Berpuasa",
         "type": "forbidden",
-        "icon": "bx-error-alt",
+        "icon": "bx-error-circle",
         "description": "Diharamkan berpuasa pada hari raya Idul Fitri (1 Syawal), Idul Adha (10 Dzulhijjah), dan Hari Tasyrik (11, 12, 13 Dzulhijjah)."
     },
     "common": {
@@ -113,8 +113,23 @@
         "doa_berbuka": {
             "arabic": "اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ بِرَحْمَتِكَ يَا أَرْحَمَ الرَّاحِمِينَ",
             "latin": "Allahumma laka shumtu wa bika aamantu wa 'alaa rizqika afthartu birahmatika yaa arhamar raahimiin.",
-            "translation": "Ya Allah, untuk-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka, dengan rahmat-Mu wahai Dzat Yang Maha Penyayang."
+            "translation": "Ya Allah, untuk-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka, dengan rahmat-Mu wahai Dzat Yang Maha Penyayang.",
+            "riwayat": "HR. Abu Daud no. 2358 (dari Mu'adz bin Zuhrah)"
         },
+        "doa_berbuka_list": [
+            {
+                "arabic": "اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ بِرَحْمَتِكَ يَا أَرْحَمَ الرَّاحِمِينَ",
+                "latin": "Allahumma laka shumtu wa bika aamantu wa 'alaa rizqika afthartu birahmatika yaa arhamar raahimiin.",
+                "translation": "Ya Allah, untuk-Mu aku berpuasa, kepada-Mu aku beriman, dan dengan rezeki-Mu aku berbuka, dengan rahmat-Mu wahai Dzat Yang Maha Penyayang.",
+                "riwayat": "HR. Abu Daud no. 2358 (dari Mu'adz bin Zuhrah)"
+            },
+            {
+                "arabic": "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
+                "latin": "Dzahabazh zhama'u wabtallatil 'uruuqu wa tsabatal ajru insyaa Allah.",
+                "translation": "Telah hilang rasa haus, telah basah urat-urat, dan telah tetap ganjarannya insya Allah.",
+                "riwayat": "HR. Abu Daud no. 2357 (dari Abdullah bin Umar), dishahihkan Al-Albani"
+            }
+        ],
         "out_of_month": "Jadwal harian hanya tersedia untuk bulan ini.",
         "legend_haram_puasa": "Haram (Puasa)",
         "hint_long_press": "Tekan lama pada hari berpenanda untuk detail puasa",
