@@ -78,7 +78,19 @@
 
    /* Status & Feedback */
    --clr-info: #0097b2;
+   --clr-info-a10: rgba(0, 151, 178, 0.1);
+   --clr-info-a15: rgba(0, 151, 178, 0.15);
+   --clr-info-a20: rgba(0, 151, 178, 0.2);
+   --clr-info-a30: rgba(0, 151, 178, 0.3);
+   --clr-info-a40: rgba(0, 151, 178, 0.4);
+
    --clr-danger: #ff3b3b;
+   --clr-danger-a10: rgba(255, 59, 59, 0.1);
+   --clr-danger-a15: rgba(255, 59, 59, 0.15);
+   --clr-danger-a20: rgba(255, 59, 59, 0.2);
+   --clr-danger-a30: rgba(255, 59, 59, 0.3);
+   --clr-danger-a40: rgba(255, 59, 59, 0.4);
+
    --clr-cal-friday: #4ade80;
    --clr-cal-sunday: #f87171;
 

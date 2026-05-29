@@ -52,6 +52,7 @@ export async function fetchScheduleData(location) {
         return {
             hijriDay,
             hijriMonthName,
+            hijriMonthNumber: hijriMeta.monthNumber,
             hijriYear,
             date,
             isToday: isToday(date),

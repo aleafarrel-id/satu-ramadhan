@@ -14,6 +14,7 @@ import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 import { store } from '../../core/store.js';
 import { isNative } from '../../modules/system/platform.js';
+import { analyzeFastingDayOffline } from '../../modules/schedule/fasting-engine.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
@@ -44,6 +45,10 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, total
             </div>
 
             ${renderShareScheduleCard()}
+
+            <div id="schedule-fasting-card-wrapper" style="${renderFastingBadgeHtml(entry) ? '' : 'display: none;'}">
+                ${renderFastingBadgeHtml(entry)}
+            </div>
 
             <div class="card card--container schedule-content-card${viewingToday ? ' schedule-content-card--today' : ''}" id="schedule-swipe-area">
                 ${renderDateNav(entry, dayIndex, totalDays)}
@@ -88,6 +93,13 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
                 ${renderPrayerRows(entry.timings, activePrayerKey, viewingToday)}
             </div>
         `;
+    }
+
+    const badgeWrapper = document.getElementById('schedule-fasting-card-wrapper');
+    if (badgeWrapper) {
+        const badgeHtml = renderFastingBadgeHtml(entry);
+        badgeWrapper.innerHTML = badgeHtml;
+        badgeWrapper.style.display = badgeHtml ? 'block' : 'none';
     }
 
     const titleEl = container?.querySelector('.schedule-nav__title');
@@ -399,4 +411,40 @@ function formatGregorianDate(greg, months) {
  */
 function formatGregorianDateFromObj(date, months) {
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+/**
+ * Render the fasting badge if the current day has a fasting event.
+ */
+function renderFastingBadgeHtml(entry) {
+    if (!entry || !entry.date) return '';
+    
+    // Build a hijri object from entry-level data (preset-aware)
+    // rather than timings.hijri (raw API/offline, not offset-aware)
+    const hijri = {
+        day: String(entry.hijriDay),
+        month: { number: entry.hijriMonthNumber || 0 }
+    };
+    
+    // Guard: skip if we don't have month info
+    if (!hijri.month.number) return '';
+    
+    const fastingEvents = analyzeFastingDayOffline(hijri, entry.date);
+    if (!fastingEvents || fastingEvents.length === 0) return '';
+    
+    const primaryId = fastingEvents.includes('haram') ? 'haram' : fastingEvents[0];
+    const data = t(`fasting:${primaryId}`, { returnObjects: true });
+    if (!data || typeof data === 'string') return '';
+
+    const typeClass = `schedule-fasting-card--${data.type}`;
+
+    return `
+        <button class="card card--container schedule-fasting-card ${typeClass}" data-fasting-id="${primaryId}">
+            <div class="schedule-fasting-card__content">
+                <i class='bx ${data.icon} schedule-fasting-card__icon'></i>
+                <span class="schedule-fasting-card__text">${escapeHtml(data.name)}</span>
+                <i class='bx bx-chevron-right schedule-fasting-card__chevron'></i>
+            </div>
+        </button>
+    `;
 }

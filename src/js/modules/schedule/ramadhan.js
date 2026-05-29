@@ -3,81 +3,49 @@
  */
 
 import { getRamadhanConfig } from '../../core/database.js';
-import { getPrayerTimesByCoords } from '../../core/api.js';
 import * as storage from '../../core/storage.js';
 import { store } from '../../core/store.js';
 import { isIndonesiaMode, getActiveMethodShortName } from '../../core/calculation-resolver.js';
 import { t } from '../../core/i18n.js';
+import { generateOfflineHijri } from '../../core/local-calculator.js';
+import { clearFastingCache } from './fasting-engine.js';
 
 const USER_PRESETS_KEY = 'user_presets';
 const SAVED_YEAR_KEY = 'saved_year';
-const HIJRI_OFFSET_KEY = 'hijri_offset';
 
 /**
- * Calculate the offset (in days) between the preset's 1 Ramadhan
- * date and the API's astronomical Hijri calendar for that same day.
- *
- * Example: If NU says 1 Ramadhan = Feb 19, but API says Feb 19 = 2 Ramadhan,
- * then offset = 1 - 2 = -1 (preset is 1 day behind the API).
- *
- * IMPORTANT SCOPE LIMITATION:
- * This function is ONLY valid for the Ramadhan month context.
- * Differences between NU/Muhammadiyah (±1 day) are independent per-month
- * and DO NOT propagate to subsequent Hijri months, as the calendar
- * self-corrects at the start of each new month (29-30 days max).
- *
- * Ramadhan is handled authoritatively by computeRamadhanFromPreset() without offset.
- * This remains for diagnostic purposes or future per-month preset implementations.
- *
- * @param {{ latitude: number, longitude: number }} location
- * @returns {Promise<number>} offset in days (negative = preset behind API)
+ * Sync the Hijri offset to the store based on the active preset.
+ * Calculates the difference between the preset's 1 Ramadhan and the offline 
+ * astronomical Hijri date for that same day.
  */
-export async function getHijriOffset(location) {
+export async function syncHijriOffset() {
     const preset = await getActivePreset();
-    if (!preset) return 0;
-
-    const lat = location.latitude.toFixed(1);
-    const lng = location.longitude.toFixed(1);
-    const cacheKey = `${HIJRI_OFFSET_KEY}_${preset.id}_${lat}_${lng}`;
-
-    // Try cached offset first (per-preset and per-geom)
-    const cached = await storage.get(cacheKey);
-    if (cached !== null && cached !== undefined) return cached;
+    if (!preset) return;
 
     const startDate = new Date(preset.startDate + 'T00:00:00');
-
-    try {
-        // Fetch API data for the preset's 1 Ramadhan date
-        const apiData = await getPrayerTimesByCoords(
-            location.latitude, location.longitude, startDate
-        );
-
-        if (!apiData?.hijri) return 0;
-
-        const apiHijriDay = parseInt(apiData.hijri.day, 10);
-        const apiHijriMonth = apiData.hijri.month.number;
-
-        let offset = 0;
-
-        if (apiHijriMonth === 9) {
-            // Same month (Ramadhan) — direct comparison
-            // Preset says this date is day 1, API says it's day N
-            offset = 1 - apiHijriDay;
-        } else if (apiHijriMonth === 8) {
-            // API still in Sha'ban — preset is ahead of API
-            // Days remaining in Sha'ban + 1 (for day 1)
-            const shabanDays = apiData.hijri.month.days || 29;
-            offset = shabanDays - apiHijriDay + 1;
-        } else {
-            // Unlikely edge case; default to 0
-            offset = 0;
-        }
-
-        // Cache the offset for this specific preset
-        await storage.set(cacheKey, offset);
-        return offset;
-    } catch {
-        return 0;
+    
+    // Get the offline astronomical hijri date for the preset start date
+    const offlineHijri = generateOfflineHijri(startDate);
+    
+    if (!offlineHijri || !offlineHijri.month) return;
+    
+    const apiHijriDay = offlineHijri.day;
+    const apiHijriMonth = offlineHijri.month.number;
+    
+    let offset = 0;
+    if (apiHijriMonth === 9) {
+        // Same month (Ramadhan) — direct comparison
+        offset = 1 - apiHijriDay;
+    } else if (apiHijriMonth === 8) {
+        // Still in Sha'ban
+        const apiMonthDays = offlineHijri.month.days || 29;
+        offset = apiMonthDays - apiHijriDay + 1;
+    }
+    
+    const currentOffset = store.getState('settings.hijriOffset');
+    if (currentOffset !== offset) {
+        store.setState('settings.hijriOffset', offset);
+        clearFastingCache();
     }
 }
 
@@ -115,9 +83,8 @@ async function checkAndResetYear(jsonYear, basePresets) {
         const { customs } = await getUserPresetsData();
         await saveUserPresetsData({ overrides: {}, customs: [] });
 
-        // Clear offset cache for all presets utilizing the new prefix method
-        // This safely purges keys that have trailing latitude/longitude values
-        await storage.removeByPrefix(`${HIJRI_OFFSET_KEY}_`);
+        // Clear legacy offset cache that was used in older versions
+        await storage.removeByPrefix('hijri_offset_');
     }
 
     // Always sync the year
@@ -217,6 +184,7 @@ export async function getSelectedOrg() {
  */
 export async function setSelectedOrg(orgId) {
     store.setState('settings.org', orgId);
+    await syncHijriOffset();
 }
 
 /**

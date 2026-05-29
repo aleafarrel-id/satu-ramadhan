@@ -28,6 +28,7 @@ const initialState = {
     settings: {
         theme: 'auto',
         org: 'nu',
+        hijriOffset: 0,
         language: 'auto',
         notification: true,
         adzan: true,

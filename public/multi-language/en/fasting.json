@@ -1,0 +1,123 @@
+{
+    "sunnah_senin": {
+        "name": "Monday Fast",
+        "type": "sunnah",
+        "icon": "bx-sun",
+        "description": "A Sunnah fast recommended by the Prophet (PBUH) every Monday. On this day, deeds are presented to Allah.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ يَوْمَ اْلاِثْنَيْنِ سُنَّةً ِللهِ تَعَالَى",
+            "latin": "Nawaitu sauma yaumal itsnaini sunnatan lillahi ta'ala.",
+            "translation": "I intend to fast on Monday, a Sunnah for the sake of Allah."
+        }
+    },
+    "sunnah_kamis": {
+        "name": "Thursday Fast",
+        "type": "sunnah",
+        "icon": "bx-sun",
+        "description": "A Sunnah fast recommended by the Prophet (PBUH) every Thursday. On this day, deeds are presented to Allah.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ يَوْمَ الْخَمِيْسِ سُنَّةً ِللهِ تَعَالَى",
+            "latin": "Nawaitu sauma yaumal khamiisi sunnatan lillahi ta'ala.",
+            "translation": "I intend to fast on Thursday, a Sunnah for the sake of Allah."
+        }
+    },
+    "sunnah_ayyamul_bidh": {
+        "name": "Ayyamul Bidh Fast",
+        "type": "sunnah",
+        "icon": "bx-moon",
+        "description": "Sunnah fast during the middle of the Hijri month (13th, 14th, 15th). Its reward is equivalent to fasting the entire year.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ اَيَّامَ اْلبِيْضِ سُنَّةً ِللهِ تَعَالَى",
+            "latin": "Nawaitu sauma ayyaamal bidhi sunnatan lillahi ta'ala.",
+            "translation": "I intend to fast on the White Days, a Sunnah for the sake of Allah."
+        }
+    },
+    "sunnah_syawal": {
+        "name": "Shawwal Fast",
+        "type": "sunnah",
+        "icon": "bx-calendar-star",
+        "description": "Fasting six days in the month of Shawwal after Eid al-Fitr. Its reward is equivalent to fasting the entire year.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ الشَّوَّالِ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnatis syawwaali lillaahi ta'aalaa.",
+            "translation": "I intend to fast tomorrow for the Sunnah of Shawwal, for the sake of Allah."
+        }
+    },
+    "sunnah_arafah": {
+        "name": "Day of Arafah Fast",
+        "type": "sunnah",
+        "icon": "bx-star",
+        "description": "Sunnah fast on the 9th of Dhu al-Hijjah for those not performing Hajj. It expiates the sins of the past year and the coming year.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ عَرَفَةَ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmi 'arafata lillaahi ta'aalaa.",
+            "translation": "I intend to fast tomorrow for the Sunnah of Arafah, for the sake of Allah."
+        }
+    },
+    "sunnah_tarwiyah": {
+        "name": "Tarwiyah Fast",
+        "type": "sunnah",
+        "icon": "bx-star",
+        "description": "Sunnah fast on the 8th of Dhu al-Hijjah. It can expiate the sins of the past year.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ التَّرْوِيَةِ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmit tarwiyati lillaahi ta'aalaa.",
+            "translation": "I intend to fast tomorrow for the Sunnah of Tarwiyah, for the sake of Allah."
+        }
+    },
+    "sunnah_asyura": {
+        "name": "Ashura Fast",
+        "type": "sunnah",
+        "icon": "bx-shield",
+        "description": "Sunnah fast on the 10th of Muharram. It expiates the sins of the past year.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ عَاشُورَاءَ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmi 'aasyuuraa-a lillaahi ta'aalaa.",
+            "translation": "I intend to fast tomorrow for the Sunnah of Ashura, for the sake of Allah."
+        }
+    },
+    "sunnah_tasua": {
+        "name": "Tasu'a Fast",
+        "type": "sunnah",
+        "icon": "bx-shield",
+        "description": "Sunnah fast on the 9th of Muharram (before Ashura) to differ from the Jewish practice.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ سُنَّةِ يَوْمِ تَاسُوعَاءَ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i sunnati yawmi taasuu'aa-a lillaahi ta'aalaa.",
+            "translation": "I intend to fast tomorrow for the Sunnah of Tasu'a, for the sake of Allah."
+        }
+    },
+    "wajib_ramadhan": {
+        "name": "Ramadan Fast",
+        "type": "mandatory",
+        "icon": "bx-calendar-check",
+        "description": "Mandatory fasting for the full month of Ramadan. It is the fourth pillar of Islam.",
+        "niat": {
+            "arabic": "نَوَيْتُ صَوْمَ غَدٍ عَنْ أَدَاءِ فَرْضِ شَهْرِ رَمَضَانَ هذِهِ السَّنَةِ لِلهِ تَعَالَى",
+            "latin": "Nawaitu shauma ghadin 'an adaa'i fardhi syahri Ramadhaana haadzihis sanati lillaahi ta'aalaa.",
+            "translation": "I intend to fast tomorrow for the obligatory month of Ramadan this year, for the sake of Allah."
+        }
+    },
+    "haram": {
+        "name": "Fasting is Prohibited",
+        "type": "forbidden",
+        "icon": "bx-error-alt",
+        "description": "It is prohibited to fast on Eid al-Fitr (1 Shawwal), Eid al-Adha (10 Dhu al-Hijjah), and the days of Tashreeq (11, 12, 13 Dhu al-Hijjah)."
+    },
+    "common": {
+        "type_sunnah": "Sunnah",
+        "type_mandatory": "Mandatory",
+        "type_forbidden": "Prohibited",
+        "niat_title": "Intention to Fast",
+        "doa_title": "Iftar Supplication",
+        "doa_berbuka": {
+            "arabic": "اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ بِرَحْمَتِكَ يَا أَرْحَمَ الرَّاحِمِينَ",
+            "latin": "Allahumma laka shumtu wa bika aamantu wa 'alaa rizqika afthartu birahmatika yaa arhamar raahimiin.",
+            "translation": "O Allah, for You I have fasted, in You I believe, and with Your provision I break my fast, by Your mercy, O Most Merciful of the merciful."
+        },
+        "out_of_month": "Daily schedule is only available for the active month.",
+        "legend_haram_puasa": "Fasting Prohibited",
+        "hint_long_press": "Long press on marked days for fasting details",
+        "legend_format": "{{type}} Fasting"
+    }
+}

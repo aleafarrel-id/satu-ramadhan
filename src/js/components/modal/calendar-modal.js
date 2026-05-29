@@ -10,33 +10,33 @@ import { registerModalDismiss, unregisterModalDismiss } from '../../modules/syst
 import { t, loadNS } from '../../core/i18n.js';
 import { makeAccessibleBtn, addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { getModalRoot } from '../../utils/modal-portal.js';
+import * as Notification from '../../modules/notification/notification.js';
+import { showFastingDetailsModal } from './fasting-details-modal.js';
+
+import { getFastingCalendarForYear, buildOfflineHijriMonth } from '../../modules/schedule/fasting-engine.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
+let _currentMonthOffset = 0;
+let _baseDate = new Date();
+let _gridData = [];
 
-/**
- * Show the calendar modal.
- * @param {object} options
- * @param {Array}    options.scheduleData   - 30-day Ramadhan schedule entries
- * @param {number}   options.currentIndex   - currently viewed day index (0-based)
- * @param {Function} options.onSelectDay    - callback(index) when a day is selected
- */
 export async function showCalendarModal({ scheduleData, currentIndex, onSelectDay }) {
     if (_overlayEl) removeModal();
-    
+
     await loadNS('components/ui/header');
     await loadNS('components/modal/calendar-modal');
+    await loadNS('fasting');
 
-    _overlayEl = createModalDOM(scheduleData, currentIndex, onSelectDay);
+    // Reset offset and state
+    _currentMonthOffset = 0;
+    _baseDate = scheduleData && scheduleData.length > 0 ? scheduleData[0].date : new Date();
+
+    _overlayEl = createModalDOM(currentIndex, scheduleData, onSelectDay);
     getModalRoot().appendChild(_overlayEl);
 
-    // Register with hardware back handler
     registerModalDismiss(hideCalendarModal);
-
-    // Trigger entrance animation on next frame
     requestAnimationFrame(() => _overlayEl.classList.add('active'));
-
-    // Trap focus inside modal
     _releaseFocus = trapFocus(_overlayEl);
 }
 
@@ -99,97 +99,218 @@ function formatGregorianShort(date) {
 
 /**
  * Build the calendar grid HTML.
+ * @param {Date|null} selectedDate - The currently selected day's date, for exact comparison.
+ * @param {string} animClass - CSS animation class for transitions.
  * @returns {string} HTML string
  */
-function buildCalendarGrid(scheduleData, currentIndex) {
-    if (!scheduleData || scheduleData.length === 0) return '';
+function buildCalendarGrid(selectedDate, animClass = '') {
+    const hijriMonthNames = t('components/ui/header:hijri_months', { returnObjects: true }) || [];
+    _gridData = buildOfflineHijriMonth(_currentMonthOffset, _baseDate, hijriMonthNames);
+    if (!_gridData || _gridData.length === 0) return '';
 
-    const firstDate = scheduleData[0].date;
-    const hijriMonthName = scheduleData[0].hijriMonthName || t('components/modal/calendar-modal:hijriah');
-    const hijriYear = scheduleData[0].hijriYear || '';
+    const firstDate = _gridData[0].date;
+    const hijriMonthName = _gridData[0].hijriMonthName;
+    const hijriYear = _gridData[0].hijriYear;
 
-    // Determine Gregorian month range for the subtitle
     const firstGreg = formatGregorianShort(firstDate);
-    const lastGreg = formatGregorianShort(scheduleData[scheduleData.length - 1].date);
+    const lastGreg = formatGregorianShort(_gridData[_gridData.length - 1].date);
 
-    // Build header — dynamic Hijri month name
+    // Fetch fasting data map for the year(s) this grid spans
+    const fastingMap = getFastingCalendarForYear(firstDate.getFullYear());
+    const lastDate = _gridData[_gridData.length - 1].date;
+    const nextYearMap = firstDate.getFullYear() !== lastDate.getFullYear()
+        ? getFastingCalendarForYear(lastDate.getFullYear())
+        : null;
+
     const header = `
         <div class="cal-modal__header">
-            <div class="cal-modal__title">${hijriMonthName} ${hijriYear}</div>
-            <div class="cal-modal__subtitle">${firstGreg} – ${lastGreg}</div>
+            <button class="cal-modal__nav-btn" id="cal-nav-prev"><i class='bx bx-chevron-left'></i></button>
+            <div class="cal-modal__header-info">
+                <div class="cal-modal__title">${hijriMonthName} ${hijriYear}</div>
+                <div class="cal-modal__subtitle">${firstGreg} – ${lastGreg}</div>
+            </div>
+            <button class="cal-modal__nav-btn" id="cal-nav-next"><i class='bx bx-chevron-right'></i></button>
         </div>
     `;
 
-    // Weekday row (Monday-first)
     const daysShort = t('components/ui/header:days_short', { returnObjects: true }) || [];
     const reorderedDays = [...daysShort.slice(1), daysShort[0]];
-    
+
     const weekdayRow = reorderedDays.map((d, i) =>
         `<div class="cal-modal__weekday" data-weekday="${i}">${d}</div>`
     ).join('');
 
-    // Calculate leading empty cells (offset of day 1 Ramadhan)
     const startOffset = getMondayBasedDay(firstDate);
-
-    // Build day cells
     const emptyCells = Array.from({ length: startOffset }, () =>
         '<div class="cal-modal__cell cal-modal__cell--empty"></div>'
     ).join('');
 
-    const dayCells = scheduleData.map((entry, index) => {
+    const dayCells = _gridData.map((entry, index) => {
         const monthsShort = t('components/ui/header:months_short', { returnObjects: true }) || [];
         const gregDay = entry.date.getDate();
         const gregMonth = monthsShort[entry.date.getMonth()] || '';
         const today = isToday(entry.date);
         const weekday = getMondayBasedDay(entry.date);
-        const selected = index === currentIndex;
+
+        // Compare by date string to avoid index mismatch between grid and scheduleData
+        const selected = _currentMonthOffset === 0
+            && selectedDate instanceof Date
+            && entry.date.toDateString() === selectedDate.toDateString();
+
+        // Check for fasting events
+        const dateStr = `${entry.date.getFullYear()}-${String(entry.date.getMonth() + 1).padStart(2, '0')}-${String(entry.date.getDate()).padStart(2, '0')}`;
+        let fastingEvents = fastingMap.get(dateStr) || (nextYearMap ? nextYearMap.get(dateStr) : null);
+
+        let fastingClass = '';
+        let primaryFastingId = '';
+        if (fastingEvents && fastingEvents.length > 0) {
+            // Priority: Forbidden > Mandatory > Sunnah
+            let type = 'sunnah';
+            if (fastingEvents.includes('haram')) type = 'forbidden';
+            else if (fastingEvents.includes('wajib_ramadhan')) type = 'mandatory';
+
+            fastingClass = `cal-modal__cell--${type}`;
+            primaryFastingId = fastingEvents.includes('haram') ? 'haram' : fastingEvents[0];
+        }
 
         const classes = [
             'cal-modal__cell',
             today ? 'cal-modal__cell--today' : '',
             selected ? 'cal-modal__cell--selected' : '',
+            fastingClass
         ].filter(Boolean).join(' ');
 
         return `
-            <div class="${classes}" data-day-index="${index}" data-weekday="${weekday}" data-focus-item="true">
+            <div class="${classes}" data-day-index="${index}" data-fasting-id="${primaryFastingId}" data-weekday="${weekday}" data-focus-item="true">
                 <span class="cal-modal__hijri">${entry.hijriDay}</span>
                 <span class="cal-modal__greg">${gregDay} ${gregMonth}</span>
             </div>
         `;
     }).join('');
 
+    const typeSunnah = t('fasting:common.type_sunnah') || 'Sunnah';
+    const typeMandatory = t('fasting:common.type_mandatory') || 'Wajib';
+
+    const formatLegend = (type) => t('fasting:common.legend_format', { type }) || `${type} Fasting`;
+
+    const formatLegendHaram = t('fasting:common.legend_haram_puasa') || 'Forbidden (Fasting)';
+    const hintText = t('fasting:common.hint_long_press') || 'Long press on marked days for fasting details';
+
+    const legendHtml = `
+        <div class="cal-modal__legend">
+            <div class="cal-modal__legend-item">
+                <div class="cal-modal__legend-color cal-modal__legend-color--sunnah"></div>
+                <span>${formatLegend(typeSunnah)}</span>
+            </div>
+            <div class="cal-modal__legend-item">
+                <div class="cal-modal__legend-color cal-modal__legend-color--mandatory"></div>
+                <span>${formatLegend(typeMandatory)}</span>
+            </div>
+            <div class="cal-modal__legend-item">
+                <div class="cal-modal__legend-color cal-modal__legend-color--forbidden"></div>
+                <span>${formatLegendHaram}</span>
+            </div>
+        </div>
+        <div class="cal-modal__hint">
+            <i class='bx bx-info-circle'></i>
+            <span>${hintText}</span>
+        </div>
+    `;
+
     return `
         ${header}
-        <div class="cal-modal__grid" data-focus-group="calendar-grid" data-focus-direction="grid" data-focus-grid-cols="7">
+        <div class="cal-modal__grid ${animClass}" data-focus-group="calendar-grid" data-focus-direction="grid" data-focus-grid-cols="7">
             ${weekdayRow}
             ${emptyCells}
             ${dayCells}
         </div>
+        ${legendHtml}
     `;
 }
 
 /**
  * Create the modal DOM tree.
  */
-function createModalDOM(scheduleData, currentIndex, onSelectDay) {
+function createModalDOM(currentIndex, scheduleData, onSelectDay) {
     const overlay = document.createElement('div');
     overlay.className = 'cal-modal-overlay';
 
-    const gridHTML = buildCalendarGrid(scheduleData, currentIndex);
+    // Derive the selected date from scheduleData for accurate day comparison
+    const selectedDate = scheduleData?.[currentIndex]?.date ?? null;
 
-    overlay.innerHTML = `
-        <div class="cal-modal">
-            ${gridHTML}
-        </div>
-    `;
+    const renderGrid = (dir = 'init') => {
+        let animClass = '';
+        if (dir === 'next') animClass = 'cal-slide-left';
+        else if (dir === 'prev') animClass = 'cal-slide-right';
+        else animClass = 'cal-fade-in';
 
-    overlay.querySelectorAll('.cal-modal__cell[data-day-index]').forEach(cell => {
-        makeAccessibleBtn(cell, () => {
-            const index = parseInt(cell.dataset.dayIndex, 10);
-            hideCalendarModal();
-            onSelectDay?.(index);
+        overlay.innerHTML = `
+            <div class="cal-modal">
+                ${buildCalendarGrid(selectedDate, animClass)}
+            </div>
+        `;
+
+        // Bind day clicks and long presses
+        overlay.querySelectorAll('.cal-modal__cell[data-day-index]').forEach(cell => {
+            let pressTimer;
+
+            const handleLongPress = () => {
+                const fastingId = cell.dataset.fastingId;
+                if (fastingId && fastingId !== 'null') {
+                    showFastingDetailsModal(fastingId);
+                }
+            };
+
+            const startPress = (e) => {
+                // Ignore right clicks
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                pressTimer = setTimeout(handleLongPress, 500);
+            };
+
+            const cancelPress = () => {
+                if (pressTimer) clearTimeout(pressTimer);
+            };
+
+            cell.addEventListener('pointerdown', startPress);
+            cell.addEventListener('pointerup', cancelPress);
+            cell.addEventListener('pointercancel', cancelPress);
+            cell.addEventListener('pointerleave', cancelPress);
+
+            // Keep click for navigation
+            makeAccessibleBtn(cell, async () => {
+                cancelPress();
+                if (_currentMonthOffset === 0) {
+                    const dayIndex = parseInt(cell.dataset.dayIndex, 10);
+                    const entry = _gridData?.[dayIndex];
+                    hideCalendarModal();
+                    if (entry?.date) onSelectDay?.(entry.date);
+                } else {
+                    Notification.info(t('fasting:common.out_of_month'));
+                }
+            });
         });
-    });
+
+        // Bind Nav
+        const btnPrev = overlay.querySelector('#cal-nav-prev');
+        const btnNext = overlay.querySelector('#cal-nav-next');
+
+        if (btnPrev) {
+            btnPrev.addEventListener('click', (e) => {
+                e.stopPropagation();
+                _currentMonthOffset--;
+                renderGrid('prev');
+            });
+        }
+        if (btnNext) {
+            btnNext.addEventListener('click', (e) => {
+                e.stopPropagation();
+                _currentMonthOffset++;
+                renderGrid('next');
+            });
+        }
+    };
+
+    renderGrid();
 
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {

@@ -24,6 +24,7 @@ import {
 } from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
 import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';
+import { syncHijriOffset } from './modules/schedule/ramadhan.js';
 
 // Network
 import { initOfflineUpdater } from './modules/network/offline-updater.js';
@@ -72,6 +73,9 @@ export async function initApp() {
 
     // Hydrate persistent state before anything else
     await store.hydrate();
+    
+    // Sync Hijri offset based on active preset (requires hydrated store)
+    await syncHijriOffset();
 
     // Fire-and-forget: fetch latest Ramadhan config from Cloudflare Pages.
     // Runs in the background; result is cached to storage and used on next getRamadhanConfig() call.

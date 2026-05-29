@@ -19,10 +19,6 @@
     display: none;
 }
 
-
-
-
-
 /* ── Page Layout ── */
 .schedule-page {
     display: flex;
@@ -124,6 +120,7 @@
 .schedule-nav__subtitle {
     font-size: var(--fs-xs);
     color: var(--clr-text-muted);
+    margin-top: 4px;
 }
 
 /* ── Nav Controls (today + arrows) ── */
@@ -534,6 +531,78 @@
     }
 }
 
+/* ── Fasting Card ── */
+.schedule-fasting-card {
+    display: block;
+    width: 100%;
+    padding: 14px var(--spacing-md);
+    cursor: pointer;
+    text-align: left;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.schedule-fasting-card__content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.schedule-fasting-card__icon {
+    font-size: var(--fs-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.schedule-fasting-card__text {
+    flex: 1;
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    line-height: 1.2;
+    padding-top: 2px;
+}
+
+.schedule-fasting-card__chevron {
+    font-size: var(--fs-xl);
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .schedule-fasting-card:hover {
+        filter: brightness(1.1);
+        transform: translateY(-2px);
+    }
+}
+
+.schedule-fasting-card:active {
+    transform: scale(0.98);
+}
+
+/* Fasting Card Colors (Text, Background & Border) */
+.schedule-fasting-card--sunnah {
+    color: var(--clr-info);
+    background: var(--clr-info-a10);
+    border-color: var(--clr-info-a30);
+}
+
+.schedule-fasting-card--mandatory {
+    color: var(--clr-accent-400);
+    background: var(--clr-accent-a10);
+    border-color: var(--clr-accent-a30);
+}
+
+.schedule-fasting-card--forbidden {
+    color: color-mix(in srgb, var(--clr-danger) 85%, var(--clr-text-primary));
+    background: var(--clr-danger-a10);
+    border-color: var(--clr-danger-a30);
+}
+
 /* =============================================
    Responsive
    ============================================= */
@@ -732,6 +801,22 @@
 
 /* ── Small Mobile (≤ 400px) ── */
 @media (max-width: 400px) {
+    .schedule-fasting-card {
+        padding: 12px var(--spacing-sm);
+    }
+
+    .schedule-fasting-card__icon {
+        font-size: var(--fs-md);
+    }
+
+    .schedule-fasting-card__text {
+        font-size: var(--fs-xs);
+    }
+
+    .schedule-fasting-card__chevron {
+        font-size: var(--fs-sm);
+    }
+
     .schedule-nav {
         gap: var(--spacing-xs);
     }
@@ -802,6 +887,18 @@
 
 /* ── Extra Small Mobile (≤ 340px) ── */
 @media (max-width: 340px) {
+    .schedule-fasting-card {
+        padding: 10px var(--spacing-sm);
+    }
+
+    .schedule-fasting-card__icon {
+        font-size: var(--fs-base);
+    }
+
+    .schedule-fasting-card__text {
+        font-size: 11px;
+    }
+
     .schedule-nav {
         padding: var(--spacing-sm);
     }

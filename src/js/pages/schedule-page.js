@@ -6,6 +6,7 @@ import '../../css/components/modal/date-picker-modal.css';
 import '../../css/components/modal/share-schedule-modal.css';
 import '../../css/components/modal/confirm-modal.css';
 import '../../css/components/modal/preset-manager-modal.css';
+import '../../css/components/modal/fasting-details-modal.css';
 
 import { isNative } from '../modules/system/platform.js';
 import { ADZAN_PRAYER_KEYS } from '../utils/datetime.js';
@@ -45,6 +46,7 @@ import { showCalendarModal } from '../components/modal/calendar-modal.js';
 import { showLocationModal } from '../components/modal/location-modal.js';
 import { showLocationSearchModal } from '../components/modal/location-search-modal.js';
 import { showShareScheduleModal } from '../components/modal/share-schedule-modal.js';
+import { showFastingDetailsModal } from '../components/modal/fasting-details-modal.js';
 import { downloadScheduleImage, shareScheduleImage } from '../modules/share/share-schedule-exporter.js';
 import { bindSwipeEvents, unbindSwipeEvents } from '../components/schedule/schedule-swipe.js';
 import { ensureStoragePermission } from '../modules/permission/permission-dialog-configs.js';
@@ -110,8 +112,15 @@ export async function render(container, options = {}) {
 
     await loadNS('pages/schedule-page');
     await loadNS('components/card/location-card');
-    await loadNS('components/card/schedule-card');
-    await loadNS('components/card/share-schedule-card');
+
+    // Preload namespaces for calendar, details, and share card
+    await Promise.all([
+        loadNS('components/card/schedule-card'),
+        loadNS('components/card/share-schedule-card'),
+        loadNS('components/modal/share-schedule-modal'),
+        loadNS('fasting')
+    ]);
+
     await loadNS('components/card/countdown-card');
     await loadNS('components/card/shortcut-card');
     await loadNS('modules/prayer/prayer-times');
@@ -320,11 +329,20 @@ function startDayCrossingCheck() {
         if (_lastDateStr !== currentDateStr) {
             _lastDateStr = currentDateStr;
 
+            // Check if the new day actually exists in the current schedule data.
+            // If not, the Hijri month has rolled over — re-fetch silently without
+            // showing a skeleton (data is stale but still readable for now).
+            const todayIndex = _scheduleData.findIndex(entry => isToday(entry.date));
+            if (todayIndex === -1) {
+                _rehydrateAndRender();
+                return;
+            }
+
             _scheduleData.forEach(entry => {
                 entry.isToday = isToday(entry.date);
             });
 
-            _currentDayIndex = findTodayIndex(_scheduleData);
+            _currentDayIndex = todayIndex;
             renderDayView();
         }
     }, 60_000);
@@ -597,14 +615,32 @@ function bindEvents() {
         showCalendarModal({
             scheduleData: _scheduleData,
             currentIndex: _currentDayIndex,
-            onSelectDay: (newIndex) => {
-                if (newIndex === _currentDayIndex) return;
+            onSelectDay: (selectedDate) => {
+                // Calendar passes a Date object; find the matching index in _scheduleData
+                // so navigation is always aligned to the actual schedule data, not the calendar grid.
+                const newIndex = _scheduleData
+                    ? _scheduleData.findIndex(e => e.date.toDateString() === selectedDate.toDateString())
+                    : -1;
+                if (newIndex < 0 || newIndex === _currentDayIndex) return;
                 const dir = newIndex > _currentDayIndex ? 'left' : 'right';
                 _currentDayIndex = newIndex;
                 animateSlide(dir);
             },
         });
     });
+
+    const fastingWrapper = document.getElementById('schedule-fasting-card-wrapper');
+    if (fastingWrapper) {
+        fastingWrapper.addEventListener('click', (e) => {
+            const card = e.target.closest('.schedule-fasting-card');
+            if (card) {
+                const fastingId = card.getAttribute('data-fasting-id');
+                if (fastingId) {
+                    showFastingDetailsModal(fastingId);
+                }
+            }
+        });
+    }
 
     const swipeArea = document.getElementById('schedule-swipe-area');
     if (swipeArea) {

@@ -114,7 +114,7 @@ function computeHijriMonthDays(date, hijriDay) {
  * @param {Date} date - Gregorian date to convert
  * @returns {{ day: string, month: { number: number, days: number }, year: string }}
  */
-function generateOfflineHijri(date) {
+export function generateOfflineHijri(date) {
     const fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
         day: 'numeric', month: 'numeric', year: 'numeric',
     });

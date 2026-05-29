@@ -13,11 +13,10 @@
    justify-content: center;
    padding: var(--spacing-lg);
    background: var(--clr-bg-cal-overlay);
-   backdrop-filter: blur(8px);
-   -webkit-backdrop-filter: blur(8px);
    opacity: 0;
    visibility: hidden;
    transition: opacity 0.3s ease, visibility 0.3s ease;
+   contain: layout style;
 }
 
 .cal-modal-overlay.active {
@@ -39,6 +38,10 @@
       inset 0 1px 0 var(--clr-white-a05);
    transform: translateY(24px) scale(0.95);
    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+   /* Promote to GPU compositor layer before animation starts */
+   will-change: transform;
+   backface-visibility: hidden;
+   -webkit-backface-visibility: hidden;
 }
 
 .cal-modal-overlay.active .cal-modal {
@@ -47,17 +50,50 @@
 
 /* ── Header ── */
 .cal-modal__header {
-   text-align: center;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
    margin-bottom: var(--spacing-lg);
+}
+
+.cal-modal__header-info {
+   text-align: center;
+   flex: 1;
+}
+
+.cal-modal__nav-btn {
+   width: 36px;
+   height: 36px;
+   border-radius: var(--radius-full);
+   background: var(--clr-white-a05);
+   color: var(--clr-text-primary);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: var(--fs-lg);
+   cursor: pointer;
+   border: 1px solid transparent;
+   transition: all var(--transition-fast);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .cal-modal__nav-btn:hover {
+      background: var(--clr-primary-a20);
+      color: var(--clr-primary-400);
+   }
+}
+
+.cal-modal__nav-btn:active {
+   transform: scale(0.9);
 }
 
 .cal-modal__title {
    font-family: var(--ff-decorative);
-   font-size: var(--fs-xl);
+   font-size: 22px;
    font-weight: var(--fw-bold);
    color: var(--clr-accent-500);
    line-height: var(--lh-snug);
-   margin-bottom: var(--spacing-xs);
+   margin-bottom: 2px;
 }
 
 .cal-modal__subtitle {
@@ -181,6 +217,114 @@
    color: var(--clr-accent-400);
 }
 
+/* ── Fasting Tints (Border Only) ── */
+.cal-modal__cell--sunnah {
+   border-color: var(--clr-info);
+}
+
+.cal-modal__cell--sunnah .cal-modal__hijri {
+   color: var(--clr-info);
+}
+
+.cal-modal__cell--mandatory {
+   border-color: var(--clr-accent-400);
+}
+
+.cal-modal__cell--mandatory .cal-modal__hijri {
+   color: var(--clr-accent-400);
+}
+
+.cal-modal__cell--forbidden {
+   border-color: var(--clr-danger);
+}
+
+.cal-modal__cell--forbidden .cal-modal__hijri {
+   color: var(--clr-danger);
+}
+
+/* Hover states for pointer devices */
+@media (hover: hover) and (pointer: fine) {
+   .cal-modal__cell--sunnah:hover {
+      border-color: var(--clr-info);
+      background: var(--clr-info-a10);
+   }
+
+   .cal-modal__cell--mandatory:hover {
+      border-color: var(--clr-accent-400);
+      background: var(--clr-accent-a10);
+   }
+
+   .cal-modal__cell--forbidden:hover {
+      border-color: var(--clr-danger);
+      background: var(--clr-danger-a10);
+   }
+}
+
+/* Today Override for Fasting cells */
+.cal-modal__cell--today.cal-modal__cell--sunnah {
+   background: var(--clr-info-a20);
+   border-color: var(--clr-info-a40);
+}
+
+.cal-modal__cell--today.cal-modal__cell--mandatory {
+   background: var(--clr-accent-a20);
+   border-color: var(--clr-accent-a40);
+}
+
+.cal-modal__cell--today.cal-modal__cell--forbidden {
+   background: var(--clr-danger-a20);
+   border-color: var(--clr-danger-a40);
+}
+
+.cal-modal__cell--today.cal-modal__cell--sunnah .cal-modal__hijri,
+.cal-modal__cell--today.cal-modal__cell--sunnah .cal-modal__greg {
+   color: var(--clr-info);
+}
+
+.cal-modal__cell--today.cal-modal__cell--mandatory .cal-modal__hijri,
+.cal-modal__cell--today.cal-modal__cell--mandatory .cal-modal__greg {
+   color: var(--clr-accent-400);
+}
+
+.cal-modal__cell--today.cal-modal__cell--forbidden .cal-modal__hijri,
+.cal-modal__cell--today.cal-modal__cell--forbidden .cal-modal__greg {
+   color: color-mix(in srgb, var(--clr-danger) 85%, var(--clr-text-primary));
+}
+
+/* Fasting Selected (Active Day with Solid Glow) */
+.cal-modal__cell--selected.cal-modal__cell--sunnah {
+   background: linear-gradient(135deg, var(--clr-info-a30), var(--clr-info-a15));
+   border-color: var(--clr-info-a40);
+   box-shadow: 0 0 16px var(--clr-info-a20);
+}
+
+.cal-modal__cell--selected.cal-modal__cell--sunnah .cal-modal__hijri,
+.cal-modal__cell--selected.cal-modal__cell--sunnah .cal-modal__greg {
+   color: var(--clr-info);
+}
+
+.cal-modal__cell--selected.cal-modal__cell--mandatory {
+   background: linear-gradient(135deg, var(--clr-accent-a30), var(--clr-accent-a15));
+   border-color: var(--clr-accent-a40);
+   box-shadow: 0 0 16px var(--clr-accent-a20);
+}
+
+.cal-modal__cell--selected.cal-modal__cell--mandatory .cal-modal__hijri,
+.cal-modal__cell--selected.cal-modal__cell--mandatory .cal-modal__greg {
+   color: var(--clr-accent-400);
+}
+
+.cal-modal__cell--selected.cal-modal__cell--forbidden {
+   background: linear-gradient(135deg, var(--clr-danger-a30), var(--clr-danger-a15));
+   border-color: var(--clr-danger-a40);
+   box-shadow: 0 0 16px var(--clr-danger-a20);
+}
+
+.cal-modal__cell--selected.cal-modal__cell--forbidden .cal-modal__hijri,
+.cal-modal__cell--selected.cal-modal__cell--forbidden .cal-modal__greg {
+   color: color-mix(in srgb, var(--clr-danger) 85%, var(--clr-text-primary));
+}
+
 /* ── Hijri Day Number (large, prominent) ── */
 .cal-modal__hijri {
    font-family: var(--ff-primary);
@@ -199,6 +343,116 @@
    line-height: var(--lh-none);
    white-space: nowrap;
    opacity: 0.7;
+}
+
+/* ── Legend ── */
+.cal-modal__legend {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   gap: 12px 16px;
+   margin-top: var(--spacing-md);
+   padding-top: var(--spacing-md);
+   border-top: 1px solid var(--clr-white-a05);
+}
+
+.cal-modal__legend-item {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   font-size: 10px;
+   font-family: var(--ff-primary);
+   color: var(--clr-text-muted);
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+   flex: 0 1 auto;
+   line-height: 1;
+   white-space: nowrap;
+}
+
+.cal-modal__legend-color {
+   flex-shrink: 0;
+   width: 8px;
+   height: 8px;
+   border-radius: var(--radius-full);
+}
+
+.cal-modal__legend-color--sunnah {
+   background: var(--clr-info);
+}
+
+.cal-modal__legend-color--mandatory {
+   background: var(--clr-accent-400);
+}
+
+.cal-modal__legend-color--forbidden {
+   background: var(--clr-danger);
+}
+
+/* ── Hint ── */
+.cal-modal__hint {
+   margin-top: var(--spacing-md);
+   text-align: center;
+   font-size: 10px;
+   font-family: var(--ff-primary);
+   font-style: italic;
+   color: var(--clr-text-muted);
+   opacity: 0.6;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 4px;
+}
+
+/* =============================================
+   Animations
+   ============================================= */
+.cal-slide-left {
+   animation: calSlideLeft 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.cal-slide-right {
+   animation: calSlideRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.cal-fade-in {
+   animation: calFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes calSlideLeft {
+   0% {
+      opacity: 0;
+      transform: translateX(15px);
+   }
+
+   100% {
+      opacity: 1;
+      transform: translateX(0);
+   }
+}
+
+@keyframes calSlideRight {
+   0% {
+      opacity: 0;
+      transform: translateX(-15px);
+   }
+
+   100% {
+      opacity: 1;
+      transform: translateX(0);
+   }
+}
+
+@keyframes calFadeIn {
+   0% {
+      opacity: 0;
+      transform: scale(0.98);
+   }
+
+   100% {
+      opacity: 1;
+      transform: scale(1);
+   }
 }
 
 /* =============================================

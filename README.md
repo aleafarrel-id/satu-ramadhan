@@ -36,9 +36,9 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · �
       <img src="assets/previews/1.png" alt="Waktu Shalat Real-Time" width="320" />
     </td>
     <td width="50%" valign="top">
-      <h3>🔔 Adzan & Notifikasi</h3>
-      <p>Notifikasi Adzan otomatis setiap waktu shalat. Pilih suara Adzan dari Makkah, Madinah, dan lainnya. Jadwal Imsakiyah siap cetak satu bulan penuh (hijriah - masehi).</p>
-      <img src="assets/previews/3.png" alt="Adzan & Notifikasi" width="320" />
+      <h3>🔔 Adzan & Jadwal Puasa</h3>
+      <p>Notifikasi Adzan otomatis. Jadwal Imsakiyah siap cetak, serta <strong>Kalender Puasa Sepanjang Tahun</strong> (Sunnah & Haram) interaktif lengkap dengan niat dan doa (ID/EN).</p>
+      <img src="assets/previews/3.png" alt="Adzan & Jadwal Puasa" width="320" />
     </td>
   </tr>
   <tr>
@@ -172,6 +172,7 @@ satu-ramadhan/
 │   ├── multi-language/           # Namespace terjemahan i18next (lazy-loaded per halaman)
 │   │   ├── id/                   # Bahasa Indonesia
 │   │   │   ├── common.json       # String umum (tombol, label, pesan error)
+│   │   │   ├── fasting.json      # Data puasa sunnah/haram, niat, doa
 │   │   │   ├── pages/            # Namespace per halaman
 │   │   │   │   ├── home-page.json
 │   │   │   │   ├── schedule-page.json
@@ -241,6 +242,7 @@ satu-ramadhan/
     │       │   ├── adzan-selector-modal.css
     │       │   ├── audio-mode-selector-modal.css
     │       │   ├── calendar-modal.css
+    │       │   ├── fasting-details-modal.css
     │       │   ├── date-picker-modal.css
     │       │   ├── location-modal.css
     │       │   ├── location-search-modal.css
@@ -253,6 +255,7 @@ satu-ramadhan/
     │       │   ├── tasbih-preset-modal.css
     │       │   ├── bookmark-note-modal.css
     │       │   ├── bookmark-folder-modal.css
+    │       │   ├── bookmark-move-modal.css
     │       │   ├── calculation-method-modal.css
     │       │   ├── about-app-modal.css
     │       │   └── permission-dialog.css
@@ -349,6 +352,7 @@ satu-ramadhan/
         │   │
         │   ├── schedule/
         │   │   ├── schedule-data.js         # Fetch & format jadwal shalat satu bulan
+        │   │   ├── fasting-engine.js        # Kalkulasi offline kalender puasa sunnah/haram
         │   │   ├── ramadhan.js              # Kalkulasi periode Ramadhan + Imsak
         │   │   └── countdown.js             # Logika countdown ke waktu shalat berikutnya
         │   │
@@ -390,7 +394,8 @@ satu-ramadhan/
         │   │   ├── confirm-modal.js                # Dialog konfirmasi aksi (hapus, reset)
         │   │   ├── adzan-selector-modal.js         # Pilih suara Adzan dengan preview audio
         │   │   ├── audio-mode-selector-modal.js    # Pilih mode audio tilawah Quran
-        │   │   ├── calendar-modal.js               # Kalender navigasi jadwal bulan
+        │   │   ├── calendar-modal.js               # Kalender navigasi jadwal bulan & puasa
+        │   │   ├── fasting-details-modal.js        # Detail puasa sunnah/haram (niat, doa)
         │   │   ├── date-picker-modal.js            # Date picker Hijriah & Masehi
         │   │   ├── location-modal.js               # Konfirmasi atau ganti lokasi
         │   │   ├── location-search-modal.js        # Pencarian kota dengan autocomplete
