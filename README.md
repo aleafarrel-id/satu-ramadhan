@@ -45,7 +45,7 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · �
     <td width="50%" valign="top">
       <h3>📖 Al-Quran, Tajwid, Latin & Terjemah</h3>
       <p>Al-Quran 30 Juz lengkap dengan Tajwid berwarna otomatis, transliterasi Latin, terjemahan Bahasa Indonesia dan Inggris, audio murottal per ayat, serta sistem Bookmark pintar berbasis Folder.</p>
-      <img src="assets/previews/7.png" alt="Al-Quran dengan Tajwid" width="320" />
+      <img src="assets/previews/9.png" alt="Al-Quran dengan Tajwid" width="320" />
     </td>
     <td width="50%" valign="top">
       <h3>🧭 Kompas Kiblat Live</h3>
@@ -57,12 +57,12 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · �
     <td width="50%" valign="top">
       <h3>📿 Tasbih Digital</h3>
       <p>Tasbih digital elegan dengan animasi manik-manik 3D yang realistis. Lacak sesi zikir harian, atur target hitungan dan putaran, lengkap dengan kaligrafi Arab, efek getar dan suara klik.</p>
-      <img src="assets/previews/6.png" alt="Tasbih Digital" width="320" />
+      <img src="assets/previews/8.png" alt="Tasbih Digital" width="320" />
     </td>
     <td width="50%" valign="top">
       <h3>⚙️ Kustomisasi Penuh & Global</h3>
       <p>Tema tampilan (Teal/Dark), bahasa (ID/EN), dan pilihan suara Adzan bisa disesuaikan. Metode hisab waktu shalat kini terdeteksi <strong>otomatis berdasarkan negara</strong> — mendukung 23+ metode global (MUIS, JAKIM, ISNA, MWL, Umm Al-Qura, Kemenag, dll.).</p>
-      <img src="assets/previews/8.png" alt="Kustomisasi Penuh" width="320" />
+      <img src="assets/previews/11.png" alt="Kustomisasi Penuh" width="320" />
     </td>
   </tr>
 </table>
