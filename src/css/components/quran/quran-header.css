@@ -11,7 +11,7 @@
    justify-content: space-between;
    gap: var(--sp-2);
    padding-bottom: var(--header-padding);
-   padding-top: max(var(--header-padding), env(safe-area-inset-top));
+   padding-top: max(var(--header-padding), var(--safe-area-inset-top, env(safe-area-inset-top)));
    padding-left: max(var(--header-padding), env(safe-area-inset-left));
    padding-right: max(var(--header-padding), env(safe-area-inset-right));
    background: var(--clr-quran-card-bg);

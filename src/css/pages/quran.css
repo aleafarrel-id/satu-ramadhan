@@ -193,7 +193,7 @@
    padding-bottom: var(--header-padding);
    padding-left: var(--header-padding);
    padding-right: var(--header-padding);
-   padding-top: max(var(--header-padding), env(safe-area-inset-top));
+   padding-top: max(var(--header-padding), var(--safe-area-inset-top, env(safe-area-inset-top)));
    background: var(--clr-quran-card-bg);
    border-bottom: 1px solid var(--clr-quran-border);
    flex-shrink: 0;

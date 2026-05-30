@@ -85,7 +85,7 @@ public class LocalStatusBarPlugin extends Plugin {
         call.resolve();
     }
 
-    /** Returns static info — overlays is always true with edge-to-edge. */
+    /** Returns status bar info including the real safe-area top inset height (CSS px). */
     @PluginMethod
     public void getInfo(PluginCall call) {
         JSObject ret = new JSObject();
@@ -93,7 +93,7 @@ public class LocalStatusBarPlugin extends Plugin {
         ret.put("style", "DARK");
         ret.put("overlays", true);
         ret.put("color", "#00000000");
-        ret.put("height", 0);
+        ret.put("height", Math.round(MainActivity.sSafeAreaTopCssPx));
         call.resolve(ret);
     }
 

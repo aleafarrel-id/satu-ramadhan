@@ -30,12 +30,33 @@ export function initTheme() {
     const savedTheme = store.getState('settings.theme') ?? 'auto';
     applyThemeBackground(savedTheme);
 
+    // JS-side fallback: query the real status bar height from native and set
+    // the CSS variable. Covers the race condition where the native insets
+    // listener fires before the page loads (evaluateJavascript is lost).
+    _injectSafeAreaInsetTop();
+
     // Subscribe to store changes so other components don't have to worry about DOM mutation
     store.subscribe('settings.theme', (newTheme) => {
         // Applies immediately to DOM. The View Transition API from the modal
         // will freeze the frame and execute this smoothly.
         applyThemeBackground(newTheme);
     });
+}
+
+/**
+ * Queries StatusBar.getInfo() for the real top inset height (set by
+ * MainActivity) and writes it as a CSS custom property on :root.
+ * No-op on web (isNative guard) or if height is 0.
+ */
+function _injectSafeAreaInsetTop() {
+    if (!isNative) return;
+    StatusBar.getInfo().then((info) => {
+        if (info && info.height > 0) {
+            document.documentElement.style.setProperty(
+                '--safe-area-inset-top', info.height + 'px'
+            );
+        }
+    }).catch(() => {});
 }
 
 /**
