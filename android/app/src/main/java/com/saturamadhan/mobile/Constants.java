@@ -37,6 +37,8 @@ public final class Constants {
     // --- SharedPreferences ---
     public static final String PREF_NAME = "PrayerAlarms";
     public static final String KEY_NOTIFICATIONS_ENABLED = "notifications_enabled";
+    public static final String KEY_ADZAN_VOLUME = "adzan_volume";
+    public static final float DEFAULT_ADZAN_VOLUME = 1.0f;
 
     // --- WorkManager Tags ---
     public static final String WORKER_TAG_ALARM_RESCHEDULE = "alarm_reschedule_worker";

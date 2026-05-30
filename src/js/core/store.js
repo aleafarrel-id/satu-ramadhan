@@ -32,6 +32,7 @@ const initialState = {
         language: 'auto',
         notification: true,
         adzan: true,
+        adzanVolume: 1.0,
         adzanControls: {
             subuh: true,
             dzuhur: true,

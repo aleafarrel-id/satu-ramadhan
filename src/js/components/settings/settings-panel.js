@@ -16,11 +16,12 @@ import { store } from '../../core/store.js';
 import { isWeb } from '../../modules/system/platform.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { showAdzanSelectorModal } from '../modal/adzan-selector-modal.js';
+import { showAdzanVolumeModal } from '../modal/adzan-volume-modal.js';
 import { AVAILABLE_ADZANS, DEFAULT_ADZAN, DEFAULT_ADZAN_SUBUH } from '../../config/adzan-sounds.js';
 
 export function render(container) {
-    // Force preload i18n to guarantee translations work accurately
     loadNS('components/modal/adzan-selector-modal');
+    loadNS('components/modal/adzan-volume-modal');
 
     container.innerHTML = `
         <div class="card settings-card settings-card-spacing" data-focus-group="settings-list" data-focus-direction="vertical">
@@ -59,6 +60,16 @@ export function render(container) {
                 </div>
             </div>
             <div class="settings-divider"></div>
+            <div class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="adzan-volume-row" tabindex="0" data-focus-item>
+                <div class="settings-item-info">
+                    <i class='bx bx-slider'></i>
+                    <span id="adzan-volume-label">${t('components/settings/settings-panel:adzan_volume', { defaultValue: 'Volume Adzan' })}</span>
+                </div>
+                <div class="settings-select-trigger">
+                    <span id="adzan-volume-value"></span>
+                </div>
+            </div>
+            <div class="settings-divider"></div>
             <div class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="battery-row" tabindex="0" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-battery'></i>
@@ -77,6 +88,8 @@ export function render(container) {
     const batteryRow = container.querySelector('#battery-row');
     const adzanSelectorRow = container.querySelector('#adzan-selector-row');
     const adzanSelectedValue = container.querySelector('#adzan-selected-value');
+    const adzanVolumeRow = container.querySelector('#adzan-volume-row');
+    const adzanVolumeValue = container.querySelector('#adzan-volume-value');
 
     // Function to strictly validate against our registry
     const validateAdzan = (val, defaultVal) => {
@@ -111,6 +124,15 @@ export function render(container) {
     }
 
     updateAdzanValueDisplay();
+
+    function updateAdzanVolumeDisplay() {
+        if (!adzanVolumeValue) return;
+        const volume = store.getState('settings.adzanVolume');
+        const displayVol = typeof volume === 'number' ? volume : 1.0;
+        adzanVolumeValue.textContent = `${Math.round(displayVol * 100)}%`;
+    }
+
+    updateAdzanVolumeDisplay();
 
     // Read directly from Store Manager synchronization
     if (isWeb) {
@@ -197,6 +219,21 @@ export function render(container) {
             });
         });
 
+        adzanVolumeRow?.addEventListener('click', async () => {
+            if (!store.getState('settings.notification') || store.getState('settings.adzan') === false) return;
+
+            showAdzanVolumeModal({
+                currentVolume: store.getState('settings.adzanVolume'),
+                onSelect: (newVolume) => {
+                    store.setState('settings.adzanVolume', newVolume);
+                    updateAdzanVolumeDisplay();
+                    if (!isWeb && PrayerService.setAdzanVolume) {
+                        PrayerService.setAdzanVolume({ volume: newVolume }).catch(() => { });
+                    }
+                }
+            });
+        });
+
         batteryRow?.addEventListener('click', async () => {
             if (!store.getState('settings.notification')) return;
             impact('medium');
@@ -218,11 +255,13 @@ function updateAdzanRowState(notifEnabled, container) {
     const adzanRow = root.querySelector('#adzan-row');
     const batteryRow = root.querySelector('#battery-row');
     const selectorRow = root.querySelector('#adzan-selector-row');
+    const volumeRow = root.querySelector('#adzan-volume-row');
     const adzanEnabled = store.getState('settings.adzan') !== false;
 
     if (adzanRow) adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
     if (batteryRow) batteryRow.classList.toggle('settings-item--disabled', !notifEnabled);
     if (selectorRow) selectorRow.classList.toggle('settings-item--disabled', !notifEnabled || !adzanEnabled);
+    if (volumeRow) volumeRow.classList.toggle('settings-item--disabled', !notifEnabled || !adzanEnabled);
 }
 
 /**

@@ -1,0 +1,7 @@
+{
+    "title": "Adhan Volume",
+    "volume_label": "Volume",
+    "preview_play": "Play Preview",
+    "preview_stop": "Stop Preview",
+    "description": "This volume is relative to your device's maximum system alarm volume."
+}

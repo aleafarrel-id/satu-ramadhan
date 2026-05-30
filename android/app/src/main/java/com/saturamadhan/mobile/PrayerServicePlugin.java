@@ -149,6 +149,35 @@ public class PrayerServicePlugin extends Plugin {
         call.resolve(result);
     }
 
+    @PluginMethod()
+    public void setAdzanVolume(PluginCall call) {
+        float volume = call.getFloat("volume", Constants.DEFAULT_ADZAN_VOLUME);
+        float clamped = Math.max(0.0f, Math.min(1.0f, volume));
+
+        Context context = getContext();
+
+        // Persist to CE (credential-encrypted) storage
+        SharedPreferences prefs = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putFloat(Constants.KEY_ADZAN_VOLUME, clamped).apply();
+
+        // Persist to DE (device-protected) storage for Direct Boot access
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Context deContext = context.createDeviceProtectedStorageContext();
+            SharedPreferences dePrefs = deContext.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+            dePrefs.edit().putFloat(Constants.KEY_ADZAN_VOLUME, clamped).apply();
+        }
+
+        Log.d(TAG, "Adzan volume saved: " + clamped);
+        call.resolve();
+    }
+
+    @PluginMethod()
+    public void updatePreviewVolume(PluginCall call) {
+        float volume = call.getFloat("volume", Constants.DEFAULT_ADZAN_VOLUME);
+        PrayerPlaybackService.setPreviewVolume(volume);
+        call.resolve();
+    }
+
     // ── Battery & Settings ────────────────────────────────────────────
 
     /**

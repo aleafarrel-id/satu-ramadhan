@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -33,9 +34,24 @@ public class PrayerPlaybackService extends Service {
 
     // --- Static State for JS Bridge ---
     private static boolean sIsPlaying = false;
+    private static PrayerPlaybackService sInstance = null;
 
     public static boolean isCurrentlyPlaying() {
         return sIsPlaying;
+    }
+
+    /**
+     * Adjusts the volume of the currently active MediaPlayer without persisting.
+     * Used by PrayerServicePlugin.updatePreviewVolume() for real-time slider feedback.
+     *
+     * @param volume 0.0f–1.0f (relative to system alarm stream)
+     */
+    public static void setPreviewVolume(float volume) {
+        if (sInstance != null && sInstance.mediaPlayer != null && sInstance.isPlaying) {
+            float clamped = Math.max(0.0f, Math.min(1.0f, volume));
+            sInstance.mediaPlayer.setVolume(clamped, clamped);
+            Log.d(TAG, "Preview volume set to: " + clamped);
+        }
     }
 
     // --- Service Lifecycle ---
@@ -43,6 +59,7 @@ public class PrayerPlaybackService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        sInstance = this;
         Log.d(TAG, "Service created");
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         ensureNotificationChannel();
@@ -99,6 +116,7 @@ public class PrayerPlaybackService extends Service {
         releaseWakeLock();
         releaseAudioFocus();
         sIsPlaying = false;
+        sInstance = null;
         super.onDestroy();
     }
 
@@ -139,6 +157,13 @@ public class PrayerPlaybackService extends Service {
 
             // Prepare manually for manually constructed MediaPlayer
             mediaPlayer.prepare();
+
+            // Apply user-configured volume from SharedPreferences before starting
+            SharedPreferences prefs = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+            float savedVolume = prefs.getFloat(Constants.KEY_ADZAN_VOLUME, Constants.DEFAULT_ADZAN_VOLUME);
+            float clampedVolume = Math.max(0.0f, Math.min(1.0f, savedVolume));
+            mediaPlayer.setVolume(clampedVolume, clampedVolume);
+            Log.d(TAG, "Applying adzan volume: " + clampedVolume);
 
             mediaPlayer.setOnCompletionListener(mp -> {
                 Log.d(TAG, "Playback completed for: " + prayerName);

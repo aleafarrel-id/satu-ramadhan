@@ -8,5 +8,6 @@
     "adzan_on": "Adhan sound enabled",
     "adzan_off": "Adhan sound disabled",
     "perm_denied": "Notification permission denied",
+    "adzan_volume": "Adhan Volume",
     "battery_opt": "Background Process"
 }
