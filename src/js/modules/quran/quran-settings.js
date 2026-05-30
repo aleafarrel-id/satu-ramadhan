@@ -50,6 +50,23 @@ export function setTransliterationEnabled(enabled) {
 }
 
 /**
+ * Returns whether translation is enabled.
+ * @returns {boolean} True if translation is enabled (defaults to true)
+ */
+export function getTranslationEnabled() {
+   const val = store.getState('settings.quran.translationEnabled');
+   return val !== undefined ? val : true;
+}
+
+/**
+ * Sets translation preference.
+ * @param {boolean} enabled 
+ */
+export function setTranslationEnabled(enabled) {
+   store.setState('settings.quran.translationEnabled', Boolean(enabled));
+}
+
+/**
  * Gets currently selected translation language code.
  * @returns {string} Language code (e.g. 'id', 'en')
  */

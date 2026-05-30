@@ -13,7 +13,7 @@ import { showConfirmModal } from '../../components/modal/confirm-modal.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
 import { renderBatchedList, createRenderContext } from './quran-utility.js';
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
-import { getTajweedEnabled, getTransliterationEnabled, isAudioOfflineEnabled, setAudioMode } from './quran-settings.js';
+import { getTajweedEnabled, getTransliterationEnabled, getTranslationEnabled, isAudioOfflineEnabled, setAudioMode } from './quran-settings.js';
 import * as BookmarkManager from './bookmark-manager.js';
 
 // Audio & Download
@@ -95,7 +95,7 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
          // Re-render filtered results to properly update ayah cards (e.g. play button visibility)
          const input = _readerHeaderInstance?.getSearchInput();
          const query = input ? input.value.trim() : '';
-         
+
          _filterVerses(query);
          return;
       }
@@ -779,13 +779,17 @@ function _createRegularAyahElement(ayah) {
    if (ayah.latin && getTransliterationEnabled()) {
       latinEl.textContent = ayah.latin;
    } else {
-      latinEl.style.display = 'none'; // hide if no data or disabled
+      latinEl.style.display = 'none';
    }
 
    // Translation
    const translationEl = document.createElement('div');
    translationEl.className = 'quran-ayah-translation';
-   translationEl.textContent = ayah.translation;
+   if (ayah.translation && getTranslationEnabled()) {
+      translationEl.textContent = ayah.translation;
+   } else {
+      translationEl.style.display = 'none';
+   }
 
    card.appendChild(header);
    card.appendChild(arabicEl);

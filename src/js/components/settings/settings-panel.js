@@ -27,16 +27,6 @@ export function render(container) {
             <div class="settings-card-header">
                 <div class="settings-card-title">${t('components/settings/settings-panel:section_notif')}</div>
             </div>
-            <div class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="adzan-selector-row" tabindex="0" data-focus-item>
-                <div class="settings-item-info">
-                    <i class='bx bx-music'></i>
-                    <span id="adzan-selector-label">${t('components/modal/adzan-selector-modal:selector_label', { defaultValue: 'Pilihan Adzan' })}</span>
-                </div>
-                <div class="settings-select-trigger">
-                    <span id="adzan-selected-value"></span>
-                </div>
-            </div>
-            <div class="settings-divider"></div>
             <label class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" for="toggle-notification" data-focus-item>
                 <div class="settings-item-info">
                     <i class='bx bx-bell'></i>
@@ -58,6 +48,16 @@ export function render(container) {
                     <span class="slider"></span>
                 </div>
             </label>
+            <div class="settings-divider"></div>
+            <div class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="adzan-selector-row" tabindex="0" data-focus-item>
+                <div class="settings-item-info">
+                    <i class='bx bx-music'></i>
+                    <span id="adzan-selector-label">${t('components/modal/adzan-selector-modal:selector_label', { defaultValue: 'Pilihan Adzan' })}</span>
+                </div>
+                <div class="settings-select-trigger">
+                    <span id="adzan-selected-value"></span>
+                </div>
+            </div>
             <div class="settings-divider"></div>
             <div class="settings-item ${isWeb ? 'settings-item--disabled' : ''}" id="battery-row" tabindex="0" data-focus-item>
                 <div class="settings-item-info">
@@ -171,6 +171,7 @@ export function render(container) {
         const enabled = e.target.checked;
         impact('medium');
         store.setState('settings.adzan', enabled);
+        updateAdzanRowState(store.getState('settings.notification') !== false, container);
         Notif.show(
             enabled ? t('components/settings/settings-panel:adzan_on') : t('components/settings/settings-panel:adzan_off'),
             enabled ? 'success' : 'info'
@@ -217,10 +218,11 @@ function updateAdzanRowState(notifEnabled, container) {
     const adzanRow = root.querySelector('#adzan-row');
     const batteryRow = root.querySelector('#battery-row');
     const selectorRow = root.querySelector('#adzan-selector-row');
+    const adzanEnabled = store.getState('settings.adzan') !== false;
 
     if (adzanRow) adzanRow.classList.toggle('settings-item--disabled', !notifEnabled);
     if (batteryRow) batteryRow.classList.toggle('settings-item--disabled', !notifEnabled);
-    if (selectorRow) selectorRow.classList.toggle('settings-item--disabled', !notifEnabled);
+    if (selectorRow) selectorRow.classList.toggle('settings-item--disabled', !notifEnabled || !adzanEnabled);
 }
 
 /**

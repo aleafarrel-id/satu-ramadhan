@@ -52,8 +52,9 @@ const initialState = {
         quran: {
             tajweed: true,
             transliteration: true,
-            translationLanguage: 'id',
+            translationEnabled: true,
             translationAutoSync: true,
+            translationLanguage: 'en',
             reciterId: 'alafasy',
             audioMode: 'offline'
         }

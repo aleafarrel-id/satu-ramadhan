@@ -3,11 +3,14 @@
     "tajweed": "Tajwid",
     "transliteration": "Transliterasi Latin",
     "translation": "Terjemahan",
+    "translation_language": "Bahasa Terjemahan",
     "audio_mode": "Murottal",
     "tajweed_on": "Tajwid diaktifkan",
     "tajweed_off": "Tajwid dimatikan",
     "translit_on": "Transliterasi Latin diaktifkan",
     "translit_off": "Transliterasi Latin dimatikan",
+    "translation_on": "Terjemahan diaktifkan",
+    "translation_off": "Terjemahan dimatikan",
     "translation_changed": "Al-Qur'an Terjemahan: {{label}}",
     "audio_mode_changed": "Mode Murottal: {{label}}"
 }

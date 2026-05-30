@@ -11,6 +11,7 @@ import * as Notif from '../../modules/notification/notification.js';
 import {
    getTajweedEnabled, setTajweedEnabled,
    getTransliterationEnabled, setTransliterationEnabled,
+   getTranslationEnabled, setTranslationEnabled,
    getTranslationLanguage, setTranslationLanguageManual,
    getAudioMode, setAudioMode,
 } from '../../modules/quran/quran-settings.js';
@@ -37,6 +38,7 @@ function _getAudioModeLabel(mode) {
 export function render(container) {
    const tajweedChecked = getTajweedEnabled();
    const transliterationChecked = getTransliterationEnabled();
+   const translationChecked = getTranslationEnabled();
    const savedLang = getTranslationLanguage();
    const savedLangLabel = QURAN_LANGUAGES.find(l => l.code === savedLang)?.label || savedLang;
 
@@ -84,10 +86,21 @@ export function render(container) {
             </div>
          </label>
          <div class="settings-divider"></div>
-         <div class="settings-item" id="quran-translation-item" data-focus-item>
+         <label class="settings-item" for="toggle-translation" data-focus-item>
+            <div class="settings-item-info">
+               <i class='bx bx-text'></i>
+               <span>${t('components/settings/settings-quran-panel:translation')}</span>
+            </div>
+            <div class="switch-toggle">
+               <input type="checkbox" id="toggle-translation"${translationChecked ? ' checked' : ''}>
+               <span class="slider"></span>
+            </div>
+         </label>
+         <div class="settings-divider"></div>
+         <div class="settings-item ${!translationChecked ? 'settings-item--disabled' : ''}" id="quran-translation-item" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-transfer-alt'></i>
-               <span>${t('components/settings/settings-quran-panel:translation')}</span>
+               <span>${t('components/settings/settings-quran-panel:translation_language')}</span>
             </div>
             <div class="settings-select-trigger">
                <span id="translation-select-label">${savedLangLabel}</span>
@@ -128,8 +141,24 @@ function _bindEvents(container) {
       );
    });
 
-   // Translation language selector
+   // Translation toggle
    const translationItem = container.querySelector('#quran-translation-item');
+   container.querySelector('#toggle-translation')?.addEventListener('change', async (e) => {
+      const enabled = e.target.checked;
+      await impact('medium');
+      setTranslationEnabled(enabled);
+      if (translationItem) {
+         translationItem.classList.toggle('settings-item--disabled', !enabled);
+      }
+      Notif.show(
+         enabled
+            ? t('components/settings/settings-quran-panel:translation_on')
+            : t('components/settings/settings-quran-panel:translation_off'),
+         enabled ? 'success' : 'info'
+      );
+   });
+
+   // Translation language selector
    const translationLabel = container.querySelector('#translation-select-label');
    if (translationItem) {
       makeAccessibleBtn(translationItem, async (e) => {
