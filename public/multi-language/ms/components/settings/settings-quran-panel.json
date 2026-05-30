@@ -12,5 +12,6 @@
     "translation_on": "Terjemahan diaktifkan",
     "translation_off": "Terjemahan dimatikan",
     "translation_changed": "Al-Qur'an Terjemahan: {{label}}",
-    "audio_mode_changed": "Mod Murattal: {{label}}"
+    "audio_mode_changed": "Mod Murattal: {{label}}",
+    "font_size": "Saiz Font"
 }

@@ -560,7 +560,7 @@ body.has-audio-dock .quran-reader-ayah-list {
 /* ── Text: Arabic Glyph ── */
 .quran-ayah-arabic {
    font-family: 'LPMQ-IsepMisbah', serif;
-   font-size: 1.65rem;
+   font-size: calc(1.65rem * var(--quran-scale-arabic, 1));
    color: var(--clr-quran-text);
    text-align: right;
    direction: rtl;
@@ -575,7 +575,7 @@ body.has-audio-dock .quran-reader-ayah-list {
 /* ── Text: Latin Transliteration ── */
 .quran-ayah-latin {
    font-family: var(--ff-primary);
-   font-size: 0.85rem;
+   font-size: calc(0.85rem * var(--quran-scale-latin, 1));
    color: var(--clr-mushaf-text);
    font-style: italic;
    text-align: left;
@@ -587,7 +587,7 @@ body.has-audio-dock .quran-reader-ayah-list {
 /* ── Text: Translation String ── */
 .quran-ayah-translation {
    font-family: var(--ff-primary);
-   font-size: 0.85rem;
+   font-size: calc(0.85rem * var(--quran-scale-translation, 1));
    color: var(--clr-quran-text-secondary);
    text-align: left;
    direction: ltr;
@@ -714,17 +714,16 @@ body.has-audio-dock .quran-reader-ayah-list {
    }
 
    .quran-ayah-arabic {
-      font-size: 1.45rem;
+      font-size: calc(1.45rem * var(--quran-scale-arabic, 1));
       line-height: 2;
    }
 
    .quran-ayah-translation {
-      font-size: 0.75rem;
-      /* Scale down translation text for mobile bounds */
+      font-size: calc(0.75rem * var(--quran-scale-translation, 1));
    }
 
    .quran-ayah-latin {
-      font-size: 0.75rem;
+      font-size: calc(0.75rem * var(--quran-scale-latin, 1));
    }
 
    .quran-ayah-number {
@@ -806,7 +805,7 @@ body.has-audio-dock .quran-reader-ayah-list {
    }
 
    .quran-ayah-arabic {
-      font-size: 1.35rem;
+      font-size: calc(1.35rem * var(--quran-scale-arabic, 1));
       line-height: 1.9;
    }
 }
@@ -843,7 +842,7 @@ body.has-audio-dock .quran-reader-ayah-list {
    }
 
    .quran-ayah-arabic {
-      font-size: 1.2rem;
+      font-size: calc(1.2rem * var(--quran-scale-arabic, 1));
       line-height: 1.8;
    }
 

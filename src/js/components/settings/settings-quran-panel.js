@@ -14,12 +14,14 @@ import {
    getTranslationEnabled, setTranslationEnabled,
    getTranslationLanguage, setTranslationLanguageManual,
    getAudioMode, setAudioMode,
+   getQuranFontSize
 } from '../../modules/quran/quran-settings.js';
 import { t } from '../../core/i18n.js';
 
 // UI Components
 import { showLanguageSelectorModal } from '../modal/language-selector-modal.js';
 import { showAudioModeSelectorModal } from '../modal/audio-mode-selector-modal.js';
+import { showQuranFontModal } from '../modal/quran-font-modal.js';
 
 // Utilities & Helpers
 import { makeAccessibleBtn } from '../../utils/a11y.js';
@@ -31,6 +33,20 @@ function _getAudioModeLabel(mode) {
    return mode === 'offline'
       ? t('components/modal/audio-mode-selector-modal:mode_offline_label')
       : t('components/modal/audio-mode-selector-modal:mode_streaming_label');
+}
+
+function _getFontLabel() {
+   const arabic = getQuranFontSize('arabic');
+   const latin = getQuranFontSize('latin');
+   const translation = getQuranFontSize('translation');
+
+   if (arabic === latin && latin === translation) {
+      if (arabic === 3) return t('components/modal/quran-font-modal:step_large', { defaultValue: 'Ekstra Besar' });
+      if (arabic === 2) return t('components/modal/quran-font-modal:step_medium', { defaultValue: 'Besar' });
+      return t('components/modal/quran-font-modal:step_normal', { defaultValue: 'Normal' });
+   }
+
+   return t('components/modal/quran-font-modal:custom_size', { defaultValue: 'Kustom' });
 }
 
 // Render
@@ -46,6 +62,7 @@ export function render(container) {
    const isNative = Capacitor.isNativePlatform();
    const currentAudioMode = isNative ? getAudioMode() : 'streaming';
    const audioModeLabel = _getAudioModeLabel(currentAudioMode);
+   const fontLabel = _getFontLabel();
 
    container.innerHTML = `
       <div class="card settings-card settings-card-spacing" data-focus-group="quran-settings" data-focus-direction="vertical">
@@ -64,6 +81,16 @@ export function render(container) {
          </div>
          <div class="settings-divider"></div>
          ` : ''}
+         <div class="settings-item" id="quran-font-item" tabindex="0" data-focus-item>
+            <div class="settings-item-info">
+               <i class='bx bx-font-size'></i>
+               <span>${t('components/settings/settings-quran-panel:font_size')}</span>
+            </div>
+            <div class="settings-select-trigger">
+               <span id="quran-font-select-label">${fontLabel}</span>
+            </div>
+         </div>
+         <div class="settings-divider"></div>
          <label class="settings-item" for="toggle-tajweed" data-focus-item>
             <div class="settings-item-info">
                <i class='bx bx-font-color'></i>
@@ -184,6 +211,22 @@ function _bindEvents(container) {
    // Audio Mode selector (native only)
    const audioModeItem = container.querySelector('#quran-audio-mode-item');
    const audioModeLabel = container.querySelector('#audio-mode-select-label');
+   const fontSizeItem = container.querySelector('#quran-font-item');
+   const fontSelectLabel = container.querySelector('#quran-font-select-label');
+
+   if (fontSizeItem) {
+      makeAccessibleBtn(fontSizeItem, () => {
+         impact('light');
+         showQuranFontModal({
+            onSelect: () => {
+               if (fontSelectLabel) {
+                  fontSelectLabel.textContent = _getFontLabel();
+               }
+            }
+         });
+      });
+   }
+
    if (audioModeItem) {
       makeAccessibleBtn(audioModeItem, async (e) => {
          e.stopPropagation();

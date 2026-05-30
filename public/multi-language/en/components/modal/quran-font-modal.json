@@ -1,0 +1,13 @@
+{
+    "title": "Al-Qur'an Font Size",
+    "done": "Done",
+    "label_arabic": "Arabic Text",
+    "label_latin": "Transliteration",
+    "label_translation": "Translation",
+    "step_normal": "Normal",
+    "step_medium": "Large",
+    "step_large": "Extra Large",
+    "preview_translation": "In the name of Allah, the Most Gracious, the Most Merciful.",
+    "disclaimer": "This setting only affects the text size inside the Quran reader feature.",
+    "custom_size": "Custom"
+}

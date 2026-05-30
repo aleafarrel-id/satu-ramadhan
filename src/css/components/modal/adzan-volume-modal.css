@@ -34,7 +34,7 @@
     padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom));
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--clr-white-a05);
+    box-shadow: 0 -10px 30px var(--clr-black-a40), inset 0 1px 0 var(--clr-white-a05);
     display: flex;
     flex-direction: column;
 }
@@ -193,19 +193,19 @@
     border-radius: 50%;
     background: var(--clr-text-primary);
     cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm), inset 0 -1px 2px var(--clr-black-a10);
+    border: 1px solid var(--clr-white-a10);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .adzan-volume-slider::-webkit-slider-thumb:hover {
     transform: scale(1.1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-md);
 }
 
 .adzan-volume-slider::-webkit-slider-thumb:active {
     transform: scale(0.95);
-    background: #ffffff;
+    background: var(--clr-text-primary);
 }
 
 .adzan-volume-slider::-moz-range-thumb {
@@ -214,19 +214,19 @@
     border-radius: 50%;
     background: var(--clr-text-primary);
     cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-sm), inset 0 -1px 2px var(--clr-black-a10);
+    border: 1px solid var(--clr-white-a10);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .adzan-volume-slider::-moz-range-thumb:hover {
     transform: scale(1.1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-md);
 }
 
 .adzan-volume-slider::-moz-range-thumb:active {
     transform: scale(0.95);
-    background: #ffffff;
+    background: var(--clr-text-primary);
 }
 
 /* Slider fill simulation via background gradient (managed by JS) */

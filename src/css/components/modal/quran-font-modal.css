@@ -1,0 +1,263 @@
+/* quran-font-modal.css */
+
+.quran-font-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    background: var(--clr-bg-cal-overlay);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+    will-change: opacity;
+}
+
+.quran-font-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.quran-font-sheet {
+    background: var(--gradient-cal-bg);
+    border-top: 1px solid var(--clr-primary-a30);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: var(--spacing-lg) 0 calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+    transform: translate3d(0, 100%, 0);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+    box-shadow: 0 -10px 30px var(--clr-black-a40), inset 0 1px 0 var(--clr-white-a05);
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+}
+
+.quran-font-modal-overlay.active .quran-font-sheet {
+    transform: translate3d(0, 0, 0);
+}
+
+/* Header */
+.quran-font-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
+    flex-shrink: 0;
+}
+
+.quran-font-sheet-title {
+    font-family: var(--font-primary);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-primary);
+    margin: 0;
+}
+
+/* Content Area (Scrollable) */
+.quran-font-sheet-content {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--clr-primary-500) transparent;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.quran-font-sheet-footer {
+    padding: 0 var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    flex-shrink: 0;
+}
+
+/* Preview Box */
+.quran-font-preview-box {
+    background: var(--clr-quran-bg);
+    border: 1px solid var(--clr-border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Using existing .quran-ayah-* classes from quran-reader.css will apply automatically */
+.quran-font-preview-arabic,
+.quran-font-preview-latin,
+.quran-font-preview-translation {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Sliders Wrapper */
+.quran-font-sliders-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: var(--spacing-sm);
+}
+
+.quran-font-slider-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.quran-font-value-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    font-family: var(--font-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-primary);
+}
+
+.quran-font-value-display i {
+    color: var(--clr-primary-500);
+    font-size: var(--fs-md);
+    line-height: var(--lh-none);
+}
+
+.quran-font-value-text {
+    color: var(--clr-text-primary);
+}
+
+.quran-font-slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-sm);
+}
+
+.quran-font-icon-small {
+    font-family: var(--font-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-secondary);
+    user-select: none;
+}
+
+.quran-font-icon-large {
+    font-family: var(--font-primary);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    color: var(--clr-text-secondary);
+    user-select: none;
+}
+
+.quran-font-track-wrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.quran-font-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-top: 10px;
+}
+
+.quran-font-ticks span {
+    width: 4px;
+    height: 4px;
+    background: var(--clr-primary-a30);
+    border-radius: 50%;
+}
+
+.quran-font-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;
+    background: var(--clr-bg-card-solid);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-pill);
+    outline: none;
+    margin: 0;
+}
+
+.quran-font-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--clr-text-primary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm), inset 0 -1px 2px var(--clr-black-a10);
+    border: 1px solid var(--clr-white-a10);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.quran-font-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+}
+
+.quran-font-slider::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+    background: var(--clr-text-primary);
+}
+
+.quran-font-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--clr-text-primary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm), inset 0 -1px 2px var(--clr-black-a10);
+    border: 1px solid var(--clr-white-a10);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.quran-font-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+}
+
+.quran-font-slider::-moz-range-thumb:active {
+    transform: scale(0.95);
+    background: var(--clr-text-primary);
+}
+
+.quran-font-slider.styled-slider {
+    background: linear-gradient(to right, var(--clr-primary-500) 0%, var(--clr-primary-500) 50%, var(--clr-bg-card-solid) 50%, var(--clr-bg-card-solid) 100%);
+}
+
+/* Disclaimer */
+.quran-font-desc {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-secondary);
+    text-align: center;
+    line-height: var(--lh-relaxed);
+    margin-top: var(--spacing-xl);
+    padding: 0 var(--spacing-md);
+}
+
+/* Desktop Layout */
+@media screen and (min-width: 600px) {
+
+    .quran-font-sheet-header,
+    .quran-font-sheet-content,
+    .quran-font-sheet-footer {
+        padding-left: max(var(--spacing-lg), calc((100vw - 800px) / 2));
+        padding-right: max(var(--spacing-lg), calc((100vw - 800px) / 2));
+    }
+}

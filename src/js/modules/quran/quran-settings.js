@@ -176,3 +176,49 @@ export function setAudioMode(mode) {
 export function isAudioOfflineEnabled() {
    return getAudioMode() === 'offline';
 }
+
+/**
+ * Helper to convert discrete scale steps to actual CSS scaling multipliers.
+ * 1 = Normal (1.0)
+ * 2 = Large (1.35)
+ * 3 = Extra Large (1.7)
+ */
+function _stepToScale(step) {
+   if (step === 3) return 1.7;
+   if (step === 2) return 1.35;
+   return 1.0;
+}
+
+/**
+ * Returns the font size step (1, 2, or 3) for the specified text type.
+ * @param {'arabic'|'latin'|'translation'} type 
+ * @returns {number}
+ */
+export function getQuranFontSize(type) {
+   const val = store.getState(`settings.quran.fontSize.${type}`);
+   return typeof val === 'number' ? val : 1;
+}
+
+/**
+ * Sets the font size step for the specified text type.
+ * @param {'arabic'|'latin'|'translation'} type 
+ * @param {number} step 1, 2, or 3
+ */
+export function setQuranFontSize(type, step) {
+   store.setState(`settings.quran.fontSize.${type}`, step);
+}
+
+/**
+ * Applies the font scale to the DOM by updating CSS variables on the root.
+ * This function should be called at startup and whenever sizes change.
+ */
+export function applyQuranFontScale() {
+   const arabic = getQuranFontSize('arabic');
+   const latin = getQuranFontSize('latin');
+   const translation = getQuranFontSize('translation');
+
+   document.documentElement.style.setProperty('--quran-scale-arabic', _stepToScale(arabic));
+   document.documentElement.style.setProperty('--quran-scale-latin', _stepToScale(latin));
+   document.documentElement.style.setProperty('--quran-scale-translation', _stepToScale(translation));
+}
+

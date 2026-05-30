@@ -57,7 +57,12 @@ const initialState = {
             translationAutoSync: true,
             translationLanguage: 'en',
             reciterId: 'alafasy',
-            audioMode: 'offline'
+            audioMode: 'offline',
+            fontSize: {
+                arabic: 1,
+                latin: 1,
+                translation: 1
+            }
         }
     },
     quran: {

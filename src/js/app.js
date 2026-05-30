@@ -14,7 +14,7 @@ import { store } from './core/store.js';
 import { applyAutoDetectedMethod } from './core/calculation-resolver.js';
 import { initTheme } from './core/theme.js';
 import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
-import { initTranslationSync } from './modules/quran/quran-settings.js';
+import { initTranslationSync, applyQuranFontScale } from './modules/quran/quran-settings.js';
 import { resetRamadhanCache } from './core/database.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
@@ -92,6 +92,9 @@ export async function initApp() {
     // Smart Auto-Sync: keep Quran translation in sync with UI language.
     // Must run after initI18n() so the store subscription fires correctly.
     initTranslationSync();
+
+    // Apply Quran font sizes from store to CSS variables
+    applyQuranFontScale();
 
     // Global language-switch listener:
     // When the user changes language in Settings, re-render the global shell

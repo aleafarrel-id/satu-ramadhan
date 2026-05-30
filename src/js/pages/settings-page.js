@@ -6,6 +6,7 @@ import '../../css/components/modal/language-selector-modal.css';
 import '../../css/components/modal/audio-mode-selector-modal.css';
 import '../../css/components/modal/adzan-selector-modal.css';
 import '../../css/components/modal/adzan-volume-modal.css';
+import '../../css/components/modal/quran-font-modal.css';
 import '../../css/components/modal/about-app-modal.css';
 import '../../css/components/modal/calculation-method-modal.css';
 
@@ -57,6 +58,7 @@ export async function render(container) {
     await loadNS('components/modal/audio-mode-selector-modal');
     await loadNS('components/modal/adzan-selector-modal');
     await loadNS('components/modal/adzan-volume-modal');
+    await loadNS('components/modal/quran-font-modal');
     await loadNS('components/ui/header');
     if (_isStale(gen)) return;
 

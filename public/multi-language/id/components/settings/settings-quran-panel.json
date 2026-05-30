@@ -12,5 +12,6 @@
     "translation_on": "Terjemahan diaktifkan",
     "translation_off": "Terjemahan dimatikan",
     "translation_changed": "Al-Qur'an Terjemahan: {{label}}",
-    "audio_mode_changed": "Mode Murottal: {{label}}"
+    "audio_mode_changed": "Mode Murottal: {{label}}",
+    "font_size": "Ukuran Font"
 }

@@ -12,5 +12,6 @@
     "translation_on": "Translation enabled",
     "translation_off": "Translation disabled",
     "translation_changed": "Quran Translation: {{label}}",
-    "audio_mode_changed": "Murottal Mode: {{label}}"
+    "audio_mode_changed": "Recitation Mode: {{label}}",
+    "font_size": "Font Size"
 }
