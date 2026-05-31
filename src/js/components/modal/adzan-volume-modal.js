@@ -23,7 +23,7 @@ let _playbackStoppedHandle = null;
 
 export async function showAdzanVolumeModal({ currentVolume, onSelect } = {}) {
     if (_overlayEl) {
-        unregisterModalDismiss(_handleCancel);
+        unregisterModalDismiss(_handleClose);
         _removeModal();
     }
 
@@ -37,7 +37,7 @@ export async function showAdzanVolumeModal({ currentVolume, onSelect } = {}) {
 
     _updateSliderBackground();
 
-    registerModalDismiss(_handleCancel);
+    registerModalDismiss(_handleClose);
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => _overlayEl.classList.add('active'));
@@ -53,16 +53,7 @@ export async function showAdzanVolumeModal({ currentVolume, onSelect } = {}) {
     }
 }
 
-function _handleCancel(e) {
-    if (e) e.stopPropagation();
-    _stopPreview();
-    if (_onSelectCallback) {
-        _onSelectCallback(_currentVolume);
-    }
-    _hideModal();
-}
-
-function _handleDone(e) {
+function _handleClose(e) {
     if (e) e.stopPropagation();
     impact('light');
     _stopPreview();
@@ -76,7 +67,7 @@ function _bindEvents() {
     if (!_overlayEl) return;
 
     _overlayEl.addEventListener('click', (e) => {
-        if (e.target === _overlayEl) _handleCancel(e);
+        if (e.target === _overlayEl) _handleClose(e);
     });
 
     const slider = _overlayEl.querySelector('#adzan-volume-slider');
@@ -106,7 +97,7 @@ function _bindEvents() {
         playBtn.addEventListener('click', _handlePlay);
     }
 
-    addEscHandler(_overlayEl, _handleCancel);
+    addEscHandler(_overlayEl, _handleClose);
 }
 
 async function _handlePlay(e) {
@@ -204,7 +195,7 @@ function _updateSliderBackground() {
 function _hideModal() {
     if (!_overlayEl) return;
 
-    unregisterModalDismiss(_handleCancel);
+    unregisterModalDismiss(_handleClose);
     _overlayEl.classList.remove('active');
 
     const sheet = _overlayEl.querySelector('.adzan-volume-sheet');
@@ -276,7 +267,7 @@ function _createModalDOM() {
 
     const doneBtn = overlay.querySelector('#adzan-volume-btn-done');
     if (doneBtn) {
-        doneBtn.addEventListener('click', _handleDone);
+        doneBtn.addEventListener('click', _handleClose);
     }
 
     return overlay;

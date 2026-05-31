@@ -25,7 +25,7 @@ let _onSelectCallback = null;
 
 export async function showQuranFontModal({ onSelect } = {}) {
     if (_overlayEl) {
-        unregisterModalDismiss(_handleCancel);
+        unregisterModalDismiss(_handleClose);
         _removeModal();
     }
 
@@ -43,7 +43,7 @@ export async function showQuranFontModal({ onSelect } = {}) {
 
     _updateAllSliderBackgrounds();
 
-    registerModalDismiss(_handleCancel);
+    registerModalDismiss(_handleClose);
 
     requestAnimationFrame(() => {
         setTimeout(() => {
@@ -57,17 +57,7 @@ export async function showQuranFontModal({ onSelect } = {}) {
     _bindEvents();
 }
 
-function _handleCancel(e) {
-    if (e) e.stopPropagation();
-
-    _saveAndApply();
-
-    if (_onSelectCallback) _onSelectCallback();
-
-    _hideModal();
-}
-
-function _handleDone(e) {
+function _handleClose(e) {
     if (e) e.stopPropagation();
     impact('light');
 
@@ -97,7 +87,7 @@ function _bindEvents() {
     if (!_overlayEl) return;
 
     _overlayEl.addEventListener('click', (e) => {
-        if (e.target === _overlayEl) _handleCancel(e);
+        if (e.target === _overlayEl) _handleClose(e);
     });
 
     const bindSlider = (type) => {
@@ -124,7 +114,7 @@ function _bindEvents() {
     bindSlider('latin');
     bindSlider('translation');
 
-    addEscHandler(_overlayEl, _handleCancel);
+    addEscHandler(_overlayEl, _handleClose);
 }
 
 function _hideModal() {
@@ -136,7 +126,7 @@ function _hideModal() {
     }
 
     _overlayEl.classList.remove('active');
-    unregisterModalDismiss(_handleCancel);
+    unregisterModalDismiss(_handleClose);
 
     setTimeout(() => {
         _removeModal();
@@ -243,7 +233,7 @@ function _createModalDOM() {
 
     const doneBtn = overlay.querySelector('.quran-font-sheet-done');
     if (doneBtn) {
-        doneBtn.addEventListener('click', _handleDone);
+        doneBtn.addEventListener('click', _handleClose);
     }
 
     return overlay;

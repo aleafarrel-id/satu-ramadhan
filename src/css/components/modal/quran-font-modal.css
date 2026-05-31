@@ -99,6 +99,7 @@
 .quran-font-preview-translation {
     padding: 0 !important;
     margin: 0 !important;
+    transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1), line-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Sliders Wrapper */

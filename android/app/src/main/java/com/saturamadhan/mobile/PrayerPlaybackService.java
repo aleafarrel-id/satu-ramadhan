@@ -155,16 +155,6 @@ public class PrayerPlaybackService extends Service {
                 mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             }
 
-            // Prepare manually for manually constructed MediaPlayer
-            mediaPlayer.prepare();
-
-            // Apply user-configured volume from SharedPreferences before starting
-            SharedPreferences prefs = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
-            float savedVolume = prefs.getFloat(Constants.KEY_ADZAN_VOLUME, Constants.DEFAULT_ADZAN_VOLUME);
-            float clampedVolume = Math.max(0.0f, Math.min(1.0f, savedVolume));
-            mediaPlayer.setVolume(clampedVolume, clampedVolume);
-            Log.d(TAG, "Applying adzan volume: " + clampedVolume);
-
             mediaPlayer.setOnCompletionListener(mp -> {
                 Log.d(TAG, "Playback completed for: " + prayerName);
                 stopSelfCleanly();
@@ -176,10 +166,22 @@ public class PrayerPlaybackService extends Service {
                 return true;
             });
 
-            mediaPlayer.start();
-            isPlaying = true;
-            sIsPlaying = true;
-            Log.d(TAG, "Started playback for: " + prayerName + " (audio=" + audioFile + ")");
+            mediaPlayer.setOnPreparedListener(mp -> {
+                // Apply user-configured volume from SharedPreferences before starting
+                SharedPreferences prefs = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+                float savedVolume = prefs.getFloat(Constants.KEY_ADZAN_VOLUME, Constants.DEFAULT_ADZAN_VOLUME);
+                float clampedVolume = Math.max(0.0f, Math.min(1.0f, savedVolume));
+                mp.setVolume(clampedVolume, clampedVolume);
+                Log.d(TAG, "Applying adzan volume: " + clampedVolume);
+
+                mp.start();
+                isPlaying = true;
+                sIsPlaying = true;
+                Log.d(TAG, "Started playback for: " + prayerName + " (audio=" + audioFile + ")");
+            });
+
+            // Prepare asynchronously to avoid blocking the Main Thread
+            mediaPlayer.prepareAsync();
 
         } catch (Exception e) {
             Log.e(TAG, "Error during playback: " + e.getMessage(), e);
