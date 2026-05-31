@@ -59,7 +59,6 @@ export async function showQuranFontModal({ onSelect } = {}) {
 
 function _handleClose(e) {
     if (e) e.stopPropagation();
-    impact('light');
 
     _saveAndApply();
 

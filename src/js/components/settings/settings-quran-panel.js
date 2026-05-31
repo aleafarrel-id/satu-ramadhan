@@ -216,7 +216,6 @@ function _bindEvents(container) {
 
    if (fontSizeItem) {
       makeAccessibleBtn(fontSizeItem, () => {
-         impact('light');
          showQuranFontModal({
             onSelect: () => {
                if (fontSelectLabel) {

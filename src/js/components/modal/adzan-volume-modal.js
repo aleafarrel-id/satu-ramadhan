@@ -55,7 +55,6 @@ export async function showAdzanVolumeModal({ currentVolume, onSelect } = {}) {
 
 function _handleClose(e) {
     if (e) e.stopPropagation();
-    impact('light');
     _stopPreview();
     if (_onSelectCallback) {
         _onSelectCallback(_currentVolume);

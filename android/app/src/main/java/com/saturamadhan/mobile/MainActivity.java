@@ -52,10 +52,11 @@ public class MainActivity extends BridgeActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(getWindow().getDecorView(), (v, insets) -> {
             androidx.core.graphics.Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            androidx.core.graphics.Insets physicalBars = insets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars());
 
-            // Take the maximum of status bar height and display cutout safe inset.
+            // Take the maximum of PHYSICAL status bar height and display cutout safe inset.
             // On punch-hole devices the cutout may extend beyond the standard status bar.
-            int topInsetPx = systemBars.top;
+            int topInsetPx = physicalBars.top;
             int leftInsetPx = systemBars.left;
             int rightInsetPx = systemBars.right;
 

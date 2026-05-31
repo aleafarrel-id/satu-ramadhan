@@ -169,7 +169,10 @@
 @media (min-width: 1024px) {
    .app-header {
       background: var(--clr-bg-card-solid);
-      padding: var(--spacing-md) var(--spacing-lg);
+      padding-top: max(var(--spacing-md), var(--safe-area-inset-top, env(safe-area-inset-top)));
+      padding-bottom: var(--spacing-md);
+      padding-left: var(--spacing-lg);
+      padding-right: var(--spacing-lg);
       justify-content: flex-end;
       position: relative;
    }
