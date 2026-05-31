@@ -1,5 +1,5 @@
 /* =============================================
-   Shortcut Card Widget
+   Shortcut Card Widget (Glass Squarcles)
    ============================================= */
 
 .shortcut-card {
@@ -24,79 +24,78 @@
 }
 
 .shortcut-card__item {
-   background: none;
+   background: transparent;
    border: none;
    padding: 0;
    font-family: var(--ff-primary);
    display: flex;
    flex-direction: column;
    align-items: center;
-   gap: var(--spacing-xs);
+   gap: var(--spacing-sm);
    cursor: pointer;
    text-decoration: none;
-   transition: transform 0.2s ease, opacity 0.2s ease;
+   outline: none;
+   transition: opacity var(--transition-fast);
    min-width: 0;
 }
 
-.shortcut-card__item:active {
-   transform: scale(0.95);
-   opacity: 0.8;
-}
-
-@media (hover: hover) and (pointer: fine) {
-   .shortcut-card__item:hover {
-      transform: scale(0.95);
-      opacity: 0.8;
-   }
-}
-
-/* Claymorphism icon box */
+/* Glass Squarcle */
 .shortcut-card__icon-box {
-   background: var(--clr-secondary-600);
-   border-radius: 50%;
+   background: var(--clr-white-a05);
+   border: 1px solid var(--clr-white-a10);
+   border-radius: var(--radius-xl);
    width: min(48px, 100%);
    aspect-ratio: 1;
    display: flex;
    align-items: center;
    justify-content: center;
-
-   border: none;
-   box-shadow:
-      inset 3px 3px 6px rgba(255, 255, 255, 0.05),
-      inset -3px -3px 6px rgba(0, 0, 0, 0.4),
-      4px 4px 10px rgba(0, 0, 0, 0.2);
-
    color: var(--clr-accent-500);
    font-size: var(--fs-xl);
-   transition: all 0.2s ease;
-}
-
-/* Pressed clay effect */
-.shortcut-card__item:active .shortcut-card__icon-box {
-   box-shadow:
-      inset 4px 4px 8px rgba(0, 0, 0, 0.5),
-      inset -2px -2px 4px rgba(255, 255, 255, 0.02);
-   transform: translateY(2px);
+   transition: transform var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+   box-shadow: var(--shadow-sm);
 }
 
 .shortcut-card__name {
-   font-size: var(--fs-sm);
-   margin-top: var(--spacing-xs);
+   font-size: var(--fs-xs);
    font-weight: var(--fw-light);
-   color: var(--clr-text-muted);
+   color: var(--clr-text-secondary);
    text-transform: capitalize;
-   letter-spacing: 0;
-   line-height: var(--lh-snug);
+   letter-spacing: var(--ls-normal);
+   line-height: var(--lh-none);
    text-align: center;
    width: 100%;
    overflow: hidden;
    text-overflow: ellipsis;
    white-space: nowrap;
+   transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+/* Interaction States */
+@media (hover: hover) and (pointer: fine) {
+   .shortcut-card__item:hover .shortcut-card__icon-box {
+      background-color: var(--clr-white-a10);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--clr-white-a15);
+   }
+   
+   .shortcut-card__item:hover .shortcut-card__name {
+      color: var(--clr-text-primary);
+   }
+}
+
+.shortcut-card__item:active {
+   opacity: 0.8;
+}
+
+.shortcut-card__item:active .shortcut-card__icon-box {
+   transform: scale(0.92);
 }
 
 @media (max-width: 360px) {
    .shortcut-card__icon-box {
-      width: min(40px, 100%);
+      width: min(42px, 100%);
+      border-radius: var(--radius-lg);
       font-size: var(--fs-lg);
    }
 
