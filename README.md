@@ -240,6 +240,7 @@ satu-ramadhan/
     │       ├── modal/
     │       │   ├── confirm-modal.css
     │       │   ├── adzan-selector-modal.css
+    │       │   ├── adzan-volume-modal.css
     │       │   ├── audio-mode-selector-modal.css
     │       │   ├── calendar-modal.css
     │       │   ├── fasting-details-modal.css
@@ -255,8 +256,8 @@ satu-ramadhan/
     │       │   ├── tasbih-preset-modal.css
     │       │   ├── bookmark-note-modal.css
     │       │   ├── bookmark-folder-modal.css
-    │       │   ├── bookmark-move-modal.css
     │       │   ├── calculation-method-modal.css
+    │       │   ├── quran-font-modal.css
     │       │   ├── about-app-modal.css
     │       │   └── permission-dialog.css
     │       ├── quran/
@@ -268,12 +269,19 @@ satu-ramadhan/
     │       │   ├── quran-card.css         # Kartu surah di daftar
     │       │   ├── quran-bookmark.css     # Tampilan halaman bookmark
     │       │   └── mushaf.css             # Mode baca Mushaf (page-flip)
+    │       ├── prayer/
+    │       │   ├── prayer-list.css        # Layout item shalat di list view
+    │       │   └── prayer-time.css        # Layout waktu shalat & countdown
+    │       ├── compass/
+    │       │   └── compass-dial.css       # Styling animasi jarum kompas
+    │       ├── schedule/
+    │       │   └── countdown.css          # Styling text countdown shalat
+    │       ├── notification/
+    │       │   └── notification.css       # Styling UI toast notifikasi
     │       ├── tasbih/
     │       │   └── tasbih-beads.css       # Animasi manik-manik SVG 3D
     │       ├── skeleton/
-    │       │   ├── skeleton-home.css
-    │       │   ├── skeleton-schedule.css
-    │       │   └── skeleton-compass.css
+    │       │   └── skeleton.css           # Global skeleton loading styles
     │       └── ui/
     │           ├── button.css             # Varian tombol (primary, ghost, icon)
     │           ├── toggle.css             # Switch toggle on/off
@@ -393,6 +401,7 @@ satu-ramadhan/
         │   ├── modal/
         │   │   ├── confirm-modal.js                # Dialog konfirmasi aksi (hapus, reset)
         │   │   ├── adzan-selector-modal.js         # Pilih suara Adzan dengan preview audio
+        │   │   ├── adzan-volume-modal.js           # Pengaturan volume Adzan global
         │   │   ├── audio-mode-selector-modal.js    # Pilih mode audio tilawah Quran
         │   │   ├── calendar-modal.js               # Kalender navigasi jadwal bulan & puasa
         │   │   ├── fasting-details-modal.js        # Detail puasa sunnah/haram (niat, doa)
