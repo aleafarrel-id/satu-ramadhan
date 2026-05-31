@@ -37,6 +37,8 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "StatusBar")
 public class LocalStatusBarPlugin extends Plugin {
 
+    private String lastStyle = "DARK";
+
     /**
      * Sets status bar icon style (light or dark icons).
      *
@@ -46,6 +48,7 @@ public class LocalStatusBarPlugin extends Plugin {
     @PluginMethod
     public void setStyle(PluginCall call) {
         final String style = call.getString("style", "DARK");
+        lastStyle = style;
 
         getBridge().executeOnMainThread(() -> {
             try {
@@ -59,6 +62,28 @@ public class LocalStatusBarPlugin extends Plugin {
                 call.resolve();
             } catch (Exception ex) {
                 call.reject("Failed to set status bar style", ex);
+            }
+        });
+    }
+
+    /**
+     * Re-applies the last set status bar icon style when the device configuration changes
+     * (e.g., when rotating the screen or expanding a foldable device).
+     */
+    @Override
+    protected void handleOnConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.handleOnConfigurationChanged(newConfig);
+        getBridge().executeOnMainThread(() -> {
+            try {
+                if (getActivity() != null && getActivity().getWindow() != null) {
+                    WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(
+                        getActivity().getWindow(),
+                        getActivity().getWindow().getDecorView()
+                    );
+                    insetsController.setAppearanceLightStatusBars("LIGHT".equals(lastStyle));
+                }
+            } catch (Exception ex) {
+                // Ignore gracefully
             }
         });
     }
