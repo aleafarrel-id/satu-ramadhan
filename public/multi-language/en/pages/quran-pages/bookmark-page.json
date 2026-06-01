@@ -31,5 +31,8 @@
     "folder_name_duplicate": "Folder name already exists",
     "folder_name_too_long": "Folder name must be 30 characters or less",
     "move_to_folder_title": "Save to Category",
-    "move_success_notif": "Categories updated"
+    "move_success_notif": "Categories updated",
+    "banner_title": "Bookmark",
+    "banner_desc": "Mark your favorite verses to read them anytime.",
+    "banner_sub_desc": "Your collection of selected verses will be stored on this page."
 }

@@ -54,10 +54,11 @@ export async function render(container, callbacks = {}) {
     QuranCard.renderLoadingState(container);
 
     try {
-        const [folders, countByFolder, surahList] = await Promise.all([
+        const [folders, countByFolder, surahList, allBookmarks] = await Promise.all([
             BookmarkManager.getAllFolders(),
             BookmarkManager.getCountByFolder(),
             getSurahList(),
+            BookmarkManager.getAll()
         ]);
 
         if (!_container) return;
@@ -71,6 +72,14 @@ export async function render(container, callbacks = {}) {
         if (!folderExists) _activeFolderId = 'all';
 
         _container.innerHTML = '';
+
+        const latestBookmark = allBookmarks.length > 0 ? allBookmarks[0] : null;
+        const banner = QuranCard.createBookmarkBanner(latestBookmark, (bookmark) => {
+            const surah = _surahList.find(s => parseInt(s.index) === bookmark.surahIndex);
+            _openBookmarkedVerse(bookmark, surah);
+        });
+        _container.appendChild(banner);
+
         _renderFolderBar(_container);
         await _renderBookmarkList(_container);
 
@@ -218,6 +227,28 @@ async function _refreshFolderBar() {
     addChip.innerHTML = `<i class='bx bx-plus'></i><span>${t(`${NS}:folder_add_label`)}</span>`;
     addChip.addEventListener('click', _handleAddFolder);
     scroll.appendChild(addChip);
+}
+
+/**
+ * Refreshes the Bookmark Banner when the underlying data changes (e.g. deletion).
+ */
+async function _refreshBanner() {
+    if (!_container) return;
+
+    const allBookmarks = await BookmarkManager.getAll();
+    const latestBookmark = allBookmarks.length > 0 ? allBookmarks[0] : null;
+
+    const currentBanner = _container.querySelector('.last-read-banner--bookmark');
+    if (!currentBanner) return;
+
+    const newBanner = QuranCard.createBookmarkBanner(latestBookmark, (bookmark) => {
+        const surah = _surahList.find(s => parseInt(s.index) === bookmark.surahIndex);
+        _openBookmarkedVerse(bookmark, surah);
+    });
+
+    if (currentBanner.parentNode) {
+        currentBanner.parentNode.replaceChild(newBanner, currentBanner);
+    }
 }
 
 /**
@@ -512,6 +543,9 @@ function _handleDeleteBookmark(bookmark, cardEl) {
 
                 // Update count badge in carousel
                 await _refreshFolderBar();
+
+                // Update the banner in case the deleted bookmark was the latest one
+                await _refreshBanner();
 
                 // Show empty state if no more cards in the active list
                 const wrapper = _container?.querySelector('.bookmark-list-wrapper');

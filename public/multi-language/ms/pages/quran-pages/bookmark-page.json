@@ -31,5 +31,8 @@
     "folder_name_duplicate": "Nama folder sudah digunakan",
     "folder_name_too_long": "Nama folder maksimum 30 aksara",
     "move_to_folder_title": "Simpan ke Kategori",
-    "move_success_notif": "Kategori dikemas kini"
+    "move_success_notif": "Kategori dikemas kini",
+    "banner_title": "Penanda Buku",
+    "banner_desc": "Tandai ayat kegemaran anda untuk dibaca pada bila-bila masa.",
+    "banner_sub_desc": "Koleksi ayat pilihan anda akan tersimpan di halaman ini."
 }

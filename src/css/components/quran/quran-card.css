@@ -199,6 +199,10 @@
    pointer-events: none;
 }
 
+.last-read-banner--bookmark .last-read-banner__ornament {
+   background-image: url('/assets/icon/quran-bookmark.png');
+}
+
 /* ── Container ── */
 .surah-list {
    display: flex;

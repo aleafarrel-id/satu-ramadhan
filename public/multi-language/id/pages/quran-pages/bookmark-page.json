@@ -31,5 +31,8 @@
     "folder_name_duplicate": "Nama folder sudah digunakan",
     "folder_name_too_long": "Nama folder maksimal 30 karakter",
     "move_to_folder_title": "Simpan ke Kategori",
-    "move_success_notif": "Kategori diperbarui"
+    "move_success_notif": "Kategori diperbarui",
+    "banner_title": "Bookmark",
+    "banner_desc": "Tandai ayat favorit Anda untuk dibaca kembali kapan saja.",
+    "banner_sub_desc": "Koleksi ayat pilihan Anda akan tersimpan di halaman ini."
 }

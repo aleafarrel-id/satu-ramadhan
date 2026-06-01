@@ -66,7 +66,7 @@ export function createLastReadBanner({ bookmark, history } = {}, onClick) {
          pill.setAttribute('role', 'button');
          pill.tabIndex = 0;
          pill.innerHTML = `
-            <i class='bx bx-book-open'></i>
+            <i class='bx bx-history'></i>
             <span class="last-read-pill__text">${escapeHtml(item.title)}</span>
          `;
          makeAccessibleBtn(pill, () => onClick(item));
@@ -90,7 +90,7 @@ export function createLastReadBanner({ bookmark, history } = {}, onClick) {
          badgesContainer.tabIndex = 0;
 
          const badges = [
-            { icon: 'bx-history', text: titleText },
+            { icon: 'bx-bookmark-alt', text: titleText },
             { icon: null, text: verseText }
          ];
 
@@ -127,6 +127,109 @@ export function createLastReadBanner({ bookmark, history } = {}, onClick) {
 
    if (isValidBookmark) renderGroup(bookmark, false);
    if (isValidHistory) renderGroup(history, true);
+
+   // ── Right ornament image ──
+   const ornament = document.createElement('div');
+   ornament.className = 'last-read-banner__ornament';
+   ornament.setAttribute('aria-hidden', 'true');
+
+   safeAppend(banner, content);
+   safeAppend(banner, ornament);
+
+   return banner;
+}
+
+/**
+ * Renders the Bookmark banner card at the top of the bookmarks list.
+ * Uses the same styling as the last-read banner but customized for bookmarks.
+ *
+ * @param {Object|null} bookmark - The latest bookmark entry, or null if empty
+ * @param {Function} onClick - Called with (bookmark) when the pill button is clicked
+ * @returns {HTMLElement}
+ */
+export function createBookmarkBanner(bookmark, onClick) {
+   const banner = document.createElement('div');
+   banner.className = 'last-read-banner last-read-banner--bookmark';
+   banner.setAttribute('aria-label', t('pages/quran-pages/bookmark-page:banner_title'));
+
+   // ── Left content column ──
+   const content = document.createElement('div');
+   content.className = 'last-read-banner__content';
+
+   const titleEl = document.createElement('div');
+   titleEl.className = 'last-read-banner__title';
+   titleEl.textContent = t('pages/quran-pages/bookmark-page:banner_title');
+
+   content.appendChild(titleEl);
+
+   const descEl = document.createElement('div');
+   descEl.className = 'last-read-banner__desc';
+   descEl.textContent = t('pages/quran-pages/bookmark-page:banner_desc');
+   content.appendChild(descEl);
+
+   const subDescEl = document.createElement('div');
+   subDescEl.className = 'last-read-banner__desc';
+   subDescEl.style.opacity = '0.8';
+   subDescEl.textContent = t('pages/quran-pages/bookmark-page:banner_sub_desc');
+   content.appendChild(subDescEl);
+
+   const isValidBookmark = bookmark
+      && typeof bookmark.surahIndex === 'number'
+      && typeof bookmark.verseNumber === 'number'
+      && bookmark.surahTitle;
+
+   if (isValidBookmark) {
+      const labelText = t('components/quran/quran-card:last_bookmarked_label') || 'Terakhir Ditandai';
+      const isJuzMode = bookmark.readMode === 'juz' && bookmark.juzIndex;
+      const titleText = isJuzMode ? `Juz ${bookmark.juzIndex}` : bookmark.surahTitle;
+      const verseText = t('components/quran/quran-card:last_read_ayah', { verseNumber: bookmark.verseNumber });
+      const ariaLabel = t('components/quran/quran-card:last_read_aria', { label: `${titleText} ${verseText}` });
+      
+      const labelEl = document.createElement('div');
+      labelEl.className = 'last-read-banner__pill-label';
+      labelEl.textContent = labelText;
+      content.appendChild(labelEl);
+
+      const badgesContainer = document.createElement('div');
+      badgesContainer.className = 'last-read-badge-group';
+      badgesContainer.setAttribute('aria-label', ariaLabel);
+      badgesContainer.setAttribute('role', 'button');
+      badgesContainer.tabIndex = 0;
+
+      const badges = [
+         { icon: 'bx-bookmark-alt', text: titleText },
+         { icon: null, text: verseText }
+      ];
+
+      badges.forEach(badge => {
+         const innerBadge = document.createElement('div');
+         innerBadge.className = 'last-read-badge';
+         let innerHTML = '';
+         if (badge.icon) {
+            innerHTML += `<i class='bx ${badge.icon}'></i>`;
+         }
+         innerHTML += `<span class="last-read-badge__text">${escapeHtml(badge.text)}</span>`;
+         innerBadge.innerHTML = innerHTML;
+         badgesContainer.appendChild(innerBadge);
+      });
+
+      makeAccessibleBtn(badgesContainer, () => onClick(bookmark));
+      content.appendChild(badgesContainer);
+
+      // Dynamically detect flex-wrap to apply tight column layout without empty space bug
+      const observer = new ResizeObserver(() => {
+         if (!badgesContainer.isConnected) {
+            observer.disconnect();
+            return;
+         }
+         badgesContainer.classList.remove('is-stacked');
+         const children = badgesContainer.children;
+         if (children.length > 1 && children[0].offsetTop !== children[1].offsetTop) {
+            badgesContainer.classList.add('is-stacked');
+         }
+      });
+      observer.observe(banner);
+   }
 
    // ── Right ornament image ──
    const ornament = document.createElement('div');
