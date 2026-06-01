@@ -20,7 +20,6 @@ import * as router from '../router.js';
 import { t, loadNS } from '../core/i18n.js';
 
 import { safeClear } from '../utils/dom-utils.js';
-import { LIST_PRAYER_KEYS } from '../utils/datetime.js';
 
 /* --- CONSTANTS --- */
 const VIEW_TUBE = 'tube';

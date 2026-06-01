@@ -560,9 +560,8 @@ function _handleDeleteBookmark(bookmark, cardEl) {
 /**
  * Handles editing the custom note for a bookmark.
  * @param {object}      bookmark
- * @param {HTMLElement} cardEl
  */
-function _handleEditNote(bookmark, cardEl) {
+function _handleEditNote(bookmark) {
     showBookmarkNoteModal(bookmark.note || '', async (newNote) => {
         const success = await BookmarkManager.updateNote(
             bookmark.surahIndex,
@@ -579,9 +578,8 @@ function _handleEditNote(bookmark, cardEl) {
 /**
  * Handles toggling category tags for a bookmark.
  * @param {object}      bookmark
- * @param {HTMLElement} cardEl
  */
-async function _handleToggleCategory(bookmark, cardEl) {
+async function _handleToggleCategory(bookmark) {
     const [folders, countByFolder] = await Promise.all([
         BookmarkManager.getAllFolders(),
         BookmarkManager.getCountByFolder(),
@@ -594,7 +592,7 @@ async function _handleToggleCategory(bookmark, cardEl) {
         folders,
         countByFolder,
         activeFolderIds,
-        async (toggledFolderId, isNowActive) => {
+        async (toggledFolderId) => {
             hasChanged = true;
             await BookmarkManager.toggleFolderTag(bookmark.key, toggledFolderId);
         },

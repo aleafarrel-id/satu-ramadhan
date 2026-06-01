@@ -22,7 +22,7 @@ export async function checkNotificationPermission() {
     try {
         const status = await LocalNotifications.checkPermissions();
         return status.display === 'granted';
-    } catch (e) {
+    } catch {
         return false;
     }
 }
@@ -34,7 +34,7 @@ export async function requestNotificationPermission() {
         const granted = result.display === 'granted';
         if (granted) _initialized = true;
         return granted;
-    } catch (e) {
+    } catch {
         return false;
     }
 }
@@ -43,5 +43,5 @@ export async function cancelAllPrayerNotifications() {
     if (!isNative) return;
     try {
         await PrayerService.cancelAll();
-    } catch (e) {}
+    } catch {}
 }

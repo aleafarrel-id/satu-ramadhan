@@ -50,7 +50,7 @@
                 metaThemeColor.setAttribute('content', '#031013');
             }
         }
-    } catch (e) {
+    } catch {
         // Fail silently in boot sequence to allow default teal render
     }
 })();

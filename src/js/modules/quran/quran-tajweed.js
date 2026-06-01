@@ -386,8 +386,8 @@ function _applyContextualRules(text, rules) {
  */
 function _buildSlots(text, rules) {
    const len = text.length;
-   const slots = new Array(len).fill(null);
-   const optSlots = new Array(len).fill(false);
+   const slots = Array.from({ length: len }, () => null);
+   const optSlots = Array.from({ length: len }, () => false);
 
    // Apply rules — first-write wins
    for (let i = 0; i < rules.length; i++) {

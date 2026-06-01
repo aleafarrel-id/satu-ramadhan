@@ -20,8 +20,7 @@ import { initBackHandler } from './modules/system/back-handler.js';
 import {
     initNotificationService,
     checkNotificationPermission,
-    requestNotificationPermission,
-    PrayerService,
+    requestNotificationPermission
 } from './modules/notification/native-notification.js';
 import { syncNotifications } from './modules/notification/notification-sync.js';
 import { preload as preloadBookmarks } from './modules/quran/bookmark-manager.js';

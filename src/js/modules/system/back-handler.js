@@ -59,7 +59,7 @@ export function initBackHandler() {
             App.exitApp();
         });
         console.log('[App] Back handler initialized');
-    } catch (e) {
+    } catch {
         console.warn('[App] App plugin not available (likely running in standard web browser)');
     }
 }

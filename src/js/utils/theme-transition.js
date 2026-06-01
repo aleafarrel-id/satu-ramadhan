@@ -76,7 +76,7 @@ export function executeThemeTransition({ x, y, updateDOMCallback }) {
                 document.documentElement.classList.remove('theme-transitioning');
                 resolve();
             });
-        } catch (error) {
+        } catch {
             // Handle InvalidStateError or other synchronous API errors
             document.documentElement.classList.remove('theme-transitioning');
             updateDOMCallback();

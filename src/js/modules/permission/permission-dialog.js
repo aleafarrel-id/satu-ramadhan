@@ -99,7 +99,7 @@ async function handleConfirm() {
     }
 }
 
-function handleCancel(e) {
+function handleCancel() {
     const currentOverlay = _overlayEl;
     if (typeof _onCancel === 'function') _onCancel();
     // In order to get the localOnClose for cancel, we would need to capture it in bindEvents.

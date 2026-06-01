@@ -152,9 +152,8 @@ export async function showPermissionDialogPreset(key, { onConfirm, onCancel, the
  * @param {string} presetKey - Dialog preset key (e.g. 'storage', 'murottal_storage')
  * @returns {Promise<boolean>} Resolves `true` if permission is granted.
  */
-export function ensureStoragePermission(presetKey) {
-    return new Promise(async (resolve) => {
-        await loadNS('modules/permission/permission-dialog');
+export async function ensureStoragePermission(presetKey) {
+    await loadNS('modules/permission/permission-dialog');
         
         const ua = navigator.userAgent;
         const androidMatch = ua.match(/Android\s([0-9.]+)/);
@@ -162,22 +161,20 @@ export function ensureStoragePermission(presetKey) {
 
         // Android 13+ uses scoped storage — no permission needed
         if (androidVersion >= 13) {
-            resolve(true);
-            return;
+            return true;
         }
 
         try {
             const status = await Filesystem.checkPermissions();
             if (status.publicStorage === 'granted') {
-                resolve(true);
-                return;
+                return true;
             }
         } catch {
-            resolve(false);
-            return;
+            return false;
         }
 
-        showPermissionDialogPreset(presetKey, {
+        return new Promise((resolve) => {
+            showPermissionDialogPreset(presetKey, {
             onConfirm: async () => {
                 try {
                     const result = await Filesystem.requestPermissions();

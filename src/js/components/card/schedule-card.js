@@ -292,7 +292,7 @@ export function renderScheduleCardBottomSkeleton() {
  * Render the date navigation bar with title, subtitle, and controls.
  */
 function renderDateNav(entry, dayIndex, totalDays = 30) {
-    const { hijriDay, hijriMonthName, hijriYear, date, isToday: today, timings } = entry;
+    const { hijriDay, hijriMonthName, hijriYear, date, timings } = entry;
 
     const days = t('components/ui/header:days', { returnObjects: true }) || [];
     const months = t('components/ui/header:months', { returnObjects: true }) || [];
@@ -454,8 +454,6 @@ function renderFastingBadgeHtml(entry) {
     const primaryId = fastingEvents.includes('haram') ? 'haram' : fastingEvents[0];
     const data = t(`fasting:${primaryId}`, { returnObjects: true });
     if (!data || typeof data === 'string') return '';
-
-    const typeClass = `schedule-fasting-card--${data.type}`;
 
     return `
         <button class="card card--container schedule-fasting-card" data-fasting-id="${primaryId}">

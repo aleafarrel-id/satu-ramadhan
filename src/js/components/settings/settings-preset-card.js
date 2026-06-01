@@ -5,7 +5,6 @@
 
 // Core & Libraries
 import { getActivePreset } from '../../modules/schedule/ramadhan.js';
-import { isIndonesiaMode } from '../../core/calculation-resolver.js';
 import { store } from '../../core/store.js';
 
 // Utilities & Helpers
@@ -81,8 +80,6 @@ export function destroy() {
  */
 async function renderCardContent() {
     const preset = await getActivePreset();
-    const indoMode = isIndonesiaMode();
-
     const name = preset?.name || t('components/settings/settings-preset-card:unknown');
     const startStr = preset?.startDate ? formatDate(preset.startDate) : '-';
     const endStr = preset?.endDate ? formatDate(preset.endDate) : '-';

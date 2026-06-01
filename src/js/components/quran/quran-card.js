@@ -432,7 +432,7 @@ export function createBookmarkCard(bookmark, surah, onClick, onDelete, onEditNot
    const isJuzMode = bookmark.readMode === 'juz' && bookmark.juzIndex;
 
    const titleLatin = isJuzMode ? `Juz ${bookmark.juzIndex}` : (surah ? surah.title : bookmark.surahTitle);
-   const titleAr = isJuzMode ? `الجزء ${_toArabicNumeral(parseInt(bookmark.juzIndex))}` : (surah ? surah.titleAr : bookmark.surahTitleAr);
+
    const topNumber = isJuzMode ? bookmark.juzIndex : bookmark.surahIndex;
 
    let primaryBadge = isJuzMode ? (surah ? surah.title : bookmark.surahTitle) : typeText;

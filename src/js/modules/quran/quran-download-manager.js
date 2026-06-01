@@ -96,7 +96,7 @@ function _markAyahDownloaded(reciterId, surahIndex, ayahNumber) {
     const downloads = store.getState(STORE_DOWNLOADS_PATH) || {};
 
     // Deep-clone the reciter sub-tree to avoid mutation
-    const reciterData = { ...(downloads[reciterId] || {}) };
+    const reciterData = { ...downloads[reciterId] };
     const existing = reciterData[surahIndex] ? [...reciterData[surahIndex]] : [];
 
     if (!existing.includes(ayahNumber)) {
@@ -283,7 +283,7 @@ function _cleanupState() {
  */
 function _clearSurahRecord(reciterId, surahIndex) {
     const downloads = store.getState(STORE_DOWNLOADS_PATH) || {};
-    const reciterData = { ...(downloads[reciterId] || {}) };
+    const reciterData = { ...downloads[reciterId] };
     delete reciterData[surahIndex];
     store.setState(`${STORE_DOWNLOADS_PATH}.${reciterId}`, reciterData);
 }

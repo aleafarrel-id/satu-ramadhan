@@ -85,7 +85,7 @@ async function handleSelect(themeCode, event) {
                     isTargetDark = isDarkPrayer(state.current.key);
                 }
             }
-        } catch (e) {
+        } catch {
             isTargetDark = false;
         }
     }

@@ -129,7 +129,7 @@ function removeModal() {
     _onJumpCallback = null;
 }
 
-function createModalDOM(current) {
+function createModalDOM() {
     const overlay = document.createElement('div');
     overlay.className = 'mushaf-jump-overlay';
 

@@ -73,14 +73,12 @@ async function saveUserPresetsData(data) {
  * Compare stored year with JSON year.
  * If JSON has a newer year, clear all user overrides & customs.
  * @param {number} jsonYear - tahunHijriah from the JSON config
- * @param {Array} basePresets - array of base presets from config
  */
-async function checkAndResetYear(jsonYear, basePresets) {
+async function checkAndResetYear(jsonYear) {
     const savedYear = await storage.get(SAVED_YEAR_KEY);
 
     if (savedYear !== null && jsonYear > savedYear) {
         // Year changed — clear user modifications
-        const { customs } = await getUserPresetsData();
         await saveUserPresetsData({ overrides: {}, customs: [] });
 
         // Clear legacy offset cache that was used in older versions
@@ -103,7 +101,7 @@ export async function getAllPresets() {
     const basePresets = config.presets || [];
 
     // Smart year reset
-    await checkAndResetYear(config.tahunHijriah, basePresets);
+    await checkAndResetYear(config.tahunHijriah);
 
     const { overrides, customs } = await getUserPresetsData();
 
@@ -310,7 +308,7 @@ export async function updatePreset(id, newData) {
     if (isBase) {
         // Override a base preset
         data.overrides[id] = {
-            ...(data.overrides[id] || {}),
+            ...data.overrides[id],
             ...newData,
         };
     } else {

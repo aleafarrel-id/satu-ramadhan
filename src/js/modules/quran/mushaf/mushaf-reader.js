@@ -518,7 +518,7 @@ function _onPointerUp(e) {
    }
 }
 
-function _onPointerCancel(e) {
+function _onPointerCancel() {
    _isSwiping = false;
 }
 
@@ -639,7 +639,7 @@ function _buildViewport() {
 }
 
 function _toggleZoomMode() {
-   _isZoomMode ? _exitZoomMode() : _enterZoomMode();
+   if (_isZoomMode) { _exitZoomMode(); } else { _enterZoomMode(); }
 }
 
 function _enterZoomMode() {
@@ -964,7 +964,7 @@ function _prefetchAdjacent() {
    }, 300);
 }
 
-function _togglePicker() { isPickerOpen() ? closePicker() : _openPicker(); }
+function _togglePicker() { if (isPickerOpen()) { closePicker(); } else { _openPicker(); } }
 
 function _openPicker() {
    if (!_mushafIndex) return;

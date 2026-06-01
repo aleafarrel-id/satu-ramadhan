@@ -505,7 +505,7 @@ async function renderDayView() {
     startDayCrossingCheck();
     _bindScheduleCarouselEvents();
     _bindScheduleShortcutEvents();
-    _bindScheduleTabletEvents(orgName);
+    _bindScheduleTabletEvents();
 
     // Bind the tablet generate button
     _container.querySelector('#sched-btn-generate-tablet')?.addEventListener('click', () => {
@@ -693,7 +693,7 @@ function bindEvents() {
  * Bind tablet-only action buttons (Kiblat + Org Toggle below hero).
  * @param {string} orgName - current org display name
  */
-function _bindScheduleTabletEvents(orgName) {
+function _bindScheduleTabletEvents() {
     document.getElementById('sched-btn-kiblat-tablet')?.addEventListener('click', () => {
         document.querySelector('.nav-item[data-tab="compass"]')?.click();
     });

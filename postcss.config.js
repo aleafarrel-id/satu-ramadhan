@@ -10,9 +10,8 @@
  * - Optimizes calc() expressions
  */
 export default {
-    plugins: [
-        ...(process.env.NODE_ENV === 'production'
-            ? [
+    plugins: process.env.NODE_ENV === 'production'
+        ? [
                   (await import('cssnano')).default({
                       preset: [
                           'default',
@@ -63,6 +62,5 @@ export default {
                       ],
                   }),
               ]
-            : []),
-    ],
+        : [],
 };

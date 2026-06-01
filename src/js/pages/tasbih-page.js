@@ -302,7 +302,7 @@ function _rebuildBeadsSVG() {
             t_x = Math.pow(t_linear, 0.75);
         }
 
-        const x = W * 0.0 + t_x * (W * 1.0);
+        const x = t_x * W;
         const t_clamped = Math.max(0, t_x);
         const y = H * 0.4 + Math.pow(t_clamped, 3) * H * 0.55;
         _beadPositions.push({ x, y });
@@ -312,7 +312,7 @@ function _rebuildBeadsSVG() {
     const cordP = [];
     for (let i = 0; i <= 50; i++) {
         let t = -0.3 + (i / 50) * 1.6;
-        const x = W * 0.0 + t * (W * 1.0);
+        const x = t * W;
         const t_clamped = Math.max(0, t);
         const y = H * 0.4 + Math.pow(t_clamped, 3) * H * 0.55;
         cordP.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
@@ -773,7 +773,7 @@ function _updateInfoCard(roundComplete = false) {
  * Update bead visual states and physical sliding positions.
  * Implements infinite conveyor belt (Top to Bottom / Kiri Atas ke Kanan Bawah)
  */
-function _updateBeads(roundComplete = false) {
+function _updateBeads() {
     if (_beadPositions.length === 0) return;
 
     const totalBeads = _beadPositions.length;
@@ -1148,7 +1148,7 @@ function _playLockedAudioFeedback() {
 
         // Clean up after playback
         oscillator.addEventListener('ended', () => ctx.close().catch(() => { }));
-    } catch (e) {
+    } catch {
         // Silently fail — audio context may be unavailable
     }
 }
