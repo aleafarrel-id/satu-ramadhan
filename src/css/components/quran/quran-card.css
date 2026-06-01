@@ -1,5 +1,204 @@
 /* Surah Card Component */
 
+/* ==============================================
+   Last Read Banner — Quran Page Hero Card
+   ============================================== */
+
+.last-read-banner {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background: linear-gradient(135deg, var(--clr-primary-500) 0%, var(--clr-primary-600) 100%);
+   border-radius: var(--radius-xl);
+   padding: var(--sp-5) var(--sp-6);
+   margin: 0 var(--sp-1) var(--sp-4);
+   box-shadow: 0 8px 24px var(--clr-primary-a20);
+   position: relative;
+   overflow: hidden;
+   min-height: 130px;
+   cursor: default;
+   user-select: none;
+}
+
+.last-read-banner::before {
+   content: '';
+   position: absolute;
+   right: -15%;
+   top: -50%;
+   width: calc(var(--icon-xl) * 5);
+   height: calc(var(--icon-xl) * 5);
+   background: radial-gradient(circle, var(--clr-white-a10) 0%, transparent 70%);
+   border-radius: var(--radius-circle);
+   pointer-events: none;
+}
+
+/* Subtle glow — bottom-left (matches reader card ::after) */
+.last-read-banner::after {
+   content: '';
+   position: absolute;
+   left: -5%;
+   bottom: -30%;
+   width: calc(var(--icon-xl) * 2.5);
+   height: calc(var(--icon-xl) * 2.5);
+   background: radial-gradient(circle, var(--clr-white-a05) 0%, transparent 70%);
+   border-radius: var(--radius-circle);
+   pointer-events: none;
+}
+
+/* ── Content Column (left) ── */
+.last-read-banner__content {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: var(--sp-2);
+   z-index: 1;
+   flex: 1;
+   min-width: 0;
+   padding-right: 140px;
+}
+
+.last-read-banner__title {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xl);
+   font-weight: var(--fw-bold);
+   color: var(--clr-text-primary);
+   text-shadow: 0 2px 4px var(--clr-black-a20);
+}
+
+.last-read-banner__desc {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   color: var(--clr-white-a70);
+   max-width: 200px;
+   line-height: var(--lh-snug);
+   margin-top: 2px;
+}
+
+/* ── Pill Button (Last Read) ── */
+.last-read-banner__pill-label {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   color: var(--clr-text-primary);
+   margin-top: var(--sp-2);
+   margin-bottom: var(--sp-1);
+   font-weight: var(--fw-semibold);
+   opacity: 0.9;
+}
+
+.last-read-badge-group {
+   display: inline-flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   align-items: center;
+   max-width: 100%;
+   gap: var(--spacing-xs);
+   padding: 4px 6px;
+   background: var(--clr-white-a10);
+   border: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-lg);
+   cursor: pointer;
+   -webkit-tap-highlight-color: transparent;
+   transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+   backdrop-filter: blur(4px);
+   -webkit-backdrop-filter: blur(4px);
+}
+
+.last-read-badge-group.is-stacked {
+   flex-direction: column;
+   align-items: flex-start;
+}
+
+.last-read-badge-group:active {
+   transform: scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .last-read-badge-group:hover {
+      background: var(--clr-accent-a40);
+      border-color: var(--clr-accent-a50);
+   }
+}
+
+.last-read-pill {
+   display: inline-flex;
+   align-items: center;
+   gap: var(--spacing-xs);
+   padding: var(--spacing-xs) var(--spacing-sm);
+   background: var(--clr-white-a15);
+   border: 1px solid var(--clr-border-light);
+   border-radius: var(--radius-pill);
+   color: var(--clr-text-primary);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-semibold);
+   letter-spacing: var(--ls-tight);
+   text-shadow: var(--shadow-sm);
+   cursor: pointer;
+   -webkit-tap-highlight-color: transparent;
+   transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+   backdrop-filter: blur(4px);
+   -webkit-backdrop-filter: blur(4px);
+   max-width: 100%;
+}
+
+.last-read-pill:active {
+   transform: scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+   .last-read-pill:hover {
+      background: var(--clr-accent-a40);
+      border-color: var(--clr-accent-a50);
+   }
+}
+
+.last-read-badge {
+   display: inline-flex;
+   align-items: center;
+   gap: var(--spacing-xs);
+   padding: 2px 8px;
+   background: var(--clr-white-a15);
+   border-radius: var(--radius-pill);
+   color: var(--clr-text-primary);
+   font-family: var(--ff-primary);
+   font-size: var(--fs-2xs);
+   font-weight: var(--fw-semibold);
+   letter-spacing: var(--ls-tight);
+   text-shadow: var(--shadow-sm);
+   flex-shrink: 1;
+   min-width: 0;
+   max-width: 100%;
+}
+
+.last-read-badge i,
+.last-read-pill i {
+   font-size: var(--fs-xs);
+   flex-shrink: 0;
+}
+
+.last-read-badge__text,
+.last-read-pill__text {
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.last-read-banner__ornament {
+   position: absolute;
+   right: 0;
+   bottom: 0;
+   transform: translate(12%, 24%);
+   z-index: 1;
+   width: clamp(180px, 45vw, 335px);
+   height: clamp(180px, 45vw, 335px);
+   background-image: url('/assets/icon/quran.png');
+   background-size: contain;
+   background-repeat: no-repeat;
+   background-position: center;
+   filter: drop-shadow(0 8px 16px var(--clr-black-a30));
+   pointer-events: none;
+}
+
 /* ── Container ── */
 .surah-list {
    display: flex;
@@ -253,6 +452,48 @@
    .surah-title-arabic {
       font-size: var(--fs-md);
    }
+
+   .last-read-banner {
+      padding: var(--sp-4) var(--sp-5);
+      margin: 0 0 var(--sp-3);
+      min-height: 100px;
+   }
+
+   .last-read-badge-group {
+      flex-direction: column;
+      align-items: flex-start;
+   }
+
+   .last-read-banner__title {
+      font-size: var(--fs-lg);
+   }
+
+   .last-read-pill {
+      font-size: var(--fs-2xs);
+   }
+
+   .last-read-pill i {
+      font-size: var(--fs-xs);
+   }
+}
+
+@media screen and (max-width: 360px) {
+   .last-read-banner {
+      padding: var(--sp-3) var(--sp-4);
+      min-height: 90px;
+   }
+
+   .last-read-banner__title {
+      font-size: var(--fs-md);
+   }
+
+   .last-read-pill {
+      font-size: var(--fs-2xs);
+   }
+
+   .last-read-pill i {
+      font-size: var(--fs-xs);
+   }
 }
 
 @media screen and (max-width: 320px) {
@@ -283,5 +524,17 @@
 
    .surah-title-arabic {
       font-size: var(--fs-md);
+   }
+
+   .last-read-banner__title {
+      font-size: var(--fs-base);
+   }
+
+   .last-read-pill {
+      font-size: var(--fs-2xs);
+   }
+
+   .last-read-pill i {
+      font-size: var(--fs-xs);
    }
 }

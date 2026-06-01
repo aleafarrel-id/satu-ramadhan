@@ -15,6 +15,7 @@ import { renderBatchedList, createRenderContext } from './quran-utility.js';
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
 import { getTajweedEnabled, getTransliterationEnabled, getTranslationEnabled, isAudioOfflineEnabled, setAudioMode } from './quran-settings.js';
 import * as BookmarkManager from './bookmark-manager.js';
+import * as Storage from '../../core/storage.js';
 
 // Audio & Download
 import * as DownloadManager from './quran-download-manager.js';
@@ -67,6 +68,20 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
    _currentType = type;
    _targetVerseNumber = targetVerseNumber;
    _onCloseCallback = options?.onClose || null;
+
+   // Auto-track Last Opened for fallback banner
+   try {
+      const historyObj = {
+         type: 'history',
+         readMode: type,
+         index: item.index,
+         title: type === 'surah' ? item.title : `Juz ${item.index}`,
+         timestamp: Date.now()
+      };
+      await Storage.set('quran_last_opened', historyObj);
+   } catch (e) {
+      console.warn('[QuranReader] Failed to save last opened state', e);
+   }
 
    _quranPage = document.querySelector('.quran-page');
    if (!_quranPage) return;
@@ -147,6 +162,9 @@ export function close() {
       store.unsubscribe(_storeSubId);
       _storeSubId = null;
    }
+
+   // Dispatch custom event so the UI (Surah/Juz tab banners) can re-render automatically
+   document.dispatchEvent(new CustomEvent('quran:history-updated'));
 
    // Unsubscribe murottal events (but don't stop playback — dock handles that)
    _unregisterMurottalEvents();

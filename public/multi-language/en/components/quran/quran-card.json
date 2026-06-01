@@ -9,5 +9,13 @@
     "ayat": "Verse {{verseNumber}}",
     "makkiyah": "Makki",
     "madaniyah": "Madani",
-    "menu": "Menu"
+    "menu": "Menu",
+    "quran_title": "Al-Qur'an",
+    "banner_label": "Al-Qur'an Banner",
+    "last_read_ayah": "Verse {{verseNumber}}",
+    "last_read_aria": "Continue reading {{label}}",
+    "quran_desc": "Read and learn the Holy Quran",
+    "last_opened_label": "Last Opened",
+    "last_opened_aria": "Open {{label}} again",
+    "last_bookmarked_label": "Last Bookmarked"
 }

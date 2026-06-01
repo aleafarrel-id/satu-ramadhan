@@ -9,6 +9,137 @@ import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 
 /**
+ * Renders the decorative "Al-Qur'an" banner card at the top of Surah/Juz lists.
+ *
+ * The banner itself is non-interactive (no click handler on the container).
+ * If a valid last-read bookmark is supplied, a pill button is injected into
+ * the banner so the user can resume reading. The pill handles both Surah and
+ * Juz read modes and guards against corrupt bookmark data.
+ *
+ * @param {Object|null} bookmark - Last-read bookmark entry from BookmarkManager, or null
+ * @param {Function} onClick - Called with (bookmark) when the pill button is clicked
+ * @returns {HTMLElement}
+ */
+export function createLastReadBanner({ bookmark, history } = {}, onClick) {
+   const banner = document.createElement('div');
+   banner.className = 'last-read-banner';
+   banner.setAttribute('aria-label', t('components/quran/quran-card:banner_label'));
+
+   // ── Left content column ──
+   const content = document.createElement('div');
+   content.className = 'last-read-banner__content';
+
+   const titleEl = document.createElement('div');
+   titleEl.className = 'last-read-banner__title';
+   titleEl.textContent = t('components/quran/quran-card:quran_title');
+
+   content.appendChild(titleEl);
+
+   const descEl = document.createElement('div');
+   descEl.className = 'last-read-banner__desc';
+   descEl.textContent = t('components/quran/quran-card:quran_desc');
+   content.appendChild(descEl);
+
+   const isValidBookmark = bookmark
+      && typeof bookmark.surahIndex === 'number'
+      && typeof bookmark.verseNumber === 'number'
+      && bookmark.surahTitle;
+
+   const isValidHistory = history?.type === 'history';
+
+   const renderGroup = (item, isHistoryGroup) => {
+      let labelText = '';
+      let ariaLabel = '';
+
+      if (isHistoryGroup) {
+         labelText = t('components/quran/quran-card:last_opened_label');
+         ariaLabel = t('components/quran/quran-card:last_opened_aria', { label: item.title });
+
+         const labelEl = document.createElement('div');
+         labelEl.className = 'last-read-banner__pill-label';
+         labelEl.textContent = labelText;
+         content.appendChild(labelEl);
+
+         const pill = document.createElement('div');
+         pill.className = 'last-read-pill';
+         pill.setAttribute('aria-label', ariaLabel);
+         pill.setAttribute('role', 'button');
+         pill.tabIndex = 0;
+         pill.innerHTML = `
+            <i class='bx bx-book-open'></i>
+            <span class="last-read-pill__text">${escapeHtml(item.title)}</span>
+         `;
+         makeAccessibleBtn(pill, () => onClick(item));
+         content.appendChild(pill);
+      } else {
+         labelText = t('components/quran/quran-card:last_bookmarked_label') || 'Terakhir Ditandai';
+         const isJuzMode = item.readMode === 'juz' && item.juzIndex;
+         const titleText = isJuzMode ? `Juz ${item.juzIndex}` : item.surahTitle;
+         const verseText = t('components/quran/quran-card:last_read_ayah', { verseNumber: item.verseNumber });
+         ariaLabel = t('components/quran/quran-card:last_read_aria', { label: `${titleText} ${verseText}` });
+         
+         const labelEl = document.createElement('div');
+         labelEl.className = 'last-read-banner__pill-label';
+         labelEl.textContent = labelText;
+         content.appendChild(labelEl);
+
+         const badgesContainer = document.createElement('div');
+         badgesContainer.className = 'last-read-badge-group';
+         badgesContainer.setAttribute('aria-label', ariaLabel);
+         badgesContainer.setAttribute('role', 'button');
+         badgesContainer.tabIndex = 0;
+
+         const badges = [
+            { icon: 'bx-history', text: titleText },
+            { icon: null, text: verseText }
+         ];
+
+         badges.forEach(badge => {
+            const innerBadge = document.createElement('div');
+            innerBadge.className = 'last-read-badge';
+            let innerHTML = '';
+            if (badge.icon) {
+               innerHTML += `<i class='bx ${badge.icon}'></i>`;
+            }
+            innerHTML += `<span class="last-read-badge__text">${escapeHtml(badge.text)}</span>`;
+            innerBadge.innerHTML = innerHTML;
+            badgesContainer.appendChild(innerBadge);
+         });
+
+         makeAccessibleBtn(badgesContainer, () => onClick(item));
+         content.appendChild(badgesContainer);
+
+         // Dynamically detect flex-wrap to apply tight column layout without empty space bug
+         const observer = new ResizeObserver(() => {
+            if (!badgesContainer.isConnected) {
+               observer.disconnect();
+               return;
+            }
+            badgesContainer.classList.remove('is-stacked');
+            const children = badgesContainer.children;
+            if (children.length > 1 && children[0].offsetTop !== children[1].offsetTop) {
+               badgesContainer.classList.add('is-stacked');
+            }
+         });
+         observer.observe(banner);
+      }
+   };
+
+   if (isValidBookmark) renderGroup(bookmark, false);
+   if (isValidHistory) renderGroup(history, true);
+
+   // ── Right ornament image ──
+   const ornament = document.createElement('div');
+   ornament.className = 'last-read-banner__ornament';
+   ornament.setAttribute('aria-hidden', 'true');
+
+   safeAppend(banner, content);
+   safeAppend(banner, ornament);
+
+   return banner;
+}
+
+/**
  * Renders a single Surah card.
  */
 export function createSurahCard(surah, onClick) {
@@ -284,13 +415,21 @@ function _showBookmarkDropdown(anchorEl, bookmark, cardEl, onEditNote, onToggleC
    dropdown.style.top = `${rect.bottom + 8}px`;
    dropdown.style.right = `${window.innerWidth - rect.right}px`;
 
+   let closeHandler;
+   let closeDropdown = () => {
+      dropdown.remove();
+      if (closeHandler) {
+         document.removeEventListener('click', closeHandler);
+      }
+   };
+
    if (onEditNote) {
       const editItem = document.createElement('button');
       editItem.className = 'bookmark-dropdown-item';
       editItem.innerHTML = `<i class='bx bx-pencil'></i> <span>${t('components/quran/quran-card:edit_note')}</span>`;
       editItem.addEventListener('click', (e) => {
          e.stopPropagation();
-         dropdown.remove();
+         closeDropdown();
          onEditNote(bookmark, cardEl);
       });
       dropdown.appendChild(editItem);
@@ -302,7 +441,7 @@ function _showBookmarkDropdown(anchorEl, bookmark, cardEl, onEditNote, onToggleC
       moveItem.innerHTML = `<i class='bx bx-folder'></i> <span>${t('components/quran/quran-card:move_to_folder')}</span>`;
       moveItem.addEventListener('click', (e) => {
          e.stopPropagation();
-         dropdown.remove();
+         closeDropdown();
          onToggleCategory(bookmark, cardEl);
       });
       dropdown.appendChild(moveItem);
@@ -314,7 +453,7 @@ function _showBookmarkDropdown(anchorEl, bookmark, cardEl, onEditNote, onToggleC
       deleteItem.innerHTML = `<i class='bx bx-trash'></i> <span>${t('components/quran/quran-card:delete_bookmark')}</span>`;
       deleteItem.addEventListener('click', (e) => {
          e.stopPropagation();
-         dropdown.remove();
+         closeDropdown();
          onDelete(bookmark, cardEl);
       });
       dropdown.appendChild(deleteItem);
@@ -322,24 +461,32 @@ function _showBookmarkDropdown(anchorEl, bookmark, cardEl, onEditNote, onToggleC
 
    document.body.appendChild(dropdown);
 
-   // Close on outside click
+   // Close on outside click or scroll
    setTimeout(() => {
-      const closeHandler = (e) => {
+      // Find all possible scrollable parents to close dropdown when card moves
+      const scrollParents = [
+         cardEl.closest('.bookmark-list-wrapper'),
+         cardEl.closest('.quran-content'),
+         document
+      ].filter(Boolean);
+
+      closeHandler = (e) => {
          if (!dropdown.contains(e.target)) {
-            dropdown.remove();
-            document.removeEventListener('click', closeHandler);
+            closeDropdown();
          }
       };
-      document.addEventListener('click', closeHandler);
 
-      // Close on scroll inside list wrapper
-      const scrollParent = cardEl.closest('.bookmark-list-wrapper');
-      if (scrollParent) {
-         scrollParent.addEventListener('scroll', () => {
-            dropdown.remove();
-            document.removeEventListener('click', closeHandler);
-         }, { once: true });
-      }
+      const handleScroll = () => closeDropdown();
+
+      document.addEventListener('click', closeHandler);
+      scrollParents.forEach(p => p.addEventListener('scroll', handleScroll, { passive: true }));
+
+      // Override closeDropdown to also clean up scroll listeners
+      const originalClose = closeDropdown;
+      closeDropdown = () => {
+         originalClose();
+         scrollParents.forEach(p => p.removeEventListener('scroll', handleScroll));
+      };
    }, 10);
 }
 

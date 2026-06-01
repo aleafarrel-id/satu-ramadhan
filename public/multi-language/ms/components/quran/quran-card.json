@@ -9,5 +9,13 @@
     "ayat": "Ayat {{verseNumber}}",
     "makkiyah": "Makkiyah",
     "madaniyah": "Madaniyah",
-    "menu": "Menu"
+    "menu": "Menu",
+    "quran_title": "Al-Qur'an",
+    "banner_label": "Sepanduk Al-Qur'an",
+    "last_read_ayah": "Ayat {{verseNumber}}",
+    "last_read_aria": "Teruskan membaca {{label}}",
+    "quran_desc": "Baca dan pelajari ayat suci Al-Qur'an",
+    "last_opened_label": "Terakhir Dibuka",
+    "last_opened_aria": "Buka semula {{label}}",
+    "last_bookmarked_label": "Terakhir Ditandai"
 }

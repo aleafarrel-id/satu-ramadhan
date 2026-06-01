@@ -21,7 +21,8 @@ import * as QuranAudioDock from '../components/quran/quran-audio-dock.js';
 // Modules
 import * as QuranNav from '../modules/quran/quran-nav.js';
 import * as QuranReader from '../modules/quran/quran-reader.js';
-import { getSurahList } from '../modules/quran/quran-api.js';
+import { getSurahList, getJuzList } from '../modules/quran/quran-api.js';
+import { fetchBannerData } from '../modules/quran/quran-utility.js';
 
 // Utilities
 import { initPullToRefresh } from '../utils/pull-to-refresh.js';
@@ -39,6 +40,7 @@ let _lastSubPageId = 'surah';
 let _debounceTimer = null;
 let _isSearchActive = false;
 let _ptrCleanup = null;
+let _historyListener = null;
 
 const _dismissSearchAction = () => toggleSearchMode(false);
 
@@ -56,6 +58,11 @@ export async function render(container) {
    await loadNS('components/quran/quran-card');
    await loadNS('components/quran/quran-dock');
    await loadNS('components/quran/quran-search');
+
+   // Pre-fetch all shared data in parallel so subpage renders are instant
+   fetchBannerData();
+   getSurahList().catch(() => {});
+   getJuzList().catch(() => {});
 
    container.innerHTML = `
       <div class="quran-page" id="quran-page-modal">
@@ -85,6 +92,16 @@ export async function render(container) {
 
    _quranContent = container.querySelector('#quran-content');
    QuranNav.init();
+
+   if (!_historyListener) {
+      _historyListener = async () => {
+         await fetchBannerData(true);
+         if (_activePage && _activePage.refreshBanner) {
+            _activePage.refreshBanner();
+         }
+      };
+      document.addEventListener('quran:history-updated', _historyListener);
+   }
 
    const transitionPromise = QuranNav.enterQuranMode({
       onNavigate: (pageId) => loadSubPage(pageId)
@@ -161,7 +178,6 @@ async function loadSubPage(pageId, forceRefresh = false) {
    }
 
    _activePageId = pageId;
-   _activePage = null;
 
    if (_quranContent) {
       _quranContent.style.scrollBehavior = 'auto';
@@ -247,6 +263,11 @@ function handleSearchInput(query, resultsContainer, placeholderRenderFn) {
 export async function destroy() {
    if (_debounceTimer) clearTimeout(_debounceTimer);
    unregisterModalDismiss(_dismissSearchAction);
+
+   if (_historyListener) {
+      document.removeEventListener('quran:history-updated', _historyListener);
+      _historyListener = null;
+   }
 
    // Restore default theme status bar style when leaving this white-background page.
    clearStatusBarOverride('quran');

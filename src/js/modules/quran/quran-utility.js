@@ -8,6 +8,61 @@ import { t } from '../../core/i18n.js';
 import { logError } from '../../utils/error-boundary.js';
 import { escapeHtml } from '../../utils/sanitize.js';
 
+import { getSurahList, getJuzList } from './quran-api.js';
+import * as BookmarkManager from './bookmark-manager.js';
+import * as Storage from '../../core/storage.js';
+
+/* ── Banner Data Cache ── */
+let _bannerCache = null;
+let _bannerFetchPromise = null;
+
+/**
+ * Fetches and caches banner data (last-read bookmark + history) in memory.
+ * Subsequent calls return the cached result instantly unless `forceRefresh` is true.
+ * @param {boolean} [forceRefresh=false] - Bypass cache and re-read from IDB
+ * @returns {Promise<{bookmark: Object|null, history: Object|null}>}
+ */
+export async function fetchBannerData(forceRefresh = false) {
+   if (!forceRefresh && _bannerCache) return _bannerCache;
+
+   // When force-refreshing, discard any in-flight promise so we always
+   // start a fresh IDB read — prevents returning stale cached data.
+   if (forceRefresh) {
+      _bannerFetchPromise = null;
+   }
+
+   if (!_bannerFetchPromise) {
+      const currentPromise = Promise.all([
+         BookmarkManager.getByFolder('last_read').catch(() => []),
+         Storage.get('quran_last_opened').catch(() => null)
+      ]).then(([lastReadEntries, history]) => {
+         // Only commit to cache if we are still the active fetch.
+         // This prevents slow/stale fetches from overwriting a newer force-refresh.
+         if (_bannerFetchPromise === currentPromise) {
+            _bannerCache = {
+               bookmark: lastReadEntries?.[0] ?? null,
+               history: history ?? null
+            };
+            _bannerFetchPromise = null;
+         }
+         return {
+            bookmark: lastReadEntries?.[0] ?? null,
+            history: history ?? null
+         };
+      }).catch(() => {
+         if (_bannerFetchPromise === currentPromise) {
+            _bannerFetchPromise = null;
+            _bannerCache = { bookmark: null, history: null };
+         }
+         return { bookmark: null, history: null };
+      });
+
+      _bannerFetchPromise = currentPromise;
+   }
+
+   return _bannerFetchPromise;
+}
+
 /**
  * Renders items in two phases for optimal perceived performance.
  *
@@ -24,10 +79,15 @@ export async function renderBatchedList({
    batchSize = 25,
    listCreatorFn,
    initialBatchCount = 1,
+   bannerEl = null,
 }) {
    if (!data || !container) return;
 
    safeClear(container, '.custom-ptr, .quran-loading');
+
+   if (bannerEl) {
+      container.appendChild(bannerEl);
+   }
 
    const list = listCreatorFn();
    container.appendChild(list);
@@ -87,6 +147,7 @@ export function createQuranSubpage({
    itemCardCreatorFn,
    filterFn,
    onItemClick,
+   bannerCreatorFn,
 }) {
    let _data = null;
    let _dataPromise = null;
@@ -104,13 +165,16 @@ export function createQuranSubpage({
       await _dataPromise;
    }
 
-   async function renderList(renderId, container, data) {
+   async function renderList(renderId, container, data, bannerEl = null) {
       if (!data || !container) return;
+
+      if (_mainRenderCtx.shouldCancelRender(renderId)) return;
 
       await renderBatchedList({
          data,
          container,
          listCreatorFn,
+         bannerEl,
          onCheckCancel: () => _mainRenderCtx.shouldCancelRender(renderId),
          createItemFn: (item, absoluteIndex, isInitialBatch) => {
             const card = itemCardCreatorFn(item, (selectedItem) => {
@@ -135,15 +199,35 @@ export function createQuranSubpage({
          _callbacks = callbacks;
          const renderId = _mainRenderCtx.incrementAndGet();
 
-         QuranCard.renderLoadingState(container);
+         const isDataLoaded = !!_data;
+
+         // Debounce the loading spinner by 150ms so fast-resolving tabs
+         // (cached data + cached banner) never flash a blank screen.
+         let loadingTimer = null;
+         if (!isDataLoaded) {
+            loadingTimer = setTimeout(() => {
+               if (!_mainRenderCtx.shouldCancelRender(renderId)) {
+                  QuranCard.renderLoadingState(container);
+               }
+            }, 150);
+         }
 
          try {
-            await loadData();
-            const container = _mainRenderCtx.getContainer();
-            if (container && !_mainRenderCtx.shouldCancelRender(renderId)) {
-               await renderList(renderId, container, _data);
+            const dataPromise = loadData();
+            const bannerPromise = bannerCreatorFn ? bannerCreatorFn() : Promise.resolve(null);
+            
+            await dataPromise;
+            
+            const bannerEl = await bannerPromise;
+
+            if (loadingTimer) clearTimeout(loadingTimer);
+
+            const activeContainer = _mainRenderCtx.getContainer();
+            if (activeContainer && !_mainRenderCtx.shouldCancelRender(renderId)) {
+               await renderList(renderId, activeContainer, _data, bannerEl);
             }
          } catch (error) {
+            if (loadingTimer) clearTimeout(loadingTimer);
             logError('[QuranSubpage]', error);
             if (!_mainRenderCtx.shouldCancelRender(renderId)) {
                QuranCard.renderErrorState(container);
@@ -196,4 +280,43 @@ export function createQuranSubpage({
          _dataPromise = null;
       },
    };
+}
+
+/**
+ * Creates the Last Read / History Banner.
+ * Extracted here to avoid duplication across subpages.
+ * @param {Function} onItemClick - Callback when a banner item is clicked (item, readMode, verseNumber)
+ * @returns {Promise<HTMLElement>}
+ */
+export async function createHistoryBanner(onItemClick) {
+   const { bookmark, history } = await fetchBannerData();
+
+   return QuranCard.createLastReadBanner({ bookmark, history }, async (bm) => {
+      try {
+         if (bm.type === 'history') {
+            if (bm.readMode === 'juz') {
+               const juzList = await getJuzList();
+               const juz = juzList.find(j => parseInt(j.index, 10) === parseInt(bm.index, 10));
+               if (juz) onItemClick(juz, 'juz');
+            } else {
+               const surahList = await getSurahList();
+               const surah = surahList.find(s => parseInt(s.index, 10) === parseInt(bm.index, 10));
+               if (surah) onItemClick(surah, 'surah');
+            }
+            return;
+         }
+
+         if (bm.readMode === 'juz' && bm.juzIndex) {
+            const juzList = await getJuzList();
+            const juz = juzList.find(j => parseInt(j.index, 10) === parseInt(bm.juzIndex, 10));
+            if (juz) onItemClick(juz, 'juz', bm.verseNumber);
+         } else {
+            const surahList = await getSurahList();
+            const surah = surahList.find(s => parseInt(s.index, 10) === parseInt(bm.surahIndex, 10));
+            if (surah) onItemClick(surah, 'surah', bm.verseNumber);
+         }
+      } catch (err) {
+         console.warn('[BannerHelper] Failed to open last-read item:', err);
+      }
+   });
 }
