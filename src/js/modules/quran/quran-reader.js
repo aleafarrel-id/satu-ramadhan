@@ -1109,12 +1109,15 @@ function _handleCopyAyah(ayah, btnEl) {
       btnEl.classList.add('copied');
       if (icon) icon.className = 'bx bx-check';
 
+      Notification.success(t('modules/quran/quran-reader:ayah_copied', { surahName: ayah.surahName, verseNumber: ayah.number }) || `QS. ${ayah.surahName}: ${ayah.number} berhasil disalin`);
+
       setTimeout(() => {
          btnEl.classList.remove('copied');
          if (icon) icon.className = 'bx bx-copy-alt';
       }, 1500);
    }).catch(err => {
       console.warn('[QuranReader] Failed to copy:', err);
+      Notification.error(t('modules/quran/quran-reader:copy_failed', { surahName: ayah.surahName, verseNumber: ayah.number }) || `Gagal menyalin QS. ${ayah.surahName}: ${ayah.number}`);
    });
 }
 

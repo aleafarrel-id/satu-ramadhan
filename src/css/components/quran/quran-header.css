@@ -142,30 +142,45 @@
    text-overflow: ellipsis;
 }
 
-/* ── Active Search State ── */
-.quran-unified-header.is-searching .quran-header-title-wrapper {
-   display: none;
+/* Smart Zero-Shift Search Layout */
+.quran-unified-header.is-searching {
+   flex-wrap: wrap;
+   position: relative;
 }
 
+/* Explicit order to keep title mathematically perfectly centered */
+.quran-header-back-btn {
+   order: 1;
+}
+
+.quran-header-title-wrapper {
+   order: 2;
+   margin: 0 auto;
+}
+
+.quran-header-right-btn,
+.quran-header-spacer {
+   order: 3;
+}
+
+/* Mobile First: Search wraps full width */
 .quran-unified-header.is-searching .quran-header-search-input {
    display: block;
-   animation: headerSearchSlideIn 0.25s ease-out;
+   order: 4;
+   flex: 0 0 100%;
+   margin-top: var(--sp-3);
+   animation: headerSearchSlideDown 0.25s ease-out;
 }
 
-.quran-header-spacer {
-   flex-shrink: 0;
-   /* Configured in JS to match btn width */
-}
-
-@keyframes headerSearchSlideIn {
+@keyframes headerSearchSlideDown {
    from {
       opacity: 0;
-      transform: scaleX(0.85);
+      transform: translateY(-10px);
    }
 
    to {
       opacity: 1;
-      transform: scaleX(1);
+      transform: translateY(0);
    }
 }
 
@@ -178,6 +193,30 @@
 
    .quran-header-title-wrapper.is-clickable:hover {
       background: var(--clr-quran-bg-alt);
+   }
+}
+
+@media screen and (min-width: 768px) {
+   .quran-unified-header.is-searching .quran-header-search-input {
+      position: absolute;
+      right: calc(max(var(--header-padding), env(safe-area-inset-right)) + var(--header-btn-size) + var(--sp-2));
+      top: 50%;
+      transform: translateY(-50%);
+      width: 140px;
+      margin-top: 0;
+      animation: headerSearchFadeIn 0.25s ease-out;
+   }
+
+   @keyframes headerSearchFadeIn {
+      from {
+         opacity: 0;
+         transform: translateY(-50%) translateX(10px);
+      }
+
+      to {
+         opacity: 1;
+         transform: translateY(-50%) translateX(0);
+      }
    }
 }
 

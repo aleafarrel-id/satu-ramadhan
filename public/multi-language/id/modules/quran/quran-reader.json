@@ -35,5 +35,7 @@
     "redownload_surah": "Unduh Ulang",
     "redownload_confirm_title": "Unduh Ulang Murottal",
     "redownload_confirm_desc": "Yakin ingin mengunduh ulang? Lakukan ini hanya jika file audio bermasalah atau rusak.",
-    "redownload_confirm_btn": "Unduh Ulang"
+    "redownload_confirm_btn": "Unduh Ulang",
+    "ayah_copied": "QS. {{surahName}} : {{verseNumber}} berhasil disalin",
+    "copy_failed": "Gagal menyalin QS. {{surahName}} : {{verseNumber}}"
 }

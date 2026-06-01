@@ -35,5 +35,7 @@
     "redownload_surah": "Re-download",
     "redownload_confirm_title": "Re-download Recitation",
     "redownload_confirm_desc": "Are you sure you want to re-download? Only do this if the audio is corrupt or missing.",
-    "redownload_confirm_btn": "Re-download"
+    "redownload_confirm_btn": "Re-download",
+    "ayah_copied": "QS. {{surahName}} : {{verseNumber}} copied to clipboard",
+    "copy_failed": "Failed to copy QS. {{surahName}} : {{verseNumber}}"
 }

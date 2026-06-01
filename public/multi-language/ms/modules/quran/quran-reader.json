@@ -35,5 +35,7 @@
     "redownload_surah": "Muat Turun Semula",
     "redownload_confirm_title": "Muat Turun Semula Murattal",
     "redownload_confirm_desc": "Pasti ingin memuat turun semula? Lakukan ini hanya jika fail audio bermasalah atau rosak.",
-    "redownload_confirm_btn": "Muat Turun Semula"
+    "redownload_confirm_btn": "Muat Turun Semula",
+    "ayah_copied": "QS. {{surahName}} : {{verseNumber}} berjaya disalin",
+    "copy_failed": "Gagal menyalin QS. {{surahName}} : {{verseNumber}}"
 }
