@@ -3,6 +3,8 @@
   "private": true,
   "version": "2.1.0",
   "type": "module",
+  "author": "Alea Farrel",
+  "license": "GPL-3.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
