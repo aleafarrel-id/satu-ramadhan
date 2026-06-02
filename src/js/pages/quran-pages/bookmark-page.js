@@ -232,7 +232,7 @@ async function _refreshFolderBar() {
 /**
  * Refreshes the Bookmark Banner when the underlying data changes (e.g. deletion).
  */
-async function _refreshBanner() {
+export async function refreshBanner() {
     if (!_container) return;
 
     const allBookmarks = await BookmarkManager.getAll();
@@ -545,7 +545,7 @@ function _handleDeleteBookmark(bookmark, cardEl) {
                 await _refreshFolderBar();
 
                 // Update the banner in case the deleted bookmark was the latest one
-                await _refreshBanner();
+                await refreshBanner();
 
                 // Show empty state if no more cards in the active list
                 const wrapper = _container?.querySelector('.bookmark-list-wrapper');

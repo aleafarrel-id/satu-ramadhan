@@ -25,10 +25,13 @@ let _bannerFetchPromise = null;
 export async function fetchBannerData(forceRefresh = false) {
    if (!forceRefresh && _bannerCache) return _bannerCache;
 
-   // When force-refreshing, discard any in-flight promise so we always
-   // start a fresh IDB read — prevents returning stale cached data.
+   // When force-refreshing, clear the cache and discard any in-flight promise
+   // so we always start a fresh IDB read.
    if (forceRefresh) {
+      _bannerCache = null;
       _bannerFetchPromise = null;
+   } else if (_bannerFetchPromise) {
+      return _bannerFetchPromise;
    }
 
    if (!_bannerFetchPromise) {
@@ -215,9 +218,9 @@ export function createQuranSubpage({
          try {
             const dataPromise = loadData();
             const bannerPromise = bannerCreatorFn ? bannerCreatorFn() : Promise.resolve(null);
-            
+
             await dataPromise;
-            
+
             const bannerEl = await bannerPromise;
 
             if (loadingTimer) clearTimeout(loadingTimer);

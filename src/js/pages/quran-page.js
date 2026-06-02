@@ -101,6 +101,7 @@ export async function render(container) {
          }
       };
       document.addEventListener('quran:history-updated', _historyListener);
+      document.addEventListener('quran:bookmarks-updated', _historyListener);
    }
 
    const transitionPromise = QuranNav.enterQuranMode({
@@ -266,6 +267,7 @@ export async function destroy() {
 
    if (_historyListener) {
       document.removeEventListener('quran:history-updated', _historyListener);
+      document.removeEventListener('quran:bookmarks-updated', _historyListener);
       _historyListener = null;
    }
 

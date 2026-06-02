@@ -190,6 +190,7 @@ export async function save(ayahData) {
 
    _cache.unshift(_createEntry(ayahData));
    await _persistBookmarks();
+   document.dispatchEvent(new CustomEvent('quran:bookmarks-updated'));
    return true;
 }
 
@@ -207,6 +208,7 @@ export async function remove(surahIndex, verseNumber) {
 
    _cache.splice(idx, 1);
    await _persistBookmarks();
+   document.dispatchEvent(new CustomEvent('quran:bookmarks-updated'));
    return true;
 }
 
@@ -244,6 +246,7 @@ export async function toggle(ayahData) {
    if (idx !== -1) {
       _cache.splice(idx, 1);
       await _persistBookmarks();
+      document.dispatchEvent(new CustomEvent('quran:bookmarks-updated'));
       return false;
    }
 
@@ -256,6 +259,7 @@ export async function toggle(ayahData) {
 
    _cache.unshift(_createEntry(ayahData, ['last_read']));
    await _persistBookmarks();
+   document.dispatchEvent(new CustomEvent('quran:bookmarks-updated'));
    return true;
 }
 
@@ -426,5 +430,6 @@ export async function toggleFolderTag(key, folderId) {
    }
 
    await _persistBookmarks();
+   document.dispatchEvent(new CustomEvent('quran:bookmarks-updated'));
    return true;
 }
