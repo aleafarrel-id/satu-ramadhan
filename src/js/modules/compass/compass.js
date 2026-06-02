@@ -18,7 +18,6 @@ import { t } from '../../core/i18n.js';
 
 const QIBLA_TOLERANCE_DEG = 2;
 const HAPTIC_COOLDOWN_MS = 2000;
-const GYRO_DETECT_TIMEOUT_MS = 1000;
 
 /** iOS 13+ requires DeviceOrientationEvent.requestPermission — detect once at module level. */
 const IS_IOS_MOTION = typeof DeviceOrientationEvent !== 'undefined' &&
@@ -152,12 +151,12 @@ export default class QiblaCompass {
             this._markNoGyroscope();
         }
 
-        // iOS sensors may take longer to warm up after permission is granted.
-        // Give extra headroom so we don't prematurely mark the sensor as absent.
-        const timeout = IS_IOS_MOTION ? 3000 : GYRO_DETECT_TIMEOUT_MS;
+        const timeout = 3000;
         this._gyroDetectTimer = setTimeout(() => {
             if (!this._receivedOrientation) {
-                this._markNoGyroscope();
+                this._hasGyroscope = false;
+                this._showNoSensorToast();
+                this._update();
             }
         }, timeout);
     }
@@ -227,7 +226,7 @@ export default class QiblaCompass {
         // Try AbsoluteOrientationSensor (Chrome 67+ Android, requires magnetometer)
         if (typeof AbsoluteOrientationSensor !== 'undefined') {
             try {
-                const sensor = new AbsoluteOrientationSensor({ frequency: 1 });
+                const sensor = new AbsoluteOrientationSensor({ frequency: 30 });
                 let gotReading = false;
                 await new Promise((resolve, reject) => {
                     sensor.addEventListener('error', (e) => reject(e.error), { once: true });
@@ -237,11 +236,8 @@ export default class QiblaCompass {
                         resolve();
                     }, { once: true });
                     sensor.start();
-                    // Timeout: if no reading arrives, we cannot confirm presence.
-                    // Returning null (not true) is safer — falls back to event-based detection.
-                    setTimeout(() => { sensor.stop(); resolve(); }, 800);
+                    setTimeout(() => { sensor.stop(); resolve(); }, 1500);
                 });
-                // Only confirm 'present' if a real reading was received.
                 return gotReading ? true : null;
             } catch (e) {
                 if (e.name === 'NotSupportedError' || e.name === 'NotReadableError') {
@@ -254,7 +250,7 @@ export default class QiblaCompass {
         // Try Magnetometer API directly (Chrome 67+)
         if (typeof Magnetometer !== 'undefined') {
             try {
-                const mag = new Magnetometer({ frequency: 1 });
+                const mag = new Magnetometer({ frequency: 30 });
                 let gotReading = false;
                 await new Promise((resolve, reject) => {
                     mag.addEventListener('error', (e) => reject(e.error), { once: true });
@@ -264,7 +260,7 @@ export default class QiblaCompass {
                         resolve();
                     }, { once: true });
                     mag.start();
-                    setTimeout(() => { mag.stop(); resolve(); }, 800);
+                    setTimeout(() => { mag.stop(); resolve(); }, 1500);
                 });
                 return gotReading ? true : null;
             } catch (e) {
