@@ -151,3 +151,11 @@ h6 {
 .font-medium {
    font-weight: var(--fw-medium);
 }
+
+.u-text-capitalize {
+   text-transform: capitalize;
+}
+
+.u-pointer-none {
+   pointer-events: none;
+}

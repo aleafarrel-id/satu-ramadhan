@@ -452,7 +452,8 @@ satu-ramadhan/
         │   ├── skeleton/
         │   │   ├── skeleton-home.js         # Skeleton loading halaman utama
         │   │   ├── skeleton-schedule.js     # Skeleton loading halaman jadwal
-        │   │   └── skeleton-compass.js      # Skeleton loading halaman kompas
+        │   │   ├── skeleton-compass.js      # Skeleton loading halaman kompas
+        │   │   └── skeleton-settings.js     # Skeleton loading halaman pengaturan
         │   │
         │   └── ui/
         │       ├── header.js                # App header (judul halaman, aksi)

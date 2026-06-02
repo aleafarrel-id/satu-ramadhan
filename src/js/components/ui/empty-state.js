@@ -36,7 +36,7 @@ export function renderEmptyState({ icon, title, description, iconVariant, action
     ` : '';
     
     const secondaryActionHtml = secondaryAction ? `
-        <button class="btn btn--ghost empty-state__btn empty-state__btn--secondary"${secondaryAction.id ? ` id="${secondaryAction.id}"` : ''} style="margin-top: 0.5rem; opacity: 0.8; font-size: 0.9em;">
+        <button class="btn btn--ghost empty-state__btn empty-state__btn--secondary"${secondaryAction.id ? ` id="${secondaryAction.id}"` : ''}>
             ${secondaryAction.icon ? `<i class='bx ${secondaryAction.icon} empty-state__btn-icon'></i>` : ''}
             <span class="empty-state__btn-label">${secondaryAction.label}</span>
         </button>
@@ -50,7 +50,7 @@ export function renderEmptyState({ icon, title, description, iconVariant, action
                 </div>
                 <h3 class="empty-state__title">${title}</h3>
                 <p class="empty-state__desc">${description}</p>
-                <div class="empty-state__actions" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center; margin-top: 1.5rem; width: 100%;">
+                <div class="empty-state__actions">
                     ${actionHtml}
                     ${secondaryActionHtml}
                 </div>
@@ -66,7 +66,7 @@ export function renderEmptyState({ icon, title, description, iconVariant, action
                 </div>
                 <h3 class="empty-state__title">${title}</h3>
                 <p class="empty-state__desc">${description}</p>
-                <div class="empty-state__actions" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center; justify-content: center; margin-top: 1.5rem; width: 100%;">
+                <div class="empty-state__actions">
                     ${actionHtml}
                     ${secondaryActionHtml}
                 </div>

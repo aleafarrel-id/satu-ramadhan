@@ -19,6 +19,8 @@ import * as settingsCalculationPanel from '../components/settings/settings-calcu
 import * as settingsPresetCard from '../components/settings/settings-preset-card.js';
 import * as settingsDisplayPanel from '../components/settings/settings-display-panel.js';
 import * as settingsAboutApp from '../components/settings/settings-about-app.js';
+import { renderSettingsSkeleton } from '../components/skeleton/skeleton-settings.js';
+import { renderEmptyState } from '../components/ui/empty-state.js';
 import { t, loadNS } from '../core/i18n.js';
 
 /* --- STATE --- */
@@ -47,7 +49,11 @@ export async function render(container) {
     const gen = ++_renderGen;
     _container = container;
 
-    await loadNS('pages/settings-page');
+    // Immediately render skeleton to provide fast visual feedback
+    renderSettingsSkeleton(_container);
+
+    try {
+        await loadNS('pages/settings-page');
     await loadNS('components/settings/settings-loc-card');
     await loadNS('components/settings/settings-calculation-panel');
     await loadNS('components/settings/settings-preset-card');
@@ -107,6 +113,24 @@ export async function render(container) {
     // Apply the fully hydrated HTML to the live DOM in one pass to prevent layout jumping
     _container.innerHTML = '';
     _container.appendChild(wrapper.firstElementChild);
+    
+    } catch (error) {
+        console.error('Failed to load settings panels:', error);
+        if (!_isStale(gen)) {
+            _container.innerHTML = renderEmptyState({
+                icon: 'bx-error-circle',
+                iconVariant: 'danger',
+                title: t('common:error', { defaultValue: 'Error' }),
+                description: t('pages/home-page:error_offline_desc', { defaultValue: 'Gagal memuat modul.' }),
+                action: {
+                    label: t('retry', { defaultValue: 'Coba Lagi' }),
+                    icon: 'bx-refresh',
+                    id: 'settings-btn-retry'
+                }
+            });
+            _container.querySelector('#settings-btn-retry')?.addEventListener('click', () => render(_container));
+        }
+    }
 }
 
 /**
