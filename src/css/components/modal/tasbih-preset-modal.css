@@ -5,11 +5,11 @@
    ============================================================================= */
 
 .tb-preset-sheet {
-    background: var(--clr-quran-bg);
+    --modal-bg: var(--clr-quran-bg);
+    --modal-shadow: var(--shadow-nav);
     padding: var(--sp-5);
     padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: var(--shadow-nav);
 }
 
 .tb-preset-header {

@@ -10,15 +10,14 @@
 
 /* ── Modal Card (Quran theme overrides popup-base) ── */
 .mushaf-guide-modal {
+    --modal-bg: var(--clr-quran-card-bg);
+    --modal-border: var(--clr-mushaf-header-border);
+    --modal-shadow: var(--shadow-modal);
+    border-radius: var(--radius-lg);
     width: 100%;
     max-width: 320px;
-    background: var(--clr-quran-card-bg);
-    border-color: var(--clr-mushaf-header-border);
-    border-radius: var(--radius-lg);
     padding: var(--spacing-lg) var(--spacing-md);
     text-align: center;
-    box-shadow: var(--shadow-modal);
-    transform: translateY(var(--spacing-lg)) scale(0.95);
 }
 
 /* ── Icon Circle ── */

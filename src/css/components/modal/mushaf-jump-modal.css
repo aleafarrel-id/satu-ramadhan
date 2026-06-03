@@ -13,11 +13,11 @@
 }
 
 .mushaf-jump-sheet {
-    background: var(--clr-quran-card-bg);
-    border-top-color: var(--clr-mushaf-header-border);
-    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
+    --modal-bg: var(--clr-quran-card-bg);
+    --modal-border: var(--clr-mushaf-header-border);
+    --modal-shadow: var(--shadow-modal);
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: var(--shadow-modal);
+    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
 }
 
 

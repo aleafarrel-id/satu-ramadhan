@@ -13,11 +13,11 @@
 }
 
 .bookmark-mgr-sheet {
-    background: var(--clr-quran-card-bg);
-    border-top-color: var(--clr-quran-border);
+    --modal-bg: var(--clr-quran-card-bg);
+    --modal-border: var(--clr-quran-border);
+    --modal-shadow: var(--shadow-modal);
     padding: var(--sp-6) var(--sp-6) calc(var(--sp-6) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: var(--shadow-modal);
     gap: var(--sp-5);
 }
 
