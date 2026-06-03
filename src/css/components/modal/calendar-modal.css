@@ -1,52 +1,26 @@
 /* =============================================
    Calendar Modal Component
    Monthly Ramadhan calendar grid overlay
+   Extends: .modal-overlay-base.modal-overlay-base--center
+             .modal-popup-base
    ============================================= */
 
-/* ── Overlay Backdrop ── */
+/* Calendar deliberately omits blur for contain/performance */
 .cal-modal-overlay {
-   position: fixed;
-   inset: 0;
-   z-index: var(--z-modal);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   padding: var(--spacing-lg);
-   background: var(--clr-bg-cal-overlay);
-   opacity: 0;
-   visibility: hidden;
-   transition: opacity 0.3s ease, visibility 0.3s ease;
-   contain: layout style;
-}
-
-.cal-modal-overlay.active {
-   opacity: 1;
-   visibility: visible;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    contain: layout style;
 }
 
 /* ── Modal Card ── */
 .cal-modal {
-   width: 100%;
-   max-width: 430px;
-   background: var(--gradient-cal-bg);
-   border: 1px solid var(--clr-primary-a30);
-   border-radius: var(--radius-xl);
-   padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
-   box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.5),
-      0 0 40px var(--clr-primary-a10),
-      inset 0 1px 0 var(--clr-white-a05);
-   transform: translateY(24px) scale(0.95);
-   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-   /* Promote to GPU compositor layer before animation starts */
-   will-change: transform;
-   backface-visibility: hidden;
-   -webkit-backface-visibility: hidden;
-   touch-action: pan-y;
-}
-
-.cal-modal-overlay.active .cal-modal {
-   transform: translateY(0) scale(1);
+    width: 100%;
+    max-width: 430px;
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    touch-action: pan-y;
 }
 
 /* ── Header ── */

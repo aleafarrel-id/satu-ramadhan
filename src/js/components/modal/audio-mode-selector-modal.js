@@ -152,7 +152,7 @@ function _removeModal() {
 
 function _createModalDOM(currentMode) {
     const overlay = document.createElement('div');
-    overlay.className = 'audio-mode-selector-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom audio-mode-selector-overlay';
 
     const modesHTML = _getModes().map(({ value, icon, labelKey, descKey }) => {
         const isSelected = value === currentMode;
@@ -169,7 +169,7 @@ function _createModalDOM(currentMode) {
     }).join('');
 
     overlay.innerHTML = `
-        <div class="audio-mode-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="audio-mode-modal-title">
+        <div class="modal-sheet-base audio-mode-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="audio-mode-modal-title">
             <div class="audio-mode-selector-header">
                 <h3 class="audio-mode-selector-title" id="audio-mode-modal-title">${t('components/modal/audio-mode-selector-modal:title')}</h3>
             </div>

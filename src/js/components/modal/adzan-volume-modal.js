@@ -222,10 +222,10 @@ function _removeModal() {
 
 function _createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'adzan-volume-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom adzan-volume-overlay';
 
     overlay.innerHTML = `
-        <div class="adzan-volume-sheet" role="dialog" aria-modal="true" aria-labelledby="adzan-volume-title">
+        <div class="modal-sheet-base adzan-volume-sheet" role="dialog" aria-modal="true" aria-labelledby="adzan-volume-title">
             <div class="adzan-volume-header">
                 <h3 class="adzan-volume-title" id="adzan-volume-title">${t('components/modal/adzan-volume-modal:title', { defaultValue: 'Volume Adzan' })}</h3>
                 <button class="adzan-volume-preview-btn" id="adzan-volume-preview-btn" aria-label="${t('components/modal/adzan-volume-modal:preview_play', { defaultValue: 'Putar Pratinjau' })}">

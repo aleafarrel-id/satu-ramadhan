@@ -42,6 +42,8 @@
    overscroll-behavior-y: auto;
    transform: translateZ(0);
    will-change: scroll-position;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
 }
 
 .quran-content:not(.ready) {
@@ -68,10 +70,6 @@
    display: none;
 }
 
-.quran-content {
-   -ms-overflow-style: none;
-   scrollbar-width: none;
-}
 
 .quran-loading {
    position: absolute;
@@ -146,10 +144,6 @@
    color: var(--clr-primary-900);
 }
 
-.quran-page ::-moz-selection {
-   background-color: var(--clr-primary-200);
-   color: var(--clr-primary-900);
-}
 
 /* Search Overlay */
 

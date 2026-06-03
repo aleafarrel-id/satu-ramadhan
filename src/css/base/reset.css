@@ -34,6 +34,9 @@ body {
    background-attachment: fixed;
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   user-select: none;
 }
 
 /* Texture overlay */
@@ -96,12 +99,6 @@ select {
    outline: none;
 }
 
-/* Disable text selection by default (mobile native feel for Capacitor) */
-body {
-   -webkit-touch-callout: none;
-   -webkit-user-select: none;
-   user-select: none;
-}
 
 /* Explicitly enable selection for form elements */
 input,

@@ -1,46 +1,25 @@
 /* 
   Mushaf Jump Modal Styles 
   Displays as a bottom sliding sheet for jumping to specific Mushaf pages
+  Extends: .modal-overlay-base.modal-overlay-base--bottom
+            .modal-sheet-base
 */
 
 .mushaf-jump-overlay {
-    position: fixed;
-    inset: 0;
     z-index: 9999;
-    background: var(--clr-bg-cal-overlay);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    opacity: 0;
-    visibility: hidden;
     transition: opacity var(--transition-normal), visibility var(--transition-normal);
 }
 
-.mushaf-jump-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
 .mushaf-jump-sheet {
-    background: var(--clr-quran-card-bg);
-    border-top: 1px solid var(--clr-mushaf-header-border);
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
-    transform: translateY(100%);
+    --modal-bg: var(--clr-quran-card-bg);
+    --modal-border: var(--clr-mushaf-header-border);
+    --modal-shadow: var(--shadow-modal);
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: var(--shadow-modal);
-    display: flex;
-    flex-direction: column;
+    padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
 }
 
-.mushaf-jump-overlay.active .mushaf-jump-sheet {
-    transform: translateY(0);
-}
 
 .mushaf-jump-header {
     display: flex;

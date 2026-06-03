@@ -70,6 +70,7 @@
    border-radius: var(--radius-lg);
    transition: background var(--transition-fast);
    -webkit-tap-highlight-color: transparent;
+   order: 2;
 }
 
 .quran-header-title-wrapper.is-clickable {
@@ -153,10 +154,6 @@
    order: 1;
 }
 
-.quran-header-title-wrapper {
-   order: 2;
-   margin: 0 auto;
-}
 
 .quran-header-right-btn,
 .quran-header-spacer {

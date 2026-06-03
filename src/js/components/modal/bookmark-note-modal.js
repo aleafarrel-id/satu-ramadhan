@@ -133,10 +133,10 @@ function removeModal() {
 
 function createModalDOM(initialNote) {
     const overlay = document.createElement('div');
-    overlay.className = 'mushaf-jump-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom mushaf-jump-overlay';
 
     overlay.innerHTML = `
-        <div class="mushaf-jump-sheet" role="dialog" aria-modal="true" aria-labelledby="bookmark-note-modal-title">
+        <div class="modal-sheet-base mushaf-jump-sheet" role="dialog" aria-modal="true" aria-labelledby="bookmark-note-modal-title">
             <div class="mushaf-jump-header">
                 <h3 class="mushaf-jump-title" id="bookmark-note-modal-title">${t('pages/quran-pages/bookmark-page:edit_note')}</h3>
             </div>

@@ -484,6 +484,7 @@
 
 .schedule-swipe-hint__arrow--left {
     animation-delay: 0s;
+    animation-name: swipeHintPulseLeft;
 }
 
 .schedule-swipe-hint__arrow--right {
@@ -504,9 +505,6 @@
     }
 }
 
-.schedule-swipe-hint__arrow--left {
-    animation-name: swipeHintPulseLeft;
-}
 
 @keyframes swipeHintPulseLeft {
 

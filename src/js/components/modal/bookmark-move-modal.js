@@ -88,10 +88,10 @@ function _removeModal() {
 
 function _buildDOM(folders, countByFolder, activeFolderIds, onToggle, onClose) {
     const overlay = document.createElement('div');
-    overlay.className = 'bookmark-mgr-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom bookmark-mgr-overlay';
 
     const sheet = document.createElement('div');
-    sheet.className = 'bookmark-mgr-sheet';
+    sheet.className = 'modal-sheet-base bookmark-mgr-sheet';
     sheet.setAttribute('role', 'dialog');
     sheet.setAttribute('aria-modal', 'true');
     sheet.setAttribute('aria-labelledby', 'bkmove-title');

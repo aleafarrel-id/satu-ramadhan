@@ -1,33 +1,18 @@
 /* =============================================
    Confirm Modal
    Reusable Native-like Alert/Dialog Component
+   Extends: .modal-overlay-base.modal-overlay-base--center
+             .modal-popup-base
    ============================================= */
 
 .confirm-overlay {
-    position: fixed;
-    inset: 0;
     z-index: calc(var(--z-modal) + 10);
-    background: var(--clr-bg-cal-overlay);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-lg);
-    opacity: 0;
-    visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-.confirm-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
 .confirm-dialog {
-    background: var(--gradient-cal-bg);
-    border: 1px solid var(--clr-primary-a30);
-    border-radius: var(--radius-xl);
     width: 100%;
     max-width: 320px;
     padding: var(--spacing-lg);

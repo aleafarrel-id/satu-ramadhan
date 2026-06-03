@@ -69,6 +69,8 @@
    padding: var(--spacing-md);
    padding-bottom: calc(80px + env(safe-area-inset-bottom));
    -webkit-overflow-scrolling: touch;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
 }
 
 /* Modifier to remove padding for full-bleed pages like Quran */
@@ -81,10 +83,6 @@
    display: none;
 }
 
-.app-content {
-   -ms-overflow-style: none;
-   scrollbar-width: none;
-}
 
 /* Page containers */
 .page {

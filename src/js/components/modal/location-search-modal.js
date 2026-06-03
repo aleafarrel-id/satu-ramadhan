@@ -236,10 +236,10 @@ function renderResultItem(location) {
  */
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'loc-search-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom loc-search-overlay';
 
     overlay.innerHTML = `
-        <div class="loc-search-sheet">
+        <div class="modal-sheet-base loc-search-sheet">
             <div class="loc-search-header">
                 <h3 class="loc-search-title">${t('components/modal/location-search-modal:title')}</h3>
             </div>

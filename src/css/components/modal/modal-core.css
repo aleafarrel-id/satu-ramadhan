@@ -1,0 +1,79 @@
+/* =============================================
+   Modal Core — Shared Foundation Styles
+   Base overlay, popup, and sheet patterns used
+   by all modal components in the application.
+   Individual modal CSS files extend these bases
+   with component-specific content styles.
+   ============================================= */
+
+/* ── Overlay Backdrop (shared by all modals) ── */
+.modal-overlay-base {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    background: var(--clr-bg-cal-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay-base.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ── Overlay Variant: Center (popup dialogs) ── */
+.modal-overlay-base--center {
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── Overlay Variant: Bottom (sheet / sider) ── */
+.modal-overlay-base--bottom {
+    flex-direction: column;
+    justify-content: flex-end;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* ── Popup Card (Centered Dialog) ── */
+.modal-popup-base {
+    background: var(--modal-bg, var(--gradient-cal-bg));
+    border: 1px solid var(--modal-border, var(--clr-primary-a30));
+    border-radius: var(--radius-xl);
+    box-shadow: var(--modal-shadow,
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px var(--clr-primary-a10),
+        inset 0 1px 0 var(--clr-white-a05));
+    transform: translateY(24px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-overlay-base.active .modal-popup-base {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Sheet Card (Bottom Sheet / Sider) ── */
+.modal-sheet-base {
+    background: var(--modal-bg, var(--gradient-cal-bg));
+    border-top: 1px solid var(--modal-border, var(--clr-primary-a30));
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    width: 100%;
+    max-height: 85vh;
+    margin: 0 auto;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--modal-shadow, 0 -10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--clr-white-a05));
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-overlay-base.active .modal-sheet-base {
+    transform: translateY(0);
+}
