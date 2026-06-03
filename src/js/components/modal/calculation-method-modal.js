@@ -117,7 +117,7 @@ function removeModal() {
 
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'calc-method-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom calc-method-overlay';
 
     const isAuto = store.getState('settings.calculation.isAutoDetected');
     const currentMethod = store.getState('settings.calculation.method');
@@ -170,7 +170,7 @@ function createModalDOM() {
     }).join('');
 
     overlay.innerHTML = `
-        <div class="calc-method-sheet" role="dialog" aria-modal="true" aria-labelledby="calc-modal-title">
+        <div class="modal-sheet-base calc-method-sheet" role="dialog" aria-modal="true" aria-labelledby="calc-modal-title">
             <div class="calc-method-header">
                 <h3 class="calc-method-title" id="calc-modal-title">${t('components/modal/calculation-method-modal:title')}</h3>
                 <p class="calc-method-subtitle">${t('components/modal/calculation-method-modal:subtitle')}</p>

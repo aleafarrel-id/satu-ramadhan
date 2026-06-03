@@ -1,42 +1,15 @@
 /* =============================================================================
    Tasbih Custom Preset Editor Modal
+   Extends: .modal-overlay-base.modal-overlay-base--bottom
+             .modal-sheet-base
    ============================================================================= */
-
-.tb-preset-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-modal, 400);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    background: var(--clr-bg-cal-overlay, rgba(0, 0, 0, 0.4));
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.tb-preset-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
 
 .tb-preset-sheet {
     background: var(--clr-quran-bg);
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     padding: var(--sp-5);
     padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
-    transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     box-shadow: var(--shadow-nav);
-    width: 100%;
-    margin: 0 auto;
-    max-width: 100%;
-}
-
-.tb-preset-overlay.active .tb-preset-sheet {
-    transform: translateY(0);
 }
 
 .tb-preset-header {

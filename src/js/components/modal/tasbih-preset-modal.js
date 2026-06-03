@@ -151,10 +151,10 @@ function createModalDOM() {
     const defaultTarget = '';
 
     const overlay = document.createElement('div');
-    overlay.className = 'tb-preset-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom tb-preset-overlay';
 
     overlay.innerHTML = `
-        <div class="tb-preset-sheet">
+        <div class="modal-sheet-base tb-preset-sheet">
             <div class="tb-preset-header">
                 <h3 class="tb-preset-title">${title}</h3>
             </div>

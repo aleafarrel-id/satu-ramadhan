@@ -131,13 +131,13 @@ function removeModal() {
 
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'mushaf-jump-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom mushaf-jump-overlay';
 
     const ns = 'components/modal/mushaf-jump-modal';
     const total = getTotalPages();
 
     overlay.innerHTML = `
-        <div class="mushaf-jump-sheet" role="dialog" aria-modal="true" aria-labelledby="mushaf-jump-title">
+        <div class="modal-sheet-base mushaf-jump-sheet" role="dialog" aria-modal="true" aria-labelledby="mushaf-jump-title">
             <div class="mushaf-jump-header">
                 <h3 class="mushaf-jump-title" id="mushaf-jump-title">${t(`${ns}:title`)}</h3>
             </div>

@@ -154,7 +154,7 @@ function _updateSliderBackground(slider) {
 
 function _createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'quran-font-modal-overlay modal-overlay-blur';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom quran-font-modal-overlay modal-overlay-blur';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-labelledby', 'quran-font-modal-title');
@@ -191,7 +191,7 @@ function _createModalDOM() {
     };
 
     overlay.innerHTML = `
-        <div class="quran-font-sheet" role="dialog" aria-modal="true" aria-labelledby="quran-font-modal-title">
+        <div class="modal-sheet-base quran-font-sheet" role="dialog" aria-modal="true" aria-labelledby="quran-font-modal-title">
             <div class="quran-font-sheet-header">
                 <h3 id="quran-font-modal-title" class="quran-font-sheet-title">
                     ${t('components/modal/quran-font-modal:title')}

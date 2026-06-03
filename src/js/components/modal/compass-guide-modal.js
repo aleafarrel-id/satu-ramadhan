@@ -83,10 +83,10 @@ function removeModal() {
  */
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'compass-guide-modal-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center compass-guide-modal-overlay';
 
     overlay.innerHTML = `
-        <div class="compass-guide-modal">
+        <div class="modal-popup-base compass-guide-modal">
             <div class="compass-guide-modal__icon">
                 <i class='bx bx-compass'></i>
             </div>

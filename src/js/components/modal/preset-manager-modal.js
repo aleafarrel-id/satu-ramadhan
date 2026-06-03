@@ -665,12 +665,12 @@ function showAddForm() {
  */
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'preset-mgr-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom preset-mgr-overlay';
 
     const isIndo = isIndonesiaMode();
 
     overlay.innerHTML = `
-        <div class="preset-mgr-sheet">
+        <div class="modal-sheet-base preset-mgr-sheet">
             <div class="preset-mgr-header">
                 <h3 class="preset-mgr-title">${t('components/modal/preset-manager-modal:modal_title')}</h3>
             </div>

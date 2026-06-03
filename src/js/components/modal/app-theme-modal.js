@@ -179,7 +179,7 @@ function removeModal() {
 
 function createModalDOM(currentTheme) {
     const overlay = document.createElement('div');
-    overlay.className = 'language-selector-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom language-selector-overlay';
 
     const optionsHTML = THEMES.map(theme => {
         const isSelected = theme.code === currentTheme;
@@ -196,7 +196,7 @@ function createModalDOM(currentTheme) {
     }).join('');
 
     overlay.innerHTML = `
-        <div class="language-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="app-theme-modal-title">
+        <div class="modal-sheet-base language-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="app-theme-modal-title">
             <div class="language-selector-header">
                 <h3 class="language-selector-title" id="app-theme-modal-title">${t('components/modal/app-theme-modal:title')}</h3>
             </div>

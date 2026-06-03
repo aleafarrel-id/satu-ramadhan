@@ -1,48 +1,21 @@
-/* quran-font-modal.css */
+/* quran-font-modal.css
+   Extends: .modal-overlay-base.modal-overlay-base--bottom
+             .modal-sheet-base
+*/
 
 .quran-font-modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-modal);
-    background: var(--clr-bg-cal-overlay);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    opacity: 0;
-    visibility: hidden;
     transition: opacity var(--transition-normal), visibility var(--transition-normal);
     will-change: opacity;
 }
 
-.quran-font-modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
 .quran-font-sheet {
-    background: var(--gradient-cal-bg);
-    border-top: 1px solid var(--clr-primary-a30);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     padding: var(--spacing-lg) 0 calc(var(--spacing-lg) + env(safe-area-inset-bottom));
-    transform: translate3d(0, 100%, 0);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
     box-shadow: 0 -10px 30px var(--clr-black-a40), inset 0 1px 0 var(--clr-white-a05);
-    display: flex;
-    flex-direction: column;
-    max-height: 85vh;
 }
 
-.quran-font-modal-overlay.active .quran-font-sheet {
-    transform: translate3d(0, 0, 0);
-}
 
 /* Header */
 .quran-font-sheet-header {

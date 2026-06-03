@@ -1,49 +1,26 @@
 /*
   Bookmark Folder Modal & Bookmark Move Modal Styles
   Shared stylesheet for both bookmark management bottom-sheets.
+  Extends: .modal-overlay-base.modal-overlay-base--bottom
+            .modal-sheet-base
 */
 
-
 .bookmark-mgr-overlay {
-    position: fixed;
-    inset: 0;
     z-index: 9999;
-    background: var(--clr-bg-cal-overlay);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    opacity: 0;
-    visibility: hidden;
     transition: opacity var(--transition-normal), visibility var(--transition-normal);
 }
 
-.bookmark-mgr-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-
 .bookmark-mgr-sheet {
     background: var(--clr-quran-card-bg);
-    border-top: 1px solid var(--clr-quran-border);
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    border-top-color: var(--clr-quran-border);
     padding: var(--sp-6) var(--sp-6) calc(var(--sp-6) + env(safe-area-inset-bottom) + var(--keyboard-height, 0px));
-    transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     box-shadow: var(--shadow-modal);
-    display: flex;
-    flex-direction: column;
     gap: var(--sp-5);
 }
 
-.bookmark-mgr-overlay.active .bookmark-mgr-sheet {
-    transform: translateY(0);
-}
 
 
 .bookmark-mgr-header {

@@ -355,10 +355,10 @@ function _renderOptions() {
 
 function _createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'adzan-selector-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom adzan-selector-overlay';
 
     overlay.innerHTML = `
-        <div class="adzan-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="adzan-modal-title">
+        <div class="modal-sheet-base adzan-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="adzan-modal-title">
             <div class="adzan-selector-header">
                 <h3 class="adzan-selector-title" id="adzan-modal-title">${t('components/modal/adzan-selector-modal:title')}</h3>
             </div>

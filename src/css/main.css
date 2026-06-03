@@ -45,6 +45,9 @@
 @import './components/card/location-card.css';
 @import './components/card/shortcut-card.css';
 
+/* Modal Core (foundation for all modals) */
+@import './components/modal/modal-core.css';
+
 /* Modal (used by Home for location setup) */
 @import './components/modal/location-modal.css';
 @import './components/modal/location-search-modal.css';

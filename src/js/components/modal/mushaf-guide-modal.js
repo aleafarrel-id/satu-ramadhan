@@ -83,10 +83,10 @@ function removeModal() {
  */
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'mushaf-guide-modal-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center mushaf-guide-modal-overlay';
 
     overlay.innerHTML = `
-        <div class="mushaf-guide-modal">
+        <div class="modal-popup-base mushaf-guide-modal">
             <div class="mushaf-guide-modal__icon">
                 <i class='bx bx-book-reader'></i>
             </div>

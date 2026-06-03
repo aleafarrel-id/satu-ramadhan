@@ -70,16 +70,14 @@
    -webkit-overflow-scrolling: touch;
    overscroll-behavior-y: auto;
    scroll-behavior: smooth;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
 }
 
 .quran-reader-scroll::-webkit-scrollbar {
    display: none;
 }
 
-.quran-reader-scroll {
-   -ms-overflow-style: none;
-   scrollbar-width: none;
-}
 
 /* ── Surah Banner Info ── */
 
@@ -551,11 +549,9 @@ body.has-audio-dock .quran-reader-ayah-list {
 
 .quran-ayah-action-btn.copied {
    opacity: 1;
-}
-
-.quran-ayah-action-btn.copied {
    color: var(--clr-quran-accent);
 }
+
 
 /* ── Text: Arabic Glyph ── */
 .quran-ayah-arabic {

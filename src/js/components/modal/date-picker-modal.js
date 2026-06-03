@@ -308,10 +308,10 @@ function bindSwipeGesture(el) {
 
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'date-picker-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center date-picker-overlay';
 
     overlay.innerHTML = `
-        <div class="date-picker-sheet">
+        <div class="modal-popup-base date-picker-sheet">
             <div class="date-picker-header">
                 <button class="date-picker-nav-btn" id="dp-prev" aria-label="${t('components/modal/date-picker-modal:prev_month')}">
                     <i class='bx bx-chevron-left'></i>

@@ -116,10 +116,10 @@ function removeModal() {
  */
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'location-modal-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center location-modal-overlay';
 
     overlay.innerHTML = `
-        <div class="location-modal">
+        <div class="modal-popup-base location-modal">
             <div class="location-modal__icon">
                 <i class='bx bx-map-pin'></i>
             </div>

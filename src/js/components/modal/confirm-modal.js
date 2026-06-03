@@ -156,7 +156,7 @@ function removeModal() {
  */
 function createModalDOM(title, message, confirmText, cancelText, isDanger, theme) {
     const overlay = document.createElement('div');
-    overlay.className = 'confirm-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center confirm-overlay';
 
     if (theme === 'quran') {
         overlay.classList.add('confirm-overlay--quran');
@@ -165,7 +165,7 @@ function createModalDOM(title, message, confirmText, cancelText, isDanger, theme
     const confirmBtnClass = isDanger ? 'btn--danger' : 'btn--gold';
 
     overlay.innerHTML = `
-        <div class="confirm-dialog">
+        <div class="modal-popup-base confirm-dialog">
             <h3 class="confirm-title"></h3>
             <p class="confirm-message">${message}</p>
             <div class="confirm-actions">

@@ -163,7 +163,7 @@ function hideSpecificModal(targetOverlay, onCloseCallback, resultState = false) 
 
 function buildDOM({ icon, iconColor, title, description, features, confirmText, confirmIcon, cancelText, theme }) {
     const overlay = document.createElement('div');
-    overlay.className = 'perm-dialog-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center perm-dialog-overlay';
     
     if (theme === 'quran') {
         overlay.classList.add('perm-dialog-overlay--quran');
@@ -174,7 +174,7 @@ function buildDOM({ icon, iconColor, title, description, features, confirmText, 
     overlay.setAttribute('aria-labelledby', 'perm-dialog-title');
 
     overlay.innerHTML = `
-        <div class="perm-dialog__card">
+        <div class="modal-popup-base perm-dialog__card">
             <div class="perm-dialog__icon-wrap perm-dialog__icon-wrap--${iconColor}">
                 <i class="bx ${icon} perm-dialog__icon"></i>
             </div>

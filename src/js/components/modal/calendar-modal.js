@@ -232,7 +232,7 @@ function buildCalendarGrid(selectedDate, animClass = '') {
  */
 function createModalDOM(currentIndex, scheduleData, onSelectDay) {
     const overlay = document.createElement('div');
-    overlay.className = 'cal-modal-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center cal-modal-overlay';
 
     // Derive the selected date from scheduleData for accurate day comparison
     const selectedDate = scheduleData?.[currentIndex]?.date ?? null;
@@ -244,7 +244,7 @@ function createModalDOM(currentIndex, scheduleData, onSelectDay) {
         else animClass = 'cal-fade-in';
 
         overlay.innerHTML = `
-            <div class="cal-modal">
+            <div class="modal-popup-base cal-modal">
                 ${buildCalendarGrid(selectedDate, animClass)}
             </div>
         `;

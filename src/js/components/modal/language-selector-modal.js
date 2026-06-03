@@ -135,7 +135,7 @@ function removeModal() {
 
 function createModalDOM(currentLang) {
     const overlay = document.createElement('div');
-    overlay.className = 'language-selector-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--bottom language-selector-overlay';
 
     // Build the language list based on config array
     const langListHTML = QURAN_LANGUAGES.map(lang => {
@@ -154,7 +154,7 @@ function createModalDOM(currentLang) {
     }).join('');
 
     overlay.innerHTML = `
-        <div class="language-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
+        <div class="modal-sheet-base language-selector-sheet" role="dialog" aria-modal="true" aria-labelledby="lang-modal-title">
             <div class="language-selector-header">
                 <h3 class="language-selector-title" id="lang-modal-title">${t('components/modal/language-selector-modal:title')}</h3>
             </div>

@@ -50,10 +50,10 @@ function removeModal() {
 
 function createModalDOM() {
     const overlay = document.createElement('div');
-    overlay.className = 'about-modal-overlay';
+    overlay.className = 'modal-overlay-base modal-overlay-base--center about-modal-overlay';
 
     overlay.innerHTML = `
-        <div class="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+        <div class="modal-popup-base about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
             <div class="about-modal__header">
                 <div class="about-modal__logo">
                     <img src="/favicon/favicon.png" alt="App Logo" loading="lazy">
