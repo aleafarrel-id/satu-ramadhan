@@ -16,7 +16,7 @@ Waktu shalat akurat · Al-Quran Tajwid · Kiblat · Tasbih Digital · Adzan · �
 
 <br/>
 
-[![Version](https://img.shields.io/badge/version-2.1.1--stable-brightgreen?style=flat-square)](package.json)
+[![Version](https://img.shields.io/badge/version-2.2--stable-brightgreen?style=flat-square)](package.json)
 [![Platform](https://img.shields.io/badge/platform-Android%208.0%2B-blue?style=flat-square&logo=android)](https://play.google.com/store/apps/details?id=com.saturamadhan.mobile)
 [![License](https://img.shields.io/badge/license-Private-red?style=flat-square)](LICENSE)
 [![Made with Vite](https://img.shields.io/badge/built%20with-Vite-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
@@ -238,6 +238,7 @@ satu-ramadhan/
     │       │   ├── share-schedule-card.css# Kartu shortcut share jadwal
     │       │   └── shortcut-card.css      # Kartu shortcut navigasi cepat
     │       ├── modal/
+    │       │   ├── modal-core.css             # Base styles untuk overlay & popup modal
     │       │   ├── confirm-modal.css
     │       │   ├── adzan-selector-modal.css
     │       │   ├── adzan-volume-modal.css
@@ -421,6 +422,7 @@ satu-ramadhan/
         │   │   ├── bookmark-folder-modal.js        # Buat/edit nama folder bookmark
         │   │   ├── bookmark-move-modal.js          # Pindahkan bookmark antar folder (tagging)
         │   │   ├── calculation-method-modal.js     # Pilih metode hisab kalkulasi
+        │   │   ├── quran-font-modal.js             # Pengaturan font dan ukuran teks Quran
         │   │   └── about-app-modal.js              # Tentang aplikasi (versi, developer)
         │   │
         │   ├── quran/
