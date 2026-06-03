@@ -9,7 +9,6 @@
 }
 
 .quran-font-sheet {
-    --modal-bg: var(--clr-quran-bg);
     --modal-shadow: 0 -10px 30px var(--clr-black-a40), inset 0 1px 0 var(--clr-white-a05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
