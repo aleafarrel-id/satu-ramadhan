@@ -14,8 +14,9 @@ import {
    getTranslationEnabled, setTranslationEnabled,
    getTranslationLanguage, setTranslationLanguageManual,
    getAudioMode, setAudioMode,
-   getQuranFontSize
+   getQuranFontSize, getQuranFontFamily
 } from '../../modules/quran/quran-settings.js';
+import { QURAN_FONTS } from '../../config/quran-fonts.js';
 import { t } from '../../core/i18n.js';
 
 // UI Components
@@ -36,17 +37,26 @@ function _getAudioModeLabel(mode) {
 }
 
 function _getFontLabel() {
+   const fontId = getQuranFontFamily();
+   const fontData = QURAN_FONTS.find(f => f.id === fontId);
+   const fontFamilyName = fontData 
+       ? fontData.label
+       : 'Font';
+
    const arabic = getQuranFontSize('arabic');
    const latin = getQuranFontSize('latin');
    const translation = getQuranFontSize('translation');
 
+   let fontSizeName = '';
    if (arabic === latin && latin === translation) {
-      if (arabic === 3) return t('components/modal/quran-font-modal:step_large', { defaultValue: 'Ekstra Besar' });
-      if (arabic === 2) return t('components/modal/quran-font-modal:step_medium', { defaultValue: 'Besar' });
-      return t('components/modal/quran-font-modal:step_normal', { defaultValue: 'Normal' });
+      if (arabic === 3) fontSizeName = t('components/modal/quran-font-modal:step_large', { defaultValue: 'Ekstra Besar' });
+      else if (arabic === 2) fontSizeName = t('components/modal/quran-font-modal:step_medium', { defaultValue: 'Besar' });
+      else fontSizeName = t('components/modal/quran-font-modal:step_normal', { defaultValue: 'Normal' });
+   } else {
+      fontSizeName = t('components/modal/quran-font-modal:custom_size', { defaultValue: 'Kustom' });
    }
 
-   return t('components/modal/quran-font-modal:custom_size', { defaultValue: 'Kustom' });
+   return `${fontFamilyName} • ${fontSizeName}`;
 }
 
 // Render

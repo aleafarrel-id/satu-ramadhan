@@ -62,7 +62,8 @@ const initialState = {
                 arabic: 1,
                 latin: 1,
                 translation: 1
-            }
+            },
+            fontFamily: 'lpmq'
         }
     },
     quran: {

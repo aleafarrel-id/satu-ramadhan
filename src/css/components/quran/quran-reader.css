@@ -565,12 +565,12 @@ body.has-audio-dock .quran-reader-ayah-list {
 
 /* ── Text: Arabic Glyph ── */
 .quran-ayah-arabic {
-   font-family: 'LPMQ-IsepMisbah', serif;
-   font-size: calc(1.65rem * var(--quran-scale-arabic, 1));
+   font-family: var(--ff-mushaf-arabic);
+   font-size: calc(1.65rem * var(--quran-scale-arabic, 1) * var(--ff-mushaf-scale-multiplier, 1));
    color: var(--clr-quran-text);
    text-align: right;
    direction: rtl;
-   line-height: 2.2;
+   line-height: var(--ff-mushaf-line-height, 2.2);
    padding: var(--sp-2) var(--sp-1);
    text-rendering: optimizeLegibility;
    font-feature-settings: "liga" 1, "calt" 1;

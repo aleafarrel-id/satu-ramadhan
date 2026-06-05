@@ -1,7 +1,12 @@
 /**
- * Quran Font Size Modal Component
+ * Quran Font Style Modal Component
  *
- * A modal for adjusting Quran font sizes (Arabic, Latin, Translation).
+ * Bottom sheet for adjusting Quran display settings:
+ *   1. Font Family (LPMQ / Indopak) — via registry in quran-fonts.js
+ *   2. Font Size (Arabic, Latin, Translation) — sliders
+ *
+ * The preview box is sticky so users always see live changes
+ * as they scroll through the options below it.
  */
 
 import { registerModalDismiss, unregisterModalDismiss } from '../../modules/system/back-handler.js';
@@ -9,7 +14,12 @@ import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { getModalRoot } from '../../utils/modal-portal.js';
-import { getQuranFontSize, setQuranFontSize, applyQuranFontScale } from '../../modules/quran/quran-settings.js';
+import {
+    getQuranFontSize, setQuranFontSize, applyQuranFontScale,
+    getQuranFontFamily, setQuranFontFamily, applyQuranFontFamily
+} from '../../modules/quran/quran-settings.js';
+import { QURAN_FONTS } from '../../config/quran-fonts.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 
 let _overlayEl = null;
 let _releaseFocus = null;
@@ -21,6 +31,7 @@ let _fonts = {
     translation: 1
 };
 
+let _selectedFontId = 'lpmq';
 let _onSelectCallback = null;
 
 export async function showQuranFontModal({ onSelect } = {}) {
@@ -37,11 +48,13 @@ export async function showQuranFontModal({ onSelect } = {}) {
     _fonts.arabic = getQuranFontSize('arabic');
     _fonts.latin = getQuranFontSize('latin');
     _fonts.translation = getQuranFontSize('translation');
+    _selectedFontId = getQuranFontFamily();
 
     _overlayEl = _createModalDOM();
     getModalRoot().appendChild(_overlayEl);
 
     _updateAllSliderBackgrounds();
+    _updateFontFamilyCards();
 
     registerModalDismiss(_handleClose);
 
@@ -71,9 +84,10 @@ function _saveAndApply() {
     setQuranFontSize('arabic', _fonts.arabic);
     setQuranFontSize('latin', _fonts.latin);
     setQuranFontSize('translation', _fonts.translation);
+    setQuranFontFamily(_selectedFontId);
 
-    // Ensure CSS is updated
     applyQuranFontScale();
+    applyQuranFontFamily();
 }
 
 function _getLabelForStep(step) {
@@ -82,11 +96,51 @@ function _getLabelForStep(step) {
     return t('components/modal/quran-font-modal:step_normal');
 }
 
+/**
+ * Updates visual active state of font family cards.
+ */
+function _updateFontFamilyCards() {
+    if (!_overlayEl) return;
+    const cards = _overlayEl.querySelectorAll('.qfm-font-card');
+    cards.forEach(card => {
+        const isActive = card.dataset.fontId === _selectedFontId;
+        card.classList.toggle('is-active', isActive);
+        card.setAttribute('aria-pressed', String(isActive));
+    });
+}
+
+/**
+ * Live-previews the selected font family in the preview box without saving.
+ * @param {string} fontId
+ */
+function _previewFontFamily(fontId) {
+    _selectedFontId = fontId;
+    _updateFontFamilyCards();
+
+    // Apply temporarily to DOM for live preview
+    if (fontId === 'lpmq') {
+        document.documentElement.removeAttribute('data-quran-font');
+    } else {
+        document.documentElement.setAttribute('data-quran-font', fontId);
+    }
+
+    impact('light');
+}
+
 function _bindEvents() {
     if (!_overlayEl) return;
 
+    // Close on backdrop click
     _overlayEl.addEventListener('click', (e) => {
         if (e.target === _overlayEl) _handleClose(e);
+    });
+
+    // Font family card selection
+    _overlayEl.addEventListener('click', (e) => {
+        const card = e.target.closest('.qfm-font-card');
+        if (card && card.dataset.fontId) {
+            _previewFontFamily(card.dataset.fontId);
+        }
     });
 
     const bindSlider = (type) => {
@@ -114,10 +168,19 @@ function _bindEvents() {
     bindSlider('translation');
 
     addEscHandler(_overlayEl, _handleClose);
+
+    // Done button
+    const doneBtn = _overlayEl.querySelector('.quran-font-sheet-done');
+    if (doneBtn) {
+        doneBtn.addEventListener('click', _handleClose);
+    }
 }
 
 function _hideModal() {
     if (!_overlayEl) return;
+
+    // Restore persisted font state in case user only previewed without applying
+    applyQuranFontFamily();
 
     if (_releaseFocus) {
         _releaseFocus();
@@ -137,6 +200,7 @@ function _removeModal() {
         _overlayEl.parentNode.removeChild(_overlayEl);
     }
     _overlayEl = null;
+    _onSelectCallback = null;
 }
 
 function _updateAllSliderBackgrounds() {
@@ -190,6 +254,23 @@ function _createModalDOM() {
         `;
     };
 
+    // Build font family cards from registry
+    const fontCardsHtml = QURAN_FONTS.map(font => `
+        <button
+            class="qfm-font-card"
+            data-font-id="${escapeHtml(font.id)}"
+            aria-pressed="${font.id === _selectedFontId}"
+            type="button"
+        >
+            <div class="qfm-font-card__sample">${escapeHtml(font.sampleText)}</div>
+            <div class="qfm-font-card__info">
+                <span class="qfm-font-card__label">${escapeHtml(font.label)}</span>
+                <span class="qfm-font-card__desc">${escapeHtml(t(`components/modal/quran-font-modal:${font.descKey}`))}</span>
+            </div>
+            <div class="qfm-font-card__check"><i class='bx bx-check'></i></div>
+        </button>
+    `).join('');
+
     overlay.innerHTML = `
         <div class="modal-sheet-base quran-font-sheet" role="dialog" aria-modal="true" aria-labelledby="quran-font-modal-title">
             <div class="quran-font-sheet-header">
@@ -198,10 +279,10 @@ function _createModalDOM() {
                 </h3>
             </div>
             
-            <div class="quran-font-sheet-content">
+            <div class="quran-font-static-preview">
                 <div class="quran-font-preview-box">
                     <div class="quran-font-preview-arabic quran-ayah-arabic">
-                        بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+                        بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
                     </div>
                     <div class="quran-font-preview-latin quran-ayah-latin">
                         Bismillāhir-raḥmānir-raḥīm(i).
@@ -210,13 +291,28 @@ function _createModalDOM() {
                         ${t('components/modal/quran-font-modal:preview_translation', { defaultValue: 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.' })}
                     </div>
                 </div>
+            </div>
+            
+            <div class="quran-font-sheet-content">
 
-                <div class="quran-font-sliders-wrapper">
-                    ${createSliderRow('arabic', 'bx-pen', 'label_arabic')}
-                    ${createSliderRow('latin', 'bx-italic', 'label_latin')}
-                    ${createSliderRow('translation', 'bx-text', 'label_translation')}
+                <!-- Section: Font Family -->
+                <div class="qfm-section">
+                    <p class="qfm-section-label">${t('components/modal/quran-font-modal:label_font_family', { defaultValue: 'Jenis Font' })}</p>
+                    <div class="qfm-font-cards">
+                        ${fontCardsHtml}
+                    </div>
                 </div>
-                
+
+                <!-- Section: Font Size -->
+                <div class="qfm-section">
+                    <p class="qfm-section-label">${t('components/modal/quran-font-modal:label_font_size', { defaultValue: 'Ukuran Font' })}</p>
+                    <div class="quran-font-sliders-wrapper">
+                        ${createSliderRow('arabic', 'bx-pen', 'label_arabic')}
+                        ${createSliderRow('latin', 'bx-italic', 'label_latin')}
+                        ${createSliderRow('translation', 'bx-text', 'label_translation')}
+                    </div>
+                </div>
+
                 <p class="quran-font-desc">
                     ${t('components/modal/quran-font-modal:disclaimer', { defaultValue: 'Pengaturan ini hanya memengaruhi tampilan teks pada fitur bacaan Al-Quran.' })}
                 </p>
@@ -229,11 +325,6 @@ function _createModalDOM() {
             </div>
         </div>
     `;
-
-    const doneBtn = overlay.querySelector('.quran-font-sheet-done');
-    if (doneBtn) {
-        doneBtn.addEventListener('click', _handleClose);
-    }
 
     return overlay;
 }

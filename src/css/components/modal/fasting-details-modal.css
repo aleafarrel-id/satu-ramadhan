@@ -158,10 +158,14 @@
 
 .fasting-modal-arabic {
    font-family: var(--ff-mushaf-arabic);
-   font-size: clamp(24px, 7vw, 32px);
+   font-size: clamp(
+      calc(24px * var(--ff-mushaf-scale-multiplier, 1)), 
+      calc(7vw * var(--ff-mushaf-scale-multiplier, 1)), 
+      calc(32px * var(--ff-mushaf-scale-multiplier, 1))
+   );
    color: var(--clr-quran-text);
    text-align: right;
-   line-height: var(--lh-loose);
+   line-height: var(--ff-mushaf-line-height, var(--lh-loose));
    margin-bottom: var(--spacing-md);
    direction: rtl;
 }

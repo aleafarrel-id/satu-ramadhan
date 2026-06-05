@@ -22,7 +22,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 0;
     padding: 0 var(--spacing-lg);
     flex-shrink: 0;
 }
@@ -39,12 +39,15 @@
 .quran-font-sheet-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: var(--clr-primary-500) transparent;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
-    padding: 0 var(--spacing-lg) var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+    /* Enable sticky children to anchor relative to this scroll container */
+    position: relative;
 }
 
 .quran-font-sheet-footer {
@@ -53,17 +56,22 @@
     flex-shrink: 0;
 }
 
+/* ── Static Preview Box ── */
+.quran-font-static-preview {
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+    flex-shrink: 0;
+}
+
 /* Preview Box */
 .quran-font-preview-box {
     background: var(--clr-quran-bg);
     border: 1px solid var(--clr-border-light);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-sm);
 }
 
 /* Using existing .quran-ayah-* classes from quran-reader.css will apply automatically */
@@ -72,8 +80,132 @@
 .quran-font-preview-translation {
     padding: 0 !important;
     margin: 0 !important;
-    transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1), line-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1), line-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), font-family 0.25s ease;
 }
+
+/* ── Section Labels ── */
+.qfm-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.qfm-section-label {
+    font-family: var(--font-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wider);
+    margin: 0;
+}
+
+/* ── Font Family Cards ── */
+.qfm-font-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.qfm-font-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--clr-bg-card);
+    border: 1.5px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.qfm-font-card:active {
+    transform: scale(0.98);
+}
+
+.qfm-font-card.is-active {
+    border-color: var(--clr-primary-500);
+    background: var(--clr-primary-a10);
+}
+
+/* Arabic sample text inside card */
+.qfm-font-card__sample {
+    font-family: 'LPMQ-IsepMisbah', 'Amiri', serif;
+    font-size: var(--fs-xl);
+    color: var(--clr-quran-text);
+    direction: rtl;
+    line-height: 1.6;
+    flex-shrink: 0;
+    min-width: 72px;
+    text-align: center;
+    background: var(--clr-quran-bg);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--clr-quran-border);
+}
+
+/* Indopak card sample uses indopak font */
+.qfm-font-card[data-font-id="indopak"] .qfm-font-card__sample {
+    font-family: 'Indopak-Nastaleeq', 'Amiri', serif;
+}
+
+.qfm-font-card__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.qfm-font-card__label {
+    font-family: var(--font-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-primary);
+}
+
+.qfm-font-card__desc {
+    font-family: var(--font-primary);
+    font-size: var(--fs-xs);
+    color: var(--clr-text-secondary);
+    line-height: 1.4;
+}
+
+/* Active check icon */
+.qfm-font-card__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-circle);
+    border: 1.5px solid var(--clr-border);
+    color: transparent;
+    flex-shrink: 0;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.qfm-font-card.is-active .qfm-font-card__check {
+    background: var(--clr-primary-500);
+    border-color: var(--clr-primary-500);
+    color: var(--clr-text-primary);
+}
+
+.qfm-font-card__check i {
+    font-size: var(--fs-sm);
+}
+
+/* Hover effects (pointer devices) */
+@media (hover: hover) and (pointer: fine) {
+    .qfm-font-card:not(.is-active):hover {
+        border-color: var(--clr-primary-a30);
+        background: var(--clr-primary-a10);
+    }
+}
+
 
 /* Sliders Wrapper */
 .quran-font-sliders-wrapper {
@@ -229,9 +361,10 @@
 @media screen and (min-width: 600px) {
 
     .quran-font-sheet-header,
+    .quran-font-static-preview,
     .quran-font-sheet-content,
     .quran-font-sheet-footer {
-        padding-left: max(var(--spacing-lg), calc((100vw - 800px) / 2));
-        padding-right: max(var(--spacing-lg), calc((100vw - 800px) / 2));
+        padding-left: max(var(--spacing-lg), calc((100% - 800px) / 2));
+        padding-right: max(var(--spacing-lg), calc((100% - 800px) / 2));
     }
 }

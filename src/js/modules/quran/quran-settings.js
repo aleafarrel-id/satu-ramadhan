@@ -10,6 +10,7 @@
 
 import { store } from '../../core/store.js';
 import { QURAN_LANGUAGES, DEFAULT_LANGUAGE } from '../../config/quran-languages.js';
+import { QURAN_FONTS, DEFAULT_QURAN_FONT } from '../../config/quran-fonts.js';
 import { resolveLanguage } from '../../core/i18n.js';
 import { Capacitor } from '@capacitor/core';
 
@@ -222,3 +223,38 @@ export function applyQuranFontScale() {
    document.documentElement.style.setProperty('--quran-scale-translation', _stepToScale(translation));
 }
 
+// ─── Quran Font Family ────────────────────────────────────────────────────────
+
+/**
+ * Returns the currently selected Quran Arabic font id.
+ * @returns {string} Font id (e.g. 'lpmq', 'indopak')
+ */
+export function getQuranFontFamily() {
+   const val = store.getState('settings.quran.fontFamily');
+   const isValid = QURAN_FONTS.some(f => f.id === val);
+   return isValid ? val : DEFAULT_QURAN_FONT;
+}
+
+/**
+ * Persists the Quran font family preference.
+ * @param {string} fontId
+ */
+export function setQuranFontFamily(fontId) {
+   if (!fontId || !QURAN_FONTS.some(f => f.id === fontId)) return;
+   store.setState('settings.quran.fontFamily', fontId);
+}
+
+/**
+ * Applies the selected Quran font family to the DOM.
+ * Sets `data-quran-font` on <html> which triggers CSS variable overrides
+ * defined in variables.css.
+ * Must be called at startup and whenever the font preference changes.
+ */
+export function applyQuranFontFamily() {
+   const fontId = getQuranFontFamily();
+   if (fontId === DEFAULT_QURAN_FONT) {
+      document.documentElement.removeAttribute('data-quran-font');
+   } else {
+      document.documentElement.setAttribute('data-quran-font', fontId);
+   }
+}

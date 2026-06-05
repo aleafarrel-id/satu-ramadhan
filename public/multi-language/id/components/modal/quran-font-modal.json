@@ -1,5 +1,5 @@
 {
-    "title": "Ukuran Font Al-Qur'an",
+    "title": "Tampilan Al-Qur'an",
     "done": "Selesai",
     "label_arabic": "Teks Arab",
     "label_latin": "Latin",
@@ -9,5 +9,9 @@
     "step_large": "Ekstra Besar",
     "preview_translation": "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang.",
     "disclaimer": "Pengaturan ini hanya memengaruhi tampilan teks pada fitur bacaan Al-Quran.",
-    "custom_size": "Kustom"
+    "custom_size": "Kustom",
+    "label_font_family": "Jenis Font",
+    "label_font_size": "Ukuran Font",
+    "font_lpmq_desc": "Standar Kementerian Agama RI",
+    "font_indopak_desc": "Gaya penulisan Nastaleeq"
 }

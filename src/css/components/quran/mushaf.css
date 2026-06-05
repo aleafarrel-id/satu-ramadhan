@@ -385,8 +385,12 @@
    /* Font size scales with content width (--mushaf-page-w is set in JS as
       viewport width minus page padding). Dividing by 26 targets the standard
       15-line Medina mushaf layout. */
-   font-size: clamp(0.65rem, calc(var(--mushaf-page-w, 320px) / 26), 1.1rem);
-   line-height: 1.95;
+   font-size: clamp(
+      calc(0.65rem * var(--ff-mushaf-scale-multiplier, 1)), 
+      calc((var(--mushaf-page-w, 320px) / 26) * var(--ff-mushaf-scale-multiplier, 1)), 
+      calc(1.1rem * var(--ff-mushaf-scale-multiplier, 1))
+   );
+   line-height: var(--ff-mushaf-line-height, 1.95);
    color: var(--clr-mushaf-text-body);
    cursor: default;
    user-select: none;
@@ -420,8 +424,12 @@
 
 .mushaf-page--opening .mushaf-word {
    /* Opening pages have shorter lines, so a smaller divisor (20) fits better. */
-   font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 375px) / 20), 1.6rem);
-   line-height: 2.2;
+   font-size: clamp(
+      calc(0.8rem * var(--ff-mushaf-scale-multiplier, 1)), 
+      calc((var(--mushaf-page-w, 375px) / 20) * var(--ff-mushaf-scale-multiplier, 1)), 
+      calc(1.6rem * var(--ff-mushaf-scale-multiplier, 1))
+   );
+   line-height: var(--ff-mushaf-line-height, 2.2);
 }
 
 .mushaf-page--opening .mushaf-line--surah-header {
@@ -550,7 +558,11 @@
    }
 
    .mushaf-page--opening .mushaf-word {
-      font-size: clamp(0.85rem, calc(var(--mushaf-page-w, 360px) / 19.5), 1.4rem);
+      font-size: clamp(
+         calc(0.85rem * var(--ff-mushaf-scale-multiplier, 1)), 
+         calc((var(--mushaf-page-w, 360px) / 19.5) * var(--ff-mushaf-scale-multiplier, 1)), 
+         calc(1.4rem * var(--ff-mushaf-scale-multiplier, 1))
+      );
    }
 }
 
@@ -583,7 +595,11 @@
    }
 
    .mushaf-page--opening .mushaf-word {
-      font-size: clamp(0.8rem, calc(var(--mushaf-page-w, 320px) / 19.5), 1.3rem);
+      font-size: clamp(
+         calc(0.8rem * var(--ff-mushaf-scale-multiplier, 1)), 
+         calc((var(--mushaf-page-w, 320px) / 19.5) * var(--ff-mushaf-scale-multiplier, 1)), 
+         calc(1.3rem * var(--ff-mushaf-scale-multiplier, 1))
+      );
    }
 
    .mushaf-page--opening .mushaf-line--basmala .mushaf-word {

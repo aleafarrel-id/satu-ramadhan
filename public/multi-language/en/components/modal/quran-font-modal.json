@@ -1,5 +1,5 @@
 {
-    "title": "Al-Qur'an Font Size",
+    "title": "Quran Appearance",
     "done": "Done",
     "label_arabic": "Arabic Text",
     "label_latin": "Transliteration",
@@ -7,7 +7,11 @@
     "step_normal": "Normal",
     "step_medium": "Large",
     "step_large": "Extra Large",
-    "preview_translation": "In the name of Allah, the Most Gracious, the Most Merciful.",
-    "disclaimer": "This setting only affects the text size inside the Quran reader feature.",
-    "custom_size": "Custom"
+    "preview_translation": "In the name of Allah, the Entirely Merciful, the Especially Merciful.",
+    "disclaimer": "This setting only affects the text appearance inside the Quran reader feature.",
+    "custom_size": "Custom",
+    "label_font_family": "Font Style",
+    "label_font_size": "Font Size",
+    "font_lpmq_desc": "Indonesian Ministry of Religion Standard",
+    "font_indopak_desc": "Nastaleeq writing style"
 }

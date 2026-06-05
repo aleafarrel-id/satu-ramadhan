@@ -51,7 +51,7 @@ let _isReaderSearchActive = false;
 let _currentReaderData = [];
 let _searchDebounceTimer = null;
 let _targetVerseNumber = null;
-let _storeSubId = null;
+let _storeSubIds = [];
 
 // Murottal Event Tracking 
 let _murottalEventHandlers = [];
@@ -103,8 +103,9 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
    // Register back handler
    registerModalDismiss(close);
 
-   // Subscribe to global store for reactive settings changes
-   _storeSubId = store.subscribe('settings.quran', () => {
+   // Subscribe to specific global store properties that REQUIRE a DOM rebuild
+   // Note: We exclude fontSize and fontFamily so slider inputs don't cause layout thrashing
+   const onSettingsChange = () => {
       if (!_isOpen || !_currentReaderData.length) return;
 
       if (_isReaderSearchActive) {
@@ -124,7 +125,16 @@ export async function open(item, type = 'surah', targetVerseNumber = null, optio
             _scrollContainer.scrollTop = currentScroll;
          }
       });
-   });
+   };
+
+   _storeSubIds = [
+      store.subscribe('settings.quran.tajweed', onSettingsChange),
+      store.subscribe('settings.quran.transliteration', onSettingsChange),
+      store.subscribe('settings.quran.translationEnabled', onSettingsChange),
+      store.subscribe('settings.quran.translationLanguage', onSettingsChange),
+      store.subscribe('settings.quran.audioMode', onSettingsChange),
+      store.subscribe('settings.quran.reciterId', onSettingsChange)
+   ];
 
    // Pre-fetch list for dropdown natively handled by API
    if (type === 'juz') {
@@ -159,9 +169,9 @@ export function close() {
       _onCloseCallback();
    }
 
-   if (_storeSubId) {
-      store.unsubscribe(_storeSubId);
-      _storeSubId = null;
+   if (_storeSubIds && _storeSubIds.length) {
+      _storeSubIds.forEach(id => store.unsubscribe(id));
+      _storeSubIds = [];
    }
 
    // Dispatch custom event so the UI (Surah/Juz tab banners) can re-render automatically
@@ -227,9 +237,9 @@ export function destroy() {
       _isOpen = false;
       _isReaderSearchActive = false;
       if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
-      if (_storeSubId) {
-         store.unsubscribe(_storeSubId);
-         _storeSubId = null;
+      if (_storeSubIds && _storeSubIds.length) {
+         _storeSubIds.forEach(id => store.unsubscribe(id));
+         _storeSubIds = [];
       }
       _unregisterMurottalEvents();
       _renderCtx.incrementAndGet();

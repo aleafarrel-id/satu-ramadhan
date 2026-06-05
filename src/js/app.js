@@ -14,7 +14,7 @@ import { store } from './core/store.js';
 import { applyAutoDetectedMethod } from './core/calculation-resolver.js';
 import { initTheme } from './core/theme.js';
 import { initI18n, changeLanguage, loadNS, t, getCurrentLang } from './core/i18n.js';
-import { initTranslationSync, applyQuranFontScale } from './modules/quran/quran-settings.js';
+import { initTranslationSync, applyQuranFontScale, applyQuranFontFamily } from './modules/quran/quran-settings.js';
 import { resetRamadhanCache } from './core/database.js';
 import { initBackHandler } from './modules/system/back-handler.js';
 import {
@@ -73,7 +73,7 @@ export async function initApp() {
 
     // Hydrate persistent state before anything else
     await store.hydrate();
-    
+
     // Sync Hijri offset based on active preset (requires hydrated store)
     await syncHijriOffset();
 
@@ -94,6 +94,9 @@ export async function initApp() {
 
     // Apply Quran font sizes from store to CSS variables
     applyQuranFontScale();
+
+    // Apply Quran font family selection from store
+    applyQuranFontFamily();
 
     // Global language-switch listener:
     // When the user changes language in Settings, re-render the global shell

@@ -301,7 +301,8 @@ satu-ramadhan/
         │   ├── adzan-sounds.js   # Registry pilihan suara Adzan (nama, path file)
         │   ├── languages.js      # Daftar bahasa yang didukung (kode, label)
         │   ├── quran-audio.js    # Konfigurasi sumber audio tilawah
-        │   └── quran-languages.js# Konfigurasi bahasa terjemahan Quran
+        │   ├── quran-languages.js# Konfigurasi bahasa terjemahan Quran
+        │   └── quran-fonts.js    # Registry jenis font Quran (LPMQ, Indopak)
         │
         ├── core/                       # Layanan fondasi — dipakai lintas seluruh aplikasi
         │   ├── store.js                # State management: pub/sub + persistence ke storage

@@ -1,5 +1,5 @@
 {
-    "title": "Saiz Font Al-Quran",
+    "title": "Paparan Al-Quran",
     "done": "Selesai",
     "label_arabic": "Teks Arab",
     "label_latin": "Latin",
@@ -8,6 +8,10 @@
     "step_medium": "Besar",
     "step_large": "Sangat Besar",
     "preview_translation": "Dengan nama Allah, Yang Maha Pemurah, lagi Maha Mengasihani.",
-    "disclaimer": "Tetapan ini hanya menjejaskan saiz teks pada ciri bacaan Al-Quran sahaja.",
-    "custom_size": "Tersuai"
+    "disclaimer": "Tetapan ini hanya menjejaskan paparan teks pada ciri bacaan Al-Quran.",
+    "custom_size": "Tersuai",
+    "label_font_family": "Jenis Font",
+    "label_font_size": "Saiz Font",
+    "font_lpmq_desc": "Standard Kementerian Agama RI",
+    "font_indopak_desc": "Gaya penulisan Nastaleeq"
 }
