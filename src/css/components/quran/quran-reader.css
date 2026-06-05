@@ -715,6 +715,10 @@ body.has-audio-dock .quran-reader-ayah-list {
       font-size: var(--fs-3xl);
    }
 
+   .quran-reader-surah-meaning {
+      font-size: 11px;
+   }
+
    .quran-ayah-bismillah-text {
       font-size: 1.6rem;
    }
@@ -789,6 +793,10 @@ body.has-audio-dock .quran-reader-ayah-list {
       font-size: var(--fs-xs);
    }
 
+   .quran-reader-surah-meaning {
+      font-size: 10px;
+   }
+
    .quran-reader-surah-meta {
       font-size: var(--fs-2xs);
    }
@@ -837,6 +845,10 @@ body.has-audio-dock .quran-reader-ayah-list {
 
    .quran-reader-surah-info-latin {
       font-size: calc(var(--fs-xs) - 1px);
+   }
+
+   .quran-reader-surah-meaning {
+      font-size: 9px;
    }
 
    .quran-reader-surah-meta {
