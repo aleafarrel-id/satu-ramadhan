@@ -117,6 +117,8 @@ export async function render(container) {
    }
 
    await transitionPromise;
+   if (!_quranContent) return;
+   
    _quranContent.classList.add('ready');
 
    // Initialize Audio Dock into the dock slot
