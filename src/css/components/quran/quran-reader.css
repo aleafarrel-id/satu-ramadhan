@@ -135,6 +135,16 @@
    font-weight: var(--fw-medium);
    color: var(--clr-text-primary);
    text-shadow: 0 1px 2px var(--clr-black-a10);
+   margin-bottom: var(--sp-1);
+}
+
+/* ── Surah Name Meaning (Translated) in Reader Banner ── */
+.quran-reader-surah-meaning {
+   font-family: var(--ff-primary);
+   font-size: var(--fs-xs);
+   font-style: italic;
+   color: var(--clr-text-primary);
+   opacity: 0.8;
    margin-bottom: var(--sp-2);
 }
 

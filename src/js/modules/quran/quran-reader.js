@@ -13,7 +13,7 @@ import { showConfirmModal } from '../../components/modal/confirm-modal.js';
 import { getSurahList, getFullSurahPayload, getJuzList } from './quran-api.js';
 import { renderBatchedList, createRenderContext } from './quran-utility.js';
 import { buildTajweedFragment, getVerseRules } from './quran-tajweed.js';
-import { getTajweedEnabled, getTransliterationEnabled, getTranslationEnabled, isAudioOfflineEnabled, setAudioMode } from './quran-settings.js';
+import { getTajweedEnabled, getTransliterationEnabled, getTranslationEnabled, isAudioOfflineEnabled, setAudioMode, getTranslationLanguage } from './quran-settings.js';
 import * as BookmarkManager from './bookmark-manager.js';
 import * as Storage from '../../core/storage.js';
 
@@ -31,6 +31,7 @@ import { registerModalDismiss, unregisterModalDismiss } from '../system/back-han
 import { initTooltip, dismissTooltip } from '../../utils/tooltip.js';
 import { initPullToRefresh } from '../../utils/pull-to-refresh.js';
 import { safeClear } from '../../utils/dom-utils.js';
+import { escapeHtml } from '../../utils/sanitize.js';
 import { store } from '../../core/store.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { logError } from '../../utils/error-boundary.js';
@@ -483,6 +484,17 @@ function _createSurahBannerElement(surah) {
    const totalAyahs = parseInt(surah.count) || 0;
    const typeText = surah.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
 
+   // Resolve surah meaning for the active translation language
+   const activeLang = getTranslationLanguage();
+   const meaningText = surah.translation?.[activeLang]
+      || surah.translation?.['id']
+      || surah.translation?.['en']
+      || '';
+
+   const meaningHtml = meaningText
+      ? `<div class="quran-reader-surah-meaning">${escapeHtml(meaningText)}</div>`
+      : '';
+
    const banner = document.createElement('div');
    banner.className = 'quran-reader-surah-info-card';
    banner.dataset.surahIndex = surahNum;
@@ -497,6 +509,7 @@ function _createSurahBannerElement(surah) {
    content.className = 'quran-reader-surah-info-content';
    content.innerHTML = `
       <div class="quran-reader-surah-info-latin">${surahNum}. ${surah.title}</div>
+      ${meaningHtml}
       <div class="quran-reader-surah-name-ar">${surah.titleAr}</div>
       <div class="quran-reader-surah-meta">
          <span class="quran-reader-meta-tag">${typeText}</span>
@@ -515,6 +528,7 @@ function _createSurahBannerElement(surah) {
 
    return banner;
 }
+
 
 /**
  * Rebuilds the entire action container for a surah banner

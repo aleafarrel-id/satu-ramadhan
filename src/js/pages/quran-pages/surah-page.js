@@ -21,11 +21,19 @@ const subpage = createQuranSubpage({
          const sCountStr = s.count.toString();
          const lowerType = s.type.toLowerCase();
 
+         // Check surah meaning translations for cross-language search
+         const translationMatch = s.translation
+            ? Object.values(s.translation).some(meaning =>
+               normalizeSearchText(meaning).includes(normalizedQuery)
+            )
+            : false;
+
          return (normalizedQuery.length > 0 && normalizedTitle.includes(normalizedQuery)) ||
             s.titleAr.includes(query) ||
             lowerType.includes(query) ||
             sIndexNum === query ||
-            sCountStr === query;
+            sCountStr === query ||
+            (normalizedQuery.length > 0 && translationMatch);
       });
    },
    onItemClick: (surah) => {

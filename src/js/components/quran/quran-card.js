@@ -7,6 +7,7 @@ import { safeClear, safeAppend } from '../../utils/dom-utils.js';
 import { makeAccessibleBtn } from '../../utils/a11y.js';
 import { t } from '../../core/i18n.js';
 import { escapeHtml } from '../../utils/sanitize.js';
+import { getTranslationLanguage } from '../../modules/quran/quran-settings.js';
 
 /**
  * Renders the decorative "Al-Qur'an" banner card at the top of Surah/Juz lists.
@@ -252,6 +253,17 @@ export function createSurahCard(surah, onClick) {
    card.setAttribute('data-focus-item', '');
    const typeText = surah.type === 'Makkiyah' ? t('components/quran/quran-card:makkiyah') : t('components/quran/quran-card:madaniyah');
 
+   // Resolve the surah meaning for the active translation language
+   const activeLang = getTranslationLanguage();
+   const meaningText = surah.translation?.[activeLang]
+      || surah.translation?.['id']
+      || surah.translation?.['en']
+      || '';
+
+   const meaningHtml = meaningText
+      ? `<div class="surah-title-meaning">${escapeHtml(meaningText)}</div>`
+      : '';
+
    card.innerHTML = `
       <div class="surah-number-wrapper">
          <div class="surah-number-ornament"></div>
@@ -259,6 +271,7 @@ export function createSurahCard(surah, onClick) {
       </div>
       <div class="surah-info">
          <div class="surah-title-latin">${escapeHtml(surah.title)}</div>
+         ${meaningHtml}
          <div class="surah-details">
             <span class="surah-type surah-type-pill">${typeText}</span>
             <span class="surah-detail-dot"></span>
@@ -274,6 +287,7 @@ export function createSurahCard(surah, onClick) {
 
    return card;
 }
+
 
 /**
  * Converts Western numerals to Arabic numerals.
