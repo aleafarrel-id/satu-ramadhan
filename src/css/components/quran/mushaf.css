@@ -429,7 +429,7 @@
       calc((var(--mushaf-page-w, 375px) / 20) * var(--ff-mushaf-scale-multiplier, 1)), 
       calc(1.6rem * var(--ff-mushaf-scale-multiplier, 1))
    );
-   line-height: var(--ff-mushaf-line-height, 2.2);
+   line-height: calc(var(--ff-mushaf-line-height, 1.95) * 1.128);
 }
 
 .mushaf-page--opening .mushaf-line--surah-header {

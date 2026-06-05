@@ -102,6 +102,31 @@
    font-display: swap;
 }
 
+/* Fallback for fonts that do not support the End of Ayah marker and numbers (e.g. Indopak) */
+@font-face {
+   font-family: 'Quran-Verse-Markers';
+   src: url('../../assets/font/quran/LPMQ-IsepMisbah.ttf') format('truetype');
+   /* U+06DD: End of Ayah, U+0660-0669: Arabic-Indic Digits, U+06F0-06F9: Eastern Arabic-Indic Digits */
+   unicode-range: U+06DD, U+0660-0669, U+06F0-06F9;
+   font-weight: 400;
+   font-style: normal;
+   font-display: swap;
+}
+
+/* Fallback for small marks (like Madd Silah) that have blank glyphs in some fonts and missing in LPMQ */
+@font-face {
+   font-family: 'Quran-Small-Marks';
+   src: url('../../assets/font/amiri/Amiri-Regular.woff2') format('woff2');
+   /* U+06E5: Small Waw, U+06E6: Small Yeh (less-than sign)
+      U+0653: Maddah Above (often combined with Small Yeh in Madd Silah Tawilah)
+      U+06E4: Small High Madda
+      U+06DF: Small High Rounded Zero */
+   unicode-range: U+06E5, U+06E6, U+0653, U+06E4, U+06DF;
+   font-weight: 400;
+   font-style: normal;
+   font-display: swap;
+}
+
 
 @font-face {
    font-family: 'Amiri';

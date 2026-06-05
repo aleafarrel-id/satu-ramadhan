@@ -329,9 +329,9 @@
    --clr-mushaf-page-shadow: 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 
    /* Mushaf Fonts — controlled dynamically via [data-quran-font] attribute */
-   --ff-mushaf-arabic: 'LPMQ-IsepMisbah', 'Amiri', serif;
+   --ff-mushaf-arabic: 'Quran-Small-Marks', 'LPMQ-IsepMisbah', 'Amiri', serif;
    --ff-mushaf-scale-multiplier: 1;
-   --ff-mushaf-line-height: 2.2;
+   --ff-mushaf-line-height: 1.95;
    --ff-mushaf-decorative: 'Amiri', 'LPMQ-IsepMisbah', serif;
    --ff-mushaf-header-ar: 'DecoType-Thuluth-II-Regular', 'LPMQ-IsepMisbah', 'Amiri', serif;
    --ff-mushaf-basmala: 'DecoType-Thuluth-Regular', 'LPMQ-IsepMisbah', 'Amiri', serif;
@@ -402,9 +402,9 @@
    when the user selects the 'indopak' font option.
 */
 [data-quran-font="indopak"] {
-   --ff-mushaf-arabic: 'Indopak-Nastaleeq', 'Amiri', serif;
+   --ff-mushaf-arabic: 'Quran-Small-Marks', 'Quran-Verse-Markers', 'Indopak-Nastaleeq', 'Amiri', serif;
    --ff-mushaf-scale-multiplier: 1.2;
-   --ff-mushaf-line-height: 1.7;
+   --ff-mushaf-line-height: 1.625;
 }
 
 
