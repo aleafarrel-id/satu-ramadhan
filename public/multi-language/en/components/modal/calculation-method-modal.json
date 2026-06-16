@@ -5,5 +5,6 @@
     "selected_feedback": "{{name}} method selected",
     "region_label": "Region",
     "ihtiyat_label": "Precaution",
-    "ihtiyat_value": "+{{minutes}} min"
+    "ihtiyat_value": "+{{minutes}} min",
+    "muhammadiyah_note": "Fajr 8 minutes later"
 }

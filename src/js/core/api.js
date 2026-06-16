@@ -143,11 +143,16 @@ function isValidResponse(data) {
  * @throws on any failure
  */
 async function tryMirror(baseUrl, dateStr, latitude, longitude) {
-    const { id: methodId } = getActiveMethodConfig();
+    const { id: methodId, aladhanMethodId, aladhanMethodSettings } = getActiveMethodConfig();
     const shafaq = getActiveShafaqParam();
-    let url = `${baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
-    if (shafaq) url += `&shafaq=${encodeURIComponent(shafaq)}`;
 
+    // Use aladhanMethodId if the method has a custom API override (e.g. Muhammadiyah uses method=99)
+    const apiMethodId = aladhanMethodId ?? methodId;
+    let url = `${baseUrl}/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=${apiMethodId}`;
+
+    // Append methodSettings for custom angle methods (e.g. "18,null,18" for Muhammadiyah fajr=18°)
+    if (aladhanMethodSettings) url += `&methodSettings=${encodeURIComponent(aladhanMethodSettings)}`;
+    if (shafaq) url += `&shafaq=${encodeURIComponent(shafaq)}`;
 
     const response = await fetchWithTimeout(url);
 
@@ -359,11 +364,16 @@ function isValidMonthlyResponse(data) {
  * @returns {Promise<object>} parsed JSON data
  */
 async function tryMirrorMonthly(baseUrl, year, month, latitude, longitude) {
-    const { id: methodId } = getActiveMethodConfig();
+    const { id: methodId, aladhanMethodId, aladhanMethodSettings } = getActiveMethodConfig();
     const shafaq = getActiveShafaqParam();
-    let url = `${baseUrl}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${methodId}`;
-    if (shafaq) url += `&shafaq=${encodeURIComponent(shafaq)}`;
 
+    // Use aladhanMethodId if the method has a custom API override (e.g. Muhammadiyah uses method=99)
+    const apiMethodId = aladhanMethodId ?? methodId;
+    let url = `${baseUrl}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${apiMethodId}`;
+
+    // Append methodSettings for custom angle methods (e.g. "18,null,18" for Muhammadiyah fajr=18°)
+    if (aladhanMethodSettings) url += `&methodSettings=${encodeURIComponent(aladhanMethodSettings)}`;
+    if (shafaq) url += `&shafaq=${encodeURIComponent(shafaq)}`;
 
     const response = await fetchWithTimeout(url);
 

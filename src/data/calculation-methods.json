@@ -229,6 +229,18 @@
             "ishaAngle": 18,
             "madhab": "shafi",
             "ihtiyatMinutes": 1
+        },
+        {
+            "id": 24,
+            "name": "Muhammadiyah (Majelis Tarjih)",
+            "shortName": "Muhammadiyah",
+            "region": "Indonesia",
+            "fajrAngle": 18,
+            "ishaAngle": 18,
+            "madhab": "shafi",
+            "ihtiyatMinutes": 2,
+            "aladhanMethodId": 99,
+            "aladhanMethodSettings": "18,null,18"
         }
     ]
 }

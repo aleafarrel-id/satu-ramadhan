@@ -11,6 +11,7 @@ import { impact } from '../../modules/system/haptic.js';
 import { addEscHandler, trapFocus } from '../../utils/a11y.js';
 import { t, loadNS } from '../../core/i18n.js';
 import { getModalRoot } from '../../utils/modal-portal.js';
+import { setSelectedOrg } from '../../modules/schedule/ramadhan.js';
 
 let _overlayEl = null;
 let _onSelectCallback = null;
@@ -40,14 +41,27 @@ export async function showCalculationMethodModal({ onMethodChanged } = {}) {
     bindEvents();
 }
 
-function handleSelect(id, e) {
+async function handleSelect(id, e) {
     if (e) e.stopPropagation();
     impact('light');
 
     if (id === 'auto') {
         resetToAutoMethod();
+        // If user is in Indonesia, auto resolves to Kemenag RI. Sync org to 'nu'
+        const loc = store.getState('location');
+        if (loc?.countryCode === 'ID') {
+            await setSelectedOrg('nu');
+        }
     } else {
-        setManualMethod(parseInt(id, 10));
+        const methodId = parseInt(id, 10);
+        setManualMethod(methodId);
+        
+        // Sync org if applicable
+        if (methodId === 24) {
+            await setSelectedOrg('muhammadiyah');
+        } else if (methodId === 20) {
+            await setSelectedOrg('nu');
+        }
     }
 
     if (_onSelectCallback) {
@@ -122,7 +136,7 @@ function createModalDOM() {
     const isAuto = store.getState('settings.calculation.isAutoDetected');
     const currentMethod = store.getState('settings.calculation.method');
     const activeConfig = getActiveMethodConfig();
-    
+
     // Auto Option
     const autoOptionHTML = `
         <div class="calc-method-item ${isAuto ? 'selected' : ''}" data-id="auto" data-focus-item tabindex="0">
@@ -147,7 +161,7 @@ function createModalDOM() {
     // Method List
     const methodListHTML = methodsData.methods.map(method => {
         const isSelected = !isAuto && currentMethod === method.id;
-        
+
         return `
             <div class="calc-method-item ${isSelected ? 'selected' : ''}" data-id="${method.id}" data-focus-item tabindex="0">
                 <div class="calc-method-radio">
@@ -163,6 +177,7 @@ function createModalDOM() {
                     <div class="calc-method-badges">
                         ${method.region ? `<span class="calc-method-badge">${method.region}</span>` : ''}
                         <span class="calc-method-badge">${t('components/modal/calculation-method-modal:ihtiyat_value', { minutes: method.ihtiyatMinutes })} Ihtiyat</span>
+                        ${method.id === 24 ? `<span class="calc-method-badge calc-method-badge--muhammadiyah">${t('components/modal/calculation-method-modal:muhammadiyah_note')}</span>` : ''}
                     </div>
                 </div>
             </div>

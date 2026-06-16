@@ -3,6 +3,7 @@ import countryMapData from '../../data/country-method-map.json';
 import { store } from './store.js';
 
 const KEMENAG_ID = 20;
+const MUHAMMADIYAH_ID = 24;
 const MWL_ID = 3;
 
 /**
@@ -47,7 +48,6 @@ export function getActiveShafaqParam() {
     return countryMapData.shafaqOverrides?.[code] ?? null;
 }
 
-
 /**
  * Get the shortName label to display on org-toggle for non-Indonesia.
  * @returns {string}
@@ -67,7 +67,7 @@ export function isIndonesiaMode() {
     const methodId = store.getState('settings.calculation.method');
     
     if (loc?.countryCode === 'ID') return true;
-    if (methodId === KEMENAG_ID) return true;
+    if (methodId === KEMENAG_ID || methodId === MUHAMMADIYAH_ID) return true;
     if (methodId === null && loc?.countryCode == null) return true; // Default state
     
     return false;

@@ -5,7 +5,7 @@
 import { getRamadhanConfig } from '../../core/database.js';
 import * as storage from '../../core/storage.js';
 import { store } from '../../core/store.js';
-import { isIndonesiaMode, getActiveMethodShortName } from '../../core/calculation-resolver.js';
+import { isIndonesiaMode, getActiveMethodShortName, setManualMethod, resetToAutoMethod } from '../../core/calculation-resolver.js';
 import { t } from '../../core/i18n.js';
 import { generateOfflineHijri } from '../../core/local-calculator.js';
 import { clearFastingCache } from './fasting-engine.js';
@@ -23,15 +23,15 @@ export async function syncHijriOffset() {
     if (!preset) return;
 
     const startDate = new Date(preset.startDate + 'T00:00:00');
-    
+
     // Get the offline astronomical hijri date for the preset start date
     const offlineHijri = generateOfflineHijri(startDate);
-    
+
     if (!offlineHijri || !offlineHijri.month) return;
-    
+
     const apiHijriDay = offlineHijri.day;
     const apiHijriMonth = offlineHijri.month.number;
-    
+
     let offset = 0;
     if (apiHijriMonth === 9) {
         // Same month (Ramadhan) — direct comparison
@@ -41,7 +41,7 @@ export async function syncHijriOffset() {
         const apiMonthDays = offlineHijri.month.days || 29;
         offset = apiMonthDays - apiHijriDay + 1;
     }
-    
+
     const currentOffset = store.getState('settings.hijriOffset');
     if (currentOffset !== offset) {
         store.setState('settings.hijriOffset', offset);
@@ -109,7 +109,7 @@ export async function getAllPresets() {
     if (!isIndonesiaMode()) {
         const globalId = 'global_ramadan';
         const override = overrides[globalId];
-        
+
         const defaultGlobal = {
             id: globalId,
             name: 'Ramadan',
@@ -119,12 +119,12 @@ export async function getAllPresets() {
             isCustom: false,
             isOverridden: !!override
         };
-        
+
         if (override) {
             defaultGlobal.startDate = override.startDate || defaultGlobal.startDate;
             defaultGlobal.endDate = override.endDate || defaultGlobal.endDate;
         }
-        
+
         return [defaultGlobal];
     }
 
@@ -182,6 +182,14 @@ export async function getSelectedOrg() {
  */
 export async function setSelectedOrg(orgId) {
     store.setState('settings.org', orgId);
+
+    // Auto-sync calculation method based on org selection
+    if (orgId === 'muhammadiyah') {
+        setManualMethod(24); // MUHAMMADIYAH_ID
+    } else if (orgId === 'nu') {
+        resetToAutoMethod(); // Reverts to Kemenag RI (20) in Indonesia
+    }
+
     await syncHijriOffset();
 }
 
