@@ -168,6 +168,10 @@
     display: none;
 }
 
+#schedule-fasting-card-wrapper.hidden {
+    display: none;
+}
+
 .schedule-today-btn {
     display: flex;
     align-items: center;
@@ -583,6 +587,84 @@
 
 .schedule-fasting-card:active {
     transform: scale(0.98);
+}
+
+/* Tomorrow variant */
+.schedule-fasting-card--tomorrow .schedule-fasting-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-weight: var(--fw-medium);
+}
+
+/* Pulsing dot after label */
+.schedule-fasting-card--tomorrow .schedule-fasting-card__header::after {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: var(--radius-circle);
+    background: currentColor;
+    animation: fastingDotPulse 2.4s ease-in-out infinite;
+    margin-left: 2px;
+    flex-shrink: 0;
+}
+
+@keyframes fastingDotPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.35;
+        transform: scale(0.65);
+    }
+}
+
+/* Sunnah */
+.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--sunnah) {
+    border-color: var(--clr-info-a40) !important;
+}
+
+.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--sunnah) .schedule-fasting-card__header {
+    color: var(--clr-info);
+}
+
+/* Mandatory / Ramadhan */
+.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--mandatory) {
+    border-color: var(--clr-accent-a40) !important;
+}
+
+.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--mandatory) .schedule-fasting-card__header {
+    color: var(--clr-accent-400);
+}
+
+/* Forbidden / Haram */
+.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--forbidden) {
+    border-color: var(--clr-danger-a40) !important;
+}
+
+.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--forbidden) .schedule-fasting-card__header {
+    color: color-mix(in srgb, var(--clr-danger) 85%, var(--clr-text-primary));
+}
+
+.schedule-fasting-card--tomorrow .schedule-fasting-card__inner {
+    border-style: dashed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .schedule-fasting-card--tomorrow:hover {
+        filter: brightness(1.05);
+        transform: translateY(-1px);
+    }
+}
+
+.schedule-fasting-card--tomorrow:active {
+    transform: scale(0.98);
+    opacity: 0.9;
 }
 
 /* Fasting Card Colors (Text, Background & Border) applied to inner */

@@ -9,5 +9,6 @@
     "toast_notif_unmuted": "Notifikasi {{prayer}} diaktifkan",
     "back_to_today": "Kembali ke Hari Ini",
     "calendar_header": "Kalendar",
-    "fasting-header": "Status Puasa"
+    "fasting-header": "Status Puasa",
+    "fasting-header-tomorrow": "Puasa Esok"
 }

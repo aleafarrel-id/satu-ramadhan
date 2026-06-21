@@ -24,6 +24,11 @@ export function initTasbihGesture({ onOpen, getCurrentPage }) {
             }
         }
 
+        // Prevent gesture collision with maps or other interactive touch areas
+        if (e.target.closest('.qibla-map-card') || e.target.closest('.leaflet-container')) {
+            return;
+        }
+
         const touch = e.changedTouches[0];
         _startX = touch.clientX;
         _startY = touch.clientY;

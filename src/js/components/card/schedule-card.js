@@ -15,6 +15,7 @@ import { escapeHtml } from '../../utils/sanitize.js';
 import { store } from '../../core/store.js';
 import { isNative } from '../../modules/system/platform.js';
 import { analyzeFastingDayOffline } from '../../modules/schedule/fasting-engine.js';
+import { generateOfflineHijri } from '../../core/local-calculator.js';
 
 // UI Components
 import { renderFeaturedCard, renderOrgToggle, renderKiblatButton } from '../prayer/prayer-widgets.js';
@@ -46,9 +47,7 @@ export function renderScheduleCard(entry, orgName, todayTimings, dayIndex, total
 
             ${renderShareScheduleCard()}
 
-            <div id="schedule-fasting-card-wrapper" style="${renderFastingBadgeHtml(entry) ? '' : 'display: none;'}">
-                ${renderFastingBadgeHtml(entry)}
-            </div>
+            ${_renderFastingWrapper(entry)}
 
             <div class="card card--container schedule-content-card${viewingToday ? ' schedule-content-card--today' : ''}" id="schedule-swipe-area">
                 ${renderDateNav(entry, dayIndex, totalDays)}
@@ -97,9 +96,11 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
 
     const badgeWrapper = document.getElementById('schedule-fasting-card-wrapper');
     if (badgeWrapper) {
-        const badgeHtml = renderFastingBadgeHtml(entry);
-        badgeWrapper.innerHTML = badgeHtml;
-        badgeWrapper.style.display = badgeHtml ? 'block' : 'none';
+        const todayBadgeHtml = renderFastingBadgeHtml(entry, false);
+        const tomorrowBadgeHtml = entry.isToday ? renderFastingBadgeHtml(entry, true) : '';
+        const combinedHtml = todayBadgeHtml + tomorrowBadgeHtml;
+        badgeWrapper.innerHTML = combinedHtml;
+        badgeWrapper.classList.toggle('hidden', !combinedHtml.trim());
     }
 
     const titleEl = container?.querySelector('.schedule-nav__title');
@@ -433,32 +434,70 @@ function formatGregorianDateFromObj(date, months) {
 }
 
 /**
- * Render the fasting badge if the current day has a fasting event.
+ * Render the fasting card wrapper div with both today and tomorrow cards.
+ * Returns the wrapper hidden if neither card has content.
+ * @param {Object} entry - Day entry
+ * @returns {string} HTML string
  */
-function renderFastingBadgeHtml(entry) {
+function _renderFastingWrapper(entry) {
+    const todayHtml = renderFastingBadgeHtml(entry, false);
+    const tomorrowHtml = entry.isToday ? renderFastingBadgeHtml(entry, true) : '';
+    const combined = todayHtml + tomorrowHtml;
+    const hasContent = combined.trim().length > 0;
+    return `<div id="schedule-fasting-card-wrapper"${hasContent ? '' : ' class="hidden"'}>${combined}</div>`;
+}
+
+/**
+ * Render the fasting badge for a day entry.
+ * @param {Object} entry - Day entry { hijriDay, hijriMonthNumber, date, isToday }
+ * @param {boolean} isTomorrow - If true, renders the fasting info for the day AFTER entry.date.
+ *                               Only meaningful when viewing Today — shows a proactive reminder.
+ * @returns {string} HTML string, or empty string if no fasting event
+ */
+function renderFastingBadgeHtml(entry, isTomorrow = false) {
     if (!entry || !entry.date) return '';
 
-    // Build a hijri object from entry-level data (preset-aware)
-    // rather than timings.hijri (raw API/offline, not offset-aware)
-    const hijri = {
-        day: String(entry.hijriDay),
-        month: { number: entry.hijriMonthNumber || 0 }
-    };
+    let targetDate;
+    let hijri;
 
-    // Guard: skip if we don't have month info
-    if (!hijri.month.number) return '';
+    if (isTomorrow) {
+        // Calculate for the next calendar day
+        targetDate = new Date(entry.date);
+        targetDate.setDate(targetDate.getDate() + 1);
+        // Derive hijri offline — the fasting engine itself handles offsets internally
+        const rawHijri = generateOfflineHijri(targetDate);
+        hijri = {
+            day: String(rawHijri.day),
+            month: { number: parseInt(rawHijri.month.number, 10) }
+        };
+    } else {
+        // Use entry-level data (preset-aware, not raw API hijri)
+        targetDate = entry.date;
+        hijri = {
+            day: String(entry.hijriDay),
+            month: { number: entry.hijriMonthNumber || 0 }
+        };
+        // Guard: skip if we don't have month info from entry
+        if (!hijri.month.number) return '';
+    }
 
-    const fastingEvents = analyzeFastingDayOffline(hijri, entry.date);
+    const fastingEvents = analyzeFastingDayOffline(hijri, targetDate);
     if (!fastingEvents || fastingEvents.length === 0) return '';
 
     const primaryId = fastingEvents.includes('haram') ? 'haram' : fastingEvents[0];
     const data = t(`fasting:${primaryId}`, { returnObjects: true });
     if (!data || typeof data === 'string') return '';
 
+    const headerText = isTomorrow
+        ? t('pages/schedule-page:fasting-header-tomorrow')
+        : t('pages/schedule-page:fasting-header');
+
+    const tomorrowClass = isTomorrow ? ' schedule-fasting-card--tomorrow' : '';
+
     return `
-        <button class="card card--container schedule-fasting-card" data-fasting-id="${primaryId}">
+        <button class="card card--container schedule-fasting-card${tomorrowClass}" data-fasting-id="${primaryId}">
             <div class="schedule-fasting-card__header">
-                ${t('pages/schedule-page:fasting-header')}
+                ${headerText}
             </div>
             <div class="schedule-fasting-card__inner schedule-fasting-card__inner--${data.type}">
                 <i class='bx ${data.icon} schedule-fasting-card__icon'></i>
