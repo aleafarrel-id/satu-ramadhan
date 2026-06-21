@@ -589,29 +589,71 @@
     transform: scale(0.98);
 }
 
-/* Tomorrow variant */
-.schedule-fasting-card--tomorrow .schedule-fasting-card__header {
+/* ── Fasting Group ── */
+.schedule-fasting-group {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    font-weight: var(--fw-medium);
+    flex-direction: column;
+    background: var(--clr-bg-card, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--clr-border, rgba(255, 255, 255, 0.1));
+    border-radius: var(--radius-xl);
+    overflow: hidden;
 }
 
-/* Pulsing dot after label */
-.schedule-fasting-card--tomorrow .schedule-fasting-card__header::after {
-    content: '';
-    display: inline-block;
-    width: 5px;
-    height: 5px;
+.schedule-fasting-group > .schedule-fasting-card {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid var(--clr-white-a05) !important;
+}
+
+.schedule-fasting-group > .schedule-fasting-tomorrow-strip {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 14px var(--spacing-md) var(--spacing-md) var(--spacing-md) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .schedule-fasting-group > *:hover {
+        background: var(--clr-white-a05) !important;
+        transform: none !important;
+        filter: none !important;
+    }
+}
+
+.schedule-fasting-group > *:active {
+    background: var(--clr-white-a10) !important;
+    transform: none !important;
+    opacity: 1 !important;
+}
+
+/* ── Compact Strip (Standalone Styles) ── */
+.schedule-fasting-tomorrow-strip {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    min-height: 44px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    transition: all var(--transition-fast);
+}
+
+.schedule-fasting-tomorrow-strip__pulse {
+    width: 6px;
+    height: 6px;
     border-radius: var(--radius-circle);
     background: currentColor;
-    animation: fastingDotPulse 2.4s ease-in-out infinite;
-    margin-left: 2px;
     flex-shrink: 0;
+    opacity: 0.9;
+    animation: fastingDotPulse 2.4s ease-in-out infinite;
 }
 
 @keyframes fastingDotPulse {
-
     0%,
     100% {
         opacity: 1;
@@ -619,50 +661,92 @@
     }
 
     50% {
-        opacity: 0.35;
-        transform: scale(0.65);
+        opacity: 0.4;
+        transform: scale(0.7);
     }
 }
 
-/* Sunnah */
-.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--sunnah) {
-    border-color: var(--clr-info-a40) !important;
+.schedule-fasting-tomorrow-strip__label {
+    font-family: var(--ff-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--clr-text-muted);
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
-.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--sunnah) .schedule-fasting-card__header {
+.schedule-fasting-tomorrow-strip__divider {
+    width: 1px;
+    height: 14px;
+    background: var(--clr-text-muted);
+    opacity: 0.3;
+    flex-shrink: 0;
+    border-radius: 1px;
+}
+
+.schedule-fasting-tomorrow-strip__icon {
+    font-size: var(--fs-base);
+    flex-shrink: 0;
+}
+
+.schedule-fasting-tomorrow-strip__text {
+    flex: 1;
+    font-family: var(--ff-primary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--clr-text-secondary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.schedule-fasting-tomorrow-strip__chevron {
+    font-size: var(--icon-md);
+    color: var(--clr-text-muted);
+    opacity: 0.6;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+/* ── Contextual Variants ── */
+.schedule-fasting-tomorrow-strip--sunnah {
+    background: var(--clr-white-a05);
+    border: 1px dashed var(--clr-info-a40);
+}
+
+.schedule-fasting-tomorrow-strip--sunnah .schedule-fasting-tomorrow-strip__pulse,
+.schedule-fasting-tomorrow-strip--sunnah .schedule-fasting-tomorrow-strip__icon {
     color: var(--clr-info);
 }
 
-/* Mandatory / Ramadhan */
-.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--mandatory) {
-    border-color: var(--clr-accent-a40) !important;
+.schedule-fasting-tomorrow-strip--mandatory {
+    background: var(--clr-white-a05);
+    border: 1px dashed var(--clr-accent-a40);
 }
 
-.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--mandatory) .schedule-fasting-card__header {
+.schedule-fasting-tomorrow-strip--mandatory .schedule-fasting-tomorrow-strip__pulse,
+.schedule-fasting-tomorrow-strip--mandatory .schedule-fasting-tomorrow-strip__icon {
     color: var(--clr-accent-400);
 }
 
-/* Forbidden / Haram */
-.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--forbidden) {
-    border-color: var(--clr-danger-a40) !important;
+.schedule-fasting-tomorrow-strip--forbidden {
+    background: var(--clr-white-a05);
+    border: 1px dashed var(--clr-danger-a40);
 }
 
-.schedule-fasting-card--tomorrow:has(.schedule-fasting-card__inner--forbidden) .schedule-fasting-card__header {
+.schedule-fasting-tomorrow-strip--forbidden .schedule-fasting-tomorrow-strip__pulse,
+.schedule-fasting-tomorrow-strip--forbidden .schedule-fasting-tomorrow-strip__icon {
     color: color-mix(in srgb, var(--clr-danger) 85%, var(--clr-text-primary));
 }
 
-.schedule-fasting-card--tomorrow .schedule-fasting-card__inner {
-    border-style: dashed;
-}
-
 @media (hover: hover) and (pointer: fine) {
-    .schedule-fasting-card--tomorrow:hover {
-        filter: brightness(1.05);
-        transform: translateY(-1px);
+    .schedule-fasting-tomorrow-strip:hover {
+        background: var(--clr-white-a10);
     }
 }
 
-.schedule-fasting-card--tomorrow:active {
+.schedule-fasting-tomorrow-strip:active {
     transform: scale(0.98);
     opacity: 0.9;
 }

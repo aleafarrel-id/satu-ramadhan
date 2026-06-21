@@ -634,9 +634,10 @@ function bindEvents() {
     const fastingWrapper = document.getElementById('schedule-fasting-card-wrapper');
     if (fastingWrapper) {
         fastingWrapper.addEventListener('click', (e) => {
-            const card = e.target.closest('.schedule-fasting-card');
-            if (card) {
-                const fastingId = card.getAttribute('data-fasting-id');
+            // Matches both the primary fasting card and the compact tomorrow strip
+            const target = e.target.closest('[data-fasting-id]');
+            if (target) {
+                const fastingId = target.getAttribute('data-fasting-id');
                 if (fastingId) {
                     showFastingDetailsModal(fastingId);
                 }

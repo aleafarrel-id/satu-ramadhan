@@ -98,9 +98,9 @@ export function updateScheduleContent(entry, dayIndex, container, totalDays = 30
     if (badgeWrapper) {
         const todayBadgeHtml = renderFastingBadgeHtml(entry, false);
         const tomorrowBadgeHtml = entry.isToday ? renderFastingBadgeHtml(entry, true) : '';
-        const combinedHtml = todayBadgeHtml + tomorrowBadgeHtml;
-        badgeWrapper.innerHTML = combinedHtml;
-        badgeWrapper.classList.toggle('hidden', !combinedHtml.trim());
+        const innerHtml = _assembleFastingHtml(todayBadgeHtml, tomorrowBadgeHtml);
+        badgeWrapper.innerHTML = innerHtml;
+        badgeWrapper.classList.toggle('hidden', !innerHtml.trim());
     }
 
     const titleEl = container?.querySelector('.schedule-nav__title');
@@ -434,6 +434,21 @@ function formatGregorianDateFromObj(date, months) {
 }
 
 /**
+ * Assemble the fasting wrapper inner HTML.
+ * When both today and tomorrow fasting exist, wraps them in a unified group.
+ * This keeps the total vertical footprint equal to a single card.
+ * @param {string} todayHtml
+ * @param {string} tomorrowHtml
+ * @returns {string}
+ */
+function _assembleFastingHtml(todayHtml, tomorrowHtml) {
+    if (todayHtml && tomorrowHtml) {
+        return `<div class="schedule-fasting-group">${todayHtml}${tomorrowHtml}</div>`;
+    }
+    return todayHtml + tomorrowHtml;
+}
+
+/**
  * Render the fasting card wrapper div with both today and tomorrow cards.
  * Returns the wrapper hidden if neither card has content.
  * @param {Object} entry - Day entry
@@ -442,16 +457,21 @@ function formatGregorianDateFromObj(date, months) {
 function _renderFastingWrapper(entry) {
     const todayHtml = renderFastingBadgeHtml(entry, false);
     const tomorrowHtml = entry.isToday ? renderFastingBadgeHtml(entry, true) : '';
-    const combined = todayHtml + tomorrowHtml;
-    const hasContent = combined.trim().length > 0;
-    return `<div id="schedule-fasting-card-wrapper"${hasContent ? '' : ' class="hidden"'}>${combined}</div>`;
+    const innerHtml = _assembleFastingHtml(todayHtml, tomorrowHtml);
+    const hasContent = innerHtml.trim().length > 0;
+    return `<div id="schedule-fasting-card-wrapper"${hasContent ? '' : ' class="hidden"'}>${innerHtml}</div>`;
 }
 
 /**
  * Render the fasting badge for a day entry.
+ *
+ * - isTomorrow=false → full primary card (today's fasting)
+ * - isTomorrow=true  → compact inline strip (proactive reminder for tomorrow)
+ *   The strip is much shorter than a full card so it does not push prayer rows
+ *   below the fold when two consecutive fasting days exist.
+ *
  * @param {Object} entry - Day entry { hijriDay, hijriMonthNumber, date, isToday }
- * @param {boolean} isTomorrow - If true, renders the fasting info for the day AFTER entry.date.
- *                               Only meaningful when viewing Today — shows a proactive reminder.
+ * @param {boolean} isTomorrow - If true, renders a compact strip for the day AFTER entry.date.
  * @returns {string} HTML string, or empty string if no fasting event
  */
 function renderFastingBadgeHtml(entry, isTomorrow = false) {
@@ -488,21 +508,32 @@ function renderFastingBadgeHtml(entry, isTomorrow = false) {
     const data = t(`fasting:${primaryId}`, { returnObjects: true });
     if (!data || typeof data === 'string') return '';
 
-    const headerText = isTomorrow
-        ? t('pages/schedule-page:fasting-header-tomorrow')
-        : t('pages/schedule-page:fasting-header');
+    // Tomorrow: compact strip — saves vertical space when two consecutive fasting days exist
+    if (isTomorrow) {
+        const tomorrowLabel = t('pages/schedule-page:fasting-header-tomorrow');
+        return `
+            <button class="schedule-fasting-tomorrow-strip schedule-fasting-tomorrow-strip--${data.type}" data-fasting-id="${primaryId}" type="button">
+                <span class="schedule-fasting-tomorrow-strip__pulse" aria-hidden="true"></span>
+                <span class="schedule-fasting-tomorrow-strip__label">${tomorrowLabel}</span>
+                <span class="schedule-fasting-tomorrow-strip__divider" aria-hidden="true"></span>
+                <i class='bx ${data.icon} schedule-fasting-tomorrow-strip__icon' aria-hidden="true"></i>
+                <span class="schedule-fasting-tomorrow-strip__text">${escapeHtml(data.name)}</span>
+                <i class='bx bx-chevron-right schedule-fasting-tomorrow-strip__chevron' aria-hidden="true"></i>
+            </button>
+        `;
+    }
 
-    const tomorrowClass = isTomorrow ? ' schedule-fasting-card--tomorrow' : '';
-
+    // Today: full primary card
+    const headerText = t('pages/schedule-page:fasting-header');
     return `
-        <button class="card card--container schedule-fasting-card${tomorrowClass}" data-fasting-id="${primaryId}">
+        <button class="card card--container schedule-fasting-card" data-fasting-id="${primaryId}" type="button">
             <div class="schedule-fasting-card__header">
                 ${headerText}
             </div>
             <div class="schedule-fasting-card__inner schedule-fasting-card__inner--${data.type}">
-                <i class='bx ${data.icon} schedule-fasting-card__icon'></i>
+                <i class='bx ${data.icon} schedule-fasting-card__icon' aria-hidden="true"></i>
                 <span class="schedule-fasting-card__text">${escapeHtml(data.name)}</span>
-                <i class='bx bx-chevron-right schedule-fasting-card__chevron'></i>
+                <i class='bx bx-chevron-right schedule-fasting-card__chevron' aria-hidden="true"></i>
             </div>
         </button>
     `;
